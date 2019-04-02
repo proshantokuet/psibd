@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <!--
+        See http://www.liquibase.org/manual/home#available_database_refactorings
+        for a list of supported elements and attributes
+    -->
+    
+    <changeSet id="psiclinic-1.0.0" author="Proshanto">
+		<createTable tableName="psi_clinic">
+			<column name="cid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(255)" />
+			<column name="clinic_id" type="varchar(255)" />
+			<column name="category" type="varchar(255)" />
+			<column name="address" type="varchar(255)" />
+			<column name="dhis_id" type="varchar(255)" />
+			<column name="description" type="varchar(255)" />
+			<column name="division" type="varchar(255)" />
+			<column name="district" type="varchar(255)" />
+			<column name="upazila" type="varchar(255)" />
+			<column name="union_name" type="varchar(255)" />
+			<column name="timestamp" type="long" />					
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+</databaseChangeLog>

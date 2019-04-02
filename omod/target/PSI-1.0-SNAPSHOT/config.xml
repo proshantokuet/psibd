@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module configVersion="1.2">
+
+	<!-- Module Properties -->
+	<id>PSI</id>
+	<name>PSI Module</name>
+	<version>1.0-SNAPSHOT</version>
+	<package>org.openmrs.module.PSI</package>
+	<author>proshanto</author>
+	<description>
+		Helps to start writing OpenMRS modules
+	</description>
+	<updateURL>https://modules.openmrs.org/modules/download/PSI/update.rdf</updateURL>
+	<require_version>2.1.1</require_version>
+	<!-- / Module Properties -->
+
+	
+	<!-- Module Activator -->
+	<activator>org.openmrs.module.PSI.PSIActivator</activator>
+	<require_modules>		
+		<require_module>org.openmrs.module.webservices.rest</require_module>
+	</require_modules>
+	
+	<!-- Adds link to admin page -->
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>org.openmrs.module.PSI.extension.html.AdminList</class>
+	</extension>
+	
+	<!-- Maps hibernate file's, if present -->
+	<mappingFiles>
+				
+		PSI.hbm.xml
+		psiclinic.hbm.xml
+				
+	</mappingFiles>
+
+	<!-- Internationalization -->
+	<!-- All message codes should start with PSI. -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
+</module>
+

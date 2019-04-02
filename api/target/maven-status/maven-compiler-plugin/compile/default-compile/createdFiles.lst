@@ -1,0 +1,6 @@
+org/openmrs/module/PSI/api/db/hibernate/HibernatePSIDAO.class
+org/openmrs/module/PSI/api/db/PSIDAO.class
+org/openmrs/module/PSI/api/impl/PSIServiceImpl.class
+org/openmrs/module/PSI/PSIActivator.class
+org/openmrs/module/PSI/api/PSIService.class
+org/openmrs/module/PSI/PSI.class
