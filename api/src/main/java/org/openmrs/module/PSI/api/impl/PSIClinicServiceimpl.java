@@ -35,8 +35,8 @@ public class PSIClinicServiceimpl extends BaseOpenmrsService implements PSIClini
 	}
 	
 	@Override
-	public void delete(PSIClinic psiClinic) {
-		dao.delete(psiClinic);
+	public void delete(int id) {
+		dao.delete(id);
 		
 	}
 	

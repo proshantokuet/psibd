@@ -60,8 +60,8 @@ public class HibernatePSIClinicDAO implements PSIClinicDAO {
 	}
 	
 	@Override
-	public void delete(PSIClinic psiClinic) {
-		sessionFactory.getCurrentSession().delete(psiClinic);
+	public void delete(int id) {
+		sessionFactory.getCurrentSession().delete(findById(id));
 	}
 	
 }

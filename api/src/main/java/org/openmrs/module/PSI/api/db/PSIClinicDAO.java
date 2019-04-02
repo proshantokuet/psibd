@@ -12,6 +12,6 @@ public interface PSIClinicDAO {
 	
 	public PSIClinic findById(int id);
 	
-	public void delete(PSIClinic psiClinic);
+	public void delete(int id);
 	
 }
