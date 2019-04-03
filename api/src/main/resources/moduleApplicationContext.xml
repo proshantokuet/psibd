@@ -55,16 +55,109 @@
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
-				<value>${project.parent.groupId}.${project.parent.artifactId}.api.PSIClinicService</value>
+				<value>${project.parent.groupId}.${project.parent.artifactId}.api.PSIClinicManagementService</value>
 				<bean
 					class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager">
 						<ref bean="transactionManager" />
 					</property>
 					<property name="target">
-						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.PSIClinicServiceimpl">
+						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.PSIClinicManagementServiceimpl">
 							<property name="dao">
-								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernatePSIClinicDAO">
+								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernatePSIClinicManagementDAO">
+									<property name="sessionFactory">
+										<ref bean="sessionFactory" />
+									</property>
+								</bean>
+							</property>
+						</bean>
+					</property>
+					<property name="preInterceptors">
+						<ref bean="serviceInterceptors" />
+					</property>
+					<property name="transactionAttributeSource">
+						<ref bean="transactionAttributeSource" />
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list>
+				<value>${project.parent.groupId}.${project.parent.artifactId}.api.PSIServiceManagementService</value>
+				<bean
+					class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+					<property name="transactionManager">
+						<ref bean="transactionManager" />
+					</property>
+					<property name="target">
+						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.PSIServiceManagementServiceImpl">
+							<property name="dao">
+								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateServiceManagementDAO">
+									<property name="sessionFactory">
+										<ref bean="sessionFactory" />
+									</property>
+								</bean>
+							</property>
+						</bean>
+					</property>
+					<property name="preInterceptors">
+						<ref bean="serviceInterceptors" />
+					</property>
+					<property name="transactionAttributeSource">
+						<ref bean="transactionAttributeSource" />
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list>
+				<value>${project.parent.groupId}.${project.parent.artifactId}.api.PSIMoneyReceiptService</value>
+				<bean
+					class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+					<property name="transactionManager">
+						<ref bean="transactionManager" />
+					</property>
+					<property name="target">
+						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.PSIMoneyReceiptServiceImpl">
+							<property name="dao">
+								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernatePSIMoneyReceiptDAO">
+									<property name="sessionFactory">
+										<ref bean="sessionFactory" />
+									</property>
+								</bean>
+							</property>
+						</bean>
+					</property>
+					<property name="preInterceptors">
+						<ref bean="serviceInterceptors" />
+					</property>
+					<property name="transactionAttributeSource">
+						<ref bean="transactionAttributeSource" />
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list>
+				<value>${project.parent.groupId}.${project.parent.artifactId}.api.PSIServiceProvisionService</value>
+				<bean
+					class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+					<property name="transactionManager">
+						<ref bean="transactionManager" />
+					</property>
+					<property name="target">
+						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.PSIServiceProvisionServiceImpl">
+							<property name="dao">
+								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernatePSIServiceProvisionDAO">
 									<property name="sessionFactory">
 										<ref bean="sessionFactory" />
 									</property>
