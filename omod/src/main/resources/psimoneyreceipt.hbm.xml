@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.openmrs.module.PSI.PSIMoneyReceipt" table="psi_money_receipt">
+        <id column="mid" name="mid" type="int">
+            <generator class="native"/>
+        </id> 
+        
+	    <property name="patientName" column="patient_name" type="java.lang.String"/>
+	    <property name="patientUuid" column="patient_uuid" type="java.lang.String"/>
+	    <property name="uic" column="uic" type="java.lang.String"/>
+	    <property name="contact" column="contact" type="java.lang.String"/>
+	    <property name="dob" column="dob" type="java.util.Date" not-null="true"/>
+	    <property name="address" column="address" type="java.lang.String"/>
+	    <property name="clinicName" column="clinic_name" type="java.lang.String"/>
+	    <property name="clinicCode" column="clinic_code" type="java.lang.String"/>
+	    <property name="sateliteClinicId" column="satelite_clinic_id" type="java.lang.String"/>
+	    <property name="teamNo" column="team_no" type="java.lang.String"/>
+	    <property name="moneyReceiptDate" column="money_receipt_date" type="java.util.Date"/>
+	    <property name="reference" column="reference" type="java.lang.String"/>
+	    <property name="servicePoint" column="service_point" type="java.lang.String"/>
+	    <property name="wealth" column="wealth" type="java.lang.String"/>
+	    <property name="gender" column="gender" type="java.lang.String"/>
+	    <property name="slipNo" column="slip_no" type="java.lang.String"/>
+	    <property name="clinicType" column="clinic_type" type="java.lang.String"/>
+	    
+	    <set name="services" table="psi_service_provision"  inverse="false" lazy="false" fetch="join">
+	       <key>
+	           <column name="psi_money_receipt" not-null="true" />
+	       </key>
+	       <one-to-many class="org.openmrs.module.PSI.PSIMoneyReceipt" />
+	    </set>
+	    
+	    <property name="field1" column="field1" type="java.lang.String"/>
+	    <property name="field2" column="field2" type="java.lang.String"/>
+	    <property name="field3" column="field3" type="int"/>
+	    
+	    
+	    <property name="timestamp" column="timestamp" type="long"/>
+	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
+		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>
+		<many-to-one name="changedBy" column="changed_by" class="org.openmrs.User" />
+		<property name="dateChanged" column="date_changed" type="java.util.Date" />
+		<property name="voided" column="voided" type="boolean" not-null="true"/>
+		<many-to-one name="voidedBy" column="voided_by" class="org.openmrs.User" />
+		<property name="dateVoided" column="date_voided" type="java.util.Date" />
+		<property name="voidReason" column="void_reason" type="java.lang.String" /> 
+		<property name="uuid" column="uuid" type="java.lang.String" not-null="true" />
+	    
+    </class>
+</hibernate-mapping>

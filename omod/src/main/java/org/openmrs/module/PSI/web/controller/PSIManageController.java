@@ -19,8 +19,7 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.PSI.PSIClinic;
-import org.openmrs.module.PSI.api.PSIClinicService;
+import org.openmrs.module.PSI.PSIClinicManagement;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,11 +36,11 @@ public class PSIManageController {
 	@RequestMapping(value = "/module/PSI/manage", method = RequestMethod.GET)
 	public void manage(ModelMap model) {
 		model.addAttribute("user", Context.getAuthenticatedUser());
-		PSIClinic psiClinic = new PSIClinic();
+		PSIClinicManagement psiClinic = new PSIClinicManagement();
 		psiClinic.setDateCreated(new Date());
 		psiClinic.setCreator(Context.getAuthenticatedUser());
 		psiClinic.setUuid(UUID.randomUUID().toString());
 		psiClinic.setVoided(false);
-		Context.getService(PSIClinicService.class).saveOrUpdateClinic(psiClinic);
+		//Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinic);
 	}
 }

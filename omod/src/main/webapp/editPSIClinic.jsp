@@ -11,7 +11,7 @@
 <div class="container register-form">
 	<div class="form">
     	<div class="note">
-        	<p>Add Community Clinic.</p>
+        	<p>Edit Community Clinic.</p>
        	</div>
 
   		<div class="form-content">
@@ -38,6 +38,7 @@
                    	
                   	</div>
               	</div>
+              	<form:hidden path="cid" />
               	<div class="col-md-6">               		
                   	<div class="form-group">
                    	DHIS2 ID: <form:input path="dhisId" class="form-control" required="required"/>

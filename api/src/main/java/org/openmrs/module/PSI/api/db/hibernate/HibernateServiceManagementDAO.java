@@ -51,7 +51,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	public PSIServiceManagement findById(int id) {
 		
 		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceManagement where id = :id").setInteger("id", id).list();
+		        .createQuery("from PSIServiceManagement where sid = :id").setInteger("id", id).list();
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {

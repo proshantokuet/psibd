@@ -55,7 +55,7 @@
 			<column name="category" type="varchar(255)" />
 			<column name="provider" type="varchar(255)" />
 			<column name="dob" type="datetime" />			
-			<column name="unitCost" type="int(11)" />			
+			<column name="unit_cost" type="int(11)" />			
 			
 			
 			<column name="field1" type="varchar(255)" />

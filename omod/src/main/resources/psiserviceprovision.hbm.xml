@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.openmrs.module.PSI.PSIClinicManagement" table="psi_clinic">
-        <id column="cid" name="cid" type="int">
+    <class name="org.openmrs.module.PSI.PSIServiceProvision" table="psi_service_provision">
+        <id column="spid" name="spid" type="int">
             <generator class="native"/>
         </id> 
         
-	    <property name="name" column="name" type="java.lang.String"/>
-	    <property name="clinicId" column="clinic_id" type="java.lang.String"/>
-	    <property name="category" column="category" type="java.lang.String"/>
-	    <property name="address" column="address" type="java.lang.String"/>
-	    <property name="dhisId" column="dhis_id" type="java.lang.String"/>
+	    <property name="item" column="item" type="java.lang.String"/>
 	    <property name="description" column="description" type="java.lang.String"/>
-	    <property name="division" column="division" type="java.lang.String"/>
-	    <property name="district" column="district" type="java.lang.String"/>
-	    <property name="upazila" column="upazila" type="java.lang.String"/>
-	    <property name="unionName" column="union_name" type="java.lang.String"/>
+	    <property name="unitCost" column="unit_cost" type="int"/>
+	    <property name="quantity" column="quantity" type="int"/>
+	    <property name="totalAmount" column="total_amount" type="int"/>
+	    <property name="discount" column="discount" type="int"/>
+	    <property name="netPayable" column="net_payable" type="int"/>	   
+	    <property name="moneyReceiptDate" column="money_receipt_date" type="java.util.Date"/>
+	    <property name="patientUuid" column="patient_uuid" type="java.lang.String"/>
+	    <many-to-one name="psiMoneyReceipt" column="psi_money_receipt" class="org.openmrs.module.PSI.PSIMoneyReceipt"/>
+	    
+	    <property name="field1" column="field1" type="java.lang.String"/>
+	    <property name="field2" column="field2" type="java.lang.String"/>
+	    <property name="field3" column="field3" type="int"/>
+	    
+	    
 	    <property name="timestamp" column="timestamp" type="long"/>
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
 		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>
