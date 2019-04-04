@@ -36,6 +36,7 @@
 		psiservicemanagement.hbm.xml
 		psimoneyreceipt.hbm.xml
 		psiserviceprovision.hbm.xml
+		psiclinicuser.hbm.xml
 				
 	</mappingFiles>
 

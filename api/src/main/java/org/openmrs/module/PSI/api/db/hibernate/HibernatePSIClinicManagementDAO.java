@@ -62,7 +62,13 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 	
 	@Override
 	public void delete(int id) {
-		sessionFactory.getCurrentSession().delete(findById(id));
+		PSIClinicManagement psiClinicManagement = findById(id);
+		if (psiClinicManagement != null) {
+			sessionFactory.getCurrentSession().delete(psiClinicManagement);
+		} else {
+			log.error("psiClinicManagement is null with id" + id);
+		}
+		
 	}
 	
 }

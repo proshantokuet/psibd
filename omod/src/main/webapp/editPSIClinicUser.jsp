@@ -2,9 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="template/localHeader.jsp"%>
-<link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/magicsuggest-min.css">
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
+
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
 
 <form:form method="POST" action="${saveUrl}" modelAttribute="pSIClinic">
@@ -13,7 +11,7 @@
 <div class="container register-form">
 	<div class="form">
     	<div class="note">
-        	<p>Add Community Clinic.</p>
+        	<p>Edit Community Clinic.</p>
        	</div>
 
   		<div class="form-content">
@@ -40,22 +38,11 @@
                    	
                   	</div>
               	</div>
+              	<form:hidden path="cid" />
               	<div class="col-md-6">               		
                   	<div class="form-group">
                    	DHIS2 ID: <form:input path="dhisId" class="form-control" required="required"/>
                   	</div>
-                  
-              	</div>
-              	
-              	<div class="col-md-6"> 
-                  	<div class="form-group">
-                  		<div id="cm" class="ui-widget">
-							<label> User </label>
-							<div id="userIds"></div>
-							<span class="text-red">${locationSelectErrorMessage}</span>
-						</div>
-                  	</div>
-                  	
               	</div>
           	</div>
           	<button type="submit" class="btnSubmit">Submit</button>
@@ -66,30 +53,6 @@
 
 </form:form>
 
-<script type="text/javascript">
-  
-	var $jq = jQuery.noConflict();
-	 $jq('#userIds').magicSuggest({ 
-		 	required: true,
-			//placeholder: 'Type Locations',
-     		data: [{"id":255, "name":"charles"}
-           , {"id":261, "name":"rahman"}
-           , {"id":274, "name":"siva"}
-           ],
-	        valueField: 'id',
-	        displayField: 'name',
-	        name: 'usernames',
-	        inputCfg: {"class":"magicInput"},
-	        value: [255],
-	        useCommaKey: true,
-	        allowFreeEntries: false,
-	        maxSelection: 5,
-	        maxEntryLength: 70,
-	 		maxEntryRenderer: function(v) {
-	 			return '<div style="color:red">Typed Word TOO LONG </div>';
-	 		}
-	       
-	  });
-  </script>
+
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

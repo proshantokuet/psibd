@@ -85,7 +85,12 @@ public class HibernatePSIMoneyReceiptDAO implements PSIMoneyReceiptDAO {
 	
 	@Override
 	public void delete(int id) {
-		sessionFactory.getCurrentSession().delete(findById(id));
+		PSIMoneyReceipt psiMoneyReceipt = findById(id);
+		if (psiMoneyReceipt != null) {
+			sessionFactory.getCurrentSession().delete(psiMoneyReceipt);
+		} else {
+			log.error("psiMoneyReceipt is null with id" + id);
+		}
 		
 	}
 	

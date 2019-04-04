@@ -84,7 +84,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	
 	@Override
 	public void delete(int id) {
-		sessionFactory.getCurrentSession().delete(findById(id));
+		PSIServiceProvision psiServiceProvision = findById(id);
+		if (psiServiceProvision != null) {
+			sessionFactory.getCurrentSession().delete(psiServiceProvision);
+		} else {
+			log.error("psiServiceProvision is null with id" + id);
+		}
 		
 	}
 	

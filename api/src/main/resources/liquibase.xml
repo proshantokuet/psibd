@@ -44,6 +44,34 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="psiclinicuser-1.0.0" author="Proshanto">
+		<createTable tableName="psi_clinic_user">
+			<column name="id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="user_uame" type="varchar(255)" />
+			<column name="user_uuid" type="varchar(255)" />
+			
+			<column name="psi_clinic_management_id" type="int(11)" />						
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
 	
 	<changeSet id="psiservicemanagement-1.0.0" author="Proshanto">
 		<createTable tableName="psi_service_management">
@@ -168,4 +196,6 @@
 			<column name="uuid" type="varchar(255)" />
 		</createTable>
 	</changeSet>
+	
+	
 </databaseChangeLog>
