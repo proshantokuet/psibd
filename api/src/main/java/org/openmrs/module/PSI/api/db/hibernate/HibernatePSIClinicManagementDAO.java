@@ -30,8 +30,9 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 	
 	@Override
 	public PSIClinicManagement saveOrUpdateClinic(PSIClinicManagement psiClinic) {
-		// TODO Auto-generated method stub
-		sessionFactory.getCurrentSession().saveOrUpdate(psiClinic);
+		
+		sessionFactory.getCurrentSession().save(psiClinic);
+		
 		return psiClinic;
 	}
 	

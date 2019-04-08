@@ -24,11 +24,11 @@
 	    <property name="slipNo" column="slip_no" type="java.lang.String"/>
 	    <property name="clinicType" column="clinic_type" type="java.lang.String"/>
 	    
-	    <set name="services" table="psi_service_provision"  inverse="false" lazy="false" fetch="join">
+	    <set name="services" cascade="all">
 	       <key>
-	           <column name="psi_money_receipt" not-null="true" />
+	           <column name="psi_money_receipt_id" not-null="true" />
 	       </key>
-	       <one-to-many class="org.openmrs.module.PSI.PSIMoneyReceipt" />
+	       <one-to-many class="org.openmrs.module.PSI.PSIServiceProvision" />
 	    </set>
 	    
 	    <property name="field1" column="field1" type="java.lang.String"/>

@@ -11,6 +11,8 @@ public class PSIClinicUser extends BaseOpenmrsData implements Serializable {
      */
 	private static final long serialVersionUID = 1L;
 	
+	private int cuid;
+	
 	private String userName;
 	
 	private String userUuid;
@@ -51,6 +53,14 @@ public class PSIClinicUser extends BaseOpenmrsData implements Serializable {
 	public void setId(Integer id) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public int getCuid() {
+		return cuid;
+	}
+	
+	public void setCuid(int cuid) {
+		this.cuid = cuid;
 	}
 	
 }

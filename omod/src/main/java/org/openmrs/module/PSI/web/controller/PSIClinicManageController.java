@@ -1,6 +1,8 @@
 package org.openmrs.module.PSI.web.controller;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,9 +10,15 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.utils.HttpResponse;
+import org.openmrs.module.PSI.utils.HttpUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,8 +32,27 @@ public class PSIClinicManageController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
+	private static final String OPENMRS_BASE_URL = "https://192.168.33.10/openmrs";
+	
+	final String USER_URL = "ws/rest/v1/user";
+	
 	@RequestMapping(value = "/module/PSI/addPSIClinic", method = RequestMethod.GET)
-	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model) {
+	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model) throws JSONException {
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + USER_URL + "/", "v=default",
+		    "superman", "Admin123");
+		JSONObject body = new JSONObject(op.body());
+		JSONArray users = new JSONArray(body.getJSONArray("results").toString());
+		JSONArray usernamesArray = new JSONArray();
+		for (int i = 0; i < users.length(); i++) {
+			JSONObject nameObject = new JSONObject();
+			JSONObject user = (JSONObject) users.get(i);
+			JSONObject person = user.getJSONObject("person");
+			nameObject.put("username", user.get("username"));
+			nameObject.put("display", person.get("display"));
+			usernamesArray.put(nameObject);
+			
+		}
+		session.setAttribute("users", usernamesArray.toString());
 		model.addAttribute("pSIClinic", new PSIClinicManagement());
 	}
 	
@@ -47,17 +74,31 @@ public class PSIClinicManageController {
 	}
 	
 	@RequestMapping(value = "/module/PSI/addPsiClinic", method = RequestMethod.POST)
-	public ModelAndView addORUpdatePSIClinic(@ModelAttribute("encounterMarker") PSIClinicManagement psiClinic,
-	                                         HttpSession session) throws Exception {
+	public ModelAndView addORUpdatePSIClinic(@ModelAttribute("psiClinic") PSIClinicManagement psiClinic,
+	                                         HttpSession session,
+	                                         @RequestParam(value = "usernames[]", required = false) String[] users)
+	    throws Exception {
 		if (psiClinic != null) {
 			log.info("saving new module objects...................");
 			psiClinic.setDateCreated(new Date());
 			psiClinic.setCreator(Context.getAuthenticatedUser());
 			psiClinic.setUuid(UUID.randomUUID().toString());
+			
+			Set<PSIClinicUser> clinicUser = new HashSet<PSIClinicUser>();
+			for (String user : users) {
+				
+				PSIClinicUser pSIClinicUser = new PSIClinicUser();
+				pSIClinicUser.setUserName(user);
+				pSIClinicUser.setDateCreated(new Date());
+				pSIClinicUser.setCreator(Context.getAuthenticatedUser());
+				pSIClinicUser.setUuid(UUID.randomUUID().toString());
+				clinicUser.add(pSIClinicUser);
+				
+			}
+			psiClinic.setpSIClinicUser(clinicUser);
 			Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinic);
 			return new ModelAndView("redirect:/module/PSI/PSIClinicList.form");
 		}
 		return null;
 	}
-	
 }

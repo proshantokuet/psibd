@@ -46,7 +46,7 @@
 	
 	<changeSet id="psiclinicuser-1.0.0" author="Proshanto">
 		<createTable tableName="psi_clinic_user">
-			<column name="id" type="int(11)" autoIncrement="true">
+			<column name="cuid" type="int(11)" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="user_uame" type="varchar(255)" />
@@ -171,7 +171,7 @@
 			<column name="net_payable" type="int(11)" />			
 			<column name="money_receipt_date" type="datetime" />
 			<column name="patient_uuid" type="varchar(255)" />
-			<column name="psi_money_receipt" type="int(11)" >				
+			<column name="psi_money_receipt_id" type="int(11)" >				
 			</column>
 			
 			<column name="field1" type="varchar(255)" />

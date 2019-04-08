@@ -1,6 +1,7 @@
 package org.openmrs.module.PSI;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.openmrs.BaseOpenmrsData;
 
@@ -32,6 +33,8 @@ public class PSIClinicManagement extends BaseOpenmrsData implements Serializable
 	private String upazila;
 	
 	private String unionName;
+	
+	private Set<PSIClinicUser> pSIClinicUser;
 	
 	private long timestamp;
 	
@@ -141,6 +144,14 @@ public class PSIClinicManagement extends BaseOpenmrsData implements Serializable
 	
 	public void setUnionName(String unionName) {
 		this.unionName = unionName;
+	}
+	
+	public Set<PSIClinicUser> getpSIClinicUser() {
+		return pSIClinicUser;
+	}
+	
+	public void setpSIClinicUser(Set<PSIClinicUser> pSIClinicUser) {
+		this.pSIClinicUser = pSIClinicUser;
 	}
 	
 }

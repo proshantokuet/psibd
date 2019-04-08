@@ -6,6 +6,9 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
+<%
+String users = (String)session.getAttribute("users"); 
+%>
 
 <form:form method="POST" action="${saveUrl}" modelAttribute="pSIClinic">
 
@@ -23,7 +26,7 @@
                 		Clinic Name : <form:input path="name" class="form-control" required="required"/>
                   	</div>
                   	<div class="form-group">
-                  		Clinic ID: 	: <form:input path="clinicId" class="form-control" required="required"/>
+                  		Clinic ID:  <form:input path="clinicId" class="form-control" required="required"/>
                    	</div>
              	</div>
               	<div class="col-md-6">
@@ -50,9 +53,8 @@
               	<div class="col-md-6"> 
                   	<div class="form-group">
                   		<div id="cm" class="ui-widget">
-							<label> User </label>
-							<div id="userIds"></div>
-							<span class="text-red">${locationSelectErrorMessage}</span>
+							Assign User :
+							<div id="userIds"></div>							
 						</div>
                   	</div>
                   	
@@ -72,19 +74,16 @@
 	 $jq('#userIds').magicSuggest({ 
 		 	required: true,
 			//placeholder: 'Type Locations',
-     		data: [{"id":255, "name":"charles"}
-           , {"id":261, "name":"rahman"}
-           , {"id":274, "name":"siva"}
-           ],
-	        valueField: 'id',
-	        displayField: 'name',
+     		data: <%=users%>,
+	        valueField: 'username',
+	        displayField: 'display',
 	        name: 'usernames',
 	        inputCfg: {"class":"magicInput"},
-	        value: [255],
+	        //value: [255],
 	        useCommaKey: true,
 	        allowFreeEntries: false,
-	        maxSelection: 5,
-	        maxEntryLength: 70,
+	        maxSelection: 20,
+	        maxEntryLength: 500,
 	 		maxEntryRenderer: function(v) {
 	 			return '<div style="color:red">Typed Word TOO LONG </div>';
 	 		}

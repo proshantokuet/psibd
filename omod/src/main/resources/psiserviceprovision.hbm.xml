@@ -15,7 +15,7 @@
 	    <property name="netPayable" column="net_payable" type="int"/>	   
 	    <property name="moneyReceiptDate" column="money_receipt_date" type="java.util.Date"/>
 	    <property name="patientUuid" column="patient_uuid" type="java.lang.String"/>
-	    <many-to-one name="psiMoneyReceipt" column="psi_money_receipt" class="org.openmrs.module.PSI.PSIMoneyReceipt"/>
+	    <many-to-one name="psiMoneyReceiptId" column="psi_money_receipt_id" class="org.openmrs.module.PSI.PSIMoneyReceipt" />
 	    
 	    <property name="field1" column="field1" type="java.lang.String"/>
 	    <property name="field2" column="field2" type="java.lang.String"/>

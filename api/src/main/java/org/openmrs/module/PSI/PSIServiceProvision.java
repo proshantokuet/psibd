@@ -32,7 +32,7 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	private String patientUuid;
 	
-	private PSIMoneyReceipt psiMoneyReceipt;
+	private PSIMoneyReceipt psiMoneyReceiptId;
 	
 	private long timestamp;
 	
@@ -166,12 +166,12 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 		this.patientUuid = patientUuid;
 	}
 	
-	public PSIMoneyReceipt getPsiMoneyReceipt() {
-		return psiMoneyReceipt;
+	public PSIMoneyReceipt getPsiMoneyReceiptId() {
+		return psiMoneyReceiptId;
 	}
 	
-	public void setPsiMoneyReceipt(PSIMoneyReceipt psiMoneyReceipt) {
-		this.psiMoneyReceipt = psiMoneyReceipt;
+	public void setPsiMoneyReceiptId(PSIMoneyReceipt psiMoneyReceiptId) {
+		this.psiMoneyReceiptId = psiMoneyReceiptId;
 	}
 	
 }
