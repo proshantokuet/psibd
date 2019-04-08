@@ -2,7 +2,6 @@ package org.openmrs.module.PSI;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.openmrs.BaseOpenmrsData;
@@ -50,7 +49,7 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private String clinicType;
 	
-	private Set<PSIServiceProvision> services = new HashSet<PSIServiceProvision>();
+	private Set<PSIServiceProvision> services;
 	
 	private long timestamp;
 	
