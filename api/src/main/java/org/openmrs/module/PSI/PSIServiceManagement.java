@@ -21,7 +21,7 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	private String provider;
 	
-	private int unitCost;
+	private float unitCost;
 	
 	private long timestamp;
 	
@@ -83,11 +83,11 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 		this.provider = provider;
 	}
 	
-	public int getUnitCost() {
+	public float getUnitCost() {
 		return unitCost;
 	}
 	
-	public void setUnitCost(int unitCost) {
+	public void setUnitCost(float unitCost) {
 		this.unitCost = unitCost;
 	}
 	

@@ -29,10 +29,13 @@
 	</extension>
 	
 	<!-- Maps hibernate file's, if present -->
-	<mappingFiles>
-				
-		PSI.hbm.xml
+	<mappingFiles>				
 		psiclinic.hbm.xml
+		psiclinicuser.hbm.xml
+		psiservicemanagement.hbm.xml
+		psimoneyreceipt.hbm.xml
+		psiserviceprovision.hbm.xml
+		psiclinicuser.hbm.xml
 				
 	</mappingFiles>
 

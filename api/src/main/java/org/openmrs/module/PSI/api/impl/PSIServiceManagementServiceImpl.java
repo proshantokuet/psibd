@@ -38,7 +38,7 @@ public class PSIServiceManagementServiceImpl extends BaseOpenmrsService implemen
 	}
 	
 	@Override
-	public int getUnitCostByName(String name) {
+	public float getUnitCostByName(String name) {
 		return dao.getUnitCostByName(name);
 	}
 	

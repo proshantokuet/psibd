@@ -15,7 +15,7 @@ public interface PSIServiceManagementService extends OpenmrsService {
 	
 	public PSIServiceManagement findById(int id);
 	
-	public int getUnitCostByName(String naem);
+	public float getUnitCostByName(String naem);
 	
 	public void delete(int id);
 	

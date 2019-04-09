@@ -18,15 +18,15 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	private String description;
 	
-	private int unitCost;
+	private float unitCost;
 	
 	private int quantity;
 	
-	private int totalAmount;
+	private float totalAmount;
 	
-	private int discount;
+	private float discount;
 	
-	private int netPayable;
+	private float netPayable;
 	
 	private Date moneyReceiptDate;
 	
@@ -54,6 +54,14 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 		
 	}
 	
+	public int getSpid() {
+		return spid;
+	}
+	
+	public void setSpid(int spid) {
+		this.spid = spid;
+	}
+	
 	public String getItem() {
 		return item;
 	}
@@ -70,11 +78,11 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 		this.description = description;
 	}
 	
-	public int getUnitCost() {
+	public float getUnitCost() {
 		return unitCost;
 	}
 	
-	public void setUnitCost(int unitCost) {
+	public void setUnitCost(float unitCost) {
 		this.unitCost = unitCost;
 	}
 	
@@ -86,27 +94,27 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 		this.quantity = quantity;
 	}
 	
-	public int getTotalAmount() {
+	public float getTotalAmount() {
 		return totalAmount;
 	}
 	
-	public void setTotalAmount(int totalAmount) {
+	public void setTotalAmount(float totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 	
-	public int getDiscount() {
+	public float getDiscount() {
 		return discount;
 	}
 	
-	public void setDiscount(int discount) {
+	public void setDiscount(float discount) {
 		this.discount = discount;
 	}
 	
-	public int getNetPayable() {
+	public float getNetPayable() {
 		return netPayable;
 	}
 	
-	public void setNetPayable(int netPayable) {
+	public void setNetPayable(float netPayable) {
 		this.netPayable = netPayable;
 	}
 	
@@ -116,6 +124,22 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	public void setMoneyReceiptDate(Date moneyReceiptDate) {
 		this.moneyReceiptDate = moneyReceiptDate;
+	}
+	
+	public String getPatientUuid() {
+		return patientUuid;
+	}
+	
+	public void setPatientUuid(String patientUuid) {
+		this.patientUuid = patientUuid;
+	}
+	
+	public PSIMoneyReceipt getPsiMoneyReceiptId() {
+		return psiMoneyReceiptId;
+	}
+	
+	public void setPsiMoneyReceiptId(PSIMoneyReceipt psiMoneyReceiptId) {
+		this.psiMoneyReceiptId = psiMoneyReceiptId;
 	}
 	
 	public long getTimestamp() {
@@ -148,30 +172,6 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	public void setField3(int field3) {
 		this.field3 = field3;
-	}
-	
-	public int getSpid() {
-		return spid;
-	}
-	
-	public void setSpid(int spid) {
-		this.spid = spid;
-	}
-	
-	public String getPatientUuid() {
-		return patientUuid;
-	}
-	
-	public void setPatientUuid(String patientUuid) {
-		this.patientUuid = patientUuid;
-	}
-	
-	public PSIMoneyReceipt getPsiMoneyReceiptId() {
-		return psiMoneyReceiptId;
-	}
-	
-	public void setPsiMoneyReceiptId(PSIMoneyReceipt psiMoneyReceiptId) {
-		this.psiMoneyReceiptId = psiMoneyReceiptId;
 	}
 	
 }

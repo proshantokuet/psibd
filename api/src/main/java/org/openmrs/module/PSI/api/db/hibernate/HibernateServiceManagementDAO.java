@@ -61,7 +61,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public int getUnitCostByName(String name) {
+	public float getUnitCostByName(String name) {
 		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIServiceManagement where name = :name").setString("name", name).list();
 		if (lists.size() != 0) {

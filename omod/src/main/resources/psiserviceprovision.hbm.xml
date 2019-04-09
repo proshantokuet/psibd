@@ -8,11 +8,11 @@
         
 	    <property name="item" column="item" type="java.lang.String"/>
 	    <property name="description" column="description" type="java.lang.String"/>
-	    <property name="unitCost" column="unit_cost" type="int"/>
+	    <property name="unitCost" column="unit_cost" type="float"/>
 	    <property name="quantity" column="quantity" type="int"/>
-	    <property name="totalAmount" column="total_amount" type="int"/>
-	    <property name="discount" column="discount" type="int"/>
-	    <property name="netPayable" column="net_payable" type="int"/>	   
+	    <property name="totalAmount" column="total_amount" type="float"/>
+	    <property name="discount" column="discount" type="float"/>
+	    <property name="netPayable" column="net_payable" type="float"/>	   
 	    <property name="moneyReceiptDate" column="money_receipt_date" type="java.util.Date"/>
 	    <property name="patientUuid" column="patient_uuid" type="java.lang.String"/>
 	    <many-to-one name="psiMoneyReceiptId" column="psi_money_receipt_id" class="org.openmrs.module.PSI.PSIMoneyReceipt" />

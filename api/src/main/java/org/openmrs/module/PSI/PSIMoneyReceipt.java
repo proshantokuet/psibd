@@ -39,6 +39,10 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private String reference;
 	
+	private String referenceId;
+	
+	private String shift;
+	
 	private String servicePoint;
 	
 	private String wealth;
@@ -253,6 +257,22 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	public void setServices(Set<PSIServiceProvision> services) {
 		this.services = services;
+	}
+	
+	public String getReferenceId() {
+		return referenceId;
+	}
+	
+	public void setReferenceId(String referenceId) {
+		this.referenceId = referenceId;
+	}
+	
+	public String getShift() {
+		return shift;
+	}
+	
+	public void setShift(String shift) {
+		this.shift = shift;
 	}
 	
 }

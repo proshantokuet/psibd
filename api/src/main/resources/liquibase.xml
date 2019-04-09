@@ -83,7 +83,7 @@
 			<column name="category" type="varchar(255)" />
 			<column name="provider" type="varchar(255)" />
 			<column name="dob" type="datetime" />			
-			<column name="unit_cost" type="int(11)" />			
+			<column name="unit_cost" type="float" />			
 			
 			
 			<column name="field1" type="varchar(255)" />
@@ -126,6 +126,8 @@
 			<column name="team_no" type="varchar(255)" />
 			<column name="money_receipt_date" type="datetime" />
 			<column name="reference" type="varchar(255)" />
+			<column name="reference_id" type="varchar(255)" />
+			<column name="shift" type="varchar(255)" />
 			<column name="service_point" type="varchar(255)" />
 			<column name="wealth" type="varchar(255)" />
 			<column name="gender" type="varchar(255)" />
@@ -164,11 +166,11 @@
 			</column>
 			<column name="item" type="varchar(255)" />
 			<column name="description" type="varchar(255)" />
-			<column name="unit_cost" type="int(11)" />			
+			<column name="unit_cost" type="float" />			
 			<column name="quantity" type="int(11)" />
-			<column name="total_amount" type="int(11)" />
-			<column name="discount" type="int(11)" />
-			<column name="net_payable" type="int(11)" />			
+			<column name="total_amount" type="float" />
+			<column name="discount" type="float" />
+			<column name="net_payable" type="float" />			
 			<column name="money_receipt_date" type="datetime" />
 			<column name="patient_uuid" type="varchar(255)" />
 			<column name="psi_money_receipt_id" type="int(11)" >				

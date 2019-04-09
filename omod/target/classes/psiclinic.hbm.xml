@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.openmrs.module.PSI.PSIClinic" table="psi_clinic">
+    <class name="org.openmrs.module.PSI.PSIClinicManagement" table="psi_clinic">
         <id column="cid" name="cid" type="int">
             <generator class="native"/>
         </id> 
@@ -26,6 +26,14 @@
 		<property name="dateVoided" column="date_voided" type="java.util.Date" />
 		<property name="voidReason" column="void_reason" type="java.lang.String" /> 
 		<property name="uuid" column="uuid" type="java.lang.String" not-null="true" />
+		
+		
+		<set name="pSIClinicUser" cascade="all">
+	       <key>
+	           <column name="psi_clinic_management_id" not-null="true" />
+	       </key>
+	       <one-to-many class="org.openmrs.module.PSI.PSIClinicUser"/>
+	    </set>
 	    
     </class>
 </hibernate-mapping>

@@ -10,7 +10,7 @@
 	    <property name="code" column="code" type="java.lang.String"/>
 	    <property name="category" column="category" type="java.lang.String"/>
 	    <property name="provider" column="provider" type="java.lang.String"/>
-	    <property name="unitCost" column="unit_cost" type="int"/>
+	    <property name="unitCost" column="unit_cost" type="float"/>
 	    <property name="field1" column="field1" type="java.lang.String"/>
 	    <property name="field2" column="field2" type="java.lang.String"/>
 	    <property name="field3" column="field3" type="int"/>

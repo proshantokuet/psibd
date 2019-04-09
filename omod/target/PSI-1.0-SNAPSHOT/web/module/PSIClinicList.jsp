@@ -2,7 +2,9 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="template/localHeader.jsp"%>
-			
+
+<p><a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
+				code="PSI.psiClinicAddNew" /></a> </p>		
 <table id="table_id" class="display">
     <thead>
         <tr>
@@ -10,17 +12,17 @@
             <th>Clinic ID</th>
             <th>Category</th>
             <th>Address</th>
-            <th>Actions</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
     	<c:forEach var="clinic" items="${ pSIClinics }">
         <tr>
-            <td><a href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.name }"/>"> ${ clinic.name }</a></td>
+            <td>${ clinic.name }</td>
             <td>${ clinic.clinicId }</td>
             <td>${ clinic.category }</td>
             <td>${ clinic.address }</td>
-            <td><a href="<c:url value="/module/PSI/deletePSIClinic.form?id=${ clinic.cid }"/>"> Delete</a> </td>
+            <td><a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a> </td>
         </tr>
        </c:forEach>
         

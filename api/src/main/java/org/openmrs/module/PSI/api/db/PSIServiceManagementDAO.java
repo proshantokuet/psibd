@@ -12,7 +12,7 @@ public interface PSIServiceManagementDAO {
 	
 	public PSIServiceManagement findById(int id);
 	
-	public int getUnitCostByName(String name);
+	public float getUnitCostByName(String name);
 	
 	public void delete(int id);
 	

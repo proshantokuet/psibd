@@ -18,6 +18,8 @@
 	    <property name="teamNo" column="team_no" type="java.lang.String"/>
 	    <property name="moneyReceiptDate" column="money_receipt_date" type="java.util.Date"/>
 	    <property name="reference" column="reference" type="java.lang.String"/>
+	    <property name="referenceId" column="reference_id" type="java.lang.String"/>
+	    <property name="shift" column="shift" type="java.lang.String"/>
 	    <property name="servicePoint" column="service_point" type="java.lang.String"/>
 	    <property name="wealth" column="wealth" type="java.lang.String"/>
 	    <property name="gender" column="gender" type="java.lang.String"/>

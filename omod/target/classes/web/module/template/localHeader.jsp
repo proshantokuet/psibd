@@ -20,8 +20,20 @@
 				code="PSI.manage" /></a>
 	</li>
 	
+	<li
+		<c:if test='<%= request.getRequestURI().contains("/PSIClinicServiceList") %>'>class="active"</c:if>>
+		<a
+		href="${pageContext.request.contextPath}/module/PSI/PSIClinicServiceList.form"><spring:message
+				code="PSI.psiservicelist" /></a>
+	</li>
+	<li
+		<c:if test='<%= request.getRequestURI().contains("/PSIClinicList") %>'>class="active"</c:if>>
+		<a
+		href="${pageContext.request.contextPath}/module/PSI/PSIClinicList.form"><spring:message
+				code="PSI.psiclinic" /></a>
+	</li>
 	<!-- Add further links here -->
 </ul>
-<h2>
+<!-- <h2>
 	<spring:message code="PSI.title" />
-</h2>
+</h2> -->

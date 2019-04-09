@@ -43,4 +43,161 @@
 			<column name="uuid" type="varchar(255)" />
 		</createTable>
 	</changeSet>
+	
+	<changeSet id="psiclinicuser-1.0.0" author="Proshanto">
+		<createTable tableName="psi_clinic_user">
+			<column name="cuid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="user_uame" type="varchar(255)" />
+			<column name="user_uuid" type="varchar(255)" />
+			
+			<column name="psi_clinic_management_id" type="int(11)" />						
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
+	
+	<changeSet id="psiservicemanagement-1.0.0" author="Proshanto">
+		<createTable tableName="psi_service_management">
+			<column name="sid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(255)" />
+			<column name="code" type="varchar(255)" />
+			<column name="category" type="varchar(255)" />
+			<column name="provider" type="varchar(255)" />
+			<column name="dob" type="datetime" />			
+			<column name="unit_cost" type="float" />			
+			
+			
+			<column name="field1" type="varchar(255)" />
+			<column name="field2" type="varchar(255)" />
+			<column name="field3" type="int(11)" />			
+			<column name="timestamp" type="long" />					
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="psimoneyreceipt-1.0.0" author="Proshanto">
+		<createTable tableName="psi_money_receipt">
+			<column name="mid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="patient_name" type="varchar(255)" />
+			<column name="patient_uuid" type="varchar(255)" />
+			<column name="uic" type="varchar(255)" />
+			<column name="contact" type="varchar(255)" />
+			<column name="dob" type="datetime" />
+			<column name="address" type="varchar(255)" />
+			<column name="clinic_name" type="varchar(255)" />
+			<column name="clinic_code" type="varchar(255)" />
+			<column name="satelite_clinic_id" type="varchar(255)" />
+			<column name="team_no" type="varchar(255)" />
+			<column name="money_receipt_date" type="datetime" />
+			<column name="reference" type="varchar(255)" />
+			<column name="reference_id" type="varchar(255)" />
+			<column name="shift" type="varchar(255)" />
+			<column name="service_point" type="varchar(255)" />
+			<column name="wealth" type="varchar(255)" />
+			<column name="gender" type="varchar(255)" />
+			<column name="slip_no" type="varchar(255)" />
+			<column name="clinic_type" type="varchar(255)" />
+			
+			
+			
+			<column name="field1" type="varchar(255)" />
+			<column name="field2" type="varchar(255)" />
+			<column name="field3" type="int(11)" />			
+			<column name="timestamp" type="long" />					
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="psiserviceprovision-1.0.0" author="Proshanto">
+		<createTable tableName="psi_service_provision">
+			<column name="spid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="item" type="varchar(255)" />
+			<column name="description" type="varchar(255)" />
+			<column name="unit_cost" type="float" />			
+			<column name="quantity" type="int(11)" />
+			<column name="total_amount" type="float" />
+			<column name="discount" type="float" />
+			<column name="net_payable" type="float" />			
+			<column name="money_receipt_date" type="datetime" />
+			<column name="patient_uuid" type="varchar(255)" />
+			<column name="psi_money_receipt_id" type="int(11)" >				
+			</column>
+			
+			<column name="field1" type="varchar(255)" />
+			<column name="field2" type="varchar(255)" />
+			<column name="field3" type="int(11)" />			
+			<column name="timestamp" type="long" />					
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
+	
 </databaseChangeLog>
