@@ -71,4 +71,17 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIClinicUser findByUserName(String username) {
+		List<PSIClinicUser> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIClinicUser where userName = :username").setString("username", username).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+		
+	}
+	
 }

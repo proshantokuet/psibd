@@ -174,4 +174,12 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 		this.field3 = field3;
 	}
 	
+	@Override
+	public String toString() {
+		return "PSIServiceProvision [spid=" + spid + ", item=" + item + ", description=" + description + ", unitCost="
+		        + unitCost + ", quantity=" + quantity + ", totalAmount=" + totalAmount + ", discount=" + discount
+		        + ", netPayable=" + netPayable + ", moneyReceiptDate=" + moneyReceiptDate + ", patientUuid=" + patientUuid
+		        + "]";
+	}
+	
 }

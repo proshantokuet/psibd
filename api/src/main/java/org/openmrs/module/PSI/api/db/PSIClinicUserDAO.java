@@ -12,6 +12,8 @@ public interface PSIClinicUserDAO {
 	
 	public PSIClinicUser findById(int id);
 	
+	public PSIClinicUser findByUserName(String username);
+	
 	public void delete(int id);
 	
 }

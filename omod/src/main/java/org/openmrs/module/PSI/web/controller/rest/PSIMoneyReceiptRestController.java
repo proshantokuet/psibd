@@ -2,8 +2,10 @@ package org.openmrs.module.PSI.web.controller.rest;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +15,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
+import org.openmrs.module.PSI.converter.PSIMoneyReceiptConverter;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/rest/v1/money-receipt/")
+@RequestMapping("/rest/v1/money-receipt")
 @RestController
 public class PSIMoneyReceiptRestController extends MainResourceController {
 	
@@ -187,13 +190,28 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
 	public ResponseEntity<String> findById(@PathVariable int id) throws Exception {
 		PSIMoneyReceipt psiMoneyReceipt = new PSIMoneyReceipt();
+		JSONObject psiMoneyReceiptAndServicesObject = new JSONObject();
 		try {
 			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(id);
+			psiMoneyReceiptAndServicesObject = new PSIMoneyReceiptConverter().toConvert(psiMoneyReceipt);
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<String>(psiMoneyReceipt.toString(), HttpStatus.OK);
+		return new ResponseEntity<String>(psiMoneyReceiptAndServicesObject.toString(), HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/get-all-by-patient-uuid/{id}", method = RequestMethod.GET)
+	public ResponseEntity<String> getAllByPatient(@PathVariable String id) throws Exception {
+		List<PSIMoneyReceipt> psiMoneyReceipt = new ArrayList<PSIMoneyReceipt>();
+		JSONArray psiMoneyReceiptAndServicesObject = new JSONArray();
+		try {
+			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).getAllByPatient(id);
+			psiMoneyReceiptAndServicesObject = new PSIMoneyReceiptConverter().toConvert(psiMoneyReceipt);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<String>(psiMoneyReceiptAndServicesObject.toString(), HttpStatus.OK);
+	}
 }
