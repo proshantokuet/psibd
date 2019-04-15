@@ -1,4 +1,4 @@
 org/openmrs/module/PSI/web/controller/PSIMoneyReceiptManageController.class
+org/openmrs/module/PSI/extension/html/AdminList.class
 org/openmrs/module/PSI/web/controller/PSIClinicManageController.class
 org/openmrs/module/PSI/web/controller/PSIManageController.class
-org/openmrs/module/PSI/extension/html/AdminList.class

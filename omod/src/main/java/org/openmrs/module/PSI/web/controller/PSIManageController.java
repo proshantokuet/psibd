@@ -20,6 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.PSIDHISMarker;
+import org.openmrs.module.PSI.api.PSIDHISMarkerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,5 +44,14 @@ public class PSIManageController {
 		psiClinic.setUuid(UUID.randomUUID().toString());
 		psiClinic.setVoided(false);
 		//Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinic);
+		PSIDHISMarker psidhisMarker = new PSIDHISMarker();
+		psidhisMarker.setType("Patient");
+		//psidhisMarker.setMarkerDate(new Date());
+		psidhisMarker.setTimestamp(0l);
+		psidhisMarker.setDateCreated(new Date());
+		//psidhisMarker.setCreator(Context.getAuthenticatedUser());
+		psidhisMarker.setUuid(UUID.randomUUID().toString());
+		psidhisMarker.setVoided(false);
+		Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
 	}
 }
