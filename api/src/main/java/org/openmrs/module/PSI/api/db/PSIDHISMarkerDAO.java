@@ -1,5 +1,7 @@
 package org.openmrs.module.PSI.api.db;
 
+import java.util.List;
+
 import org.openmrs.module.PSI.PSIDHISMarker;
 
 public interface PSIDHISMarkerDAO {
@@ -8,4 +10,5 @@ public interface PSIDHISMarkerDAO {
 	
 	public PSIDHISMarker findByType(String type);
 	
+	public List<String> rawQuery(int id);
 }

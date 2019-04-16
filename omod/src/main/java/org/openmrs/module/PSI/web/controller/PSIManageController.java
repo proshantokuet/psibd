@@ -18,10 +18,12 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
+import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +46,7 @@ public class PSIManageController {
 		psiClinic.setUuid(UUID.randomUUID().toString());
 		psiClinic.setVoided(false);
 		//Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinic);
-		PSIDHISMarker psidhisMarker = new PSIDHISMarker();
+		/*PSIDHISMarker psidhisMarker = new PSIDHISMarker();
 		psidhisMarker.setType("Patient");
 		//psidhisMarker.setMarkerDate(new Date());
 		psidhisMarker.setTimestamp(0l);
@@ -52,6 +54,22 @@ public class PSIManageController {
 		//psidhisMarker.setCreator(Context.getAuthenticatedUser());
 		psidhisMarker.setUuid(UUID.randomUUID().toString());
 		psidhisMarker.setVoided(false);
-		Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
+		Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);*/
+		try {
+			JSONObject patient = new PSIAPIServiceFactory().getAPiObject("openmrs").get("", "",
+			    "/openmrs/ws/rest/v1/patient/6d4fdfef-84ab-4112-b76e-4cc7687ac96b?v=full");
+			PSIDHISMarker psidhisMarker = new PSIDHISMarker();
+			psidhisMarker.setType(patient.getString("uuid"));
+			//psidhisMarker.setMarkerDate(new Date());
+			psidhisMarker.setTimestamp(0l);
+			psidhisMarker.setDateCreated(new Date());
+			//psidhisMarker.setCreator(Context.getAuthenticatedUser());
+			psidhisMarker.setUuid(UUID.randomUUID().toString());
+			psidhisMarker.setVoided(false);
+			Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

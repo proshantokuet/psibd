@@ -1,5 +1,7 @@
 package org.openmrs.module.PSI.api.impl;
 
+import java.util.List;
+
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
@@ -27,6 +29,12 @@ public class PSIDHISMarkerServiceImpl extends BaseOpenmrsService implements PSID
 	public PSIDHISMarker findByType(String type) {
 		// TODO Auto-generated method stub
 		return dao.findByType(type);
+	}
+	
+	@Override
+	public List<String> rawQuery(int id) {
+		// TODO Auto-generated method stub
+		return dao.rawQuery(id);
 	}
 	
 }

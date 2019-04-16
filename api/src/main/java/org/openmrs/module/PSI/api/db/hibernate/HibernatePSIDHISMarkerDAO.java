@@ -1,9 +1,12 @@
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.api.db.PSIDHISMarkerDAO;
@@ -48,4 +51,20 @@ public class HibernatePSIDHISMarkerDAO implements PSIDHISMarkerDAO {
 		
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public List<String> rawQuery(int id) {
+		List<Object[]> data = null;
+		List<String> url = new ArrayList<String>();
+		
+		String sql = "SELECT * FROM openmrs.event_records";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		data = query.list();
+		
+		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+			Object[] objects = (Object[]) iterator.next();
+			url.add(objects[5].toString());
+		}
+		return url;
+	}
 }
