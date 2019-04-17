@@ -6,6 +6,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
 import org.openmrs.module.PSI.api.db.PSIDHISMarkerDAO;
+import org.openmrs.module.PSI.dto.EventReceordDTO;
 
 public class PSIDHISMarkerServiceImpl extends BaseOpenmrsService implements PSIDHISMarkerService {
 	
@@ -32,7 +33,7 @@ public class PSIDHISMarkerServiceImpl extends BaseOpenmrsService implements PSID
 	}
 	
 	@Override
-	public List<String> rawQuery(int id) {
+	public List<EventReceordDTO> rawQuery(int id) {
 		// TODO Auto-generated method stub
 		return dao.rawQuery(id);
 	}

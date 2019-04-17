@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIDHISMarker;
+import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -13,6 +14,6 @@ public interface PSIDHISMarkerService extends OpenmrsService {
 	
 	public PSIDHISMarker findByType(String type);
 	
-	public List<String> rawQuery(int id);
+	public List<EventReceordDTO> rawQuery(int id);
 	
 }

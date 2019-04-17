@@ -10,6 +10,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.api.db.PSIDHISMarkerDAO;
+import org.openmrs.module.PSI.dto.EventReceordDTO;
 
 public class HibernatePSIDHISMarkerDAO implements PSIDHISMarkerDAO {
 	
@@ -53,18 +54,22 @@ public class HibernatePSIDHISMarkerDAO implements PSIDHISMarkerDAO {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<String> rawQuery(int id) {
+	public List<EventReceordDTO> rawQuery(int id) {
 		List<Object[]> data = null;
-		List<String> url = new ArrayList<String>();
+		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		
-		String sql = "SELECT * FROM openmrs.event_records";
+		String sql = "SELECT id,object FROM openmrs.event_records where title= :title and id > :id  order by id asc limit 1";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-		data = query.list();
+		
+		data = query.setString("title", "Patient").setInteger("id", id).list();
 		
 		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+			EventReceordDTO eventReceordDTO = new EventReceordDTO();
 			Object[] objects = (Object[]) iterator.next();
-			url.add(objects[5].toString());
+			eventReceordDTO.setId(Integer.parseInt(objects[0].toString()));
+			eventReceordDTO.setUrl(objects[1].toString());
+			eventReceordDTOs.add(eventReceordDTO);
 		}
-		return url;
+		return eventReceordDTOs;
 	}
 }

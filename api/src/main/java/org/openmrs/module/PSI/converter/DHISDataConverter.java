@@ -1,46 +1,46 @@
 package org.openmrs.module.PSI.converter;
 
-import java.util.Date;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DHISDataConverter {
 	
-	public JSONObject toConvertPatient(JSONObject patient) throws JSONException {
+	public static JSONObject toConvertPatient(JSONObject patient) throws JSONException {
 		JSONObject trackentityInstances = new JSONObject();
-		trackentityInstances.put("trackedEntity", "");
-		trackentityInstances.put("orgUnit", "");
+		trackentityInstances.put("trackedEntityType", "PUd8XvfhPtO");
+		trackentityInstances.put("orgUnit", "DcDZR6okGhw");
 		JSONArray attributes = new JSONArray();
-		
-		JSONArray patientAttributes = patient.getJSONArray("attributes");
-		for (int i = 0; i < patientAttributes.length(); i++) {
+		JSONObject person = patient.getJSONObject("person");
+		JSONArray patientAttributes = person.getJSONArray("attributes");
+		/*for (int i = 0; i < patientAttributes.length(); i++) {
 			JSONObject patientAttribute = patientAttributes.getJSONObject(i);
 			JSONObject attribute = new JSONObject();
 			attribute.put("attribute", "");
 			attribute.put("value", patientAttribute.getString("value"));
 			attributes.put(attribute);
 		}
-		trackentityInstances.put("attributes", attributes);
+		*/
 		
-		JSONObject preferredName = patient.getJSONObject("preferredName");
+		JSONObject preferredName = person.getJSONObject("preferredName");
 		JSONObject givenName = new JSONObject();
-		givenName.put("attribute", "givenName");
-		givenName.put("value", preferredName.getString("givenName"));
+		givenName.put("attribute", "yyvRJenpYWN");
+		//givenName.put("value", preferredName.getString("givenName"));
+		givenName.put("value", "WEasim");
 		attributes.put(givenName);
 		
 		JSONObject middleName = new JSONObject();
-		middleName.put("attribute", "middleName");
-		middleName.put("value", preferredName.getString("middleName"));
+		middleName.put("attribute", "kD5XbGodAUM");
+		//middleName.put("value", preferredName.getString("middleName"));
+		middleName.put("value", "Roy");
 		attributes.put(middleName);
 		
-		JSONObject familyName = new JSONObject();
+		/*JSONObject familyName = new JSONObject();
 		familyName.put("attribute", "familyName");
 		familyName.put("value", preferredName.getString("familyName"));
 		attributes.put(familyName);
 		
-		JSONObject preferredAddress = patient.getJSONObject("preferredAddress");
+		JSONObject preferredAddress = person.getJSONObject("preferredAddress");
 		JSONObject country = new JSONObject();
 		country.put("attribute", "country");
 		country.put("value", preferredAddress.getString("country"));
@@ -79,17 +79,18 @@ public class DHISDataConverter {
 		JSONObject address4 = new JSONObject();
 		address4.put("attribute", "address2");
 		address4.put("value", preferredAddress.getString("address4"));
-		attributes.put(address4);
+		attributes.put(address4);*/
 		
+		trackentityInstances.put("attributes", attributes);
 		JSONArray enrollments = new JSONArray();
 		JSONObject enrollment = new JSONObject();
-		enrollment.put("orgUnit", "orgUnit");
-		enrollment.put("program", "program");
-		enrollment.put("enrollmentDate", new Date());
-		enrollment.put("incidentDate", new Date());
+		enrollment.put("orgUnit", "DcDZR6okGhw");
+		enrollment.put("program", "e2AKO8W3GSk");
+		enrollment.put("enrollmentDate", "2019-04-17");
+		enrollment.put("incidentDate", "2019-04-15");
 		enrollments.put(enrollment);
 		trackentityInstances.put("enrollments", enrollments);
-		return patient;
+		return trackentityInstances;
 		
 	}
 	

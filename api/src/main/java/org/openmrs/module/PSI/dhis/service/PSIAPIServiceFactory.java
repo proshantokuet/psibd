@@ -16,7 +16,7 @@ public class PSIAPIServiceFactory {
 	@Autowired
 	private PSIOpenmrsServiceImpl psiOpenmrsServiceImpl;
 	
-	public PSIAPIService getAPiObject(String type) {
+	public PSIAPIService getAPIType(String type) {
 		if ("dhis2".equalsIgnoreCase(type)) {
 			psiapiService = psidhisapiServiceImpl;
 			

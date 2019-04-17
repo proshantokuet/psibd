@@ -56,7 +56,7 @@ public class PSIManageController {
 		psidhisMarker.setVoided(false);
 		Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);*/
 		try {
-			JSONObject patient = new PSIAPIServiceFactory().getAPiObject("openmrs").get("", "",
+			JSONObject patient = new PSIAPIServiceFactory().getAPIType("openmrs").get("", "",
 			    "/openmrs/ws/rest/v1/patient/6d4fdfef-84ab-4112-b76e-4cc7687ac96b?v=full");
 			PSIDHISMarker psidhisMarker = new PSIDHISMarker();
 			psidhisMarker.setType(patient.getString("uuid"));

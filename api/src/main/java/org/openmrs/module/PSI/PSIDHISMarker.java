@@ -15,6 +15,8 @@ public class PSIDHISMarker extends BaseOpenmrsData implements Serializable {
 	
 	private long timestamp;
 	
+	private int lastPatientId;
+	
 	private String type;
 	
 	@Override
@@ -51,6 +53,14 @@ public class PSIDHISMarker extends BaseOpenmrsData implements Serializable {
 	
 	public void setMid(int mid) {
 		this.mid = mid;
+	}
+	
+	public int getLastPatientId() {
+		return lastPatientId;
+	}
+	
+	public void setLastPatientId(int lastPatientId) {
+		this.lastPatientId = lastPatientId;
 	}
 	
 }
