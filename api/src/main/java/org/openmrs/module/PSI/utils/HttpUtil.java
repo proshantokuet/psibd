@@ -68,6 +68,10 @@ public class HttpUtil {
 		return post(url, payload, data, "application/json", AuthType.BASIC, username + ":" + password);
 	}
 	
+	public static HttpResponse put(String url, String payload, String data, String username, String password) {
+		return put(url, payload, data, "application/json", AuthType.BASIC, username + ":" + password);
+	}
+	
 	public static HttpResponse post(String url, String payload, String data) {
 		return post(url, payload, data, "application/json", AuthType.NONE, "");
 	}
@@ -83,15 +87,28 @@ public class HttpUtil {
 			HttpPost request = (HttpPost) makeConnection(url, payload, RequestMethod.POST, authType, authString);
 			request.setHeader(HTTP.CONTENT_TYPE, contentType);
 			StringEntity entity = new StringEntity(data == null ? "" : data);
-			System.out.println("data: " + data);
-			System.out.println("entity: " + entity.getContent());
 			entity.setContentEncoding(contentType);
 			request.setEntity(entity);
 			
-			System.out.println("request: " + request);
-			
 			org.apache.http.HttpResponse response = httpClient.execute(request);
-			System.out.println("response: " + response);
+			
+			return createCustomResponseFrom(response);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static HttpResponse put(String url, String payload, String data, String contentType, AuthType authType,
+	                               String authString) {
+		try {
+			HttpPut request = (HttpPut) makeConnection(url, payload, RequestMethod.PUT, authType, authString);
+			request.setHeader(HTTP.CONTENT_TYPE, contentType);
+			StringEntity entity = new StringEntity(data == null ? "" : data);
+			entity.setContentEncoding(contentType);
+			request.setEntity(entity);
+			org.apache.http.HttpResponse response = httpClient.execute(request);
 			return createCustomResponseFrom(response);
 		}
 		catch (Exception e) {

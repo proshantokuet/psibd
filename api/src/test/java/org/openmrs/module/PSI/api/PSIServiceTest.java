@@ -13,18 +13,34 @@
  */
 package org.openmrs.module.PSI.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
- * Tests {@link ${PSIService}}.
+ * Tests {@link $ PSIService} .
  */
-public class  PSIServiceTest extends BaseModuleContextSensitiveTest {
+public class PSIServiceTest extends BaseModuleContextSensitiveTest {
+	
+	public static DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Test
 	public void shouldSetupContext() {
 		assertNotNull(Context.getService(PSIService.class));
+		String s = "1985-04-18T00:00:00.000+0000";
+		System.out.println(s.substring(0, 10));
+		
+		Date date = Calendar.getInstance().getTime();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String strDate = dateFormat.format(date);
+		System.out.println("Converted String: " + strDate);
+		
 	}
 }

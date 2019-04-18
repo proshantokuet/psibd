@@ -35,8 +35,9 @@ public class PSIDHISAPIServiceImpl implements PSIAPIService {
 	 */
 	@Override
 	public JSONObject update(String payload, JSONObject jsonObject, String uuid, String URL) throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		HttpResponse op = HttpUtil.put(URL, payload, jsonObject.toString(), userName, password);
+		return new JSONObject(op.body());
 	}
 	
 	/* (non-Javadoc)
@@ -44,8 +45,8 @@ public class PSIDHISAPIServiceImpl implements PSIAPIService {
 	 */
 	@Override
 	public JSONObject get(String payload, String uuid, String URL) throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+		HttpResponse op = HttpUtil.get(URL, payload, userName, password);
+		return new JSONObject(op.body());
 	}
 	
 	/* (non-Javadoc)

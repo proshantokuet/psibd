@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIDHISMarker;
@@ -30,6 +31,8 @@ public class DHISListener {
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
 	private final String trackerUrl = "http://192.168.19.148:1971/api/trackedEntityInstances";
+	
+	private final String trackInstanceUrl = "http://192.168.19.148:1971/api/trackedEntityInstances.json?";
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
@@ -65,11 +68,22 @@ public class DHISListener {
 		}
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		eventReceordDTOs = Context.getService(PSIDHISMarkerService.class).rawQuery(lastReadPatient);
+		JSONObject response = new JSONObject();
 		for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
 			try {
 				JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
 				JSONObject patientJson = DHISDataConverter.toConvertPatient(patient);
-				JSONObject response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
+				JSONObject person = patient.getJSONObject("person");
+				String URL = trackInstanceUrl + "filter=nlwOL9RrqGC:EQ:" + person.getString("uuid") + "&ou=" + "DcDZR6okGhw";
+				JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+				JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+				if (trackedEntityInstances.length() != 0) {
+					JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
+					String UpdateUrl = trackerUrl + "/" + trackedEntityInstance.getString("trackedEntityInstance");
+					response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
+				} else {
+					response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
+				}
 				getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
 				Context.openSession();
 				Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);

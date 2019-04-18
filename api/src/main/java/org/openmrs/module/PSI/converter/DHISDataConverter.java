@@ -1,46 +1,103 @@
 package org.openmrs.module.PSI.converter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmrs.module.PSI.utils.DHISMapper;
 
 public class DHISDataConverter {
 	
 	public static JSONObject toConvertPatient(JSONObject patient) throws JSONException {
 		JSONObject trackentityInstances = new JSONObject();
-		trackentityInstances.put("trackedEntityType", "PUd8XvfhPtO");
+		trackentityInstances.put("trackedEntityType", "c9H923L9Lbz");
 		trackentityInstances.put("orgUnit", "DcDZR6okGhw");
 		JSONArray attributes = new JSONArray();
 		JSONObject person = patient.getJSONObject("person");
 		JSONArray patientAttributes = person.getJSONArray("attributes");
-		/*for (int i = 0; i < patientAttributes.length(); i++) {
+		for (int i = 0; i < patientAttributes.length(); i++) {
 			JSONObject patientAttribute = patientAttributes.getJSONObject(i);
-			JSONObject attribute = new JSONObject();
-			attribute.put("attribute", "");
-			attribute.put("value", patientAttribute.getString("value"));
-			attributes.put(attribute);
+			JSONObject attributeType = patientAttribute.getJSONObject("attributeType");
+			String attributeTypeName = attributeType.getString("display");
+			if (DHISMapper.registrationMapper.containsKey(attributeTypeName)) {
+				JSONObject attribute = new JSONObject();
+				attribute.put("attribute", DHISMapper.registrationMapper.get(attributeTypeName));
+				
+				if (DHISMapper.selectOptionMapper.containsKey(attributeTypeName)) {
+					attribute.put("value", patientAttribute.getString("display"));
+				} else if (DHISMapper.dateMapper.containsKey(attributeTypeName)) {
+					attribute.put("value", patientAttribute.getString("value").substring(0, 10));
+				} else {
+					attribute.put("value", patientAttribute.getString("value"));
+				}
+				attributes.put(attribute);
+			}
+			
 		}
-		*/
 		
 		JSONObject preferredName = person.getJSONObject("preferredName");
 		JSONObject givenName = new JSONObject();
-		givenName.put("attribute", "yyvRJenpYWN");
-		//givenName.put("value", preferredName.getString("givenName"));
-		givenName.put("value", "WEasim");
-		attributes.put(givenName);
+		if (DHISMapper.registrationMapper.containsKey("givenName")) {
+			givenName.put("attribute", DHISMapper.registrationMapper.get("givenName"));
+			givenName.put("value", preferredName.getString("givenName"));
+			attributes.put(givenName);
+		}
 		
-		JSONObject middleName = new JSONObject();
-		middleName.put("attribute", "kD5XbGodAUM");
-		//middleName.put("value", preferredName.getString("middleName"));
-		middleName.put("value", "Roy");
-		attributes.put(middleName);
+		if (DHISMapper.registrationMapper.containsKey("middleName")) {
+			JSONObject middleName = new JSONObject();
+			middleName.put("attribute", DHISMapper.registrationMapper.get("middleName"));
+			middleName.put("value", preferredName.getString("middleName"));
+			attributes.put(middleName);
+		}
 		
-		/*JSONObject familyName = new JSONObject();
-		familyName.put("attribute", "familyName");
-		familyName.put("value", preferredName.getString("familyName"));
-		attributes.put(familyName);
+		if (DHISMapper.registrationMapper.containsKey("familyName")) {
+			JSONObject familyName = new JSONObject();
+			familyName.put("attribute", DHISMapper.registrationMapper.get("familyName"));
+			familyName.put("value", preferredName.getString("familyName"));
+			attributes.put(familyName);
+		}
 		
-		JSONObject preferredAddress = person.getJSONObject("preferredAddress");
+		if (DHISMapper.registrationMapper.containsKey("birthdate")) {
+			JSONObject birthdate = new JSONObject();
+			birthdate.put("attribute", DHISMapper.registrationMapper.get("birthdate"));
+			birthdate.put("value", person.getString("birthdate").substring(0, 10));
+			attributes.put(birthdate);
+		}
+		
+		if (DHISMapper.registrationMapper.containsKey("age")) {
+			JSONObject age = new JSONObject();
+			age.put("attribute", DHISMapper.registrationMapper.get("age"));
+			age.put("value", Integer.parseInt(person.getString("age")));
+			attributes.put(age);
+		}
+		
+		if (DHISMapper.registrationMapper.containsKey("gender")) {
+			String genderOptiion = person.getString("gender");
+			String genderName = "";
+			if (genderOptiion.equalsIgnoreCase("M")) {
+				genderName = "Male";
+			} else if (genderOptiion.equalsIgnoreCase("F")) {
+				genderName = "Female";
+			} else {
+				genderName = "Third Gender";
+			}
+			JSONObject gender = new JSONObject();
+			gender.put("attribute", DHISMapper.registrationMapper.get("gender"));
+			gender.put("value", genderName);
+			attributes.put(gender);
+		}
+		
+		if (DHISMapper.registrationMapper.containsKey("uuid")) {
+			JSONObject uuid = new JSONObject();
+			uuid.put("attribute", DHISMapper.registrationMapper.get("uuid"));
+			uuid.put("value", person.getString("uuid"));
+			attributes.put(uuid);
+		}
+		/*JSONObject preferredAddress = person.getJSONObject("preferredAddress");
 		JSONObject country = new JSONObject();
 		country.put("attribute", "country");
 		country.put("value", preferredAddress.getString("country"));
@@ -80,14 +137,16 @@ public class DHISDataConverter {
 		address4.put("attribute", "address2");
 		address4.put("value", preferredAddress.getString("address4"));
 		attributes.put(address4);*/
-		
+		Date date = Calendar.getInstance().getTime();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String today = dateFormat.format(date);
 		trackentityInstances.put("attributes", attributes);
 		JSONArray enrollments = new JSONArray();
 		JSONObject enrollment = new JSONObject();
 		enrollment.put("orgUnit", "DcDZR6okGhw");
-		enrollment.put("program", "e2AKO8W3GSk");
-		enrollment.put("enrollmentDate", "2019-04-17");
-		enrollment.put("incidentDate", "2019-04-15");
+		enrollment.put("program", "o6zWmo6on9K");
+		enrollment.put("enrollmentDate", today);
+		enrollment.put("incidentDate", today);
 		enrollments.put(enrollment);
 		trackentityInstances.put("enrollments", enrollments);
 		return trackentityInstances;

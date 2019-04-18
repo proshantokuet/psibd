@@ -32,6 +32,7 @@
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/converter/PSIMoneyReceiptConverter.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/db/hibernate/HibernateServiceManagementDAO.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/PSIClinicManagementService.java
+/home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/utils/DHISMapper.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/impl/PSIDHISMarkerServiceImpl.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/PSIClinicManagement.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/PSIMoneyReceipt.java
