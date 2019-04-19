@@ -1,5 +1,6 @@
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,24 +39,21 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PSIServiceProvision> getAll() {
-		List<PSIServiceProvision> psiServiceProvisions = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceProvision ").list();
-		if (psiServiceProvisions.size() != 0) {
-			return psiServiceProvisions;
-		}
-		return null;
+		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
+		lists = sessionFactory.getCurrentSession().createQuery("from PSIServiceProvision ").list();
+		return lists;
+		
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PSIServiceProvision> getAllByPatient(String patientUuid) {
-		List<PSIServiceProvision> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceProvision where patientUuid = :id").setString("id", patientUuid).list();
-		if (lists.size() != 0) {
-			return lists;
-		} else {
-			return null;
-		}
+		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
+		lists = sessionFactory.getCurrentSession().createQuery("from PSIServiceProvision where patientUuid = :id")
+		        .setString("id", patientUuid).list();
+		
+		return lists;
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -93,4 +91,16 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIServiceProvision> findAllByTimestamp(long timestamp) {
+		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
+		lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceProvision where timestamp > :timestamp order by timestamp asc ")
+		        .setLong("timestamp", timestamp).setMaxResults(1)
+		        
+		        .list();
+		return lists;
+		
+	}
 }

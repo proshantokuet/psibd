@@ -8,8 +8,11 @@ import java.util.Date;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.utils.DHISMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DHISDataConverter {
 	
 	public static JSONObject toConvertPatient(JSONObject patient) throws JSONException {
@@ -147,15 +150,65 @@ public class DHISDataConverter {
 		enrollment.put("program", "o6zWmo6on9K");
 		enrollment.put("enrollmentDate", today);
 		enrollment.put("incidentDate", today);
+		//enrollment.put("status", "COMPLETED");
 		enrollments.put(enrollment);
 		trackentityInstances.put("enrollments", enrollments);
 		return trackentityInstances;
 		
 	}
 	
-	public JSONObject toConvertMoneyReceipt() {
-		return null;
+	public static JSONObject toConvertMoneyReceipt(PSIServiceProvision psiServiceProvision, String trackedEntityInstanceId)
+	    throws JSONException {
+		JSONObject event = new JSONObject();
+		
+		event.put("trackedEntityInstance", trackedEntityInstanceId);
+		event.put("orgUnit", "DcDZR6okGhw");
+		event.put("program", "o6zWmo6on9K");
+		event.put("programStage", "UKTFJZZ5I66");
+		event.put("status", "COMPLETED");
+		Date date = Calendar.getInstance().getTime();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String today = dateFormat.format(date);
+		event.put("eventDate", today);
+		JSONArray dataValues = new JSONArray();
+		
+		JSONObject item = new JSONObject();
+		item.put("dataElement", "gFQGgrmfYX9");
+		item.put("value", psiServiceProvision.getItem());
+		dataValues.put(item);
+		
+		JSONObject description = new JSONObject();
+		description.put("dataElement", "AGuYIDbmiIY");
+		description.put("value", psiServiceProvision.getDescription());
+		dataValues.put(description);
+		
+		JSONObject unitCost = new JSONObject();
+		unitCost.put("dataElement", "sydU3SHbPoR");
+		unitCost.put("value", psiServiceProvision.getUnitCost());
+		dataValues.put(unitCost);
+		
+		JSONObject quantity = new JSONObject();
+		quantity.put("dataElement", "bNrHdhSMqxA");
+		quantity.put("value", psiServiceProvision.getQuantity());
+		dataValues.put(quantity);
+		
+		JSONObject totalAmount = new JSONObject();
+		totalAmount.put("dataElement", "zKtNgQuvN1O");
+		totalAmount.put("value", psiServiceProvision.getTotalAmount());
+		dataValues.put(totalAmount);
+		
+		JSONObject discount = new JSONObject();
+		discount.put("dataElement", "qyhmRo71iYR");
+		discount.put("value", psiServiceProvision.getDiscount());
+		dataValues.put(discount);
+		
+		JSONObject netPayableAmount = new JSONObject();
+		netPayableAmount.put("dataElement", "u4GXgQ54Fpn");
+		netPayableAmount.put("value", psiServiceProvision.getNetPayable());
+		dataValues.put(netPayableAmount);
+		event.put("dataValues", dataValues);
+		
+		return event;
 		
 	}
-	
 }

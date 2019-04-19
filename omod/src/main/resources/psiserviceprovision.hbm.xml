@@ -8,6 +8,7 @@
         
 	    <property name="item" column="item" type="java.lang.String"/>
 	    <property name="description" column="description" type="java.lang.String"/>
+	    <property name="dhisId" column="dhis_id" type="java.lang.String"/>
 	    <property name="unitCost" column="unit_cost" type="float"/>
 	    <property name="quantity" column="quantity" type="int"/>
 	    <property name="totalAmount" column="total_amount" type="float"/>

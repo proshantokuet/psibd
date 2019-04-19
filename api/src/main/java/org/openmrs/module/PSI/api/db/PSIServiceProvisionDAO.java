@@ -19,6 +19,8 @@ public interface PSIServiceProvisionDAO {
 	
 	public List<PSIServiceProvision> getAllByDateAndPatient(Date date, String patientUuid);
 	
+	public List<PSIServiceProvision> findAllByTimestamp(long timestamp);
+	
 	public void delete(int id);
 	
 }

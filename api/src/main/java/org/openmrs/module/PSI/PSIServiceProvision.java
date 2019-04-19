@@ -18,6 +18,8 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	private String description;
 	
+	private String dhisId;
+	
 	private float unitCost;
 	
 	private int quantity;
@@ -174,12 +176,21 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 		this.field3 = field3;
 	}
 	
+	public String getDhisId() {
+		return dhisId;
+	}
+	
+	public void setDhisId(String dhisId) {
+		this.dhisId = dhisId;
+	}
+	
 	@Override
 	public String toString() {
-		return "PSIServiceProvision [spid=" + spid + ", item=" + item + ", description=" + description + ", unitCost="
-		        + unitCost + ", quantity=" + quantity + ", totalAmount=" + totalAmount + ", discount=" + discount
-		        + ", netPayable=" + netPayable + ", moneyReceiptDate=" + moneyReceiptDate + ", patientUuid=" + patientUuid
-		        + "]";
+		return "PSIServiceProvision [spid=" + spid + ", item=" + item + ", description=" + description + ", dhisId="
+		        + dhisId + ", unitCost=" + unitCost + ", quantity=" + quantity + ", totalAmount=" + totalAmount
+		        + ", discount=" + discount + ", netPayable=" + netPayable + ", moneyReceiptDate=" + moneyReceiptDate
+		        + ", patientUuid=" + patientUuid + ", timestamp=" + timestamp + ", field1=" + field1 + ", field2=" + field2
+		        + ", field3=" + field3 + "]";
 	}
 	
 }
