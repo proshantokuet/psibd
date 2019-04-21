@@ -193,7 +193,9 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		JSONObject psiMoneyReceiptAndServicesObject = new JSONObject();
 		try {
 			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(id);
-			psiMoneyReceiptAndServicesObject = new PSIMoneyReceiptConverter().toConvert(psiMoneyReceipt);
+			if (psiMoneyReceipt != null) {
+				psiMoneyReceiptAndServicesObject = new PSIMoneyReceiptConverter().toConvert(psiMoneyReceipt);
+			}
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -207,7 +209,9 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		JSONArray psiMoneyReceiptAndServicesObject = new JSONArray();
 		try {
 			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).getAllByPatient(id);
-			psiMoneyReceiptAndServicesObject = new PSIMoneyReceiptConverter().toConvert(psiMoneyReceipt);
+			if (psiMoneyReceipt != null) {
+				psiMoneyReceiptAndServicesObject = new PSIMoneyReceiptConverter().toConvert(psiMoneyReceipt);
+			}
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);

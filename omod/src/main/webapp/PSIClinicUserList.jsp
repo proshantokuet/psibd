@@ -3,26 +3,21 @@
 
 <%@ include file="template/localHeader.jsp"%>
 
-<p><a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
-				code="PSI.psiClinicAddNew" /></a> </p>		
+<p><a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicUser.form?id=${id}"><spring:message
+				code="PSI.psiClinicUserAssing" /></a> </p>	
+<p><center><b></b> Clinic Name: ${ name }</b></center></p>					
 <table id="table_id" class="display">
     <thead>
         <tr>
-            <th>Clinic Name</th>
-            <th>Clinic ID</th>
-            <th>Category</th>
-            <th>Address</th>
-            <th>Action</th>
+            <th>User Name</th> 
+            <th>Action</th>           
         </tr>
     </thead>
     <tbody>
-    	<c:forEach var="clinic" items="${ pSIClinics }">
+    	<c:forEach var="user" items="${ pSIClinicUsers }">
         <tr>
-            <td>${ clinic.name }</td>
-            <td>${ clinic.clinicId }</td>
-            <td>${ clinic.category }</td>
-            <td>${ clinic.address }</td>
-            <td><a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a> </td>
+            <td>${ user.userName }</td>
+            <td><a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicUser.form?id=${ user.cuid }"/>"> Edit</a> </td>
         </tr>
        </c:forEach>
         

@@ -22,7 +22,7 @@
             <td>${ clinic.clinicId }</td>
             <td>${ clinic.category }</td>
             <td>${ clinic.address }</td>
-            <td><a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a> </td>
+            <td> <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a> </td>
         </tr>
        </c:forEach>
         

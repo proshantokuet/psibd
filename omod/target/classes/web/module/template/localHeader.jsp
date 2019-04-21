@@ -13,12 +13,7 @@
 		href="${pageContext.request.contextPath}/admin"><spring:message
 				code="admin.title.short" /></a></li>
 
-	<li
-		<c:if test='<%= request.getRequestURI().contains("/manage") %>'>class="active"</c:if>>
-		<a
-		href="${pageContext.request.contextPath}/module/PSI/manage.form"><spring:message
-				code="PSI.manage" /></a>
-	</li>
+	
 	
 	<li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicServiceList") %>'>class="active"</c:if>>
@@ -32,6 +27,7 @@
 		href="${pageContext.request.contextPath}/module/PSI/PSIClinicList.form"><spring:message
 				code="PSI.psiclinic" /></a>
 	</li>
+	
 	<!-- Add further links here -->
 </ul>
 <!-- <h2>

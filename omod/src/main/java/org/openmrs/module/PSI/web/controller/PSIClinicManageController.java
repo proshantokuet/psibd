@@ -1,8 +1,6 @@
 package org.openmrs.module.PSI.web.controller;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,12 +13,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
-import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.utils.HttpResponse;
 import org.openmrs.module.PSI.utils.HttpUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,6 +50,10 @@ public class PSIClinicManageController {
 			usernamesArray.put(nameObject);
 			
 		}
+		
+		/*JSONArray userIds = new JSONArray();
+		session.setAttribute("userIds", userIds.toString());*/
+		session.setAttribute("message", "this clinic id is already taken ");
 		session.setAttribute("users", usernamesArray.toString());
 		model.addAttribute("pSIClinic", new PSIClinicManagement());
 	}
@@ -75,29 +77,45 @@ public class PSIClinicManageController {
 	
 	@RequestMapping(value = "/module/PSI/addPsiClinic", method = RequestMethod.POST)
 	public ModelAndView addORUpdatePSIClinic(@ModelAttribute("psiClinic") PSIClinicManagement psiClinic,
-	                                         HttpSession session,
-	                                         @RequestParam(value = "usernames[]", required = false) String[] users)
-	    throws Exception {
-		if (psiClinic != null) {
-			log.info("saving new module objects...................");
-			psiClinic.setDateCreated(new Date());
-			psiClinic.setCreator(Context.getAuthenticatedUser());
-			psiClinic.setUuid(UUID.randomUUID().toString());
-			
-			Set<PSIClinicUser> clinicUser = new HashSet<PSIClinicUser>();
+	                                         HttpSession session, ModelMap model) throws Exception {
+		
+		PSIClinicManagement getClinicByClinicId = Context.getService(PSIClinicManagementService.class).findByClinicId(
+		    psiClinic.getClinicId());
+		if (getClinicByClinicId != null) {
+			/*JSONArray userIds = new JSONArray();
 			for (String user : users) {
+				userIds.put(user);
+			}*/
+			//model.addAttribute("pSIClinic", psiClinic);
+			//session.setAttribute("userIds", userIds.toString());
+			session.setAttribute("message", "this clinic id is already taken ");
+			return new ModelAndView("redirect:/module/PSI/addPSIClinic.form");
+		} else {
+			
+			if (psiClinic != null) {
+				log.info("saving new module objects...................");
+				psiClinic.setDateCreated(new Date());
+				psiClinic.setCreator(Context.getAuthenticatedUser());
+				psiClinic.setUuid(UUID.randomUUID().toString());
 				
-				PSIClinicUser pSIClinicUser = new PSIClinicUser();
-				pSIClinicUser.setUserName(user);
-				pSIClinicUser.setDateCreated(new Date());
-				pSIClinicUser.setCreator(Context.getAuthenticatedUser());
-				pSIClinicUser.setUuid(UUID.randomUUID().toString());
-				clinicUser.add(pSIClinicUser);
-				
+				/*Set<PSIClinicUser> clinicUser = new HashSet<PSIClinicUser>();
+				for (String user : users) {
+					
+					PSIClinicUser pSIClinicUser = new PSIClinicUser();
+					pSIClinicUser.setUserName(user);
+					pSIClinicUser.setDateCreated(new Date());
+					pSIClinicUser.setCreator(Context.getAuthenticatedUser());
+					pSIClinicUser.setUuid(UUID.randomUUID().toString());
+					clinicUser.add(pSIClinicUser);
+					
+				}
+				psiClinic.setpSIClinicUser(clinicUser);*/
+				Context.openSession();
+				Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinic);
+				Context.clearSession();
+				return new ModelAndView("redirect:/module/PSI/PSIClinicList.form");
 			}
-			psiClinic.setpSIClinicUser(clinicUser);
-			Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinic);
-			return new ModelAndView("redirect:/module/PSI/PSIClinicList.form");
+			
 		}
 		return null;
 	}

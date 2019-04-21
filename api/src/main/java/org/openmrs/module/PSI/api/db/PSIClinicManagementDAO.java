@@ -12,6 +12,8 @@ public interface PSIClinicManagementDAO {
 	
 	public PSIClinicManagement findById(int id);
 	
+	public PSIClinicManagement findByClinicId(String clinicId);
+	
 	public void delete(int id);
 	
 }

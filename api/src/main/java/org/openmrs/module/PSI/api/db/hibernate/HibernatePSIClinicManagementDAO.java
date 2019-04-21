@@ -72,4 +72,17 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIClinicManagement findByClinicId(String clinicId) {
+		// TODO Auto-generated method stub
+		List<PSIClinicManagement> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIClinicManagement where clinicId = :clinicId").setString("clinicId", clinicId).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+	
 }

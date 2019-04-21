@@ -23,7 +23,9 @@ public class PSIClinicUserRestController extends MainResourceController {
 		JSONObject psiClinic = new JSONObject();
 		try {
 			psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(username);
-			psiClinic = new PSIClinicUserConverter().toConvertClinic(psiClinicUser);
+			if (psiClinicUser != null) {
+				psiClinic = new PSIClinicUserConverter().toConvertClinic(psiClinicUser);
+			}
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);

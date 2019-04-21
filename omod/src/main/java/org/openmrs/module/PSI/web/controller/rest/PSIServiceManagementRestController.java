@@ -28,7 +28,10 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		JSONObject psiServiceManagementJsonOject = new JSONObject();
 		try {
 			psiServiceManagement = Context.getService(PSIServiceManagementService.class).findById(id);
-			psiServiceManagementJsonOject = new PSIServiceManagementConverter().toConvert(psiServiceManagement);
+			if (psiServiceManagement != null) {
+				psiServiceManagementJsonOject = new PSIServiceManagementConverter().toConvert(psiServiceManagement);
+			}
+			
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,7 +46,9 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		JSONArray psiServiceManagementArrayOject = new JSONArray();
 		try {
 			psiServiceManagement = Context.getService(PSIServiceManagementService.class).getAll();
-			psiServiceManagementArrayOject = new PSIServiceManagementConverter().toConvert(psiServiceManagement);
+			if (psiServiceManagement != null) {
+				psiServiceManagementArrayOject = new PSIServiceManagementConverter().toConvert(psiServiceManagement);
+			}
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);

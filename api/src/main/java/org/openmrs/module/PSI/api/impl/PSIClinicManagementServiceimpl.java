@@ -40,4 +40,10 @@ public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implement
 		
 	}
 	
+	@Override
+	public PSIClinicManagement findByClinicId(String clinicId) {
+		// TODO Auto-generated method stub
+		return dao.findByClinicId(clinicId);
+	}
+	
 }

@@ -7,26 +7,30 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
 <%
-String users = (String)session.getAttribute("users"); 
+//String users = (String)session.getAttribute("users");
+//String userIds = (String)session.getAttribute("userIds");
+//String message = (String)session.getAttribute("message");
 %>
 
-<form:form method="POST" action="${saveUrl}" modelAttribute="pSIClinic">
+
 
 
 <div class="container register-form">
 	<div class="form">
     	<div class="note">
         	<p>Add Community Clinic.</p>
+        	
        	</div>
-
+		<p>${message}</p>
+	    <form:form method="POST" action="${saveUrl}" modelAttribute="pSIClinic">
   		<div class="form-content">
         	<div class="row">
             	<div class="col-md-6">
                 	<div class="form-group">
-                		Clinic Name : <form:input path="name" class="form-control" required="required"/>
+                		Clinic Name : <form:input path="name" class="form-control" required="required" autocomplete="off"/>
                   	</div>
                   	<div class="form-group">
-                  		Clinic ID:  <form:input path="clinicId" class="form-control" required="required"/>
+                  		Clinic ID:  <form:input path="clinicId" class="form-control" required="required" autocomplete="off"/>
                    	</div>
              	</div>
               	<div class="col-md-6">
@@ -39,18 +43,18 @@ String users = (String)session.getAttribute("users");
 					         </form:select>
 					</div>
                   	<div class="form-group">
-                   	Address: 	<form:input path="address" class="form-control" required="required"/>                	
+                   	Address: 	<form:input path="address" class="form-control" required="required" autocomplete="off"/>                	
                    	
                   	</div>
               	</div>
               	<div class="col-md-6">               		
                   	<div class="form-group">
-                   	DHIS2 ID: <form:input path="dhisId" class="form-control" required="required"/>
+                   	DHIS2 Org ID: <form:input path="dhisId" class="form-control" required="required" autocomplete="off"/>
                   	</div>
                   
               	</div>
               	
-              	<div class="col-md-6"> 
+              <!-- 	<div class="col-md-6"> 
                   	<div class="form-group">
                   		<div id="cm" class="ui-widget">
 							Assign User :
@@ -58,7 +62,7 @@ String users = (String)session.getAttribute("users");
 						</div>
                   	</div>
                   	
-              	</div>
+              	</div> -->
           	</div>
           	<button type="submit" class="btnSubmit">Submit</button>
       	</div>
@@ -68,8 +72,7 @@ String users = (String)session.getAttribute("users");
 
 </form:form>
 
-<script type="text/javascript">
-  
+<%-- <script type="text/javascript">  
 	var $jq = jQuery.noConflict();
 	 $jq('#userIds').magicSuggest({ 
 		 	required: true,
@@ -79,16 +82,15 @@ String users = (String)session.getAttribute("users");
 	        displayField: 'display',
 	        name: 'usernames',
 	        inputCfg: {"class":"magicInput"},
-	        //value: [255],
+	        value: <%=userIds%>,
 	        useCommaKey: true,
 	        allowFreeEntries: false,
-	        maxSelection: 20,
-	        maxEntryLength: 500,
+	        maxSelection: 100,
+	        maxEntryLength: 10000,
 	 		maxEntryRenderer: function(v) {
 	 			return '<div style="color:red">Typed Word TOO LONG </div>';
-	 		}
-	       
+	 		}	       
 	  });
   </script>
-
+ --%>
 <%@ include file="/WEB-INF/template/footer.jsp"%>
