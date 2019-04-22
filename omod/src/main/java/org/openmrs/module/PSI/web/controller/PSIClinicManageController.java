@@ -48,12 +48,8 @@ public class PSIClinicManageController {
 			nameObject.put("username", user.get("username"));
 			nameObject.put("display", person.get("display"));
 			usernamesArray.put(nameObject);
-			
 		}
 		
-		/*JSONArray userIds = new JSONArray();
-		session.setAttribute("userIds", userIds.toString());*/
-		session.setAttribute("message", "this clinic id is already taken ");
 		session.setAttribute("users", usernamesArray.toString());
 		model.addAttribute("pSIClinic", new PSIClinicManagement());
 	}
@@ -79,42 +75,28 @@ public class PSIClinicManageController {
 	public ModelAndView addORUpdatePSIClinic(@ModelAttribute("psiClinic") PSIClinicManagement psiClinic,
 	                                         HttpSession session, ModelMap model) throws Exception {
 		
-		PSIClinicManagement getClinicByClinicId = Context.getService(PSIClinicManagementService.class).findByClinicId(
-		    psiClinic.getClinicId());
-		if (getClinicByClinicId != null) {
-			/*JSONArray userIds = new JSONArray();
-			for (String user : users) {
-				userIds.put(user);
-			}*/
-			//model.addAttribute("pSIClinic", psiClinic);
-			//session.setAttribute("userIds", userIds.toString());
-			session.setAttribute("message", "this clinic id is already taken ");
-			return new ModelAndView("redirect:/module/PSI/addPSIClinic.form");
-		} else {
+		if (psiClinic != null) {
+			log.info("saving new module objects...................");
+			psiClinic.setDateCreated(new Date());
+			psiClinic.setCreator(Context.getAuthenticatedUser());
+			psiClinic.setUuid(UUID.randomUUID().toString());
 			
-			if (psiClinic != null) {
-				log.info("saving new module objects...................");
-				psiClinic.setDateCreated(new Date());
-				psiClinic.setCreator(Context.getAuthenticatedUser());
-				psiClinic.setUuid(UUID.randomUUID().toString());
+			/*Set<PSIClinicUser> clinicUser = new HashSet<PSIClinicUser>();
+			for (String user : users) {
 				
-				/*Set<PSIClinicUser> clinicUser = new HashSet<PSIClinicUser>();
-				for (String user : users) {
-					
-					PSIClinicUser pSIClinicUser = new PSIClinicUser();
-					pSIClinicUser.setUserName(user);
-					pSIClinicUser.setDateCreated(new Date());
-					pSIClinicUser.setCreator(Context.getAuthenticatedUser());
-					pSIClinicUser.setUuid(UUID.randomUUID().toString());
-					clinicUser.add(pSIClinicUser);
-					
-				}
-				psiClinic.setpSIClinicUser(clinicUser);*/
-				Context.openSession();
-				Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinic);
-				Context.clearSession();
-				return new ModelAndView("redirect:/module/PSI/PSIClinicList.form");
+				PSIClinicUser pSIClinicUser = new PSIClinicUser();
+				pSIClinicUser.setUserName(user);
+				pSIClinicUser.setDateCreated(new Date());
+				pSIClinicUser.setCreator(Context.getAuthenticatedUser());
+				pSIClinicUser.setUuid(UUID.randomUUID().toString());
+				clinicUser.add(pSIClinicUser);
+				
 			}
+			psiClinic.setpSIClinicUser(clinicUser);*/
+			
+			Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinic);
+			
+			return new ModelAndView("redirect:/module/PSI/PSIClinicList.form");
 			
 		}
 		return null;

@@ -106,6 +106,10 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiMoneyReceipt.setWealth(moneyReceipt.getString("wealth"));
 			}
 			
+			if (moneyReceipt.has("orgUnit")) {
+				psiMoneyReceipt.setOrgUnit(moneyReceipt.getString("orgUnit"));
+			}
+			
 			if (moneyReceipt.has("gender")) {
 				psiMoneyReceipt.setGender(moneyReceipt.getString("gender"));
 			}

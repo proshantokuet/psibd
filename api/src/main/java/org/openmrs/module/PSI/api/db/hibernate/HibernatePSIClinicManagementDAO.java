@@ -31,7 +31,7 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 	@Override
 	public PSIClinicManagement saveOrUpdateClinic(PSIClinicManagement psiClinic) {
 		
-		sessionFactory.getCurrentSession().save(psiClinic);
+		sessionFactory.getCurrentSession().saveOrUpdate(psiClinic);
 		
 		return psiClinic;
 	}
@@ -78,6 +78,20 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 		// TODO Auto-generated method stub
 		List<PSIClinicManagement> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIClinicManagement where clinicId = :clinicId").setString("clinicId", clinicId).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIClinicManagement findByIdNotByClinicId(int id, String clinicId) {
+		// TODO Auto-generated method stub
+		List<PSIClinicManagement> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIClinicManagement where id=:id and  clinicId != :clinicId")
+		        .setString("clinicId", clinicId).setInteger("id", id).list();
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {

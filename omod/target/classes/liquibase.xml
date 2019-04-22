@@ -133,7 +133,7 @@
 			<column name="gender" type="varchar(255)" />
 			<column name="slip_no" type="varchar(255)" />
 			<column name="clinic_type" type="varchar(255)" />
-			
+			<column name="org_unit" type="varchar(255)" />
 			
 			
 			<column name="field1" type="varchar(255)" />
@@ -158,6 +158,8 @@
 			<column name="uuid" type="varchar(255)" />
 		</createTable>
 	</changeSet>
+	
+	
 	
 	<changeSet id="psiserviceprovision-1.0.0" author="Proshanto">
 		<createTable tableName="psi_service_provision">

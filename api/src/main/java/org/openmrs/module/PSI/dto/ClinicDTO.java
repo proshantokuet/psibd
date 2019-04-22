@@ -1,20 +1,10 @@
-package org.openmrs.module.PSI;
+package org.openmrs.module.PSI.dto;
 
-import java.io.Serializable;
-import java.util.Set;
-
-import org.openmrs.BaseOpenmrsData;
-
-public class PSIClinicManagement extends BaseOpenmrsData implements Serializable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private int cid;
+public class ClinicDTO {
 	
 	private String name;
+	
+	private int cid;
 	
 	private String clinicId;
 	
@@ -33,22 +23,6 @@ public class PSIClinicManagement extends BaseOpenmrsData implements Serializable
 	private String upazila;
 	
 	private String unionName;
-	
-	private Set<PSIClinicUser> pSIClinicUser;
-	
-	private long timestamp;
-	
-	@Override
-	public Integer getId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public void setId(Integer id) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public String getName() {
 		return name;
@@ -122,22 +96,6 @@ public class PSIClinicManagement extends BaseOpenmrsData implements Serializable
 		this.upazila = upazila;
 	}
 	
-	public long getTimestamp() {
-		return timestamp;
-	}
-	
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
-	}
-	
-	public int getCid() {
-		return cid;
-	}
-	
-	public void setCid(int cid) {
-		this.cid = cid;
-	}
-	
 	public String getUnionName() {
 		return unionName;
 	}
@@ -146,20 +104,12 @@ public class PSIClinicManagement extends BaseOpenmrsData implements Serializable
 		this.unionName = unionName;
 	}
 	
-	public Set<PSIClinicUser> getpSIClinicUser() {
-		return pSIClinicUser;
+	public int getCid() {
+		return cid;
 	}
 	
-	public void setpSIClinicUser(Set<PSIClinicUser> pSIClinicUser) {
-		this.pSIClinicUser = pSIClinicUser;
-	}
-	
-	@Override
-	public String toString() {
-		return "PSIClinicManagement [cid=" + cid + ", name=" + name + ", clinicId=" + clinicId + ", category=" + category
-		        + ", address=" + address + ", dhisId=" + dhisId + ", description=" + description + ", division=" + division
-		        + ", district=" + district + ", upazila=" + upazila + ", unionName=" + unionName + ", pSIClinicUser="
-		        + pSIClinicUser + ", timestamp=" + timestamp + "]";
+	public void setCid(int cid) {
+		this.cid = cid;
 	}
 	
 }

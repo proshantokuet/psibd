@@ -13,6 +13,7 @@ import org.openmrs.module.PSI.api.PSIDHISMarkerService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
+import org.openmrs.module.PSI.web.listener.DHISListener;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,9 @@ public class OpenmrsAPIController extends MainResourceController {
 	final String USER_URL = "ws/rest/v1/user";
 	
 	@Autowired
+	private DHISListener dhisListener;
+	
+	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
 	private final String EVENTURL = "http://192.168.19.148:1971/api/events";
@@ -41,8 +45,8 @@ public class OpenmrsAPIController extends MainResourceController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ResponseEntity<String> getResearvedHealthId() throws Exception {
-		
-		/*HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + USER_URL + "/", "v=default",
+		/*
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + USER_URL + "/", "v=default",
 		    "superman", "Admin123");
 		JSONObject body = new JSONObject(op.body());
 		List<EventReceordDTO> datas = new ArrayList<EventReceordDTO>();
@@ -50,8 +54,8 @@ public class OpenmrsAPIController extends MainResourceController {
 		String s = "";
 		
 		JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "",
-		    "/openmrs/ws/rest/v1/patient/6d4fdfef-84ab-4112-b76e-4cc7687ac96b?v=full");
-		*/
+		    "/openmrs/ws/rest/v1/patient/6d4fdfef-84ab-4112-b76e-4cc7687ac96b?v=full");*/
+		
 		/*int lastReadPatient = 0;
 		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient");
 		if (getlastReadEntry == null) {
@@ -77,7 +81,8 @@ public class OpenmrsAPIController extends MainResourceController {
 				JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
 				JSONObject patientJson = DHISDataConverter.toConvertPatient(patient);
 				JSONObject person = patient.getJSONObject("person");
-				String URL = trackInstanceUrl + "filter=nlwOL9RrqGC:EQ:" + person.getString("uuid") + "&ou=" + "DcDZR6okGhw";
+				String URL = trackInstanceUrl + "filter=nlwOL9RrqGC:EQ:" + person.getString("uuid") + "&ou="
+				        + patientJson.getString("orgUnit");
 				JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 				JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 				if (trackedEntityInstances.length() != 0) {
@@ -126,7 +131,7 @@ public class OpenmrsAPIController extends MainResourceController {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
 				try {
 					String URL = trackInstanceUrl + "filter=nlwOL9RrqGC:EQ:" + psiServiceProvision.getPatientUuid() + "&ou="
-					        + "DcDZR6okGhw";
+					        + psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 					JSONObject eventResponse = new JSONObject();
@@ -187,6 +192,7 @@ public class OpenmrsAPIController extends MainResourceController {
 		catch (Exception e) {
 			return new ResponseEntity<String>(psiServiceProvisions.toString() + e.toString(), HttpStatus.OK);
 		}
+		//dhisListener.sendData();
 		return new ResponseEntity<String>("not ok ", HttpStatus.OK);
 		
 	}

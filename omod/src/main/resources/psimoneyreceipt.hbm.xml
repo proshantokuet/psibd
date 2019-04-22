@@ -6,7 +6,7 @@
             <generator class="native"/>
         </id> 
         
-	    <property name="patientName" column="patient_name" type="java.lang.String"/>
+	   <property name="patientName" column="patient_name" type="java.lang.String"/>
 	    <property name="patientUuid" column="patient_uuid" type="java.lang.String"/>
 	    <property name="uic" column="uic" type="java.lang.String"/>
 	    <property name="contact" column="contact" type="java.lang.String"/>
@@ -24,7 +24,8 @@
 	    <property name="wealth" column="wealth" type="java.lang.String"/>
 	    <property name="gender" column="gender" type="java.lang.String"/>
 	    <property name="slipNo" column="slip_no" type="java.lang.String"/>
-	    <property name="clinicType" column="clinic_type" type="java.lang.String"/>
+	    <property name="clinicType" column="clinic_type" type="java.lang.String"/>    
+	    <property name="orgUnit" column="org_unit" type="java.lang.String"/>
 	    
 	    <set name="services" cascade="all">
 	       <key>

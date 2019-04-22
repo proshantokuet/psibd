@@ -16,9 +16,10 @@ import org.springframework.stereotype.Component;
 public class DHISDataConverter {
 	
 	public static JSONObject toConvertPatient(JSONObject patient) throws JSONException {
+		
 		JSONObject trackentityInstances = new JSONObject();
 		trackentityInstances.put("trackedEntityType", "c9H923L9Lbz");
-		trackentityInstances.put("orgUnit", "DcDZR6okGhw");
+		//trackentityInstances.put("orgUnit", "DcDZR6okGhw");
 		JSONArray attributes = new JSONArray();
 		JSONObject person = patient.getJSONObject("person");
 		JSONArray patientAttributes = person.getJSONArray("attributes");
@@ -26,6 +27,10 @@ public class DHISDataConverter {
 			JSONObject patientAttribute = patientAttributes.getJSONObject(i);
 			JSONObject attributeType = patientAttribute.getJSONObject("attributeType");
 			String attributeTypeName = attributeType.getString("display");
+			
+			if ("orgUnit".equalsIgnoreCase(attributeTypeName)) {
+				trackentityInstances.put("orgUnit", patientAttribute.getString("value"));
+			}
 			if (DHISMapper.registrationMapper.containsKey(attributeTypeName)) {
 				JSONObject attribute = new JSONObject();
 				attribute.put("attribute", DHISMapper.registrationMapper.get(attributeTypeName));
@@ -38,6 +43,7 @@ public class DHISDataConverter {
 					attribute.put("value", patientAttribute.getString("value"));
 				}
 				attributes.put(attribute);
+				
 			}
 			
 		}
@@ -162,7 +168,7 @@ public class DHISDataConverter {
 		JSONObject event = new JSONObject();
 		
 		event.put("trackedEntityInstance", trackedEntityInstanceId);
-		event.put("orgUnit", "DcDZR6okGhw");
+		event.put("orgUnit", psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit());
 		event.put("program", "o6zWmo6on9K");
 		event.put("programStage", "UKTFJZZ5I66");
 		event.put("status", "COMPLETED");
