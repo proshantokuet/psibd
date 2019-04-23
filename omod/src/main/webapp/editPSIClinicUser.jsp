@@ -11,6 +11,9 @@ String users = (String)session.getAttribute("users");
 String userIds = (String)session.getAttribute("userIds");
 //String message = (String)session.getAttribute("message");
 %>
+
+<a href="${pageContext.request.contextPath}/module/PSI/PSIClinicList.form"><spring:message
+				code="PSI.psiclinic" /></a>Edit Assinged User
 <form:form method="POST" action="${saveUrl}" modelAttribute="pSIClinicUser">
 
 

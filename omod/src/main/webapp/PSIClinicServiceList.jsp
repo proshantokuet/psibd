@@ -1,5 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
+<openmrs:require privilege="Clinic Service List" otherwise="/login.htm" />
 
 <%@ include file="template/localHeader.jsp"%>
 <p><a

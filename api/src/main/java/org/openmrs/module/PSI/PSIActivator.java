@@ -13,10 +13,11 @@
  */
 package org.openmrs.module.PSI;
 
-
-import org.apache.commons.logging.Log; 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.Module;
 import org.openmrs.module.ModuleActivator;
+import org.openmrs.module.ModuleFactory;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -24,7 +25,7 @@ import org.openmrs.module.ModuleActivator;
 public class PSIActivator implements ModuleActivator {
 	
 	protected Log log = LogFactory.getLog(getClass());
-		
+	
 	/**
 	 * @see ModuleActivator#willRefreshContext()
 	 */
@@ -50,7 +51,23 @@ public class PSIActivator implements ModuleActivator {
 	 * @see ModuleActivator#started()
 	 */
 	public void started() {
-		log.info("PSI Module started");
+		
+		try {
+			Module mod = ModuleFactory.getModuleById("PSI");
+			ModuleFactory.startModule(mod);
+			log.info("PSI Module started");
+		}
+		catch (NoSuchMethodError e) {
+			Module mod = ModuleFactory.getStartedModuleById("PSI");
+			ModuleFactory.stopModule(mod);
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			Module mod = ModuleFactory.getModuleById("PSI");
+			ModuleFactory.stopModule(mod);
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
@@ -66,5 +83,5 @@ public class PSIActivator implements ModuleActivator {
 	public void stopped() {
 		log.info("PSI Module stopped");
 	}
-		
+	
 }

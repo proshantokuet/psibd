@@ -37,9 +37,10 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PSIServiceManagement> getAll() {
-		List<PSIServiceManagement> clinics = sessionFactory.getCurrentSession().createQuery("from PSIServiceManagement ")
-		        .list();
+	public List<PSIServiceManagement> getAll(int clinicId) {
+		List<PSIServiceManagement> clinics = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceManagement where psiClinicManagement=:clinicId ")
+		        .setInteger("clinicId", clinicId).list();
 		if (clinics.size() != 0) {
 			return clinics;
 		}
@@ -75,6 +76,44 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	public void delete(int id) {
 		sessionFactory.getCurrentSession().delete(findById(id));
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIServiceManagement findByCode(String code, int clinicId) {
+		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceManagement where code = :code and  psiClinicManagement=:clinicId ")
+		        .setString("code", code).setInteger("clinicId", clinicId).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIServiceManagement findByIdNotByCode(int id, String code, int clinicId) {
+		List<PSIServiceManagement> lists = sessionFactory
+		        .getCurrentSession()
+		        .createQuery("from PSIServiceManagement where sid=:id and  psiClinicManagement=:clinicId and  code != :code")
+		        .setString("code", code).setInteger("id", id).setInteger("clinicId", clinicId).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIServiceManagement> getAll() {
+		List<PSIServiceManagement> clinics = sessionFactory.getCurrentSession().createQuery("from PSIServiceManagement")
+		        .list();
+		if (clinics.size() != 0) {
+			return clinics;
+		}
+		return null;
 	}
 	
 }

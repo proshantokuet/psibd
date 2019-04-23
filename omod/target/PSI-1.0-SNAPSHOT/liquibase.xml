@@ -109,6 +109,13 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet author="Proshanto" id="psiservicemanagement-1.0.1">
+	 	<addColumn tableName="psi_service_management">
+			<column name="psi_clinic_management_id" type="int(11)" />
+			
+		</addColumn>
+	 </changeSet>
+	
 	<changeSet id="psimoneyreceipt-1.0.0" author="Proshanto">
 		<createTable tableName="psi_money_receipt">
 			<column name="mid" type="int(11)" autoIncrement="true">

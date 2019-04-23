@@ -26,9 +26,9 @@ public class PSIServiceManagementServiceImpl extends BaseOpenmrsService implemen
 	}
 	
 	@Override
-	public List<PSIServiceManagement> getAll() {
+	public List<PSIServiceManagement> getAll(int clinicId) {
 		
-		return dao.getAll();
+		return dao.getAll(clinicId);
 	}
 	
 	@Override
@@ -46,6 +46,24 @@ public class PSIServiceManagementServiceImpl extends BaseOpenmrsService implemen
 	public void delete(int id) {
 		dao.delete(id);
 		
+	}
+	
+	@Override
+	public PSIServiceManagement findByCode(String code, int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.findByCode(code, clinicId);
+	}
+	
+	@Override
+	public PSIServiceManagement findByIdNotByCode(int id, String code, int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.findByIdNotByCode(id, code, clinicId);
+	}
+	
+	@Override
+	public List<PSIServiceManagement> getAll() {
+		// TODO Auto-generated method stub
+		return dao.getAll();
 	}
 	
 }

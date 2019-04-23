@@ -8,9 +8,7 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
-
-
-
+<openmrs:require privilege="Edit Team" otherwise="/login.htm" />
 
 <div class="container register-form">
 	<div class="form">
@@ -100,7 +98,7 @@ $("#clinicInfo").submit(function(event) {
 				success : function(data) {
 				   $("#usernameUniqueErrorMessage").html(data);
 				   $("#loading").hide();
-				   if(data == "ok"){					   
+				   if(data == ""){					   
 					   window.location.replace("/openmrs/module/PSI/PSIClinicList.form");					   
 				   }				   
 				},

@@ -32,7 +32,7 @@ public class PSIClinicRestController extends MainResourceController {
 			Context.openSession();
 			Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinicManagement);
 			Context.clearSession();
-			msg = "ok";
+			msg = "";
 		}
 		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 		
@@ -44,16 +44,17 @@ public class PSIClinicRestController extends MainResourceController {
 		String msg = "";
 		PSIClinicManagement getByIdAndClinicID = Context.getService(PSIClinicManagementService.class).findByIdNotByClinicId(
 		    clinicDTO.getCid(), clinicDTO.getClinicId());
-		if (getByIdAndClinicID != null) {
-			getByIdAndClinicID.setName(clinicDTO.getName());
-			getByIdAndClinicID.setCategory(clinicDTO.getCategory());
-			getByIdAndClinicID.setClinicId(clinicDTO.getClinicId());
-			getByIdAndClinicID.setAddress(clinicDTO.getAddress());
-			getByIdAndClinicID.setDhisId(clinicDTO.getDhisId());
+		if (getByIdAndClinicID == null) {
+			PSIClinicManagement findById = Context.getService(PSIClinicManagementService.class).findById(clinicDTO.getCid());
+			findById.setName(clinicDTO.getName());
+			findById.setCategory(clinicDTO.getCategory());
+			findById.setClinicId(clinicDTO.getClinicId());
+			findById.setAddress(clinicDTO.getAddress());
+			findById.setDhisId(clinicDTO.getDhisId());
 			Context.openSession();
-			Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(getByIdAndClinicID);
+			Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(findById);
 			Context.clearSession();
-			msg = "ok";
+			msg = "";
 		} else {
 			msg = "This clinic id is already taken";
 		}

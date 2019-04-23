@@ -25,7 +25,7 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	private long timestamp;
 	
-	private PSIClinicManagement PSIClinicManagement;
+	private PSIClinicManagement psiClinicManagement;
 	
 	private String field1;
 	
@@ -125,12 +125,12 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 		this.field3 = field3;
 	}
 	
-	public PSIClinicManagement getPSIClinicManagement() {
-		return PSIClinicManagement;
+	public PSIClinicManagement getPsiClinicManagement() {
+		return psiClinicManagement;
 	}
 	
-	public void setPSIClinicManagement(PSIClinicManagement pSIClinicManagement) {
-		PSIClinicManagement = pSIClinicManagement;
+	public void setPsiClinicManagement(PSIClinicManagement psiClinicManagement) {
+		this.psiClinicManagement = psiClinicManagement;
 	}
 	
 }

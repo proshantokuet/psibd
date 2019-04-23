@@ -6,6 +6,8 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
 <c:url var="saveUrl" value="/module/PSI/addPSIClinicUser.form" />
+<openmrs:require privilege="Add Clinic User" otherwise="/login.htm" />
+
 <%
 String users = (String)session.getAttribute("users");
 String userIds = (String)session.getAttribute("userIds");

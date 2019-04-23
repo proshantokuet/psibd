@@ -2,9 +2,10 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="template/localHeader.jsp"%>
+<openmrs:require privilege="Clinic List" otherwise="/login.htm" />
 
-<p><a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
-				code="PSI.psiClinicAddNew" /></a> </p>		
+<a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
+				code="PSI.psiClinicAddNew" /></a> 	
 <table id="table_id" class="display">
     <thead>
         <tr>

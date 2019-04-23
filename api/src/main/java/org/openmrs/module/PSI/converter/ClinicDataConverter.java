@@ -20,6 +20,7 @@ public class ClinicDataConverter {
 		psiClinicManagement.setDateCreated(new Date());
 		psiClinicManagement.setCreator(Context.getAuthenticatedUser());
 		psiClinicManagement.setUuid(UUID.randomUUID().toString());
+		psiClinicManagement.setTimestamp(System.currentTimeMillis());
 		return psiClinicManagement;
 		
 	}

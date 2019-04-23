@@ -16,7 +16,7 @@
 //String message = (String)session.getAttribute("message");
 %>
 
-
+<openmrs:require privilege="Add Clinic" otherwise="/login.htm" />
 
 
 <div class="container register-form">
@@ -25,7 +25,7 @@
         	<p>Add Community Clinic.</p>
         	
        	</div>
-		<p>${message}</p>
+		
 		 <div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 							<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
 							
@@ -120,7 +120,7 @@ $("#clinicInfo").submit(function(event) {
 				success : function(data) {
 				   $("#usernameUniqueErrorMessage").html(data);
 				   $("#loading").hide();
-				   if(data == "ok"){					   
+				   if(data == ""){					   
 					   window.location.replace("/openmrs/module/PSI/PSIClinicList.form");
 					   
 				   }

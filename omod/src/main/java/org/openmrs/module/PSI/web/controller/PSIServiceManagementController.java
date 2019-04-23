@@ -1,6 +1,7 @@
 package org.openmrs.module.PSI.web.controller;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +10,9 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIServiceManagement;
+import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +29,8 @@ public class PSIServiceManagementController {
 	
 	@RequestMapping(value = "/module/PSI/addPSIClinicService", method = RequestMethod.GET)
 	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model) {
+		List<PSIClinicManagement> psiClinicManagements = Context.getService(PSIClinicManagementService.class).getAllClinic();
+		model.addAttribute("clinics", psiClinicManagements);
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		model.addAttribute("pSIServiceManagement", new PSIServiceManagement());
 	}
@@ -37,6 +42,8 @@ public class PSIServiceManagementController {
 	
 	@RequestMapping(value = "/module/PSI/editPSIClinicService", method = RequestMethod.GET)
 	public void editPSIClinic(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
+		List<PSIClinicManagement> psiClinicManagements = Context.getService(PSIClinicManagementService.class).getAllClinic();
+		model.addAttribute("clinics", psiClinicManagements);
 		model.addAttribute("pSIServiceManagement", Context.getService(PSIServiceManagementService.class).findById(id));
 		
 	}

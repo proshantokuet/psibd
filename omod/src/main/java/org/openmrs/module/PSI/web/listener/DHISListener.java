@@ -40,18 +40,10 @@ public class DHISListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
-		try {
-			sendPatient();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			sendMoneyReceipt();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		
+		sendPatient();
+		
+		sendMoneyReceipt();
 		
 	}
 	
