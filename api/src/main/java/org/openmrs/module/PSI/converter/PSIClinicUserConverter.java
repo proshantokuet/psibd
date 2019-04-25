@@ -9,8 +9,10 @@ public class PSIClinicUserConverter {
 	public JSONObject toConvertClinic(PSIClinicUser psiClinicUser) throws JSONException {
 		JSONObject clinic = new JSONObject();
 		clinic.putOpt("clinicName", psiClinicUser.getPsiClinicManagementId().getName());
-		clinic.putOpt("clinicCode", psiClinicUser.getPsiClinicManagementId().getClinicId());
-		clinic.putOpt("clinicId", psiClinicUser.getPsiClinicManagementId().getCid());
+		clinic.putOpt("clinicId", psiClinicUser.getPsiClinicManagementId().getClinicId());
+		clinic.putOpt("id", psiClinicUser.getPsiClinicManagementId().getCid());
+		clinic.putOpt("uuid", psiClinicUser.getPsiClinicManagementId().getUuid());
+		clinic.putOpt("orgUnit", psiClinicUser.getPsiClinicManagementId().getDhisId());
 		return clinic;
 		
 	}

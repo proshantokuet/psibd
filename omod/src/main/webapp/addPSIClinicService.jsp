@@ -123,7 +123,7 @@ $("#serviceForm").submit(function(event) {
 			        };			
 			
 			event.preventDefault();			
-			$.ajax({
+			/* $.ajax({
 				contentType : "application/json",
 				type: "POST",
 		        url: url,
@@ -149,7 +149,7 @@ $("#serviceForm").submit(function(event) {
 				done : function(e) {				    
 				    console.log("DONE");				    
 				}
-			});
+			}); */
 		});
 		
 </script>

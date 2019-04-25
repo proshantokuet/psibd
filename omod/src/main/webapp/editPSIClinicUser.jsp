@@ -59,8 +59,8 @@ String userIds = (String)session.getAttribute("userIds");
 	        value: <%=userIds%>,
 	        useCommaKey: true,
 	        allowFreeEntries: false,
-	        maxSelection: 100,
-	        maxEntryLength: 10000,
+	        maxSelection: 1,
+	        maxEntryLength: 100,
 	 		maxEntryRenderer: function(v) {
 	 			return '<div style="color:red">Typed Word TOO LONG </div>';
 	 		}	       
