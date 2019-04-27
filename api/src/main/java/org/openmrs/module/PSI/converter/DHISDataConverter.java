@@ -178,6 +178,51 @@ public class DHISDataConverter {
 		event.put("eventDate", today);
 		JSONArray dataValues = new JSONArray();
 		
+		JSONObject clinicName = new JSONObject();
+		clinicName.put("dataElement", "iiZK5h6CDnG");
+		clinicName.put("value", psiServiceProvision.getPsiMoneyReceiptId().getClinicName());
+		dataValues.put(clinicName);
+		
+		JSONObject clinicId = new JSONObject();
+		clinicId.put("dataElement", "oNgz5FFG5Az");
+		clinicId.put("value", psiServiceProvision.getPsiMoneyReceiptId().getClinicCode());
+		dataValues.put(clinicId);
+		
+		JSONObject servicePoint = new JSONObject();
+		servicePoint.put("dataElement", "WgfyHCvhqYK");
+		servicePoint.put("value", psiServiceProvision.getPsiMoneyReceiptId().getServicePoint());
+		dataValues.put(servicePoint);
+		
+		JSONObject saletilteClinicId = new JSONObject();
+		saletilteClinicId.put("dataElement", "CMNIQFwqSUl");
+		saletilteClinicId.put("value", psiServiceProvision.getPsiMoneyReceiptId().getSateliteClinicId());
+		dataValues.put(saletilteClinicId);
+		
+		JSONObject serviceDate = new JSONObject();
+		serviceDate.put("dataElement", "bKEmultRiUQ");
+		serviceDate.put("value", dateFormat.format(psiServiceProvision.getPsiMoneyReceiptId().getMoneyReceiptDate()));
+		dataValues.put(serviceDate);
+		
+		JSONObject teamNo = new JSONObject();
+		teamNo.put("dataElement", "MJ7nruCm0ub");
+		teamNo.put("value", psiServiceProvision.getPsiMoneyReceiptId().getTeamNo());
+		dataValues.put(teamNo);
+		
+		JSONObject slipNo = new JSONObject();
+		slipNo.put("dataElement", "LAGnqBgA1pG");
+		slipNo.put("value", psiServiceProvision.getPsiMoneyReceiptId().getSlipNo());
+		dataValues.put(slipNo);
+		
+		JSONObject reference = new JSONObject();
+		reference.put("dataElement", "dXwORvJ4ODG");
+		reference.put("value", psiServiceProvision.getPsiMoneyReceiptId().getReference());
+		dataValues.put(reference);
+		
+		JSONObject referenceId = new JSONObject();
+		referenceId.put("dataElement", "DyHphdoGGXQ");
+		referenceId.put("value", psiServiceProvision.getPsiMoneyReceiptId().getReferenceId());
+		dataValues.put(referenceId);
+		
 		JSONObject item = new JSONObject();
 		item.put("dataElement", "gFQGgrmfYX9");
 		item.put("value", psiServiceProvision.getItem());

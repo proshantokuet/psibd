@@ -27,9 +27,9 @@
        	</div>
 		
 		 <div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
-							<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
 							
-					</div>
+		</div>
 		<span class="text-red" id="usernameUniqueErrorMessage"></span>
 	    <form:form method="POST"  id="clinicInfo" action="${saveUrl}" modelAttribute="pSIClinic">
   		<div class="form-content">
