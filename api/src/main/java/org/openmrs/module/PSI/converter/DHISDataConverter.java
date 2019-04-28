@@ -106,46 +106,42 @@ public class DHISDataConverter {
 			uuid.put("value", person.getString("uuid"));
 			attributes.put(uuid);
 		}
-		/*JSONObject preferredAddress = person.getJSONObject("preferredAddress");
-		JSONObject country = new JSONObject();
+		JSONObject preferredAddress = person.getJSONObject("preferredAddress");
+		/* JSONObject country = new JSONObject();
 		country.put("attribute", "country");
 		country.put("value", preferredAddress.getString("country"));
 		attributes.put(country);
-		
-		JSONObject stateProvince = new JSONObject();
-		stateProvince.put("attribute", "stateProvince");
-		stateProvince.put("value", preferredAddress.getString("stateProvince"));
-		attributes.put(stateProvince);
+		*/
+		JSONObject division = new JSONObject();
+		division.put("attribute", "yrbd4rRgRcR");
+		division.put("value", preferredAddress.getString("stateProvince"));
+		attributes.put(division);
 		
 		JSONObject countyDistrict = new JSONObject();
-		countyDistrict.put("attribute", "countyDistrict");
+		countyDistrict.put("attribute", "DPSa3yVkyJg");
 		countyDistrict.put("value", preferredAddress.getString("countyDistrict"));
 		attributes.put(countyDistrict);
 		
-		JSONObject cityVillage = new JSONObject();
-		cityVillage.put("attribute", "cityVillage");
-		cityVillage.put("value", preferredAddress.getString("cityVillage"));
-		attributes.put(cityVillage);
+		JSONObject unionMunicipality = new JSONObject();
+		unionMunicipality.put("attribute", "dLt4JC3UB4d");
+		unionMunicipality.put("value", preferredAddress.getString("cityVillage"));
+		attributes.put(unionMunicipality);
 		
-		JSONObject address1 = new JSONObject();
+		/*JSONObject address1 = new JSONObject();
 		address1.put("attribute", "address1");
 		address1.put("value", preferredAddress.getString("address1"));
-		attributes.put(address1);
+		attributes.put(address1);*/
 		
-		JSONObject address2 = new JSONObject();
-		address2.put("attribute", "address2");
-		address2.put("value", preferredAddress.getString("address2"));
-		attributes.put(address2);
+		JSONObject ward = new JSONObject();
+		ward.put("attribute", "gpy80dko26B");
+		ward.put("value", preferredAddress.getString("address2"));
+		attributes.put(ward);
 		
-		JSONObject address3 = new JSONObject();
-		address3.put("attribute", "address2");
-		address3.put("value", preferredAddress.getString("address3"));
-		attributes.put(address3);
+		JSONObject upazilaCityCorporation = new JSONObject();
+		upazilaCityCorporation.put("attribute", "PHBH7RJozpn");
+		upazilaCityCorporation.put("value", preferredAddress.getString("address3"));
+		attributes.put(upazilaCityCorporation);
 		
-		JSONObject address4 = new JSONObject();
-		address4.put("attribute", "address2");
-		address4.put("value", preferredAddress.getString("address4"));
-		attributes.put(address4);*/
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String today = dateFormat.format(date);

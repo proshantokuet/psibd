@@ -4,6 +4,7 @@
 package org.openmrs.module.PSI.web.controller;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -54,9 +55,7 @@ public class PSIClinicUserManageController {
 		JSONObject body = new JSONObject(op.body());
 		JSONArray users = new JSONArray(body.getJSONArray("results").toString());
 		JSONArray usernamesArray = new JSONArray();
-		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
-		
-		Set<PSIClinicUser> psiClinicUsers = psiClinicManagement.getpSIClinicUser();
+		List<PSIClinicUser> psiClinicUsers = Context.getService(PSIClinicUserService.class).getAll();
 		for (int i = 0; i < users.length(); i++) {
 			JSONObject nameObject = new JSONObject();
 			JSONObject user = (JSONObject) users.get(i);
@@ -100,7 +99,7 @@ public class PSIClinicUserManageController {
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(
 		    psiClinicUser.getPsiClinicManagementId().getCid());
 		
-		Set<PSIClinicUser> psiClinicUsers = psiClinicManagement.getpSIClinicUser();
+		List<PSIClinicUser> psiClinicUsers = Context.getService(PSIClinicUserService.class).getAll();
 		for (int i = 0; i < users.length(); i++) {
 			JSONObject nameObject = new JSONObject();
 			JSONObject user = (JSONObject) users.get(i);

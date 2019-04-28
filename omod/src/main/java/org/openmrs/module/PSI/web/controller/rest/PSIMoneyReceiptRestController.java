@@ -158,7 +158,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					psiServiceProvision.setNetPayable(Float.parseFloat(service.getString("netPayable")));
 				}
 				
-				if (service.has("moneyReceiptDate")) {
+				if (moneyReceipt.has("moneyReceiptDate")) {
 					psiServiceProvision.setMoneyReceiptDate(yyyyMMdd.parse(moneyReceipt.getString("moneyReceiptDate")));
 				}
 				if (moneyReceipt.has("patientUuid")) {

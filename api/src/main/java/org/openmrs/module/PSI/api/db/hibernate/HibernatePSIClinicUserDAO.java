@@ -75,7 +75,8 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 	@Override
 	public PSIClinicUser findByUserName(String username) {
 		List<PSIClinicUser> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIClinicUser where userName = :username").setString("username", username).list();
+		        .createQuery("from PSIClinicUser where userName = :username order by cuid desc")
+		        .setString("username", username).list();
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {

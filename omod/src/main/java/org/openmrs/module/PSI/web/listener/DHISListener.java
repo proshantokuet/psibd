@@ -40,10 +40,18 @@ public class DHISListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
-		
-		sendPatient();
-		
-		sendMoneyReceipt();
+		try {
+			sendPatient();
+		}
+		catch (Exception e) {
+			
+		}
+		try {
+			sendMoneyReceipt();
+		}
+		catch (Exception e) {
+			
+		}
 		
 	}
 	
@@ -91,6 +99,10 @@ public class DHISListener {
 					Context.clearSession();
 				}
 				catch (Exception e) {
+					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
+					Context.openSession();
+					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+					Context.clearSession();
 					e.printStackTrace();
 				}
 			}

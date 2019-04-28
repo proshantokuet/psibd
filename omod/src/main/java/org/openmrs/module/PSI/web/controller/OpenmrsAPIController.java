@@ -104,8 +104,8 @@ public class OpenmrsAPIController extends MainResourceController {
 				return new ResponseEntity<String>(e.toString() + e.getCause().toString() + "" + e.getMessage(),
 				        HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}*/
-		
+		}
+		*/
 		///// money receipt section
 		long timestamp = 0;
 		

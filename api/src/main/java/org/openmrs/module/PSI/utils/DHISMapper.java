@@ -19,10 +19,10 @@ public class DHISMapper {
 		
 		registrationMapper.put("givenName", "ibiAQos7YlS");
 		registrationMapper.put("familyName", "WaWfKtxwKL6");
-		registrationMapper.put("BirthMothersName", "kuiDlfyUAaj");
-		registrationMapper.put("BirthRank", "D8rFmAxwELy");
-		registrationMapper.put("BirthDistrict", "uPE5YFtACYE");
-		registrationMapper.put("BirthUpazilla", "XYUG5v89Wcg");
+		registrationMapper.put("birthMothersFirstName", "kuiDlfyUAaj");
+		registrationMapper.put("birthRank", "D8rFmAxwELy");
+		registrationMapper.put("birthDistrict", "uPE5YFtACYE");
+		registrationMapper.put("birthUpazilla", "XYUG5v89Wcg");
 		registrationMapper.put("gender", "OBAJuHmsCLw");
 		registrationMapper.put("birthdate", "XsgBRwanI9y");
 		registrationMapper.put("age", "xqnrmX6z7ew");

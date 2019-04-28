@@ -49,7 +49,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@Override
 	public List<PSIServiceProvision> getAllByPatient(String patientUuid) {
 		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
-		lists = sessionFactory.getCurrentSession().createQuery("from PSIServiceProvision where patientUuid = :id")
+		lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceProvision where patientUuid = :id  order by spid desc")
 		        .setString("id", patientUuid).list();
 		
 		return lists;
