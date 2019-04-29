@@ -8,6 +8,7 @@
 <openmrs:require privilege="Edit Clinic Service" otherwise="/login.htm" />
 
 <c:url var="saveUrl" value="/module/PSI/addPPSIClinicService.form" />
+<c:url var="cancelUrl" value="/module/PSI/PSIClinicServiceList.form" />
 
 
 
@@ -31,7 +32,7 @@
                 	<div class="form-group">
                 							
 						Service Code
-						<form:input path="code" class="form-control" required="required"/>
+						<form:input style="height: 39px;" path="code" class="form-control" required="required"/>
                   	</div>
                   	<div class="form-group">
                   	Service Category: 
@@ -53,7 +54,7 @@
               	<div class="col-md-6">
                		<div class="form-group">
                   	<label for="Service Code">Item Name</label>
-						<form:input path="name" class="form-control" required="required"/>                  			
+						<form:input style="height: 39px;" path="name" class="form-control" required="required"/>                  			
 					</div>
                   	<div class="form-group">
                   	Service Provider: 
@@ -86,12 +87,12 @@
               	<div class="col-md-6">               		
                   	<div class="form-group">
                   	Unit Cost:
-                  		<form:input path="unitCost" class="form-control" required="required" min="0" max="500"/>
+                  		<form:input style="height: 39px;" path="unitCost" class="form-control" required="required" min="0" max="500"/>
                    	 	
                   	</div>
               	</div>
           	</div>
-          	<button type="submit" class="btnSubmit">Submit</button>
+          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Cancel</a>
       	</div>
    	</div>
 </div>       

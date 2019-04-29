@@ -6,6 +6,7 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
 <c:url var="saveUrl" value="/module/PSI/addPSIClinicUser.form" />
+<c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
 <%
 String users = (String)session.getAttribute("users");
 String userIds = (String)session.getAttribute("userIds");
@@ -38,7 +39,7 @@ String userIds = (String)session.getAttribute("userIds");
              	</div>             	
               	
           	</div>
-          	<button type="submit" class="btnSubmit">Submit</button>
+          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Cancel</a>
       	</div>
    	</div>
 </div>       

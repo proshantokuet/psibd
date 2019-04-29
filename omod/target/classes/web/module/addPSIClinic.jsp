@@ -10,6 +10,7 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
+<c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
 <%
 //String users = (String)session.getAttribute("users");
 //String userIds = (String)session.getAttribute("userIds");
@@ -36,10 +37,10 @@
         	<div class="row">
             	<div class="col-md-6">
                 	<div class="form-group">
-                		Clinic Name : <form:input path="name" class="form-control" required="required" autocomplete="off"/>
+                		Clinic Name : <form:input path="name" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                   	</div>
                   	<div class="form-group">
-                  		Clinic ID:  <form:input path="clinicId" class="form-control" required="required" autocomplete="off"/>
+                  		Clinic ID:  <form:input path="clinicId" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                    	</div>
              	</div>
               	<div class="col-md-6">
@@ -52,13 +53,13 @@
 					         </form:select>
 					</div>
                   	<div class="form-group">
-                   	Address: 	<form:input path="address" class="form-control" required="required" autocomplete="off"/>                	
+                   	Address: 	<form:input path="address" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>                	
                    	
                   	</div>
               	</div>
               	<div class="col-md-6">               		
                   	<div class="form-group">
-                   	DHIS2 Org ID: <form:input path="dhisId" class="form-control" required="required" autocomplete="off"/>
+                   	DHIS2 Org ID: <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                   	</div>
                   
               	</div>
@@ -73,7 +74,7 @@
                   	
               	</div> -->
           	</div>
-          	<button type="submit" class="btnSubmit">Submit</button>
+          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Cancel</a>
       	</div>
    	</div>
 </div>       

@@ -26,6 +26,7 @@ public class DHISMapper {
 		registrationMapper.put("gender", "OBAJuHmsCLw");
 		registrationMapper.put("birthdate", "XsgBRwanI9y");
 		registrationMapper.put("age", "xqnrmX6z7ew");
+		registrationMapper.put("PatientUUID", "PlytPA42Nbe");
 		
 		registrationMapper.put("countyDistrict", "xqnrmX6z7ew");
 		registrationMapper.put("stateProvince", "xqnrmX6z7ew");

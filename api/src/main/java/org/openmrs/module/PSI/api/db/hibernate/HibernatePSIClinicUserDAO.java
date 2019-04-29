@@ -43,7 +43,8 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PSIClinicUser> getAll() {
-		List<PSIClinicUser> psiClinicUsers = sessionFactory.getCurrentSession().createQuery("from PSIClinicUser ").list();
+		List<PSIClinicUser> psiClinicUsers = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIClinicUser  order by cuid desc").list();
 		
 		return psiClinicUsers;
 	}
@@ -51,7 +52,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public PSIClinicUser findById(int id) {
-		List<PSIClinicUser> lists = sessionFactory.getCurrentSession().createQuery("from PSIClinicUser where id = :id")
+		List<PSIClinicUser> lists = sessionFactory.getCurrentSession().createQuery("from PSIClinicUser where cuid = :id")
 		        .setInteger("id", id).list();
 		if (lists.size() != 0) {
 			return lists.get(0);

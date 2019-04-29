@@ -8,6 +8,7 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
+<c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
 <openmrs:require privilege="Edit Team" otherwise="/login.htm" />
 
 <div class="container register-form">
@@ -25,10 +26,10 @@
         	<div class="row">
             	<div class="col-md-6">
                 	<div class="form-group">
-                		Clinic Name : <form:input path="name" class="form-control" required="required"/>
+                		Clinic Name : <form:input style="height: 39px;" path="name" class="form-control" required="required"/>
                   	</div>
                   	<div class="form-group">
-                  		Clinic ID: <form:input path="clinicId" class="form-control" required="required"/>
+                  		Clinic ID: <form:input style="height: 39px;" path="clinicId" class="form-control" required="required"/>
                    	</div>
              	</div>
               	<div class="col-md-6">
@@ -41,18 +42,18 @@
 					         </form:select>
 					</div>
                   	<div class="form-group">
-                   	Address: 	<form:input path="address" class="form-control" required="required"/>                	
+                   	Address: 	<form:input style="height: 39px;" path="address" class="form-control" required="required"/>                	
                    	
                   	</div>
               	</div>
               	<form:hidden path="cid" />
               	<div class="col-md-6">               		
                   	<div class="form-group">
-                   	DHIS2 ID: <form:input path="dhisId" class="form-control" required="required"/>
+                   	DHIS2 ID: <form:input style="height: 39px;" path="dhisId" class="form-control" required="required"/>
                   	</div>
               	</div>
           	</div>
-          	<button type="submit" class="btnSubmit">Submit</button>
+          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Cancel</a>
       	</div>
    	</div>
 </div>       

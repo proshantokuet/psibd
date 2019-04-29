@@ -39,8 +39,8 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PSIClinicManagement> getAllClinic() {
-		List<PSIClinicManagement> clinics = sessionFactory.getCurrentSession().createQuery("from PSIClinicManagement ")
-		        .list();
+		List<PSIClinicManagement> clinics = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIClinicManagement  order by cid desc").list();
 		if (clinics.size() != 0) {
 			return clinics;
 		}
@@ -52,7 +52,7 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 	public PSIClinicManagement findById(int id) {
 		// TODO Auto-generated method stub
 		List<PSIClinicManagement> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIClinicManagement where id = :id").setInteger("id", id).list();
+		        .createQuery("from PSIClinicManagement where cid = :id").setInteger("id", id).list();
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {
@@ -90,7 +90,7 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 	public PSIClinicManagement findByIdNotByClinicId(int id, String clinicId) {
 		// TODO Auto-generated method stub
 		List<PSIClinicManagement> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIClinicManagement where id=:id and  clinicId != :clinicId")
+		        .createQuery("from PSIClinicManagement where cid !=:id and  clinicId = :clinicId")
 		        .setString("clinicId", clinicId).setInteger("id", id).list();
 		if (lists.size() != 0) {
 			return lists.get(0);

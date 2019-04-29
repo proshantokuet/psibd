@@ -9,6 +9,7 @@
 <table id="table_id" class="display">
     <thead>
         <tr>
+            <th>#Id</th>
             <th>Clinic Name</th>
             <th>Clinic ID</th>
             <th>Category</th>
@@ -19,6 +20,7 @@
     <tbody>
     	<c:forEach var="clinic" items="${ pSIClinics }">
         <tr>
+        	<td>${ clinic.cid }</td>
             <td>${ clinic.name }</td>
             <td>${ clinic.clinicId }</td>
             <td>${ clinic.category }</td>

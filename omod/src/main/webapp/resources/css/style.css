@@ -1,11 +1,11 @@
 .note
 {
     text-align: center;
-    height: 80px;
-    background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+    height: 60px;
+    background: -webkit-linear-gradient(left, #387c7c, #387c7c);
     color: #fff;
     font-weight: bold;
-    line-height: 80px;
+    line-height: 60px;
 }
 .form-content
 {
@@ -23,6 +23,6 @@
     padding: 1%;
     width: 20%;
     cursor: pointer;
-    background: #0062cc;
+    background: #387c7c;
     color: #fff;
 }

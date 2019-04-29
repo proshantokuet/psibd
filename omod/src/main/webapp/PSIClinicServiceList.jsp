@@ -9,6 +9,8 @@
 <table id="serviceList" class="display">
     <thead>
         <tr>
+            <th>#Id</th>
+            <th>Clinic Name</th>
             <th>Service Code</th>
             <th>Item Name</th>
             <th>Service Category</th>
@@ -20,6 +22,8 @@
     <tbody>
     	<c:forEach var="service" items="${ pSIServiceManagements }">
         <tr>
+        	<td>${ service.sid }</td>
+            <td>${ service.psiClinicManagement.name }</td>
             <td>${ service.code }</td>
             <td>${ service.name }</td>
             <td>${ service.category }</td>

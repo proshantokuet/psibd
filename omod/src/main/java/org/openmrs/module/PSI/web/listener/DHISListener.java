@@ -89,7 +89,7 @@ public class DHISListener {
 					if (trackedEntityInstances.length() != 0) {
 						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 						String UpdateUrl = trackerUrl + "/" + trackedEntityInstance.getString("trackedEntityInstance");
-						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
+						//response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
 					} else {
 						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
 					}

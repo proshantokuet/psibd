@@ -98,7 +98,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
 		lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIServiceProvision where timestamp > :timestamp order by timestamp asc ")
-		        .setLong("timestamp", timestamp).setMaxResults(1)
+		        .setLong("timestamp", timestamp).setMaxResults(500)
 		        
 		        .list();
 		return lists;
