@@ -26,11 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OpenmrsAPIController extends MainResourceController {
 	
-	private static final String OPENMRS_BASE_URL = "https://192.168.33.10/openmrs";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String trackerUrl = "http://192.168.19.148:1971/api/trackedEntityInstances";
+	private static final String OPENMRS_BASE_URL = "https://192.168.19.145/openmrs";
 	
-	private final String trackInstanceUrl = "http://192.168.19.148:1971/api/trackedEntityInstances.json?";
+	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
+	
+	private final String trackInstanceUrl = DHIS2BASEURL + "/api/trackedEntityInstances.json?";
 	
 	final String USER_URL = "ws/rest/v1/user";
 	
@@ -40,7 +42,7 @@ public class OpenmrsAPIController extends MainResourceController {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	private final String EVENTURL = "http://192.168.19.148:1971/api/events";
+	private final String EVENTURL = DHIS2BASEURL + "/api/events";
 	
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -76,9 +78,10 @@ public class OpenmrsAPIController extends MainResourceController {
 		eventReceordDTOs = Context.getService(PSIDHISMarkerService.class).rawQuery(lastReadPatient);
 		JSONObject response = new JSONObject();
 		String UpdateUrl = "";
+		JSONObject patient = new JSONObject();
 		for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
 			try {
-				JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
+				patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
 				JSONObject patientJson = DHISDataConverter.toConvertPatient(patient);
 				JSONObject person = patient.getJSONObject("person");
 				String URL = trackInstanceUrl + "filter=nlwOL9RrqGC:EQ:" + person.getString("uuid") + "&ou="
@@ -96,12 +99,12 @@ public class OpenmrsAPIController extends MainResourceController {
 				Context.openSession();
 				Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 				Context.clearSession();
-				return new ResponseEntity<String>(patient.toString() + "$$$$$$$$$$$:" + patientJson + "--------"
-				        + response.toString() + URL + " -- " + UpdateUrl + " --" + getResponse, HttpStatus.OK);
+				return new ResponseEntity<String>(patient.toString() + "$$$$$$$$$$$Up:" + patientJson.toString(),
+				        HttpStatus.OK);
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				return new ResponseEntity<String>(e.toString() + e.getCause().toString() + "" + e.getMessage(),
+				return new ResponseEntity<String>(patient + e.toString() + e.getCause().toString() + "" + e.getMessage(),
 				        HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}

@@ -4,8 +4,7 @@
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="Clinic User List" otherwise="/login.htm" />
 
-<a href="${pageContext.request.contextPath}/module/PSI/PSIClinicList.form"><spring:message
-				code="PSI.psiclinic" /></a> |  <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicUser.form?id=${id}"><spring:message
+ <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicUser.form?id=${id}"><spring:message
 				code="PSI.psiClinicUserAssing" /></a> 	
 <p><center><b></b> Clinic Name: ${ name }</b></center></p>					
 <table id="table_id" class="display">

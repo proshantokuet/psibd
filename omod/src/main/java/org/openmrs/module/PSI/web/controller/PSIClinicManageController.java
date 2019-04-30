@@ -8,14 +8,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
-import org.openmrs.module.PSI.utils.HttpResponse;
-import org.openmrs.module.PSI.utils.HttpUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -30,13 +26,11 @@ public class PSIClinicManageController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	private static final String OPENMRS_BASE_URL = "https://192.168.33.10/openmrs";
-	
 	final String USER_URL = "ws/rest/v1/user";
 	
 	@RequestMapping(value = "/module/PSI/addPSIClinic", method = RequestMethod.GET)
 	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model) throws JSONException {
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + USER_URL + "/", "v=default",
+		/*HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + USER_URL + "/", "v=default",
 		    "superman", "Admin123");
 		JSONObject body = new JSONObject(op.body());
 		JSONArray users = new JSONArray(body.getJSONArray("results").toString());
@@ -50,7 +44,7 @@ public class PSIClinicManageController {
 			usernamesArray.put(nameObject);
 		}
 		
-		session.setAttribute("users", usernamesArray.toString());
+		session.setAttribute("users", usernamesArray.toString());*/
 		model.addAttribute("pSIClinic", new PSIClinicManagement());
 	}
 	

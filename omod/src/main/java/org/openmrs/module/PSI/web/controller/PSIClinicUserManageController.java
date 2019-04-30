@@ -40,7 +40,7 @@ public class PSIClinicUserManageController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	private static final String OPENMRS_BASE_URL = "https://192.168.33.10/openmrs";
+	private static final String OPENMRS_BASE_URL = "https://localhost/openmrs";
 	
 	final String USER_URL = "ws/rest/v1/user";
 	

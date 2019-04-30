@@ -21,7 +21,7 @@ String userIds = (String)session.getAttribute("userIds");
 <div class="container register-form">
 	<div class="form">
     	<div class="note">
-        	<p>Assign User.</p>
+        	<p>Assign User</p>
        	</div>
 
   		<div class="form-content">
@@ -29,7 +29,7 @@ String userIds = (String)session.getAttribute("userIds");
             	<div class="col-md-6">
                 	<div class="form-group">
                   		<div id="cm" class="ui-widget">
-							Assign User :
+							Select User
 							<div id="userIds"></div>							
 						</div>
                   	</div>

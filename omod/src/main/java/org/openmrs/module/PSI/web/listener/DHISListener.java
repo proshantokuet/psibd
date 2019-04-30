@@ -32,11 +32,13 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	private final String trackerUrl = "http://192.168.19.148:1971/api/trackedEntityInstances";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String trackInstanceUrl = "http://192.168.19.148:1971/api/trackedEntityInstances.json?";
+	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
-	private final String EVENTURL = "http://192.168.19.148:1971/api/events";
+	private final String trackInstanceUrl = DHIS2BASEURL + "/api/trackedEntityInstances.json?";
+	
+	private final String EVENTURL = DHIS2BASEURL + "/api/events";
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {

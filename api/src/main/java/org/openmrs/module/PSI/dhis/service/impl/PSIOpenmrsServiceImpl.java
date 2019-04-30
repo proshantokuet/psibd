@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	
-	private final String OPENMRS_BASE_URL = "https://192.168.33.10";
+	private final String OPENMRS_BASE_URL = "https://localhost";
 	
 	@Override
 	public JSONObject add(String payload, JSONObject jsonObject, String URL) throws JSONException {
