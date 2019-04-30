@@ -50,7 +50,7 @@ public class DHISDataConverter {
 			
 		}
 		
-		/*JSONObject preferredName = person.getJSONObject("preferredName");
+		JSONObject preferredName = person.getJSONObject("preferredName");
 		JSONObject givenName = new JSONObject();
 		if (preferredName.has("givenName")) {
 			if (DHISMapper.registrationMapper.containsKey("givenName")) {
@@ -150,7 +150,7 @@ public class DHISDataConverter {
 			upazilaCityCorporation.put("attribute", "PHBH7RJozpn");
 			upazilaCityCorporation.put("value", preferredAddress.getString("address3"));
 			attributes.put(upazilaCityCorporation);
-		}*/
+		}
 		
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
