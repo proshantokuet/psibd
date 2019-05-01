@@ -32,19 +32,21 @@ public class DHISDataConverter {
 			if ("orgUnit".equalsIgnoreCase(attributeTypeName)) {
 				trackentityInstances.put("orgUnit", patientAttribute.getString("value"));
 				orgUnit = patientAttribute.getString("value");
-			}
-			if (DHISMapper.registrationMapper.containsKey(attributeTypeName)) {
-				JSONObject attribute = new JSONObject();
-				attribute.put("attribute", DHISMapper.registrationMapper.get(attributeTypeName));
-				
-				if (DHISMapper.selectOptionMapper.containsKey(attributeTypeName)) {
-					attribute.put("value", patientAttribute.getString("display"));
-				} else if (DHISMapper.dateMapper.containsKey(attributeTypeName)) {
-					attribute.put("value", patientAttribute.getString("value").substring(0, 10));
-				} else {
-					attribute.put("value", patientAttribute.getString("value"));
+			} else {
+				if (DHISMapper.registrationMapper.containsKey(attributeTypeName)) {
+					JSONObject attribute = new JSONObject();
+					attribute.put("attribute", DHISMapper.registrationMapper.get(attributeTypeName));
+					
+					if (DHISMapper.selectOptionMapper.containsKey(attributeTypeName)) {
+						attribute.put("value", patientAttribute.getString("display"));
+					} else if (DHISMapper.dateMapper.containsKey(attributeTypeName)) {
+						attribute.put("value", patientAttribute.getString("value").substring(0, 10));
+					} else {
+						attribute.put("value", patientAttribute.getString("value"));
+					}
+					attributes.put(attribute);
+					
 				}
-				attributes.put(attribute);
 				
 			}
 			
@@ -52,106 +54,123 @@ public class DHISDataConverter {
 		
 		JSONObject preferredName = person.getJSONObject("preferredName");
 		JSONObject givenName = new JSONObject();
+		
 		if (preferredName.has("givenName")) {
-			if (DHISMapper.registrationMapper.containsKey("givenName")) {
-				givenName.put("attribute", DHISMapper.registrationMapper.get("givenName"));
-				givenName.put("value", preferredName.getString("givenName"));
-				attributes.put(givenName);
+			if (!preferredName.isNull("givenName")) {
+				if (DHISMapper.registrationMapper.containsKey("givenName")) {
+					givenName.put("attribute", DHISMapper.registrationMapper.get("givenName"));
+					givenName.put("value", preferredName.getString("givenName"));
+					attributes.put(givenName);
+				}
 			}
 		}
-		if (preferredName.has("middleName")) {
-			if (DHISMapper.registrationMapper.containsKey("middleName")) {
-				JSONObject middleName = new JSONObject();
-				middleName.put("attribute", DHISMapper.registrationMapper.get("middleName"));
-				middleName.put("value", preferredName.getString("middleName"));
-				attributes.put(middleName);
-			}
-		}
+		
 		if (preferredName.has("familyName")) {
-			if (DHISMapper.registrationMapper.containsKey("familyName")) {
-				JSONObject familyName = new JSONObject();
-				familyName.put("attribute", DHISMapper.registrationMapper.get("familyName"));
-				familyName.put("value", preferredName.getString("familyName"));
-				attributes.put(familyName);
+			if (!preferredName.isNull("familyName")) {
+				if (DHISMapper.registrationMapper.containsKey("familyName")) {
+					JSONObject familyName = new JSONObject();
+					familyName.putOpt("attribute", DHISMapper.registrationMapper.get("familyName"));
+					familyName.putOpt("value", preferredName.getString("familyName"));
+					attributes.put(familyName);
+				}
 			}
 		}
 		if (person.has("birthdate")) {
-			if (DHISMapper.registrationMapper.containsKey("birthdate")) {
-				JSONObject birthdate = new JSONObject();
-				birthdate.put("attribute", DHISMapper.registrationMapper.get("birthdate"));
-				birthdate.put("value", person.getString("birthdate").substring(0, 10));
-				attributes.put(birthdate);
+			if (!person.isNull("birthdate")) {
+				if (DHISMapper.registrationMapper.containsKey("birthdate")) {
+					JSONObject birthdate = new JSONObject();
+					birthdate.put("attribute", DHISMapper.registrationMapper.get("birthdate"));
+					birthdate.put("value", person.getString("birthdate").substring(0, 10));
+					attributes.put(birthdate);
+				}
 			}
 		}
 		if (person.has("age")) {
-			if (DHISMapper.registrationMapper.containsKey("age")) {
-				JSONObject age = new JSONObject();
-				age.put("attribute", DHISMapper.registrationMapper.get("age"));
-				age.put("value", Integer.parseInt(person.getString("age")));
-				attributes.put(age);
+			if (!person.isNull("age")) {
+				if (DHISMapper.registrationMapper.containsKey("age")) {
+					JSONObject age = new JSONObject();
+					age.put("attribute", DHISMapper.registrationMapper.get("age"));
+					age.put("value", Integer.parseInt(person.getString("age")));
+					attributes.put(age);
+				}
 			}
 		}
 		if (person.has("gender")) {
-			if (DHISMapper.registrationMapper.containsKey("gender")) {
-				String genderOptiion = person.getString("gender");
-				String genderName = "";
-				if (genderOptiion.equalsIgnoreCase("M")) {
-					genderName = "Male";
-				} else if (genderOptiion.equalsIgnoreCase("F")) {
-					genderName = "Female";
-				} else {
-					genderName = "Third Gender";
+			if (!person.isNull("gender")) {
+				if (DHISMapper.registrationMapper.containsKey("gender")) {
+					String genderOptiion = person.getString("gender");
+					String genderName = "";
+					if (genderOptiion.equalsIgnoreCase("M")) {
+						genderName = "Male";
+					} else if (genderOptiion.equalsIgnoreCase("F")) {
+						genderName = "Female";
+					} else {
+						genderName = "Third Gender";
+					}
+					JSONObject gender = new JSONObject();
+					gender.put("attribute", DHISMapper.registrationMapper.get("gender"));
+					gender.put("value", genderName);
+					attributes.put(gender);
 				}
-				JSONObject gender = new JSONObject();
-				gender.put("attribute", DHISMapper.registrationMapper.get("gender"));
-				gender.put("value", genderName);
-				attributes.put(gender);
 			}
 		}
 		
 		if (person.has("uuid")) {
-			if (DHISMapper.registrationMapper.containsKey("uuid")) {
-				JSONObject uuid = new JSONObject();
-				uuid.put("attribute", DHISMapper.registrationMapper.get("uuid"));
-				uuid.put("value", person.getString("uuid"));
-				attributes.put(uuid);
+			if (!person.isNull("uuid")) {
+				if (DHISMapper.registrationMapper.containsKey("uuid")) {
+					JSONObject uuid = new JSONObject();
+					uuid.put("attribute", DHISMapper.registrationMapper.get("uuid"));
+					uuid.put("value", person.getString("uuid"));
+					attributes.put(uuid);
+				}
 			}
 		}
-		
-		JSONObject preferredAddress = person.getJSONObject("preferredAddress");
-		
-		if (preferredAddress.has("stateProvince")) {
-			JSONObject division = new JSONObject();
-			division.put("attribute", "yrbd4rRgRcR");
-			division.put("value", preferredAddress.getString("stateProvince"));
-			attributes.put(division);
+		if (person.has("preferredAddress")) {
+			if (!person.isNull("preferredAddress")) {
+				
+				JSONObject preferredAddress = person.getJSONObject("preferredAddress");
+				if (!preferredAddress.isNull("stateProvince")) {
+					if (preferredAddress.has("stateProvince")) {
+						JSONObject division = new JSONObject();
+						division.put("attribute", "yrbd4rRgRcR");
+						division.put("value", preferredAddress.getString("stateProvince"));
+						attributes.put(division);
+					}
+				}
+				if (!preferredAddress.isNull("countyDistrict")) {
+					if (preferredAddress.has("countyDistrict")) {
+						JSONObject countyDistrict = new JSONObject();
+						countyDistrict.put("attribute", "DPSa3yVkyJg");
+						countyDistrict.put("value", preferredAddress.getString("countyDistrict"));
+						attributes.put(countyDistrict);
+					}
+				}
+				if (!preferredAddress.isNull("cityVillage")) {
+					if (preferredAddress.has("cityVillage")) {
+						JSONObject unionMunicipality = new JSONObject();
+						unionMunicipality.put("attribute", "dLt4JC3UB4d");
+						unionMunicipality.put("value", preferredAddress.getString("cityVillage"));
+						attributes.put(unionMunicipality);
+					}
+				}
+				if (!preferredAddress.isNull("address2")) {
+					if (preferredAddress.has("address2")) {
+						JSONObject ward = new JSONObject();
+						ward.put("attribute", "gpy80dko26B");
+						ward.put("value", preferredAddress.getString("address2"));
+						attributes.put(ward);
+					}
+				}
+				if (!preferredAddress.isNull("address3")) {
+					if (preferredAddress.has("address3")) {
+						JSONObject upazilaCityCorporation = new JSONObject();
+						upazilaCityCorporation.put("attribute", "PHBH7RJozpn");
+						upazilaCityCorporation.put("value", preferredAddress.getString("address3"));
+						attributes.put(upazilaCityCorporation);
+					}
+				}
+			}
 		}
-		if (preferredAddress.has("countyDistrict")) {
-			JSONObject countyDistrict = new JSONObject();
-			countyDistrict.put("attribute", "DPSa3yVkyJg");
-			countyDistrict.put("value", preferredAddress.getString("countyDistrict"));
-			attributes.put(countyDistrict);
-		}
-		if (preferredAddress.has("cityVillage")) {
-			JSONObject unionMunicipality = new JSONObject();
-			unionMunicipality.put("attribute", "dLt4JC3UB4d");
-			unionMunicipality.put("value", preferredAddress.getString("cityVillage"));
-			attributes.put(unionMunicipality);
-		}
-		
-		if (preferredAddress.has("address2")) {
-			JSONObject ward = new JSONObject();
-			ward.put("attribute", "gpy80dko26B");
-			ward.put("value", preferredAddress.getString("address2"));
-			attributes.put(ward);
-		}
-		if (preferredAddress.has("address3")) {
-			JSONObject upazilaCityCorporation = new JSONObject();
-			upazilaCityCorporation.put("attribute", "PHBH7RJozpn");
-			upazilaCityCorporation.put("value", preferredAddress.getString("address3"));
-			attributes.put(upazilaCityCorporation);
-		}
-		
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String today = dateFormat.format(date);
