@@ -1,11 +1,23 @@
 package org.openmrs.module.PSI.web.controller.rest;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
@@ -20,7 +32,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
@@ -110,6 +124,94 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		} else {
 			msg = "This Code is already taken";
 		}
+		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
+		
+	}
+	
+	@SuppressWarnings("resource")
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	public ResponseEntity<String> uploadClinicService(@RequestParam MultipartFile file, HttpServletRequest request,
+	                                                  ModelMap model, @RequestParam(required = false) int id)
+	    throws Exception {
+		String msg = "";
+		String failedMessage = "";
+		if (file.isEmpty()) {
+			msg = "failed to upload file because its empty";
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.BAD_REQUEST);
+			
+		} else if (!"text/csv".equalsIgnoreCase(file.getContentType())) {
+			msg = "file type should be '.csv'";
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.BAD_REQUEST);
+			
+		}
+		
+		String rootPath = request.getSession().getServletContext().getRealPath("/");
+		File dir = new File(rootPath + File.separator + "uploadedfile");
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		
+		File csvFile = new File(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+		
+		try {
+			try (InputStream is = file.getInputStream();
+			        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(csvFile))) {
+				int i;
+				
+				while ((i = is.read()) != -1) {
+					stream.write(i);
+				}
+				stream.flush();
+			}
+		}
+		catch (IOException e) {
+			msg = "failed to process file because : " + e.getMessage();
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.BAD_REQUEST);
+		}
+		
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		int index = 0;
+		int notUploded = 0;
+		try {
+			PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+			br = new BufferedReader(new FileReader(csvFile));
+			
+			while ((line = br.readLine()) != null) {
+				String[] service = line.split(cvsSplitBy);
+				if (index != 0) {
+					PSIServiceManagement findByCodeAndClinicId = Context.getService(PSIServiceManagementService.class)
+					        .findByCode(service[1], id);
+					if (findByCodeAndClinicId == null) {
+						PSIServiceManagement pSIServiceManagement = new PSIServiceManagement();
+						pSIServiceManagement.setName(service[0]);
+						pSIServiceManagement.setCode(service[1]);
+						pSIServiceManagement.setCategory(service[2]);
+						pSIServiceManagement.setProvider(service[3]);
+						pSIServiceManagement.setUnitCost(Float.parseFloat(service[4]));
+						pSIServiceManagement.setPsiClinicManagement(psiClinicManagement);
+						pSIServiceManagement.setDateCreated(new Date());
+						pSIServiceManagement.setCreator(Context.getAuthenticatedUser());
+						psiClinicManagement.setTimestamp(System.currentTimeMillis());
+						pSIServiceManagement.setUuid(UUID.randomUUID().toString());
+						Context.getService(PSIServiceManagementService.class).saveOrUpdate(pSIServiceManagement);
+					} else {
+						notUploded++;
+					}
+				}
+				index++;
+			}
+			msg = "Total successfully service uploaded: " + (index - notUploded - 1);
+			
+		}
+		catch (Exception e) {
+			
+			failedMessage = "failed to process file because : " + e.getCause();
+			return new ResponseEntity<>(new Gson().toJson(msg + " and got error at position: " + index + 1 + " due to "
+			        + failedMessage), HttpStatus.BAD_REQUEST);
+		}
+		
 		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 		
 	}

@@ -161,6 +161,14 @@ public class DHISDataConverter {
 						attributes.put(ward);
 					}
 				}
+				if (!preferredAddress.isNull("address1")) {
+					if (preferredAddress.has("address1")) {
+						JSONObject vrm = new JSONObject();
+						vrm.put("attribute", "LagD6DiN58S");
+						vrm.put("value", preferredAddress.getString("address1"));
+						attributes.put(vrm);
+					}
+				}
 				if (!preferredAddress.isNull("address3")) {
 					if (preferredAddress.has("address3")) {
 						JSONObject upazilaCityCorporation = new JSONObject();

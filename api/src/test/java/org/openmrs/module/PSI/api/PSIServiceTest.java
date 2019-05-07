@@ -17,14 +17,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -37,7 +32,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void shouldSetupContext() {
 		assertNotNull(Context.getService(PSIService.class));
-		String s = "1985-04-18T00:00:00.000+0000";
+		/*String s = "1985-04-18T00:00:00.000+0000";
 		System.out.println(s.substring(0, 10));
 		
 		Date date = Calendar.getInstance().getTime();
@@ -45,6 +40,8 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		String strDate = dateFormat.format(date);
 		System.out.println("Converted String: " + strDate);
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
+		LocalDateTime dateTime = LocalDateTime.parse("2018-05-05T11:50:55");
+		System.out.println(dateTime);*/
 		
 	}
 }

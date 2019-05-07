@@ -5,33 +5,40 @@
 <openmrs:require privilege="Clinic List" otherwise="/login.htm" />
 
 <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
-				code="PSI.psiClinicAddNew" /></a> 	
-<table id="table_id" class="display">
-    <thead>
-        <tr>
-            <th>#Id</th>
-            <th>Clinic Name</th>
-            <th>Clinic ID</th>
-            <th>Category</th>
-            <th>Address</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-    	<c:forEach var="clinic" items="${ pSIClinics }">
-        <tr>
-        	<td>${ clinic.cid }</td>
-            <td>${ clinic.name }</td>
-            <td>${ clinic.clinicId }</td>
-            <td>${ clinic.category }</td>
-            <td>${ clinic.address }</td>
-            <td> <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a> </td>
-        </tr>
-       </c:forEach>
-        
-    </tbody>
-</table>
-
+				code="PSI.psiClinicAddNew" /></a> 
+<div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
+	<div class="form">
+		<div class="note">
+		<p>Community Clinic List</p>        	
+		</div>	
+	</div>
+	<br />
+	<table id="table_id" class="display">
+	    <thead>
+	        <tr>
+	            <th>#Id</th>
+	            <th>Clinic Name</th>
+	            <th>Clinic ID</th>
+	            <th>Category</th>
+	            <th>Address</th>
+	            <th>Action</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	    	<c:forEach var="clinic" items="${ pSIClinics }">
+	        <tr>
+	        	<td>${ clinic.cid }</td>
+	            <td>${ clinic.name }</td>
+	            <td>${ clinic.clinicId }</td>
+	            <td>${ clinic.category }</td>
+	            <td>${ clinic.address }</td>
+	            <td> <a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a> <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a> </td>
+	        </tr>
+	       </c:forEach>
+	        
+	    </tbody>
+	</table>
+</div>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
 <script type="text/javascript">
 

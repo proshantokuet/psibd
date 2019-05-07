@@ -18,10 +18,10 @@ String userIds = (String)session.getAttribute("userIds");
 <form:form method="POST" action="${saveUrl}" modelAttribute="pSIClinicUser">
 
 
-<div class="container register-form">
+<div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
-        	<p>Assign User.</p>
+        	<p>Edit Assign User</p>
        	</div>
 
   		<div class="form-content">
@@ -29,7 +29,7 @@ String userIds = (String)session.getAttribute("userIds");
             	<div class="col-md-6">
                 	<div class="form-group">
                   		<div id="cm" class="ui-widget">
-							Assign User :
+							Edit Assign User
 							<div id="userIds"></div>							
 						</div>
                   	</div>
@@ -39,7 +39,7 @@ String userIds = (String)session.getAttribute("userIds");
              	</div>             	
               	
           	</div>
-          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Cancel</a>
+          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Back</a>
       	</div>
    	</div>
 </div>       

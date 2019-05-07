@@ -11,7 +11,7 @@
 <c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
 <openmrs:require privilege="Edit Team" otherwise="/login.htm" />
 
-<div class="container register-form">
+<div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
         	<p>Edit Community Clinic.</p>
@@ -53,7 +53,7 @@
                   	</div>
               	</div>
           	</div>
-          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Cancel</a>
+          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Back</a>
       	</div>
    	</div>
 </div>       
