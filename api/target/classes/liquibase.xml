@@ -215,6 +215,15 @@
 			
 		</addColumn>
 	 </changeSet>
+	 
+	 <changeSet author="Proshanto" id="psiserviceprovision-1.1.1">
+	 	<addColumn tableName="psi_service_provision">
+			<column name="code" type="varchar(255)" />
+			<column name="category" type="varchar(255)" />
+			<column name="provider" type="varchar(255)" />
+			
+		</addColumn>
+	 </changeSet>
 	
 	<changeSet id="psidhismarker-1.0.0" author="Proshanto">
 		<createTable tableName="psi_dhis_marker">

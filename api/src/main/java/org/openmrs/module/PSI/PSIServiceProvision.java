@@ -44,6 +44,12 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	private int field3;
 	
+	private String code;
+	
+	private String category;
+	
+	private String provider;
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -182,6 +188,30 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	public void setDhisId(String dhisId) {
 		this.dhisId = dhisId;
+	}
+	
+	public String getCode() {
+		return code;
+	}
+	
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+	
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	public String getProvider() {
+		return provider;
+	}
+	
+	public void setProvider(String provider) {
+		this.provider = provider;
 	}
 	
 	@Override

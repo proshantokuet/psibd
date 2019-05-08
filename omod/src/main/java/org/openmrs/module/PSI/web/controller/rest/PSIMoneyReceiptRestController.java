@@ -141,6 +141,15 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				if (service.has("description")) {
 					psiServiceProvision.setDescription(service.getString("description"));
 				}
+				if (service.has("code")) {
+					psiServiceProvision.setCode(service.getString("code"));
+				}
+				if (service.has("category")) {
+					psiServiceProvision.setCategory(service.getString("category"));
+				}
+				if (service.has("provider")) {
+					psiServiceProvision.setProvider(service.getString("provider"));
+				}
 				if (service.has("unitCost")) {
 					psiServiceProvision.setUnitCost(Float.parseFloat(service.getString("unitCost")));
 				}

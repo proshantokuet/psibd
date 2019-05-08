@@ -34,6 +34,8 @@ public class DHISListener {
 	
 	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
+	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	
 	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
 	private final String trackInstanceUrl = DHIS2BASEURL + "/api/trackedEntityInstances.json?";

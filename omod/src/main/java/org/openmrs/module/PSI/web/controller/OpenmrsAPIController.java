@@ -1,6 +1,5 @@
 package org.openmrs.module.PSI.web.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -9,10 +8,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIDHISMarker;
+import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
+import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
-import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.module.PSI.web.listener.DHISListener;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class OpenmrsAPIController extends MainResourceController {
 	
 	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private static final String OPENMRS_BASE_URL = "https://192.168.19.145/openmrs";
+	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
@@ -58,7 +58,7 @@ public class OpenmrsAPIController extends MainResourceController {
 		JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "",
 		    "/openmrs/ws/rest/v1/patient/6d4fdfef-84ab-4112-b76e-4cc7687ac96b?v=full");*/
 		
-		int lastReadPatient = 0;
+		/*int lastReadPatient = 0;
 		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient");
 		if (getlastReadEntry == null) {
 			PSIDHISMarker psidhisMarker = new PSIDHISMarker();
@@ -99,18 +99,18 @@ public class OpenmrsAPIController extends MainResourceController {
 				Context.openSession();
 				Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 				Context.clearSession();
-				return new ResponseEntity<String>(patient.toString() + "$$$$$$$$$$$Up:" + patientJson.toString(),
-				        HttpStatus.OK);
+				return new ResponseEntity<String>(patient.toString() + "$$$$$$$$$$$Up:" + patientJson.toString() + "::"
+				        + response, HttpStatus.OK);
 			}
 			catch (Exception e) {
 				e.printStackTrace();
 				return new ResponseEntity<String>(patient + e.toString() + e.getCause().toString() + "" + e.getMessage(),
 				        HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}
+		}*/
 		
 		///// money receipt section
-		/*long timestamp = 0;
+		long timestamp = 0;
 		
 		PSIDHISMarker getlastTimeStamp = Context.getService(PSIDHISMarkerService.class).findByType("MoneyReceipt");
 		if (getlastTimeStamp == null) {
@@ -194,7 +194,7 @@ public class OpenmrsAPIController extends MainResourceController {
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(psiServiceProvisions.toString() + e.toString(), HttpStatus.OK);
-		}*/
+		}
 		//dhisListener.sendData();
 		return new ResponseEntity<String>("not ok ", HttpStatus.OK);
 		

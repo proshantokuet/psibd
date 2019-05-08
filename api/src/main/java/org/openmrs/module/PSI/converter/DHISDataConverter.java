@@ -286,6 +286,21 @@ public class DHISDataConverter {
 		discount.put("value", psiServiceProvision.getDiscount());
 		dataValues.put(discount);
 		
+		JSONObject code = new JSONObject();
+		code.put("dataElement", "z8HUVAzi3Mf");
+		code.put("value", psiServiceProvision.getCode());
+		dataValues.put(code);
+		
+		JSONObject category = new JSONObject();
+		category.put("dataElement", "WMvvgynOSW0");
+		category.put("value", psiServiceProvision.getCategory());
+		dataValues.put(category);
+		
+		/*JSONObject provider = new JSONObject();
+		provider.put("dataElement", "sNpMqQaWrUV");
+		provider.put("value", psiServiceProvision.getProvider());
+		dataValues.put(provider);*/
+		
 		JSONObject netPayableAmount = new JSONObject();
 		netPayableAmount.put("dataElement", "u4GXgQ54Fpn");
 		netPayableAmount.put("value", psiServiceProvision.getNetPayable());
