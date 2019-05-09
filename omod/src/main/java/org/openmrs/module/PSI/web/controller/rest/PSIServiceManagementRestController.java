@@ -137,11 +137,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		String failedMessage = "";
 		if (file.isEmpty()) {
 			msg = "failed to upload file because its empty";
-			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.BAD_REQUEST);
-			
-		} else if (!"text/csv".equalsIgnoreCase(file.getContentType())) {
-			msg = "file type should be '.csv'";
-			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 			
 		}
 		
@@ -166,7 +162,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		}
 		catch (IOException e) {
 			msg = "failed to process file because : " + e.getMessage();
-			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 		}
 		
 		BufferedReader br = null;
@@ -186,6 +182,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 					if (findByCodeAndClinicId == null) {
 						PSIServiceManagement pSIServiceManagement = new PSIServiceManagement();
 						pSIServiceManagement.setName(service[0]);
+						pSIServiceManagement.setField1(file.getContentType());
 						pSIServiceManagement.setCode(service[1]);
 						pSIServiceManagement.setCategory(service[2]);
 						pSIServiceManagement.setProvider(service[3]);
@@ -209,7 +206,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 			
 			failedMessage = "failed to process file because : " + e.getCause();
 			return new ResponseEntity<>(new Gson().toJson(msg + " and got error at position: " + index + 1 + " due to "
-			        + failedMessage), HttpStatus.BAD_REQUEST);
+			        + failedMessage), HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
