@@ -166,7 +166,12 @@
 		</createTable>
 	</changeSet>
 	
-	
+	<changeSet author="Proshanto" id="psimoneyreceipt-1.0.1">
+	 	<addColumn tableName="psi_money_receipt">
+			<column name="session" type="varchar(255)" />
+			<column name="others" type="varchar(255)" />
+		</addColumn>
+	 </changeSet>
 	
 	<changeSet id="psiserviceprovision-1.0.0" author="Proshanto">
 		<createTable tableName="psi_service_provision">

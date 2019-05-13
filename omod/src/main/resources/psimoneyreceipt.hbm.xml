@@ -26,6 +26,8 @@
 	    <property name="slipNo" column="slip_no" type="java.lang.String"/>
 	    <property name="clinicType" column="clinic_type" type="java.lang.String"/>    
 	    <property name="orgUnit" column="org_unit" type="java.lang.String"/>
+	    <property name="session" column="session" type="java.lang.String"/>    
+	    <property name="others" column="others" type="java.lang.String"/>
 	    
 	    <set name="services" cascade="all">
 	       <key>

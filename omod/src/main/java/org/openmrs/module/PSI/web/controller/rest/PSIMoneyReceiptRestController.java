@@ -48,6 +48,12 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			if (moneyReceipt.has("patientName")) {
 				psiMoneyReceipt.setPatientName(moneyReceipt.getString("patientName"));
 			}
+			if (moneyReceipt.has("session")) {
+				psiMoneyReceipt.setSession(moneyReceipt.getString("session"));
+			}
+			if (moneyReceipt.has("other")) {
+				psiMoneyReceipt.setOthers(moneyReceipt.getString("other"));
+			}
 			
 			if (moneyReceipt.has("patientUuid")) {
 				psiMoneyReceipt.setPatientUuid(moneyReceipt.getString("patientUuid"));

@@ -55,6 +55,10 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private String clinicType;
 	
+	private String session;
+	
+	private String others;
+	
 	private Set<PSIServiceProvision> services;
 	
 	private long timestamp;
@@ -293,6 +297,22 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	public void setOrgUnit(String orgUnit) {
 		this.orgUnit = orgUnit;
+	}
+	
+	public String getSession() {
+		return session;
+	}
+	
+	public void setSession(String session) {
+		this.session = session;
+	}
+	
+	public String getOthers() {
+		return others;
+	}
+	
+	public void setOthers(String others) {
+		this.others = others;
 	}
 	
 	@Override

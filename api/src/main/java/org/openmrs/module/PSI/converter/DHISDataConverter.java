@@ -256,6 +256,15 @@ public class DHISDataConverter {
 		referenceId.put("value", psiServiceProvision.getPsiMoneyReceiptId().getReferenceId());
 		dataValues.put(referenceId);
 		
+		/*JSONObject session = new JSONObject();
+		session.put("dataElement", "DyHphdoGGXQ");
+		session.put("value", psiServiceProvision.getPsiMoneyReceiptId().getSession());
+		dataValues.put(session);
+		JSONObject other = new JSONObject();
+		other.put("dataElement", "DyHphdoGGXQ");
+		other.put("value", psiServiceProvision.getPsiMoneyReceiptId().getOthers());
+		dataValues.put(other);*/
+		
 		JSONObject item = new JSONObject();
 		item.put("dataElement", "gFQGgrmfYX9");
 		item.put("value", psiServiceProvision.getItem());
