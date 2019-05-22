@@ -108,6 +108,17 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiMoneyReceipt.setServicePoint(moneyReceipt.getString("servicePoint"));
 			}
 			
+			if (moneyReceipt.has("session")) {
+				psiMoneyReceipt.setSession(moneyReceipt.getString("session"));
+			}
+			
+			if (moneyReceipt.has("other")) {
+				psiMoneyReceipt.setOthers(moneyReceipt.getString("other"));
+			}
+			if (moneyReceipt.has("cspId")) {
+				psiMoneyReceipt.setCspId(moneyReceipt.getString("cspId"));
+			}
+			
 			if (moneyReceipt.has("wealth")) {
 				psiMoneyReceipt.setWealth(moneyReceipt.getString("wealth"));
 			}

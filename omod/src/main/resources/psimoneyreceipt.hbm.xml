@@ -28,6 +28,7 @@
 	    <property name="orgUnit" column="org_unit" type="java.lang.String"/>
 	    <property name="session" column="session" type="java.lang.String"/>    
 	    <property name="others" column="others" type="java.lang.String"/>
+	    <property name="cspId" column="cspid" type="java.lang.String"/>
 	    
 	    <set name="services" cascade="all">
 	       <key>

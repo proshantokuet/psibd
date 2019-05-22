@@ -34,6 +34,9 @@ public class PSIMoneyReceiptConverter {
 		psiMoneyReceiptObject.putOpt("gender", psiMoneyReceipt.getGender());
 		psiMoneyReceiptObject.putOpt("slipNo", psiMoneyReceipt.getSlipNo());
 		psiMoneyReceiptObject.putOpt("clinicType", psiMoneyReceipt.getClinicType());
+		psiMoneyReceiptObject.putOpt("session", psiMoneyReceipt.getSession());
+		psiMoneyReceiptObject.putOpt("other", psiMoneyReceipt.getOthers());
+		psiMoneyReceiptObject.putOpt("cspId", psiMoneyReceipt.getCspId());
 		psiMoneyReceiptObject.putOpt("orgUnit", psiMoneyReceipt.getOrgUnit());
 		psiMoneyReceiptAndServicesObject.putOpt("moneyReceipt", psiMoneyReceiptObject);
 		

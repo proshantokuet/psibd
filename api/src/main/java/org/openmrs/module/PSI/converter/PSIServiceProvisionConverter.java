@@ -42,6 +42,9 @@ public class PSIServiceProvisionConverter {
 		service.putOpt("gender", psiServiceProvisions.getPsiMoneyReceiptId().getGender());
 		service.putOpt("slipNo", psiServiceProvisions.getPsiMoneyReceiptId().getSlipNo());
 		service.putOpt("clinicType", psiServiceProvisions.getPsiMoneyReceiptId().getClinicType());
+		service.putOpt("session", psiServiceProvisions.getPsiMoneyReceiptId().getSession());
+		service.putOpt("other", psiServiceProvisions.getPsiMoneyReceiptId().getOthers());
+		service.putOpt("cspId", psiServiceProvisions.getPsiMoneyReceiptId().getCspId());
 		
 		return service;
 		

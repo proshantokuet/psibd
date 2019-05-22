@@ -24,6 +24,9 @@
 		href="${pageContext.request.contextPath}/module/PSI/PSIClinicServiceList.form"><spring:message
 				code="PSI.psiservicelist" /></a>
 	</li>
+	<li>		
+		<a href="/bahmni/home/#/dashboard">Back to Main</a>
+	</li>
 	
 	
 	<!-- Add further links here -->

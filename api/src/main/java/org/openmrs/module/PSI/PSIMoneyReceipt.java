@@ -59,6 +59,8 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private String others;
 	
+	private String cspId;
+	
 	private Set<PSIServiceProvision> services;
 	
 	private long timestamp;
@@ -313,6 +315,14 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	public void setOthers(String others) {
 		this.others = others;
+	}
+	
+	public String getCspId() {
+		return cspId;
+	}
+	
+	public void setCspId(String cspId) {
+		this.cspId = cspId;
 	}
 	
 	@Override

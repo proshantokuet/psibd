@@ -32,9 +32,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
@@ -106,6 +106,10 @@ public class DHISListener {
 					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
 					Context.openSession();
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+					PSIDHISMarker dh = new PSIDHISMarker();
+					dh.setVoidReason(e.toString());
+					dh.setUuid(eventReceordDTO.getUrl());
+					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(dh);
 					Context.clearSession();
 					e.printStackTrace();
 				}
