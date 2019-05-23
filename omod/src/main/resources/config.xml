@@ -37,6 +37,7 @@
 		psiserviceprovision.hbm.xml
 		psiclinicuser.hbm.xml
 		psidhismarker.hbm.xml
+		psidhisexception.hbm.xml
 				
 	</mappingFiles>
 

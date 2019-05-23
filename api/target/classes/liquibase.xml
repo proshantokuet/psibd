@@ -262,5 +262,27 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="psidhisexception-1.0.0" author="Proshanto">
+		<createTable tableName="psi_exception">
+			<column name="rid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>			
+			<column name="json" type="varchar(2000)" />
+			<column name="error" type="varchar(2000)" />
+			<column name="response" type="varchar(2000)" />
+			<column name="timestamp" type="long" />			
+			
+			<column name="patient_id" type="int(11)" />		
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>		
+			
+			<column name="date_changed" type="datetime" />
+			
+			
+		</createTable>
+	</changeSet>
+	
 	
 </databaseChangeLog>

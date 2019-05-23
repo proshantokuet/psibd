@@ -8,13 +8,16 @@ import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.api.PSIDHISExceptionService;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
+import org.openmrs.module.PSI.utils.DHISMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -59,7 +62,7 @@ public class DHISListener {
 		
 	}
 	
-	private void sendPatient() {
+	public void sendPatient() {
 		int lastReadPatient = 0;
 		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient");
 		if (getlastReadEntry == null) {
@@ -79,15 +82,16 @@ public class DHISListener {
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		eventReceordDTOs = Context.getService(PSIDHISMarkerService.class).rawQuery(lastReadPatient);
 		JSONObject response = new JSONObject();
+		JSONObject patientJson = new JSONObject();
 		if (eventReceordDTOs.size() != 0 && eventReceordDTOs != null) {
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
 				try {
 					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
-					JSONObject patientJson = DHISDataConverter.toConvertPatient(patient);
+					patientJson = DHISDataConverter.toConvertPatient(patient);
 					JSONObject person = patient.getJSONObject("person");
 					
-					String URL = trackInstanceUrl + "filter=nlwOL9RrqGC:EQ:" + person.getString("uuid") + "&ou="
-					        + patientJson.getString("orgUnit");
+					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
+					        + person.getString("uuid") + "&ou=" + patientJson.getString("orgUnit");
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 					if (trackedEntityInstances.length() != 0) {
@@ -100,16 +104,20 @@ public class DHISListener {
 					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
 					Context.openSession();
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+					
 					Context.clearSession();
 				}
 				catch (Exception e) {
 					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
 					Context.openSession();
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
-					PSIDHISMarker dh = new PSIDHISMarker();
-					dh.setVoidReason(e.toString());
-					dh.setUuid(eventReceordDTO.getUrl());
-					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(dh);
+					PSIDHISException psidhisException = new PSIDHISException();
+					psidhisException.setError(e.toString());
+					psidhisException.setJson(patientJson.toString());
+					psidhisException.setResponse(response.toString());
+					psidhisException.setDateCreated(new Date());
+					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+					
 					Context.clearSession();
 					e.printStackTrace();
 				}
@@ -142,7 +150,8 @@ public class DHISListener {
 		if (psiServiceProvisions.size() != 0 && psiServiceProvisions != null) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
 				try {
-					String URL = trackInstanceUrl + "filter=nlwOL9RrqGC:EQ:" + psiServiceProvision.getPatientUuid() + "&ou="
+					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
+					        + psiServiceProvision.getPatientUuid() + "&ou="
 					        + psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");

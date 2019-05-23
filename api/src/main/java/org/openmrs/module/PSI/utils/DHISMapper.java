@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class DHISMapper {
 	
-	public static final Map<String, String> registrationMapper = new HashMap<String, String>();;
+	public static final Map<String, String> registrationMapper = new HashMap<String, String>();
 	static {
 		registrationMapper.put("IDno", "dqbLVslqgwj");
 		registrationMapper.put("SelectanIDcard", "UxHmrIJjp5r");
@@ -33,9 +33,44 @@ public class DHISMapper {
 		
 		registrationMapper.put("uuid", "nlwOL9RrqGC");
 		
+		registrationMapper.put("stateProvince", "yrbd4rRgRcR");
+		registrationMapper.put("countyDistrict", "DPSa3yVkyJg");
+		registrationMapper.put("cityVillage", "dLt4JC3UB4d");
+		registrationMapper.put("address2", "gpy80dko26B");
+		registrationMapper.put("address1", "LagD6DiN58S");
+		registrationMapper.put("address3", "PHBH7RJozpn");
+		registrationMapper.put("trackedEntityType", "c9H923L9Lbz");
+		registrationMapper.put("program", "o6zWmo6on9K");
+		
+		registrationMapper.put("patientId", "Ae9PjZczL9z");
+		
 	}
 	
-	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();;
+	public static final Map<String, String> ServiceProvision = new HashMap<String, String>();
+	static {
+		ServiceProvision.put("programStage", "UKTFJZZ5I66");
+		ServiceProvision.put("clinicName", "iiZK5h6CDnG");
+		ServiceProvision.put("clinicId", "oNgz5FFG5Az");
+		ServiceProvision.put("servicePoint", "WgfyHCvhqYK");
+		ServiceProvision.put("saletilteClinicId", "CMNIQFwqSUl");
+		ServiceProvision.put("serviceDate", "bKEmultRiUQ");
+		ServiceProvision.put("teamNo", "MJ7nruCm0ub");
+		
+		ServiceProvision.put("slipNo", "LAGnqBgA1pG");
+		ServiceProvision.put("reference", "dXwORvJ4ODG");
+		ServiceProvision.put("referenceId", "DyHphdoGGXQ");
+		ServiceProvision.put("item", "gFQGgrmfYX9");
+		ServiceProvision.put("description", "AGuYIDbmiIY");
+		ServiceProvision.put("unitCost", "sydU3SHbPoR");
+		ServiceProvision.put("quantity", "bNrHdhSMqxA");
+		ServiceProvision.put("totalAmount", "zKtNgQuvN1O");
+		ServiceProvision.put("discount", "qyhmRo71iYR");
+		ServiceProvision.put("code", "z8HUVAzi3Mf");
+		ServiceProvision.put("category", "WMvvgynOSW0");
+		ServiceProvision.put("netPayableAmount", "u4GXgQ54Fpn");
+	}
+	
+	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();
 	static {
 		selectOptionMapper.put("RegistrationPoint", "");
 		selectOptionMapper.put("SelectanIDcard", "");
@@ -44,7 +79,7 @@ public class DHISMapper {
 		selectOptionMapper.put("MobileNoOwner", "");
 	}
 	
-	public static final Map<String, String> dateMapper = new HashMap<String, String>();;
+	public static final Map<String, String> dateMapper = new HashMap<String, String>();
 	static {
 		dateMapper.put("RegistrationDate", "");
 	}
