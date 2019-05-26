@@ -1,5 +1,7 @@
 package org.openmrs.module.PSI.api.impl;
 
+import java.util.List;
+
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
@@ -24,9 +26,9 @@ public class PSIDHISEcxeptionServiceImpl extends BaseOpenmrsService implements P
 	}
 	
 	@Override
-	public PSIDHISException findByType(String type) {
+	public List<PSIDHISException> findAllByStatus(int status) {
 		// TODO Auto-generated method stub
-		return dao.findByType(type);
+		return dao.findAllByStatus(status);
 	}
 	
 }

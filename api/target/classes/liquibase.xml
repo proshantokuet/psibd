@@ -284,5 +284,12 @@
 		</createTable>
 	</changeSet>
 	
+	 <changeSet author="Proshanto" id="psidhisexception-1.0.1">
+	 	<addColumn tableName="psi_exception">
+			<column name="url" type="varchar(255)" />
+			<column name="status" type="int(11)" />	
+		</addColumn>
+	 </changeSet>
+	
 	
 </databaseChangeLog>

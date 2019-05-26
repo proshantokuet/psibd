@@ -49,8 +49,8 @@ public class OpenmrsAPIController extends MainResourceController {
 	
 	@RequestMapping(value = "/fakecall", method = RequestMethod.GET)
 	public ResponseEntity<String> emptyCall() throws Exception {
-		dhisListener.sendPatient();
-		//PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient");
+		//dhisListener.sendPatient();
+		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient");
 		JSONObject res = new JSONObject();
 		res.putOpt("OK", "OKK");
 		return new ResponseEntity<String>(res.toString(), HttpStatus.OK);
@@ -118,11 +118,12 @@ public class OpenmrsAPIController extends MainResourceController {
 			catch (Exception e) {
 				e.printStackTrace();
 				return new ResponseEntity<String>(patient + e.toString() + e.getCause().toString() + "" + e.getMessage(),
-				        HttpStatus.INTERNAL_SERVER_ERROR);
+				        HttpStatus.OK);
 			}
 		}
-		
-		return new ResponseEntity<String>("not ok ", HttpStatus.OK);
+		JSONObject res = new JSONObject();
+		res.putOpt("OK", "OKK");
+		return new ResponseEntity<String>(response.toString(), HttpStatus.OK);
 		
 	}
 	
@@ -206,8 +207,7 @@ public class OpenmrsAPIController extends MainResourceController {
 					}
 				}
 				catch (Exception e) {
-					return new ResponseEntity<String>(psiServiceProvision.getDhisId() + "---" + e.toString(),
-					        HttpStatus.INTERNAL_SERVER_ERROR);
+					return new ResponseEntity<String>(psiServiceProvision.getDhisId() + "---" + e.toString(), HttpStatus.OK);
 				}
 				
 			}

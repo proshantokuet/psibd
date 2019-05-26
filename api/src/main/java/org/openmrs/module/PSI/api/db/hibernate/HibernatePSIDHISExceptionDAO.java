@@ -37,14 +37,11 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public PSIDHISException findByType(String type) {
+	public List<PSIDHISException> findAllByStatus(int status) {
 		List<PSIDHISException> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIDHISException where type = :type").setString("type", type).list();
-		if (lists.size() != 0) {
-			return lists.get(0);
-		} else {
-			return null;
-		}
+		        .createQuery("from PSIDHISException where status = :id").setInteger("id", status).list();
+		
+		return lists;
 		
 	}
 	

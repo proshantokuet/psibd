@@ -48,6 +48,12 @@ public class DHISListener {
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
 		try {
+			sendPatientAgain();
+		}
+		catch (Exception e) {
+			
+		}
+		try {
 			sendPatient();
 		}
 		catch (Exception e) {
@@ -60,6 +66,53 @@ public class DHISListener {
 			
 		}
 		
+	}
+	
+	public void sendPatientAgain() {
+		
+		List<PSIDHISException> psidhisExceptions = Context.getService(PSIDHISExceptionService.class).findAllByStatus(0);
+		
+		JSONObject response = new JSONObject();
+		JSONObject patientJson = new JSONObject();
+		if (psidhisExceptions.size() != 0 && psidhisExceptions != null) {
+			for (PSIDHISException psidhisException : psidhisExceptions) {
+				try {
+					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", psidhisException.getUrl());
+					patientJson = DHISDataConverter.toConvertPatient(patient);
+					JSONObject person = patient.getJSONObject("person");
+					
+					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
+					        + person.getString("uuid") + "&ou=" + patientJson.getString("orgUnit");
+					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					if (trackedEntityInstances.length() != 0) {
+						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
+						String UpdateUrl = trackerUrl + "/" + trackedEntityInstance.getString("trackedEntityInstance");
+						//response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
+					} else {
+						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
+					}
+					
+					String status = response.getString("status");
+					
+					if (!status.equalsIgnoreCase("ERROR")) {
+						Context.openSession();
+						psidhisException.setStatus(1);
+						psidhisException.setTimestamp(1l);
+						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+						Context.clearSession();
+					}
+					
+				}
+				catch (Exception e) {
+					Context.openSession();
+					psidhisException.setStatus(0);
+					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+					Context.clearSession();
+				}
+			}
+			
+		}
 	}
 	
 	public void sendPatient() {
@@ -104,22 +157,39 @@ public class DHISListener {
 					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
 					Context.openSession();
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+					String status = response.getString("status");
+					if (!status.equalsIgnoreCase("ERROR")) {
+						
+						PSIDHISException psidhisException = new PSIDHISException();
+						psidhisException.setError("");
+						psidhisException.setJson(patientJson.toString());
+						psidhisException.setPatientId(eventReceordDTO.getId());
+						psidhisException.setUrl(eventReceordDTO.getUrl());
+						psidhisException.setStatus(0);
+						psidhisException.setResponse(response.toString());
+						psidhisException.setDateCreated(new Date());
+						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+						
+					}
 					
 					Context.clearSession();
+					
 				}
 				catch (Exception e) {
 					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
 					Context.openSession();
-					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+					//Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					PSIDHISException psidhisException = new PSIDHISException();
 					psidhisException.setError(e.toString());
 					psidhisException.setJson(patientJson.toString());
+					psidhisException.setPatientId(eventReceordDTO.getId());
+					psidhisException.setUrl(eventReceordDTO.getUrl());
+					psidhisException.setStatus(0);
 					psidhisException.setResponse(response.toString());
 					psidhisException.setDateCreated(new Date());
 					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
 					
 					Context.clearSession();
-					e.printStackTrace();
 				}
 			}
 			

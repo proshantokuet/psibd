@@ -9,8 +9,10 @@
 	    <property name="json" column="json" type="java.lang.String"/>	   
 	    <property name="timestamp" column="timestamp" type="long"/>
 	   	<property name="error" column="error" type="java.lang.String"/>	
-	   	<property name="response" column="response" type="java.lang.String"/>	
+	   	<property name="response" column="response" type="java.lang.String"/>
+	   	<property name="url" column="url" type="java.lang.String"/>		
 	    <property name="patientId" column="patient_id" type="int"/>
+	     <property name="status" column="status" type="int"/>
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
 		
 		
