@@ -33,6 +33,8 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	private int field3;
 	
+	private String eligible;
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -131,6 +133,14 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	public void setPsiClinicManagement(PSIClinicManagement psiClinicManagement) {
 		this.psiClinicManagement = psiClinicManagement;
+	}
+	
+	public String getEligible() {
+		return eligible;
+	}
+	
+	public void setEligible(String eligible) {
+		this.eligible = eligible;
 	}
 	
 }

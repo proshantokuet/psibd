@@ -17,9 +17,9 @@
 	    <thead>
 	        <tr>
 	            <th>#Id</th>
-	            <th>Clinic Name</th>
+	            <th>Service Name</th>
 	            <th>Service Code</th>
-	            <th>Item Name</th>
+	            <th>Clinic Name</th>
 	            <th>Service Category</th>
 	            <th>Service Provider</th>
 	            <th>Unit Cost(BDT)</th>
@@ -30,9 +30,9 @@
 	    	<c:forEach var="service" items="${ pSIServiceManagements }">
 	        <tr>
 	        	<td>${ service.sid }</td>
-	            <td>${ service.psiClinicManagement.name }</td>
-	            <td>${ service.code }</td>
 	            <td>${ service.name }</td>
+	            <td>${ service.code }</td>	           
+	            <td>${ service.psiClinicManagement.name }</td>
 	            <td>${ service.category }</td>
 	            <td>${ service.provider }</td>
 	            <td>${ service.unitCost }</td>
@@ -51,7 +51,14 @@
 
 var $jq = jQuery.noConflict();
 $jq(document).ready( function () {
-	$jq('#serviceList').DataTable();
+	$jq('#serviceList').DataTable({
+        language: {
+            emptyTable: "no service available", //
+            loadingRecords: "Please wait .. ", // default Loading...
+            zeroRecords: "No matching service found"
+           },
+           "order": [[ 1, "asc" ]]
+         });
 } );
 </script>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

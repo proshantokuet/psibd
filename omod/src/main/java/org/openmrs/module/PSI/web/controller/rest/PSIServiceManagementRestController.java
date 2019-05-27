@@ -182,7 +182,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 					if (findByCodeAndClinicId == null) {
 						PSIServiceManagement pSIServiceManagement = new PSIServiceManagement();
 						pSIServiceManagement.setName(service[0]);
-						pSIServiceManagement.setField1(file.getContentType());
+						pSIServiceManagement.setEligible("");
 						pSIServiceManagement.setCode(service[1]);
 						pSIServiceManagement.setCategory(service[2]);
 						pSIServiceManagement.setProvider(service[3]);

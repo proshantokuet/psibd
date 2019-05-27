@@ -29,9 +29,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OpenmrsAPIController extends MainResourceController {
 	
-	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
