@@ -21,7 +21,9 @@ public class PSIServiceProvisionConverter {
 		service.putOpt("discount", psiServiceProvisions.getDiscount());
 		service.putOpt("netPayable", psiServiceProvisions.getNetPayable());
 		service.putOpt("moneyReceiptDate", psiServiceProvisions.getMoneyReceiptDate());
-		
+		service.putOpt("code", psiServiceProvisions.getCode());
+		service.putOpt("provider", psiServiceProvisions.getProvider());
+		service.putOpt("category", psiServiceProvisions.getCategory());
 		service.putOpt("mid", psiServiceProvisions.getPsiMoneyReceiptId().getMid());
 		service.putOpt("patientName", psiServiceProvisions.getPsiMoneyReceiptId().getPatientName());
 		service.putOpt("patientUuid", psiServiceProvisions.getPsiMoneyReceiptId().getPatientUuid());

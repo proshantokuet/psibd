@@ -52,6 +52,10 @@ public class PSIMoneyReceiptConverter {
 			service.putOpt("totalAmount", psiServiceProvision.getTotalAmount());
 			service.putOpt("discount", psiServiceProvision.getDiscount());
 			service.putOpt("netPayable", psiServiceProvision.getNetPayable());
+			service.putOpt("netPayable", psiServiceProvision.getNetPayable());
+			service.putOpt("code", psiServiceProvision.getCode());
+			service.putOpt("provider", psiServiceProvision.getProvider());
+			service.putOpt("category", psiServiceProvision.getCategory());
 			service.putOpt("moneyReceiptDate", psiServiceProvision.getMoneyReceiptDate());
 			services.put(service);
 		}
