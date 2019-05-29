@@ -39,7 +39,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	@Override
 	public List<PSIServiceManagement> getAll(int clinicId) {
 		List<PSIServiceManagement> clinics = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceManagement where psiClinicManagement=:clinicId  order by sid desc ")
+		        .createQuery("from PSIServiceManagement where psiClinicManagement=:clinicId  order by name asc ")
 		        .setInteger("clinicId", clinicId).list();
 		if (clinics.size() != 0) {
 			return clinics;
