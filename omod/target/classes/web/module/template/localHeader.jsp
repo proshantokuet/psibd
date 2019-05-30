@@ -11,7 +11,14 @@
 <ul id="menu">
 	<li class="first"><a
 		href="${pageContext.request.contextPath}/admin"><spring:message
-				code="admin.title.short" /></a></li>	
+				code="admin.title.short" /></a></li>
+				
+	<li
+		<c:if test='<%= request.getRequestURI().contains("/dashboard") %>'>class="active"</c:if>>
+		<a
+		href="${pageContext.request.contextPath}/module/PSI/dashboard.form"><spring:message
+				code="PSI.dahboard" /></a>
+	</li>	
 	<li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicList") %>'>class="active"</c:if>>
 		<a

@@ -1,5 +1,6 @@
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/omod/src/main/java/org/openmrs/module/PSI/extension/html/AdminList.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/omod/src/main/java/org/openmrs/module/PSI/web/controller/PSIMoneyReceiptManageController.java
+/home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/omod/src/main/java/org/openmrs/module/PSI/web/controller/PSIDashboardController.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/omod/src/main/java/org/openmrs/module/PSI/web/controller/PSIClinicManageController.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/omod/src/main/java/org/openmrs/module/PSI/web/listener/DHISListener.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/omod/src/main/java/org/openmrs/module/PSI/web/controller/rest/PSIServiceProvisionRestController.java
