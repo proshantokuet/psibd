@@ -12,7 +12,7 @@
   </ul>
   <div id="tabs-1">
   
-  <form:form id="ServicePointWise" method="POST" action="${saveUrl}" modelAttribute="pSIServiceManagement">
+  <form:form id="ServicePointWise">
   <div class="form-content">
         	<div class="row">
             	<div class="col-md-6">
@@ -31,33 +31,11 @@
               	</div>
               	
           	</div>
-          	<button type="submit" class="btnSubmit">Submit</button>  <a href="${cancelUrl}">Back</a>
+          	<button type="submit" class="btnSubmit">Submit</button>
       	</div>
   </form:form>
     <table id="table_id" class="display">
-	    <thead>
-	        <tr>
-	            <th>#Id</th>
-	            <th>Clinic Name</th>
-	            <th>Clinic ID</th>
-	            <th>Category</th>
-	            <th>Address</th>
-	            <th>Action</th>
-	        </tr>
-	    </thead>
-	    <tbody>
-	    	<%-- <c:forEach var="clinic" items="${ pSIClinics }">
-	        <tr>
-	        	<td>${ clinic.cid }</td>
-	            <td>${ clinic.name }</td>
-	            <td>${ clinic.clinicId }</td>
-	            <td>${ clinic.category }</td>
-	            <td>${ clinic.address }</td>
-	            <td> <a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a> <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a> </td>
-	        </tr>
-	       </c:forEach> --%>
-	        
-	    </tbody>
+	    
 	</table>
   </div>
   <div id="tabs-2">
@@ -70,17 +48,30 @@
 <script type="text/javascript">
 
 var $jq = jQuery.noConflict();
-$jq(document).ready( function () {
-	$jq('#table_id').DataTable();
-} );
+
 var $jQuery = jQuery.noConflict();
 $jQuery( function() {
 	$jQuery( "#tabs" ).tabs();
   } );
   
-
+/* $jq(document).ready( function () {
+	$jq("#ServicePointWise").submit(function(event) {
+		event.preventDefault();
+		var url = "/openmrs/ws/rest/v1/money-receipt/f";
+		$jq('#table_id').DataTable({
+			'sAjaxSource': url,
+			'aoColumns': [
+			              { 'mData': 'static' },
+			              { 'mData': 'category' }
+			               
+			          ]
+		});
+	
+	}); 
+} ); */
 $jq( function() {
 	$jq("#startDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
+	$jq("#endDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
   } );
 /* $jq('#startDate').attr('max', maxDate);
 $jq('#endDate').attr('max', maxDate); */
@@ -88,79 +79,40 @@ $jq('#endDate').attr('max', maxDate); */
 </script>
 
 <script type="text/javascript">
-
-
-var url = "/openmrs/ws/rest/v1/service-management/save";
-/* $.ajax({
+var $JQuery = jQuery.noConflict();
+$JQuery("#ServicePointWise").submit(function(event) { 
+var url = "/openmrs/module/PSI/ServicePointWise.form";
+alert ($JQuery('input[name=endDate]').val());
+event.preventDefault();
+$JQuery.ajax({
 	   type : "GET",
 	   contentType : "application/json",
-	   url : url,
-	 
+	   url : url,	 
 	   dataType : 'html',
 	   timeout : 100000,
-	   beforeSend: function() {
-	    
+	   beforeSend: function() {	    
 	   
 	   },
-	   success : function(data) {
-	   
-	    $("#"+id).html(data);
+	   success : function(data) {	   
+		   $JQuery("#table_id").append("");
+		   $JQuery("#table_id").append(data);
+		   $JQuery('#table_id').DataTable();
 	   },
 	   error : function(e) {
 	    console.log("ERROR: ", e);
 	    display(e);
 	   },
-	   done : function(e) {
-	    
+	   done : function(e) {	    
 	    console.log("DONE");
 	    //enableSearchButton(true);
 	   }
-	  }); */
+	  }); 
+});   
 	  
-	  var $jq = jQuery.noConflict();
-	  $jq("#ServicePointWise").submit(function(event) { 
-		  $jq("#loading").show();
-			var url = "/openmrs/ws/rest/v1/service-management/save";			
-			var token = $jq("meta[name='_csrf']").attr("content");
-			var header = $jq("meta[name='_csrf_header']").attr("content");			
-			
-			
-			var formData;			
-				formData = {
-			            'startDate': $jq('input[name=startDate]').val(),			           
-			            'endDate': $jq('input[name=endDate]').val()			           
-			        };			
-			
-			event.preventDefault();			
-			$jq.ajax({
-				contentType : "application/json",
-				type: "POST",
-		        url: url,
-		        data: JSON.stringify(formData), 
-		        dataType : 'json',
-		        
-				timeout : 100000,
-				beforeSend: function(xhr) {				    
-					 xhr.setRequestHeader(header, token);
-				},
-				success : function(data) {
-					$jq("#usernameUniqueErrorMessage").html(data);
-					$jq("#loading").hide();
-				   if(data == ""){					   
-					   window.location.replace("/openmrs/module/PSI/PSIClinicServiceList.form");
-					   
-				   }
-				   
-				},
-				error : function(e) {
-				   
-				},
-				done : function(e) {				    
-				    console.log("DONE");				    
-				}
-			}); 
-		});
 		
 </script>
+ 
+
+
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

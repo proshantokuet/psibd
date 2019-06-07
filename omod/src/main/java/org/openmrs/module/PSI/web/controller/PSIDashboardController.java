@@ -39,4 +39,9 @@ public class PSIDashboardController {
 		*/
 	}
 	
+	@RequestMapping(value = "/module/PSI/ServicePointWise", method = RequestMethod.GET)
+	public void ServicePointWiseReport(HttpServletRequest request, HttpSession session, Model model) {
+		
+	}
+	
 }
