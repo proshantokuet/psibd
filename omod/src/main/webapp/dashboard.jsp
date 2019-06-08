@@ -81,8 +81,7 @@ $jq('#endDate').attr('max', maxDate); */
 <script type="text/javascript">
 var $JQuery = jQuery.noConflict();
 $JQuery("#ServicePointWise").submit(function(event) { 
-var url = "/openmrs/module/PSI/ServicePointWise.form";
-alert ($JQuery('input[name=endDate]').val());
+var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+$JQuery('input[name=startDate]').val()+"&endDate="+$JQuery('input[name=endDate]').val();
 event.preventDefault();
 $JQuery.ajax({
 	   type : "GET",

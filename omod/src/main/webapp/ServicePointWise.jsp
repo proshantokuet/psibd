@@ -1,34 +1,28 @@
-
-	  <thead>
+<%-- ${reportr } --%>
+<%@ include file="/WEB-INF/template/include.jsp"%>
+<%-- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ --%>	  <thead>
 	        <tr>
-	            <th>#Id</th>
-	            <th>Clinic Name</th>
-	            <th>Clinic ID</th>
-	            <th>Category</th>
-	            <th>Address</th>
-	            <th>Action</th>
+	            <th>Code</th>
+	            <th>Item</th>
+	            <th>Clinic</th>
+	            <th>Satelite</th>
+	            <th>CSP</th>
+	            <th>Total</th>
 	        </tr>
 	    </thead>
 	    <tbody>
-	    	<%-- <c:forEach var="clinic" items="${ pSIClinics }">
+	    	<c:forEach var="report" items="${ reports }">
 	        <tr>
-	        	<td>${ clinic.cid }</td>
-	            <td>${ clinic.name }</td>
-	            <td>${ clinic.clinicId }</td>
-	            <td>${ clinic.category }</td>
-	            <td>${ clinic.address }</td>
-	            <td> <a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a> <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a> </td>
+	        	<td>${ report.code }</td>
+	            <td>${ report.item }</td>
+	            <td>${ report.clinic }</td>
+	            <td>${ report.satelite }</td>
+	            <td>${ report.csp }</td>
+	            <td>${ report.total }</td>
 	        </tr>
-	       </c:forEach> --%>
-	        <tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr>
-	        <tr>
+	       </c:forEach>
+	        <!-- <tr>
 	            <td>#Id</td>
 	            <td>Clinic Name</td>
 	            <td>Clinic ID</td>
@@ -51,167 +45,175 @@
 	            <td>Category</td>
 	            <td>Address</td>
 	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
-	        </tr><tr>
-	            <td>#Id</td>
-	            <td>Clinic Name</td>
-	            <td>Clinic ID</td>
-	            <td>Category</td>
-	            <td>Address</td>
-	            <td>Action</td>
 	        </tr>
+	        <tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr><tr>
+	            <td>#Id</td>
+	            <td>Clinic Name</td>
+	            <td>Clinic ID</td>
+	            <td>Category</td>
+	            <td>Address</td>
+	            <td>Action</td>
+	        </tr> -->
 	    </tbody>
 

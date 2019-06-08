@@ -7,6 +7,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
+import org.openmrs.module.PSI.dto.PSIReport;
 
 public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implements PSIServiceProvisionService {
 	
@@ -66,6 +67,24 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	public List<PSIServiceProvision> findAllByTimestamp(long timestamp) {
 		// TODO Auto-generated method stub
 		return dao.findAllByTimestamp(timestamp);
+	}
+	
+	@Override
+	public List<PSIReport> servicePointWiseReport(String startDate, String endDate, String code) {
+		// TODO Auto-generated method stub
+		return dao.servicePointWiseReport(startDate, endDate, code);
+	}
+	
+	@Override
+	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, int provider) {
+		// TODO Auto-generated method stub
+		return dao.serviceProviderWiseReport(startDate, endDate, code, provider);
+	}
+	
+	@Override
+	public String servicePointWiseRepor(String startDate, String endDate, String code) {
+		// TODO Auto-generated method stub
+		return dao.servicePointWiseRepor(startDate, endDate, code);
 	}
 	
 }

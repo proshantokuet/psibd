@@ -1,12 +1,18 @@
 package org.openmrs.module.PSI.web.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.api.PSIServiceProvisionService;
+import org.openmrs.module.PSI.dto.PSIReport;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PSIDashboardController {
@@ -40,8 +46,15 @@ public class PSIDashboardController {
 	}
 	
 	@RequestMapping(value = "/module/PSI/ServicePointWise", method = RequestMethod.GET)
-	public void ServicePointWiseReport(HttpServletRequest request, HttpSession session, Model model) {
-		
+	public void ServicePointWiseReport(HttpServletRequest request, HttpSession session, Model model,
+	                                   @RequestParam(required = true) String startDate,
+	                                   @RequestParam(required = true) String endDate) {
+		/*Context.getAuthenticatedUser()*/
+		List<PSIReport> reports = Context.getService(PSIServiceProvisionService.class).servicePointWiseReport(startDate,
+		    endDate, "mouha84s");
+		model.addAttribute("reports", reports);
+		/*model.addAttribute("reportr",
+		    Context.getService(PSIServiceProvisionService.class).servicePointWiseRepor(startDate, endDate, "mouha84s"));
+		*/
 	}
-	
 }

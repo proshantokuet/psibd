@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.dto.PSIReport;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -23,6 +24,12 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	public List<PSIServiceProvision> getAllByDateAndPatient(Date date, String patientUuid);
 	
 	public List<PSIServiceProvision> findAllByTimestamp(long timestamp);
+	
+	public List<PSIReport> servicePointWiseReport(String startDate, String endDate, String code);
+	
+	public String servicePointWiseRepor(String startDate, String endDate, String code);
+	
+	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, int provider);
 	
 	public void delete(int id);
 	

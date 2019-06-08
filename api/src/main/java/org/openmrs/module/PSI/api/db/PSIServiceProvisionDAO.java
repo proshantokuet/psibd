@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.dto.PSIReport;
 
 public interface PSIServiceProvisionDAO {
 	
@@ -20,6 +21,12 @@ public interface PSIServiceProvisionDAO {
 	public List<PSIServiceProvision> getAllByDateAndPatient(Date date, String patientUuid);
 	
 	public List<PSIServiceProvision> findAllByTimestamp(long timestamp);
+	
+	public List<PSIReport> servicePointWiseReport(String startDate, String endDate, String code);
+	
+	public String servicePointWiseRepor(String startDate, String endDate, String code);
+	
+	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, int provider);
 	
 	public void delete(int id);
 	
