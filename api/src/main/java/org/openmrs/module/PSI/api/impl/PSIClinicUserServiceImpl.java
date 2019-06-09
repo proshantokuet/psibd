@@ -6,6 +6,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.db.PSIClinicUserDAO;
+import org.openmrs.module.PSI.dto.UserDTO;
 
 public class PSIClinicUserServiceImpl extends BaseOpenmrsService implements PSIClinicUserService {
 	
@@ -44,6 +45,12 @@ public class PSIClinicUserServiceImpl extends BaseOpenmrsService implements PSIC
 	public PSIClinicUser findByUserName(String username) {
 		// TODO Auto-generated method stub
 		return dao.findByUserName(username);
+	}
+	
+	@Override
+	public UserDTO findByUserNameFromOpenmrs(String username) {
+		// TODO Auto-generated method stub
+		return dao.findByUserNameFromOpenmrs(username);
 	}
 	
 }

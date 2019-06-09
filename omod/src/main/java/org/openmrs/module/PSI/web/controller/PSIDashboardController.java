@@ -1,13 +1,19 @@
 package org.openmrs.module.PSI.web.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.PSIClinicUser;
+import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.dto.PSIReport;
+import org.openmrs.module.PSI.dto.UserDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +25,13 @@ public class PSIDashboardController {
 	
 	@RequestMapping(value = "/module/PSI/dashboard", method = RequestMethod.GET)
 	public void dashboard(HttpServletRequest request, HttpSession session, Model model) {
+		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+		    Context.getAuthenticatedUser().getUsername());
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(
+		    psiClinicUser.getPsiClinicManagementId().getCid());
+		Set<PSIClinicUser> psiClinicUsers = psiClinicManagement.getpSIClinicUser();
 		
+		model.addAttribute("psiClinicUsers", psiClinicUsers);
 		/*select code, item, category, sum(Clilic) as Clilic, sum(Satellite) as Satellite,
 			sum(CSP) as CSP , sum(Clilic)+sum(Satellite)+sum(CSP) as total
 		from (
@@ -49,12 +61,26 @@ public class PSIDashboardController {
 	public void ServicePointWiseReport(HttpServletRequest request, HttpSession session, Model model,
 	                                   @RequestParam(required = true) String startDate,
 	                                   @RequestParam(required = true) String endDate) {
-		/*Context.getAuthenticatedUser()*/
+		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+		    Context.getAuthenticatedUser().getUsername());
 		List<PSIReport> reports = Context.getService(PSIServiceProvisionService.class).servicePointWiseReport(startDate,
-		    endDate, "mouha84s");
+		    endDate, psiClinicUser.getPsiClinicManagementId().getClinicId());
 		model.addAttribute("reports", reports);
 		/*model.addAttribute("reportr",
 		    Context.getService(PSIServiceProvisionService.class).servicePointWiseRepor(startDate, endDate, "mouha84s"));
 		*/
+	}
+	
+	@RequestMapping(value = "/module/PSI/ServiceProviderWise", method = RequestMethod.GET)
+	public void ServiceProviderWiseReport(HttpServletRequest request, HttpSession session, Model model,
+	                                      @RequestParam(required = true) String startDate,
+	                                      @RequestParam(required = true) String endDate,
+	                                      @RequestParam(required = true) String provider) {
+		/*Context.getAuthenticatedUser()*/
+		UserDTO userDTO = Context.getService(PSIClinicUserService.class).findByUserNameFromOpenmrs(provider);
+		List<PSIReport> reports = Context.getService(PSIServiceProvisionService.class).serviceProviderWiseReport(startDate,
+		    endDate, "", userDTO.getId());
+		model.addAttribute("reports", reports);
+		
 	}
 }

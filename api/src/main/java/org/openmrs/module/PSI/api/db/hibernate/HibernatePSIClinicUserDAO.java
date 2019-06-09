@@ -3,13 +3,16 @@
  */
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.db.PSIClinicUserDAO;
+import org.openmrs.module.PSI.dto.UserDTO;
 
 /**
  * @author proshanto
@@ -84,6 +87,25 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 			return null;
 		}
 		
+	}
+	
+	@Override
+	public UserDTO findByUserNameFromOpenmrs(String username) {
+		List<Object[]> data = null;
+		UserDTO userDTO = new UserDTO();
+		
+		String sql = "SELECT user_id,username FROM openmrs.users where username= :username  limit 1";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		
+		data = query.setString("username", username).list();
+		
+		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+			Object[] objects = (Object[]) iterator.next();
+			userDTO.setId(Integer.parseInt(objects[0].toString()));
+			userDTO.setUsername(objects[1].toString());
+			
+		}
+		return userDTO;
 	}
 	
 }

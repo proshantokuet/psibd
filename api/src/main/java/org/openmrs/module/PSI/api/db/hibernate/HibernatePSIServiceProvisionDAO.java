@@ -118,12 +118,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        + startDate
 		        + "'  and  '"
 		        + endDate
-		        + "'  and clinic_code = '"
-		        + code
-		        + "'   group by code ,item,service_point,category order  by code) as Report  group by code, item ";
+		        + "'  and clinic_code = :code"
+		        + "  group by code ,item,service_point,category order  by code) as Report  group by code, item ";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		
-		data = query.list();
+		data = query.setString("code", code).list();
 		
 		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
 			PSIReport report = new PSIReport();
@@ -142,8 +141,29 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	
 	@Override
 	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, int provider) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Object[]> data = null;
+		List<PSIReport> reportDTOs = new ArrayList<PSIReport>();
+		
+		String sql = "select code,item ,category, count(*) as serviceCount ,sum(net_payable) as total from openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid where DATE(sp.money_receipt_date)  between '"
+		        + startDate
+		        + "' and '"
+		        + endDate
+		        + "' and sp.creator = :creator group by code ,item,category order  by code";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		
+		data = query.setInteger("creator", provider).list();
+		
+		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+			PSIReport report = new PSIReport();
+			Object[] objects = (Object[]) iterator.next();
+			report.setCode(objects[0] + "");
+			report.setItem(objects[1] + "");
+			report.setCategory(objects[2] + "");
+			report.setServiceCount(Integer.parseInt(objects[3].toString()));
+			report.setTotal(Float.parseFloat(objects[4].toString()));
+			reportDTOs.add(report);
+		}
+		return reportDTOs;
 	}
 	
 	@Override

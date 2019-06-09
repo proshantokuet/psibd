@@ -3,10 +3,11 @@
 <%-- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  --%>	  <thead>
 	        <tr>
+	            <th>Category</th>
 	            <th>Code</th>
 	            <th>Item</th>
 	            <th>Clinic</th>
-	            <th>Satelite</th>
+	            <th>Satellite</th>
 	            <th>CSP</th>
 	            <th>Total</th>
 	        </tr>
@@ -14,6 +15,7 @@
 	    <tbody>
 	    	<c:forEach var="report" items="${ reports }">
 	        <tr>
+	            <td>${ report.category }</td>
 	        	<td>${ report.code }</td>
 	            <td>${ report.item }</td>
 	            <td>${ report.clinic }</td>

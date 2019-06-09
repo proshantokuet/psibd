@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIClinicUser;
+import org.openmrs.module.PSI.dto.UserDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -16,6 +17,8 @@ public interface PSIClinicUserService extends OpenmrsService {
 	public PSIClinicUser findById(int id);
 	
 	public PSIClinicUser findByUserName(String username);
+	
+	public UserDTO findByUserNameFromOpenmrs(String username);
 	
 	public void delete(int id);
 	
