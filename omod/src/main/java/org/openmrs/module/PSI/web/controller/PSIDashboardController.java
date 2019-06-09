@@ -54,6 +54,18 @@ public class PSIDashboardController {
 			where DATE(sp.money_receipt_date)  between '2019-03-31' and '2019-05-31' 
 		    and clinic_code = 'mouha84s' and sp.creator = 4
 		group by code ,item,category order  by code
+		
+		
+		SELECT count(*) FROM openmrs.patient as p left join openmrs.person_attribute  as
+		pa on p.patient_id = pa.person_id where person_attribute_type_id = 38 
+		and value = 'mouha84s' and DATE(p.date_created) = '2019-05-26';
+
+		SELECT count(*)  FROM openmrs.psi_money_receipt where clinic_code = 'mouha84s' 
+		and money_receipt_date = '2019-05-05' ;
+
+		SELECT sum(net_payable) FROM openmrs.psi_service_provision as sp left join 
+		openmrs.psi_money_receipt as mr  on sp.psi_money_receipt_id = mr.mid  
+		where sp.money_receipt_date = '2019-05-05 ' and mr.clinic_code = 'mouha84s';
 		*/
 	}
 	
