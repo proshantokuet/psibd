@@ -3,7 +3,12 @@
 
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="Clinic List" otherwise="/login.htm" />
-
+<style>
+.dataTables_wrapper .dt-buttons {
+  float:none;  
+  text-align:center;
+}
+</style>
 
 <div id="tabs">
   <ul>
@@ -93,6 +98,10 @@
 </div>
  
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jszip.min.js"></script>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.html5.min.js"></script>
+
 <script type="text/javascript">
 
 var $jq = jQuery.noConflict();
@@ -134,7 +143,17 @@ $JQuery.ajax({
 	   },
 	   success : function(data) {		   
 		   $JQuery("#serviceProvider").html(data);
-		   $JQuery('#serviceProvider').DataTable();
+		   $JQuery('#serviceProvider').DataTable({
+			   dom: 'Bfrtip',
+			   buttons: [
+			             {
+			                 extend: 'excelHtml5',
+			                 title: 'providerWiseReport',
+			                 text: 'Export as .xlxs'
+			             }			         
+			         ]
+			   
+		   });
 	   },
 	   error : function(e) {
 	    console.log("ERROR: ", e);
@@ -161,7 +180,16 @@ $JQuery("#ServicePointWise").submit(function(event) {
 		   },
 		   success : function(data) {	   
 			   $JQuery("#servicePoint").html(data);			  
-			   $JQuery('#servicePoint').DataTable();
+			   $JQuery('#servicePoint').DataTable({
+				   dom: 'Bfrtip',
+				   buttons: [
+				             {
+				                 extend: 'excelHtml5',
+				                 title: 'pointWiseReport',
+				                 text: 'Export as .xlxs'
+				             }			         
+				         ]
+			   });
 		   },
 		   error : function(e) {
 		    console.log("ERROR: ", e);
