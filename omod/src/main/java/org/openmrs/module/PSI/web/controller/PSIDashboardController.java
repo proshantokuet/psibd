@@ -1,5 +1,9 @@
 package org.openmrs.module.PSI.web.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +16,7 @@ import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
+import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.springframework.stereotype.Controller;
@@ -30,8 +35,14 @@ public class PSIDashboardController {
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(
 		    psiClinicUser.getPsiClinicManagementId().getCid());
 		Set<PSIClinicUser> psiClinicUsers = psiClinicManagement.getpSIClinicUser();
-		
 		model.addAttribute("psiClinicUsers", psiClinicUsers);
+		
+		Date date = Calendar.getInstance().getTime();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String today = dateFormat.format(date);
+		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, "",
+		    psiClinicManagement.getClinicId());
+		model.addAttribute("dashboard", dashboardDTO);
 		/*select code, item, category, sum(Clilic) as Clilic, sum(Satellite) as Satellite,
 			sum(CSP) as CSP , sum(Clilic)+sum(Satellite)+sum(CSP) as total
 		from (

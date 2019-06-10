@@ -83,4 +83,6 @@ public class DHISMapper {
 	static {
 		dateMapper.put("RegistrationDate", "");
 	}
+	
+	public static final int attributeTypeId = 38;
 }

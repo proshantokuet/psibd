@@ -9,7 +9,29 @@
   text-align:center;
 }
 </style>
-
+<div class="form-content">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">                							
+						<label> ${dashboard.servedPatient } </label>  &nbsp;&nbsp; Patients Served						
+                 </div>
+                  	
+             </div>
+              <div class="col-md-4">
+               	<div class="form-group">
+                  	<label for="Service Code">${dashboard.earned }</label>
+						&nbsp;&nbsp; Revenue Earned                  			
+				</div>
+                  	
+              </div>
+              <div class="col-md-4">
+               	<div class="form-group">
+                  	<label for="Service Code">${dashboard.newPatient }</label>  &nbsp;&nbsp; New Registration                 			
+				</div>                  	
+              </div>              	
+       </div>          	
+</div>
+     
 <div id="tabs">
   <ul>
     <li><a href="#tabs-1">Service Point Wise Revenue Report</a></li>

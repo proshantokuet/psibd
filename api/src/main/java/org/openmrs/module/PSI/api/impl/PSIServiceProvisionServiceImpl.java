@@ -7,6 +7,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
+import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 
 public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implements PSIServiceProvisionService {
@@ -85,6 +86,12 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	public String servicePointWiseRepor(String startDate, String endDate, String code) {
 		// TODO Auto-generated method stub
 		return dao.servicePointWiseRepor(startDate, endDate, code);
+	}
+	
+	@Override
+	public DashboardDTO dashboardReport(String start, String end, String code) {
+		// TODO Auto-generated method stub
+		return dao.dashboardReport(start, end, code);
 	}
 	
 }

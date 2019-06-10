@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,8 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	public String servicePointWiseRepor(String startDate, String endDate, String code);
 	
 	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, int provider);
+	
+	public DashboardDTO dashboardReport(String start, String end, String code);
 	
 	public void delete(int id);
 	

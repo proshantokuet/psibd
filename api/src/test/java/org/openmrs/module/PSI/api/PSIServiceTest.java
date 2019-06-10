@@ -39,6 +39,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String strDate = dateFormat.format(date);
 		System.out.println("Converted String: " + strDate);
+		/*
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		LocalDateTime dateTime = LocalDateTime.parse("2018-05-05T11:50:55");
 		System.out.println(dateTime);*/
