@@ -59,9 +59,13 @@
                   			<form:select path="provider" class="form-control selcls" required="required">                  			 
                   	 			  <form:option value=""/>
 					              <form:option value="Doctor"/>
-					              <form:option value="Paramedic"/>
 					              <form:option value="Counselor"/>
-					              <form:option value="Lab Technician"/>     
+					              <form:option value="Paramedic(Static)"/>
+					              <form:option value="Lab Technician"/>
+					              <form:option value="Paramedic(Satellite)"/>					              
+					              <form:option value="CSP"/>
+					              <form:option value="Pharmacist"/>
+					                   
 							</form:select>	
 					</div>
               	</div>

@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -34,7 +33,8 @@ public class PSIDashboardController {
 		    Context.getAuthenticatedUser().getUsername());
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(
 		    psiClinicUser.getPsiClinicManagementId().getCid());
-		Set<PSIClinicUser> psiClinicUsers = psiClinicManagement.getpSIClinicUser();
+		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUserByCode(
+		    psiClinicManagement.getClinicId());
 		model.addAttribute("psiClinicUsers", psiClinicUsers);
 		
 		Date date = Calendar.getInstance().getTime();

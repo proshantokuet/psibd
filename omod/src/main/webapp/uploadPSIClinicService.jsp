@@ -5,7 +5,7 @@
     <!-- default header name is X-CSRF-TOKEN -->
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <%@ include file="template/localHeader.jsp"%>
-<openmrs:require privilege="Edit Clinic Service" otherwise="/login.htm" />
+<openmrs:require privilege="Upload Clinic Service" otherwise="/login.htm" />
 
 <c:url var="saveUrl" value="/module/PSI/uploadPSIClinicService.form" />
 <c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />

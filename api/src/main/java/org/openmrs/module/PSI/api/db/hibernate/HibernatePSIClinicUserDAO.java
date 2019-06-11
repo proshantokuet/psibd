@@ -3,6 +3,7 @@
  */
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -106,6 +107,32 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 			
 		}
 		return userDTO;
+	}
+	
+	@Override
+	public List<UserDTO> findUserByCode(String code) {
+		List<Object[]> data = null;
+		List<UserDTO> users = new ArrayList<UserDTO>();
+		
+		String sql = "SELECT U.user_id,pclu.user_uame, role "
+		        + "FROM openmrs.psi_clinic as pcl left join openmrs.psi_clinic_user pclu "
+		        + "on pcl.cid = pclu.psi_clinic_management_id left join openmrs.users as U "
+		        + "on pclu.user_uame = U.username left join openmrs.user_role as UL on "
+		        + "U.user_id = UL.user_id where  pcl.clinic_id= :code and role in('Doctor','Counselor','Paramedic(Static)','Lab Technician','Paramedic(Satellite)','CSP','Pharmacist')";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		
+		data = query.setString("code", code).list();
+		
+		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+			Object[] objects = (Object[]) iterator.next();
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(Integer.parseInt(objects[0] + ""));
+			userDTO.setUsername(objects[1] + "");
+			userDTO.setUserRole(objects[1] + "-" + objects[2] + "");
+			users.add(userDTO);
+		}
+		return users;
+		
 	}
 	
 }

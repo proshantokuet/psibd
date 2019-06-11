@@ -58,7 +58,7 @@ public class PSIServiceProvisionRestController {
 			}
 		}
 		catch (Exception e) {
-			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(psiServicesJsonArray.toString(), HttpStatus.OK);
 	}

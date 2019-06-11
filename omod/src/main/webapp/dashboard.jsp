@@ -2,11 +2,14 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="template/localHeader.jsp"%>
-<openmrs:require privilege="Clinic List" otherwise="/login.htm" />
+<openmrs:require privilege="dashboard" otherwise="/login.htm" />
 <style>
 .dataTables_wrapper .dt-buttons {
   float:none;  
-  text-align:center;
+  text-align:right;
+  position: absolute;
+  top: -55px;
+  margin-left: 1036px
 }
 </style>
 <div class="form-content">
@@ -67,6 +70,9 @@
           	
      </div>
   </form:form>
+  <div class="form-content" id="servicePointWiseReport">
+  
+  </div>
     <table id="servicePoint" class="display">
 	    
 	</table>
@@ -95,7 +101,7 @@
 						<select id="provider" required="true" style="width: 160px" >
 						  <option value=""></option>
 						  <c:forEach var="user" items="${ psiClinicUsers }">
-							  <option value="${user.userName }">${user.userName }</option>							  
+							  <option value="${user.username }">${user.userRole }</option>							  
 						  </c:forEach>
 						</select>                 			
 					</div>
@@ -112,6 +118,9 @@
           	
      </div>
   </form:form>
+  <div class="form-content" id="userRole">
+  
+  </div>
     <table id="serviceProvider" class="display">
 	    
 	</table>
@@ -152,6 +161,7 @@ var $JQuery = jQuery.noConflict();
 $JQuery("#ServiceProviderWise").submit(function(event) { 
 var e = document.getElementById("provider");
 var provider = e.options[e.selectedIndex].value;
+var userRole = "Service Provider Wise Revenue Report( "+$JQuery("#provider option:selected").html()+" )";
 var url = "/openmrs/module/PSI/ServiceProviderWise.form?startDate="+$JQuery('input[name=from]').val()+"&endDate="+$JQuery('input[name=to]').val()+"&provider="+provider;
 event.preventDefault();
 $JQuery.ajax({
@@ -166,6 +176,8 @@ $JQuery.ajax({
 	   success : function(data) {		   
 		   $JQuery("#serviceProvider").html(data);
 		   $JQuery('#serviceProvider').DataTable({
+			   bFilter: false,
+		       bInfo: false,
 			   dom: 'Bfrtip',
 			   buttons: [
 			             {
@@ -176,6 +188,7 @@ $JQuery.ajax({
 			         ]
 			   
 		   });
+		   $JQuery("#userRole").html(userRole);
 	   },
 	   error : function(e) {
 	    console.log("ERROR: ", e);
@@ -191,6 +204,7 @@ $JQuery.ajax({
 $JQuery("#ServicePointWise").submit(function(event) { 
 	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+$JQuery('input[name=startDate]').val()+"&endDate="+$JQuery('input[name=endDate]').val();
 	event.preventDefault();
+	
 	$JQuery.ajax({
 		   type : "GET",
 		   contentType : "application/json",
@@ -203,6 +217,8 @@ $JQuery("#ServicePointWise").submit(function(event) {
 		   success : function(data) {	   
 			   $JQuery("#servicePoint").html(data);			  
 			   $JQuery('#servicePoint').DataTable({
+				   bFilter: false,
+			       bInfo: false,
 				   dom: 'Bfrtip',
 				   buttons: [
 				             {
@@ -212,6 +228,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				             }			         
 				         ]
 			   });
+			   $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report");
 		   },
 		   error : function(e) {
 		    console.log("ERROR: ", e);

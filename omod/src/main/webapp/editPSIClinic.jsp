@@ -9,7 +9,7 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
 <c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
-<openmrs:require privilege="Edit Team" otherwise="/login.htm" />
+<openmrs:require privilege="Edit Clinic" otherwise="/login.htm" />
 
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">

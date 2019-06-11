@@ -1,10 +1,15 @@
 package org.openmrs.module.PSI.web.controller.rest;
 
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.converter.PSIClinicUserConverter;
+import org.openmrs.module.PSI.converter.UserDataConverter;
+import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,4 +38,19 @@ public class PSIClinicUserRestController extends MainResourceController {
 		return new ResponseEntity<String>(psiClinic.toString(), HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/get-by-code/{code}", method = RequestMethod.GET)
+	public ResponseEntity<String> findUserByCode(@PathVariable String code) throws Exception {
+		JSONArray usersJson = new JSONArray();
+		
+		try {
+			List<UserDTO> users = Context.getService(PSIClinicUserService.class).findUserByCode(code);
+			if (users != null) {
+				usersJson = new UserDataConverter().toConvert(users);
+			}
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>("", HttpStatus.OK);
+		}
+		return new ResponseEntity<String>(usersJson.toString(), HttpStatus.OK);
+	}
 }
