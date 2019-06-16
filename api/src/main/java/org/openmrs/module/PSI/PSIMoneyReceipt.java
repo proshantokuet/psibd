@@ -71,6 +71,8 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private int field3;
 	
+	private String dataCollector;
+	
 	private PSIClinicManagement PSIClinicManagement;
 	
 	@Override
@@ -323,6 +325,14 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	public void setCspId(String cspId) {
 		this.cspId = cspId;
+	}
+	
+	public String getDataCollector() {
+		return dataCollector;
+	}
+	
+	public void setDataCollector(String dataCollector) {
+		this.dataCollector = dataCollector;
 	}
 	
 	@Override

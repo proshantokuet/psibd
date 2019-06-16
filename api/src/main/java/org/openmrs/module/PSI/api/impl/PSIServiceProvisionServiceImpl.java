@@ -77,9 +77,9 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	}
 	
 	@Override
-	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, int provider) {
+	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, String dataCollector) {
 		// TODO Auto-generated method stub
-		return dao.serviceProviderWiseReport(startDate, endDate, code, provider);
+		return dao.serviceProviderWiseReport(startDate, endDate, code, dataCollector);
 	}
 	
 	@Override

@@ -98,11 +98,11 @@ public class PSIDashboardController {
 	public void ServiceProviderWiseReport(HttpServletRequest request, HttpSession session, Model model,
 	                                      @RequestParam(required = true) String startDate,
 	                                      @RequestParam(required = true) String endDate,
-	                                      @RequestParam(required = true) String provider) {
+	                                      @RequestParam(required = true) String dataCollector) {
 		/*Context.getAuthenticatedUser()*/
-		UserDTO userDTO = Context.getService(PSIClinicUserService.class).findByUserNameFromOpenmrs(provider);
+		/*UserDTO userDTO = Context.getService(PSIClinicUserService.class).findByUserNameFromOpenmrs(provider);*/
 		List<PSIReport> reports = Context.getService(PSIServiceProvisionService.class).serviceProviderWiseReport(startDate,
-		    endDate, "", userDTO.getId());
+		    endDate, "", dataCollector);
 		model.addAttribute("reports", reports);
 		
 	}

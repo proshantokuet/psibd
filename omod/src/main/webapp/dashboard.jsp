@@ -162,7 +162,7 @@ $JQuery("#ServiceProviderWise").submit(function(event) {
 var e = document.getElementById("provider");
 var provider = e.options[e.selectedIndex].value;
 var userRole = "Service Provider Wise Revenue Report( "+$JQuery("#provider option:selected").html()+" )";
-var url = "/openmrs/module/PSI/ServiceProviderWise.form?startDate="+$JQuery('input[name=from]').val()+"&endDate="+$JQuery('input[name=to]').val()+"&provider="+provider;
+var url = "/openmrs/module/PSI/ServiceProviderWise.form?startDate="+$JQuery('input[name=from]').val()+"&endDate="+$JQuery('input[name=to]').val()+"&dataCollector="+provider;
 event.preventDefault();
 $JQuery.ajax({
 	   type : "GET",

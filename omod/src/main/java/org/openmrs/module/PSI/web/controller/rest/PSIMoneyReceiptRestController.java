@@ -137,6 +137,10 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			if (moneyReceipt.has("clinicType")) {
 				psiMoneyReceipt.setClinicType(moneyReceipt.getString("clinicType"));
 			}
+			
+			if (moneyReceipt.has("dataCollector")) {
+				psiMoneyReceipt.setDataCollector(moneyReceipt.getString("dataCollector"));
+			}
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
 			psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
@@ -159,7 +163,8 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					psiServiceProvision.setDescription(service.getString("description"));
 				}
 				if (service.has("code")) {
-					psiServiceProvision.setCode(service.getString("code"));
+					JSONObject codeObj = new JSONObject(service.getString("code"));
+					psiServiceProvision.setCode(codeObj.getString("code"));
 				}
 				if (service.has("category")) {
 					psiServiceProvision.setCategory(service.getString("category"));

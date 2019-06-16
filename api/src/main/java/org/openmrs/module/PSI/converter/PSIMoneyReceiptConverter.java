@@ -38,6 +38,7 @@ public class PSIMoneyReceiptConverter {
 		psiMoneyReceiptObject.putOpt("other", psiMoneyReceipt.getOthers());
 		psiMoneyReceiptObject.putOpt("cspId", psiMoneyReceipt.getCspId());
 		psiMoneyReceiptObject.putOpt("orgUnit", psiMoneyReceipt.getOrgUnit());
+		psiMoneyReceiptObject.putOpt("dataCollector", psiMoneyReceipt.getDataCollector());
 		psiMoneyReceiptAndServicesObject.putOpt("moneyReceipt", psiMoneyReceiptObject);
 		
 		Set<PSIServiceProvision> psiServiceProvisions = psiMoneyReceipt.getServices();

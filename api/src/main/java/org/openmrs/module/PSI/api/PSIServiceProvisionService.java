@@ -30,7 +30,7 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public String servicePointWiseRepor(String startDate, String endDate, String code);
 	
-	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, int provider);
+	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, String dataCollector);
 	
 	public DashboardDTO dashboardReport(String start, String end, String code);
 	

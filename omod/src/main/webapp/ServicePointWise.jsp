@@ -6,7 +6,7 @@
 	            <th>Category</th>
 	            <th>Code</th>
 	            <th>Item</th>
-	            <th>Clinic</th>
+	            <th>Static</th>
 	            <th>Satellite</th>
 	            <th>CSP</th>
 	            <th>Total</th>
