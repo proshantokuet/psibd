@@ -149,9 +149,9 @@ public class OpenmrsAPIController extends MainResourceController {
 			timestamp = getlastTimeStamp.getTimestamp();
 		}
 		
-		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
-		        .findAllByTimestamp(timestamp);
 		try {
+			List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
+			        .findAllByTimestamp(timestamp);
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
 				try {
 					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
@@ -214,7 +214,7 @@ public class OpenmrsAPIController extends MainResourceController {
 			
 		}
 		catch (Exception e) {
-			return new ResponseEntity<String>(psiServiceProvisions.toString() + e.toString(), HttpStatus.OK);
+			return new ResponseEntity<String>(e.toString(), HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<String>("not ok ", HttpStatus.OK);

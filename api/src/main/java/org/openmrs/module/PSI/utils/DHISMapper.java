@@ -84,6 +84,6 @@ public class DHISMapper {
 		dateMapper.put("RegistrationDate", "");
 	}
 	
-	public static final int attributeTypeId = 38; // local
-	//public static final int attributeTypeId = 32;
+	//public static final int attributeTypeId = 38; // local
+	public static final int attributeTypeId = 32;
 }
