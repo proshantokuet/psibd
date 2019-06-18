@@ -179,6 +179,7 @@ $JQuery.ajax({
 			   bFilter: false,
 		       bInfo: false,
 			   dom: 'Bfrtip',
+			   destroy: true,
 			   buttons: [
 			             {
 			                 extend: 'excelHtml5',
@@ -220,6 +221,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				   bFilter: false,
 			       bInfo: false,
 				   dom: 'Bfrtip',
+				   destroy: true,
 				   buttons: [
 				             {
 				                 extend: 'excelHtml5',

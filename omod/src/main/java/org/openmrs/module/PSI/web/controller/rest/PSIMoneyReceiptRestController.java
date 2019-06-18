@@ -195,6 +195,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				if (moneyReceipt.has("patientUuid")) {
 					psiServiceProvision.setPatientUuid(moneyReceipt.getString("patientUuid"));
 				}
+				
 				psiServiceProvision.setDateCreated(new Date());
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
 				psiServiceProvision.setUuid(UUID.randomUUID().toString());

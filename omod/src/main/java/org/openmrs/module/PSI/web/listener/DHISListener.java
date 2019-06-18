@@ -66,6 +66,12 @@ public class DHISListener {
 			
 		}
 		
+		try {
+			sendNotSendingMoneyReceipt();
+		}
+		catch (Exception e) {
+			
+		}
 	}
 	
 	public void sendPatientAgain() {
@@ -163,7 +169,7 @@ public class DHISListener {
 						PSIDHISException psidhisException = new PSIDHISException();
 						psidhisException.setError("");
 						psidhisException.setJson(patientJson.toString());
-						psidhisException.setPatientId(eventReceordDTO.getId());
+						psidhisException.setMarkId(eventReceordDTO.getId());
 						psidhisException.setUrl(eventReceordDTO.getUrl());
 						psidhisException.setStatus(0);
 						psidhisException.setResponse(response.toString());
@@ -182,7 +188,7 @@ public class DHISListener {
 					PSIDHISException psidhisException = new PSIDHISException();
 					psidhisException.setError(e.toString());
 					psidhisException.setJson(patientJson.toString());
-					psidhisException.setPatientId(eventReceordDTO.getId());
+					psidhisException.setMarkId(eventReceordDTO.getId());
 					psidhisException.setUrl(eventReceordDTO.getUrl());
 					psidhisException.setStatus(0);
 					psidhisException.setResponse(response.toString());
@@ -269,6 +275,7 @@ public class DHISListener {
 						getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 						getlastTimeStamp.setVoidReason("else cindtion");
 						psiServiceProvision.setField1("not found");
+						
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 						
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
@@ -279,10 +286,85 @@ public class DHISListener {
 					Context.openSession();
 					getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 					psiServiceProvision.setField1(e.toString());
+					
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					
 					getlastTimeStamp.setVoidReason(e.toString());
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+					Context.clearSession();
+				}
+			}
+			
+		}
+	}
+	
+	private void sendNotSendingMoneyReceipt() {
+		long timestamp = 0;
+		
+		PSIDHISMarker getlastTimeStamp = Context.getService(PSIDHISMarkerService.class).findByType("NotSendingMoneyReceipt");
+		if (getlastTimeStamp == null) {
+			PSIDHISMarker psidhisMarker = new PSIDHISMarker();
+			psidhisMarker.setType("NotSendingMoneyReceipt");
+			psidhisMarker.setTimestamp(0l);
+			psidhisMarker.setLastPatientId(0);
+			psidhisMarker.setDateCreated(new Date());
+			psidhisMarker.setUuid(UUID.randomUUID().toString());
+			psidhisMarker.setVoided(false);
+			Context.openSession();
+			Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
+			Context.clearSession();
+		} else {
+			timestamp = getlastTimeStamp.getTimestamp();
+		}
+		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
+		        .findAllByTimestampNotSending(timestamp);
+		if (psiServiceProvisions.size() != 0 && psiServiceProvisions != null) {
+			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
+				getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
+				try {
+					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
+					        + psiServiceProvision.getPatientUuid() + "&ou="
+					        + psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
+					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					JSONObject eventResponse = new JSONObject();
+					if (trackedEntityInstances.length() != 0) {
+						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
+						String trackedEntityInstanceId = trackedEntityInstance.getString("trackedEntityInstance");
+						JSONObject moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,
+						    trackedEntityInstanceId);
+						
+						eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+						int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
+						if (statusCode == 200) {
+							JSONObject successResponse = eventResponse.getJSONObject("response");
+							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+							if (importSummaries.length() != 0) {
+								JSONObject importSummary = importSummaries.getJSONObject(0);
+								String referenceId = importSummary.getString("reference");
+								Context.openSession();
+								Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+								psiServiceProvision.setDhisId(referenceId);
+								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+								Context.clearSession();
+							}
+						}
+						
+					} else {
+						Context.openSession();
+						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+						psiServiceProvision.setField1("not found");
+						
+						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+						Context.clearSession();
+					}
+				}
+				catch (Exception e) {
+					Context.openSession();
+					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+					psiServiceProvision.setField1(e.toString());
+					
+					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					Context.clearSession();
 				}
 			}

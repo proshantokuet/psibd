@@ -15,7 +15,7 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 	
 	private long timestamp;
 	
-	private int patientId;
+	private int markId;
 	
 	private String json;
 	
@@ -24,6 +24,8 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 	private int status;
 	
 	private String error;
+	
+	private String type;
 	
 	private String response;
 	
@@ -55,12 +57,12 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 		this.timestamp = timestamp;
 	}
 	
-	public int getPatientId() {
-		return patientId;
+	public int getMarkId() {
+		return markId;
 	}
 	
-	public void setPatientId(int patientId) {
-		this.patientId = patientId;
+	public void setMarkId(int markId) {
+		this.markId = markId;
 	}
 	
 	public String getJson() {
@@ -101,6 +103,14 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 	
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }

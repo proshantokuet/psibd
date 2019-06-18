@@ -94,4 +94,10 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		return dao.dashboardReport(start, end, code);
 	}
 	
+	@Override
+	public List<PSIServiceProvision> findAllByTimestampNotSending(long timestamp) {
+		// TODO Auto-generated method stub
+		return dao.findAllByTimestampNotSending(timestamp);
+	}
+	
 }

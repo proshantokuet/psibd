@@ -26,6 +26,8 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public List<PSIServiceProvision> findAllByTimestamp(long timestamp);
 	
+	public List<PSIServiceProvision> findAllByTimestampNotSending(long timestamp);
+	
 	public List<PSIReport> servicePointWiseReport(String startDate, String endDate, String code);
 	
 	public String servicePointWiseRepor(String startDate, String endDate, String code);

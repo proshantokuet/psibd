@@ -301,7 +301,17 @@
 			<column name="url" type="varchar(255)" />
 			<column name="status" type="int(11)" />	
 		</addColumn>
+	 </changeSet>	 
+	 
+	<changeSet author="Proshanto" id="psidhisexception-1.0.2">
+	 	<addColumn tableName="psi_exception">
+			<column name="type" type="varchar(255)" />				
+		</addColumn>
 	 </changeSet>
-	
+	<changeSet id="psidhisexception-1.0.3" author="Proshanto">
+		<sql>
+			ALTER TABLE psi_exception CHANGE patient_id mark_id int(11) not null; 
+		</sql>
+	</changeSet>
 	
 </databaseChangeLog>

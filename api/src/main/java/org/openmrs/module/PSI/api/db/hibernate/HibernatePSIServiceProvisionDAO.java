@@ -231,4 +231,15 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 		return dashboardDTO;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIServiceProvision> findAllByTimestampNotSending(long timestamp) {
+		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
+		lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceProvision where timestamp > :timestamp and dhisId IS NULL  order by spid asc")
+		        .setLong("timestamp", timestamp).setMaxResults(100).list();
+		
+		return lists;
+	}
 }

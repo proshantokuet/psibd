@@ -58,6 +58,15 @@ public class OpenmrsAPIController extends MainResourceController {
 	}
 	
 	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/not", method = RequestMethod.GET)
+	public ResponseEntity<String> sfsdf() throws Exception {
+		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
+		        .findAllByTimestampNotSending(0l);
+		return new ResponseEntity<String>(psiServiceProvisions.size() + ": " + psiServiceProvisions.toString(),
+		        HttpStatus.OK);
+	}
+	
+	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/patient", method = RequestMethod.GET)
 	public ResponseEntity<String> getResearvedHealthId() throws Exception {
 		/*

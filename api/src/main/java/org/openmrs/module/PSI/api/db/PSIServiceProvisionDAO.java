@@ -31,6 +31,8 @@ public interface PSIServiceProvisionDAO {
 	
 	public DashboardDTO dashboardReport(String start, String end, String code);
 	
+	public List<PSIServiceProvision> findAllByTimestampNotSending(long timestamp);
+	
 	public void delete(int id);
 	
 }
