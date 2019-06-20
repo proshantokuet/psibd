@@ -8,6 +8,8 @@ public class UserDTO {
 	
 	private String userRole;
 	
+	private String role;
+	
 	public int getId() {
 		return id;
 	}
@@ -30,6 +32,14 @@ public class UserDTO {
 	
 	public void setUserRole(String userRole) {
 		this.userRole = userRole;
+	}
+	
+	public String getRole() {
+		return role;
+	}
+	
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
 	@Override

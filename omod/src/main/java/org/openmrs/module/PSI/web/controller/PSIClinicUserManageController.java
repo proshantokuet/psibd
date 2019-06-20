@@ -50,8 +50,8 @@ public class PSIClinicUserManageController {
 		model.addAttribute("pSIClinicUser", new PSIClinicUser());
 		model.addAttribute("psiClinicManagementId", id);
 		
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + USER_URL + "/", "v=default",
-		    "superman", "Admin123");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + USER_URL + "/",
+		    "v=default&limit=999", "superman", "Admin123");
 		JSONObject body = new JSONObject(op.body());
 		JSONArray users = new JSONArray(body.getJSONArray("results").toString());
 		JSONArray usernamesArray = new JSONArray();

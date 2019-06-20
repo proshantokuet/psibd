@@ -14,6 +14,7 @@ public class UserDataConverter {
 		userJson.putOpt("id", user.getId());
 		userJson.putOpt("username", user.getUsername());
 		userJson.putOpt("userRole", user.getUserRole());
+		userJson.putOpt("designation", user.getRole());
 		return userJson;
 	}
 	

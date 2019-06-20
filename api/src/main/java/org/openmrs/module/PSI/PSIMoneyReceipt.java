@@ -73,6 +73,8 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private String dataCollector;
 	
+	private String designation;
+	
 	private PSIClinicManagement PSIClinicManagement;
 	
 	@Override
@@ -333,6 +335,14 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	public void setDataCollector(String dataCollector) {
 		this.dataCollector = dataCollector;
+	}
+	
+	public String getDesignation() {
+		return designation;
+	}
+	
+	public void setDesignation(String designation) {
+		this.designation = designation;
 	}
 	
 	@Override

@@ -31,18 +31,21 @@ public class PSIDashboardController {
 	public void dashboard(HttpServletRequest request, HttpSession session, Model model) {
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 		    Context.getAuthenticatedUser().getUsername());
-		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(
-		    psiClinicUser.getPsiClinicManagementId().getCid());
-		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUserByCode(
-		    psiClinicManagement.getClinicId());
-		model.addAttribute("psiClinicUsers", psiClinicUsers);
-		
-		Date date = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String today = dateFormat.format(date);
-		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, "",
-		    psiClinicManagement.getClinicId());
-		model.addAttribute("dashboard", dashboardDTO);
+		if (psiClinicUser != null) {
+			PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(
+			    psiClinicUser.getPsiClinicManagementId().getCid());
+			List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUserByCode(
+			    psiClinicManagement.getClinicId());
+			model.addAttribute("psiClinicUsers", psiClinicUsers);
+			
+			Date date = Calendar.getInstance().getTime();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String today = dateFormat.format(date);
+			DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, "",
+			    psiClinicManagement.getClinicId());
+			
+			model.addAttribute("dashboard", dashboardDTO);
+		}
 		/*select code, item, category, sum(Clilic) as Clilic, sum(Satellite) as Satellite,
 			sum(CSP) as CSP , sum(Clilic)+sum(Satellite)+sum(CSP) as total
 		from (

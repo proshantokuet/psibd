@@ -139,7 +139,12 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			}
 			
 			if (moneyReceipt.has("dataCollector")) {
-				psiMoneyReceipt.setDataCollector(moneyReceipt.getString("dataCollector"));
+				
+			}
+			if (moneyReceipt.has("dataCollector")) {
+				JSONObject designationObj = new JSONObject(moneyReceipt.getString("dataCollector"));
+				psiMoneyReceipt.setDesignation(designationObj.getString("designation"));
+				psiMoneyReceipt.setDataCollector(designationObj.getString("username"));
 			}
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());

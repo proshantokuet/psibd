@@ -129,6 +129,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 			userDTO.setId(Integer.parseInt(objects[0] + ""));
 			userDTO.setUsername(objects[1] + "");
 			userDTO.setUserRole(objects[1] + "-" + objects[2] + "");
+			userDTO.setRole(objects[2] + "");
 			users.add(userDTO);
 		}
 		return users;
