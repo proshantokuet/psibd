@@ -319,4 +319,23 @@
 		</sql>
 	</changeSet>
 	
+	
+	<changeSet id="psiuniqueidgenerator-1.0.0" author="Proshanto">
+		<createTable tableName="psi_unique_id_generator">
+			<column name="uid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>			
+			<column name="clinic_code" type="varchar(200)" />
+			<column name="generate_id" type="int(11)" />
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>		
+			
+			<column name="date_changed" type="datetime" />
+			
+			
+		</createTable>
+	</changeSet>
+	
 </databaseChangeLog>

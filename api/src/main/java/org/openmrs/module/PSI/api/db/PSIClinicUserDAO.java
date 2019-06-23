@@ -15,9 +15,13 @@ public interface PSIClinicUserDAO {
 	
 	public PSIClinicUser findByUserName(String username);
 	
+	public PSIClinicUser findByUserNameAndClinicCode(String username, int clinicId);
+	
 	public UserDTO findByUserNameFromOpenmrs(String username);
 	
 	public List<UserDTO> findUserByCode(String code);
+	
+	public List<UserDTO> findUsersNotInClinic(int clinicId);
 	
 	public void delete(int id);
 	

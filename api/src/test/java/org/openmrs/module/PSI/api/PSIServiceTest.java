@@ -16,10 +16,17 @@ package org.openmrs.module.PSI.api;
 import static org.junit.Assert.assertNotNull;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -30,19 +37,32 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 	public static DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Test
-	public void shouldSetupContext() {
+	public void shouldSetupContext() throws ParseException {
 		assertNotNull(Context.getService(PSIService.class));
-		/*String s = "1985-04-18T00:00:00.000+0000";
-		System.out.println(s.substring(0, 10));
+		String s = "1985-04-18T00:00:00.000+0000";
 		
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String strDate = dateFormat.format(date);
 		System.out.println("Converted String: " + strDate);
-		/*
+		
+		int f = 2;
+		String l = f + "";
+		String ss = "";
+		if (l.length() == 1) {
+			ss += "000" + l;
+		} else if (l.length() == 2) {
+			ss += "00" + l;
+		} else if (l.length() == 3) {
+			ss += "0" + l;
+		}
+		System.out.println(ss);
+		Date date1 = yyyyMMdd.parse(s.substring(0, 10));
+		System.out.println("Converted Sdate1tring: " + date1);
+		
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		LocalDateTime dateTime = LocalDateTime.parse("2018-05-05T11:50:55");
-		System.out.println(dateTime);*/
+		System.out.println(dateTime);
 		
 	}
 }

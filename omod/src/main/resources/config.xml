@@ -38,6 +38,7 @@
 		psiclinicuser.hbm.xml
 		psidhismarker.hbm.xml
 		psidhisexception.hbm.xml
+		psiuniqueidgenerator.hbm.xml
 				
 	</mappingFiles>
 

@@ -18,7 +18,11 @@ public interface PSIClinicUserService extends OpenmrsService {
 	
 	public PSIClinicUser findByUserName(String username);
 	
+	public PSIClinicUser findByUserNameAndClinicCode(String username, int clinicId);
+	
 	public UserDTO findByUserNameFromOpenmrs(String username);
+	
+	public List<UserDTO> findUsersNotInClinic(int clinicId);
 	
 	public List<UserDTO> findUserByCode(String code);
 	

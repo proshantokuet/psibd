@@ -10,6 +10,8 @@ public class UserDTO {
 	
 	private String role;
 	
+	private String fullName;
+	
 	public int getId() {
 		return id;
 	}
@@ -40,6 +42,14 @@ public class UserDTO {
 	
 	public void setRole(String role) {
 		this.role = role;
+	}
+	
+	public String getFullName() {
+		return fullName;
+	}
+	
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 	
 	@Override

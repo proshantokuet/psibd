@@ -35,9 +35,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
@@ -92,9 +92,10 @@ public class DHISListener {
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 					if (trackedEntityInstances.length() != 0) {
+						patientJson.remove("enrollments");
 						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 						String UpdateUrl = trackerUrl + "/" + trackedEntityInstance.getString("trackedEntityInstance");
-						//response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
+						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
 					} else {
 						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
 					}

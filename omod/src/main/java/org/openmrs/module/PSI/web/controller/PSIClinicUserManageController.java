@@ -21,9 +21,7 @@ import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
-import org.openmrs.module.PSI.utils.ClinicUser;
-import org.openmrs.module.PSI.utils.HttpResponse;
-import org.openmrs.module.PSI.utils.HttpUtil;
+import org.openmrs.module.PSI.dto.UserDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -50,22 +48,13 @@ public class PSIClinicUserManageController {
 		model.addAttribute("pSIClinicUser", new PSIClinicUser());
 		model.addAttribute("psiClinicManagementId", id);
 		
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + USER_URL + "/",
-		    "v=default&limit=999", "superman", "Admin123");
-		JSONObject body = new JSONObject(op.body());
-		JSONArray users = new JSONArray(body.getJSONArray("results").toString());
 		JSONArray usernamesArray = new JSONArray();
-		List<PSIClinicUser> psiClinicUsers = Context.getService(PSIClinicUserService.class).getAll();
-		for (int i = 0; i < users.length(); i++) {
+		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUsersNotInClinic(id);
+		for (UserDTO user : psiClinicUsers) {
 			JSONObject nameObject = new JSONObject();
-			JSONObject user = (JSONObject) users.get(i);
-			JSONObject person = user.getJSONObject("person");
-			if (!ClinicUser.isExists(psiClinicUsers, user.get("username").toString())) {
-				nameObject.put("username", user.get("username"));
-				nameObject.put("display", person.get("display"));
-				usernamesArray.put(nameObject);
-			}
-			
+			nameObject.put("username", user.getUsername());
+			nameObject.put("display", user.getFullName());
+			usernamesArray.put(nameObject);
 		}
 		
 		session.setAttribute("users", usernamesArray.toString());
@@ -90,28 +79,17 @@ public class PSIClinicUserManageController {
 	public void editPSIClinicUser(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id)
 	    throws JSONException {
 		
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + USER_URL + "/", "v=default",
-		    "superman", "Admin123");
-		JSONObject body = new JSONObject(op.body());
-		JSONArray users = new JSONArray(body.getJSONArray("results").toString());
-		JSONArray usernamesArray = new JSONArray();
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findById(id);
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(
 		    psiClinicUser.getPsiClinicManagementId().getCid());
-		
-		List<PSIClinicUser> psiClinicUsers = Context.getService(PSIClinicUserService.class).getAll();
-		for (int i = 0; i < users.length(); i++) {
+		JSONArray usernamesArray = new JSONArray();
+		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUsersNotInClinic(id);
+		for (UserDTO user : psiClinicUsers) {
 			JSONObject nameObject = new JSONObject();
-			JSONObject user = (JSONObject) users.get(i);
-			JSONObject person = user.getJSONObject("person");
-			if (!ClinicUser.isExists(psiClinicUsers, user.get("username").toString(), psiClinicUser.getUserName())) {
-				nameObject.put("username", user.get("username"));
-				nameObject.put("display", person.get("display"));
-				usernamesArray.put(nameObject);
-			}
-			
+			nameObject.put("username", user.getUsername());
+			nameObject.put("display", user.getFullName());
+			usernamesArray.put(nameObject);
 		}
-		
 		model.addAttribute("psiClinicManagementId", psiClinicManagement.getCid());
 		JSONArray userIds = new JSONArray();
 		userIds.put(psiClinicUser.getUserName());

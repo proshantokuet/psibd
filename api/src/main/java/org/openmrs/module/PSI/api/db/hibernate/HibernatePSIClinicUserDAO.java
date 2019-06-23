@@ -90,6 +90,22 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIClinicUser findByUserNameAndClinicCode(String username, int clinicId) {
+		List<PSIClinicUser> lists = sessionFactory
+		        .getCurrentSession()
+		        .createQuery(
+		            "from PSIClinicUser where userName = :username and psiClinicManagementId = :code  order by cuid desc")
+		        .setString("username", username).setInteger("code", clinicId).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+		
+	}
+	
 	@Override
 	public UserDTO findByUserNameFromOpenmrs(String username) {
 		List<Object[]> data = null;
@@ -134,6 +150,29 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		}
 		return users;
 		
+	}
+	
+	@Override
+	public List<UserDTO> findUsersNotInClinic(int clinicId) {
+		List<Object[]> data = null;
+		List<UserDTO> users = new ArrayList<UserDTO>();
+		
+		String sql = "select UN.user_id,UN.username,UN.diaplay from (SELECT U.user_id,U.username ,CONCAT( username,' - ',given_name, ' ', family_name ) AS diaplay "
+		        + " FROM openmrs.users as U left join openmrs.person_name as PN on U.person_id = PN.person_id) as UN left join "
+		        + " openmrs.psi_clinic_user as PU on UN.username = PU.user_uame  where psi_clinic_management_id is null) ";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		
+		data = query.setInteger("clinicId", clinicId).list();
+		
+		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+			Object[] objects = (Object[]) iterator.next();
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(Integer.parseInt(objects[0] + ""));
+			userDTO.setUsername(objects[1] + "");
+			userDTO.setFullName(objects[2] + "");
+			users.add(userDTO);
+		}
+		return users;
 	}
 	
 }
