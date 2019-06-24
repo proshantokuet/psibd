@@ -44,7 +44,7 @@ public class PSIUniqueIdGeneratorRestController extends MainResourceController {
 		Context.getService(PSIUniqueIdGeneratorService.class).saveOrUpdate(psiUGenerator);
 		Context.clearSession();
 		String serquenceNumber = "";
-		String serquenceNumberToString = pisPsiUniqueIdGenerator.getGenerateId() + "";
+		String serquenceNumberToString = psiUGenerator.getGenerateId() + "";
 		if (serquenceNumberToString.length() == 1) {
 			serquenceNumber += "000" + serquenceNumberToString;
 		} else if (serquenceNumberToString.length() == 2) {

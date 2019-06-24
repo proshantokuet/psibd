@@ -159,10 +159,10 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		
 		String sql = "select UN.user_id,UN.username,UN.diaplay from (SELECT U.user_id,U.username ,CONCAT( username,' - ',given_name, ' ', family_name ) AS diaplay "
 		        + " FROM openmrs.users as U left join openmrs.person_name as PN on U.person_id = PN.person_id) as UN left join "
-		        + " openmrs.psi_clinic_user as PU on UN.username = PU.user_uame  where psi_clinic_management_id is null) ";
+		        + " openmrs.psi_clinic_user as PU on UN.username = PU.user_uame  where psi_clinic_management_id is null ";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		
-		data = query.setInteger("clinicId", clinicId).list();
+		data = query.list();
 		
 		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
 			Object[] objects = (Object[]) iterator.next();

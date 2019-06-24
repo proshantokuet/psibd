@@ -33,7 +33,7 @@ String userIds = (String)session.getAttribute("userIds");
 							<div id="userIds"></div>							
 						</div>
                   	</div>
-                  	 <input type="hidden" id="clinicId" name="clinicId" value="${psiClinicManagementId}">
+                  	 <input type="hidden" id="clinicId" name="clinicId" value="${psiClinicManagementId}" required="required">
                   	<form:hidden path="cuid" />
                    
              	</div>             	
@@ -49,7 +49,8 @@ String userIds = (String)session.getAttribute("userIds");
 
 <script type="text/javascript">  
 	var $jq = jQuery.noConflict();
-	 $jq('#userIds').magicSuggest({ 
+	 $jq('#userIds').magicSuggest({
+		 	allowFreeEntries: false,
 		 	required: true,
 			//placeholder: 'Type Locations',
      		data: <%=users%>,
@@ -58,9 +59,9 @@ String userIds = (String)session.getAttribute("userIds");
 	        name: 'usernames',
 	        inputCfg: {"class":"magicInput"},
 	        value: <%=userIds%>,
-	        useCommaKey: true,
-	        allowFreeEntries: false,
+	        useCommaKey: true,	        
 	        maxSelection: 1,
+	        required: true,
 	        maxEntryLength: 100,
 	 		maxEntryRenderer: function(v) {
 	 			return '<div style="color:red">Typed Word TOO LONG </div>';
