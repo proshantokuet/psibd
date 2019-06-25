@@ -177,29 +177,28 @@ public class PSIServiceManagementRestController extends MainResourceController {
 			while ((line = br.readLine()) != null) {
 				String[] service = line.split(cvsSplitBy);
 				if (index != 0) {
-					PSIServiceManagement findByCodeAndClinicId = Context.getService(PSIServiceManagementService.class)
+					PSIServiceManagement psiServiceManagement = Context.getService(PSIServiceManagementService.class)
 					        .findByCode(service[1], id);
-					if (findByCodeAndClinicId == null) {
-						PSIServiceManagement pSIServiceManagement = new PSIServiceManagement();
-						pSIServiceManagement.setName(service[0]);
-						pSIServiceManagement.setEligible("");
-						pSIServiceManagement.setCode(service[1]);
-						pSIServiceManagement.setCategory(service[2]);
-						pSIServiceManagement.setProvider(service[3]);
-						pSIServiceManagement.setUnitCost(Float.parseFloat(service[4]));
-						pSIServiceManagement.setPsiClinicManagement(psiClinicManagement);
-						pSIServiceManagement.setDateCreated(new Date());
-						pSIServiceManagement.setCreator(Context.getAuthenticatedUser());
-						psiClinicManagement.setTimestamp(System.currentTimeMillis());
-						pSIServiceManagement.setUuid(UUID.randomUUID().toString());
-						Context.getService(PSIServiceManagementService.class).saveOrUpdate(pSIServiceManagement);
-					} else {
-						notUploded++;
+					if (psiServiceManagement == null) {
+						psiServiceManagement = new PSIServiceManagement();
 					}
+					psiServiceManagement.setName(service[0]);
+					psiServiceManagement.setEligible("");
+					psiServiceManagement.setCode(service[1]);
+					psiServiceManagement.setCategory(service[2]);
+					psiServiceManagement.setProvider(service[3]);
+					psiServiceManagement.setUnitCost(Float.parseFloat(service[4]));
+					psiServiceManagement.setPsiClinicManagement(psiClinicManagement);
+					psiServiceManagement.setDateCreated(new Date());
+					psiServiceManagement.setCreator(Context.getAuthenticatedUser());
+					psiServiceManagement.setTimestamp(System.currentTimeMillis());
+					psiServiceManagement.setUuid(UUID.randomUUID().toString());
+					Context.getService(PSIServiceManagementService.class).saveOrUpdate(psiServiceManagement);
+					
 				}
 				index++;
 			}
-			msg = "Total successfully service uploaded: " + (index - notUploded - 1);
+			msg = "Total successfully service uploaded: " + (index - 1);
 			
 		}
 		catch (Exception e) {
