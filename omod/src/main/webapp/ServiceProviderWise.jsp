@@ -12,9 +12,9 @@
 	    <tbody>
 	    	<c:forEach var="report" items="${ reports }">
 	        <tr>
-	            <td>${ report.category }</td>
-	            <td>${ report.item }</td>
+	            <td>${ report.category }</td>	            
 	        	<td>${ report.code }</td>
+	        	<td>${ report.item }</td>
 	            <td>${ report.serviceCount }</td>
 	            <td>${ report.total }</td>
 	        </tr>

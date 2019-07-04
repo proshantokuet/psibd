@@ -11,6 +11,11 @@
   top: -55px;
   margin-left: 1036px
 }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+    margin-bottom: 0;
+    padding-bottom: 1px;
+    background: #dc0909;
+}
 </style>
 <div class="form-content">
         <div class="row">
