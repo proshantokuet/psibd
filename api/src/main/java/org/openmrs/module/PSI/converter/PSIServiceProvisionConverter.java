@@ -49,6 +49,7 @@ public class PSIServiceProvisionConverter {
 		service.putOpt("cspId", psiServiceProvisions.getPsiMoneyReceiptId().getCspId());
 		service.putOpt("dataCollector", psiServiceProvisions.getPsiMoneyReceiptId().getDataCollector());
 		service.putOpt("designation", psiServiceProvisions.getPsiMoneyReceiptId().getDesignation());
+		service.putOpt("isComplete", psiServiceProvisions.getIsComplete());
 		
 		return service;
 		

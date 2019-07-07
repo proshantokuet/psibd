@@ -50,6 +50,8 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	private String provider;
 	
+	private int isComplete;
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -212,6 +214,14 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	public void setProvider(String provider) {
 		this.provider = provider;
+	}
+	
+	public int getIsComplete() {
+		return isComplete;
+	}
+	
+	public void setIsComplete(int isComplete) {
+		this.isComplete = isComplete;
 	}
 	
 	@Override

@@ -58,6 +58,7 @@ public class PSIMoneyReceiptConverter {
 			service.putOpt("code", psiServiceProvision.getCode());
 			service.putOpt("provider", psiServiceProvision.getProvider());
 			service.putOpt("category", psiServiceProvision.getCategory());
+			service.putOpt("isComplete", psiServiceProvision.getIsComplete());
 			service.putOpt("moneyReceiptDate", psiServiceProvision.getMoneyReceiptDate());
 			services.put(service);
 		}

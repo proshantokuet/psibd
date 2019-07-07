@@ -251,6 +251,11 @@
 			
 		</addColumn>
 	 </changeSet>
+	 <changeSet author="Proshanto" id="psiserviceprovision-1.2.1">
+	 	<addColumn tableName="psi_service_provision">
+			<column name="is_complete" type="int(1)" />			
+		</addColumn>
+	 </changeSet>	 
 	
 	<changeSet id="psidhismarker-1.0.0" author="Proshanto">
 		<createTable tableName="psi_dhis_marker">

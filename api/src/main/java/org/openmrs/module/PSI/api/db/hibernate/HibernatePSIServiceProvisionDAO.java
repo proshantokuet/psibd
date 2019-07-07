@@ -102,9 +102,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@Override
 	public List<PSIServiceProvision> findAllByTimestamp(long timestamp) {
 		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
-		lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceProvision where timestamp > :timestamp order by timestamp asc ")
-		        .setLong("timestamp", timestamp).setMaxResults(500)
+		lists = sessionFactory
+		        .getCurrentSession()
+		        .createQuery(
+		            "from PSIServiceProvision where timestamp > :timestamp and is_complete = :complete order by timestamp asc ")
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(500)
 		        
 		        .list();
 		return lists;
@@ -236,9 +238,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@Override
 	public List<PSIServiceProvision> findAllByTimestampNotSending(long timestamp) {
 		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
-		lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceProvision where timestamp > :timestamp and dhisId IS NULL  order by spid asc")
-		        .setLong("timestamp", timestamp).setMaxResults(100).list();
+		lists = sessionFactory
+		        .getCurrentSession()
+		        .createQuery(
+		            "from PSIServiceProvision where timestamp > :timestamp and dhisId IS NULL and is_complete = :complete  order by spid asc")
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(100).list();
 		
 		return lists;
 	}

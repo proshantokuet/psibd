@@ -3,20 +3,7 @@
 
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="dashboard" otherwise="/login.htm" />
-<style>
-.dataTables_wrapper .dt-buttons {
-  float:none;  
-  text-align:right;
-  position: absolute;
-  top: -55px;
-  margin-left: 1036px
-}
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
-    margin-bottom: 0;
-    padding-bottom: 1px;
-    background: #dc0909;
-}
-</style>
+
 <div class="form-content">
         <div class="row">
             <div class="col-md-4">
@@ -255,3 +242,18 @@ $JQuery("#ServicePointWise").submit(function(event) {
 
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
+<style>
+.dataTables_wrapper .dt-buttons {
+  float:none;  
+  text-align:right;
+  position: absolute;
+  top: -55px;
+  margin-left: 1036px
+}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    border: 1px solid #1aad96;
+    background-color: #1aad9b;
+    font-weight: bold;
+    color: #0e5c52;
+}
+</style>
