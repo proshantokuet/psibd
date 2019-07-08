@@ -37,7 +37,7 @@ public class DHISListener {
 	
 	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149:1972";
+	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
@@ -145,6 +145,8 @@ public class DHISListener {
 		JSONObject patientJson = new JSONObject();
 		if (eventReceordDTOs.size() != 0 && eventReceordDTOs != null) {
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
+				PSIDHISException getPsidhisException = Context.getService(PSIDHISExceptionService.class).findAllById(
+				    eventReceordDTO.getId());
 				try {
 					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
 					patientJson = DHISDataConverter.toConvertPatient(patient);
@@ -155,9 +157,10 @@ public class DHISListener {
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 					if (trackedEntityInstances.length() != 0) {
+						patientJson.remove("enrollments");
 						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 						String UpdateUrl = trackerUrl + "/" + trackedEntityInstance.getString("trackedEntityInstance");
-						//response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
+						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
 					} else {
 						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
 					}
@@ -166,16 +169,19 @@ public class DHISListener {
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					String status = response.getString("status");
 					if (!status.equalsIgnoreCase("ERROR")) {
+						if (getPsidhisException == null) {
+							PSIDHISException newPsidhisException = new PSIDHISException();
+							getPsidhisException = newPsidhisException;
+						}
 						
-						PSIDHISException psidhisException = new PSIDHISException();
-						psidhisException.setError("");
-						psidhisException.setJson(patientJson.toString());
-						psidhisException.setMarkId(eventReceordDTO.getId());
-						psidhisException.setUrl(eventReceordDTO.getUrl());
-						psidhisException.setStatus(0);
-						psidhisException.setResponse(response.toString());
-						psidhisException.setDateCreated(new Date());
-						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+						getPsidhisException.setError("");
+						getPsidhisException.setJson(patientJson.toString());
+						getPsidhisException.setMarkId(eventReceordDTO.getId());
+						getPsidhisException.setUrl(eventReceordDTO.getUrl());
+						getPsidhisException.setStatus(0);
+						getPsidhisException.setResponse(response.toString());
+						getPsidhisException.setDateCreated(new Date());
+						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
 						
 					}
 					
@@ -186,15 +192,18 @@ public class DHISListener {
 					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
 					Context.openSession();
 					//Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
-					PSIDHISException psidhisException = new PSIDHISException();
-					psidhisException.setError(e.toString());
-					psidhisException.setJson(patientJson.toString());
-					psidhisException.setMarkId(eventReceordDTO.getId());
-					psidhisException.setUrl(eventReceordDTO.getUrl());
-					psidhisException.setStatus(0);
-					psidhisException.setResponse(response.toString());
-					psidhisException.setDateCreated(new Date());
-					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+					if (getPsidhisException == null) {
+						PSIDHISException newPsidhisException = new PSIDHISException();
+						getPsidhisException = newPsidhisException;
+					}
+					getPsidhisException.setError(e.toString());
+					getPsidhisException.setJson(patientJson.toString());
+					getPsidhisException.setMarkId(eventReceordDTO.getId());
+					getPsidhisException.setUrl(eventReceordDTO.getUrl());
+					getPsidhisException.setStatus(0);
+					getPsidhisException.setResponse(response.toString());
+					getPsidhisException.setDateCreated(new Date());
+					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
 					
 					Context.clearSession();
 				}

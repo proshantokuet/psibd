@@ -252,8 +252,9 @@ $JQuery("#ServicePointWise").submit(function(event) {
 }
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
     border: 1px solid #1aad96;
-    background-color: #1aad9b;
+    /* background: #1aac9b url(images/ui-bg_inset-soft_30_ffffff_1x100.png) 50% 50% repeat-x; */
     font-weight: bold;
+    background: #4aad9b;
     color: #0e5c52;
 }
 </style>

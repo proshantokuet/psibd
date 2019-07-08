@@ -10,4 +10,6 @@ public interface PSIDHISExceptionDAO {
 	
 	public List<PSIDHISException> findAllByStatus(int status);
 	
+	public PSIDHISException findAllById(int patientId);
+	
 }

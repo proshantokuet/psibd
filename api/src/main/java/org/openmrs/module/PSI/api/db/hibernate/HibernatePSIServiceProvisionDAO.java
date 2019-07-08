@@ -240,9 +240,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
 		lists = sessionFactory
 		        .getCurrentSession()
-		        .createQuery(
-		            "from PSIServiceProvision where timestamp > :timestamp and dhisId IS NULL and is_complete = :complete  order by spid asc")
-		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(100).list();
+		        .createQuery("from PSIServiceProvision where  dhisId IS NULL and is_complete = :complete  order by spid asc")
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).list();
 		
 		return lists;
 	}
