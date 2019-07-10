@@ -39,7 +39,8 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 	@Override
 	public List<PSIDHISException> findAllByStatus(int status) {
 		List<PSIDHISException> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIDHISException where status = :id").setInteger("id", status).list();
+		        .createQuery("from PSIDHISException where (status = :id0 OR status = :id3)").setInteger("id0", status)
+		        .setInteger("id3", 3).list();
 		
 		return lists;
 		

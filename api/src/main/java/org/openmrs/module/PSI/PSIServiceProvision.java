@@ -52,6 +52,10 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	private int isComplete;
 	
+	private int isSendToDHIS;
+	
+	private String error;
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -222,6 +226,22 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	public void setIsComplete(int isComplete) {
 		this.isComplete = isComplete;
+	}
+	
+	public int getIsSendToDHIS() {
+		return isSendToDHIS;
+	}
+	
+	public void setIsSendToDHIS(int isSendToDHIS) {
+		this.isSendToDHIS = isSendToDHIS;
+	}
+	
+	public String getError() {
+		return error;
+	}
+	
+	public void setError(String error) {
+		this.error = error;
 	}
 	
 	@Override

@@ -35,4 +35,5 @@ public interface PSIServiceProvisionDAO {
 	
 	public void delete(int id);
 	
+	public List<PSIServiceProvision> findAllResend();
 }

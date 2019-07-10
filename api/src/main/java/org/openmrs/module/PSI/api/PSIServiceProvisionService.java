@@ -38,4 +38,5 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public void delete(int id);
 	
+	public List<PSIServiceProvision> findAllResend();
 }
