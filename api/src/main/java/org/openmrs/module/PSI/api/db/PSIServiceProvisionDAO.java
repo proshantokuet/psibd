@@ -36,4 +36,6 @@ public interface PSIServiceProvisionDAO {
 	public void delete(int id);
 	
 	public List<PSIServiceProvision> findAllResend();
+	
+	public List<PSIServiceProvision> findAllByMoneyReceiptId(int moneyReceiptId);
 }

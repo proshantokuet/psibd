@@ -37,7 +37,9 @@ public class DHISListener {
 	
 	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	private final String DHIS2BASEURL = "http://192.168.19.149:1972";
+	
+	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
 	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
@@ -48,27 +50,27 @@ public class DHISListener {
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
 		JSONObject getResponse = null;
-		int status = 0;
+		boolean status = true;
 		try {
-			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", DHIS2BASEURL);
-			PSIDHISMarker psidhisMarker = new PSIDHISMarker();
+			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
+			/*PSIDHISMarker psidhisMarker = new PSIDHISMarker();
 			psidhisMarker.setVoidReason(" " + getResponse);
 			psidhisMarker.setDateCreated(new Date());
 			Context.openSession();
 			Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
-			Context.clearSession();
+			Context.clearSession();*/
 		}
 		catch (Exception e) {
-			PSIDHISMarker psidhisMarker = new PSIDHISMarker();
+			/*PSIDHISMarker psidhisMarker = new PSIDHISMarker();
 			psidhisMarker.setVoidReason(e.toString() + " " + getResponse);
 			Context.openSession();
 			psidhisMarker.setDateCreated(new Date());
 			Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
-			Context.clearSession();
-			status = 1;
+			Context.clearSession();*/
+			status = false;
 		}
 		
-		if (status == 0) {
+		if (status) {
 			try {
 				sendPatientAgain();
 			}
@@ -99,7 +101,8 @@ public class DHISListener {
 	
 	public void sendPatientAgain() {
 		
-		List<PSIDHISException> psidhisExceptions = Context.getService(PSIDHISExceptionService.class).findAllByStatus(0);
+		List<PSIDHISException> psidhisExceptions = Context.getService(PSIDHISExceptionService.class).findAllByStatus(
+		    DHISMapper.DEFAULTERRORSTATUS);
 		
 		JSONObject response = new JSONObject();
 		JSONObject patientJson = new JSONObject();
@@ -127,7 +130,7 @@ public class DHISListener {
 					
 					if (!status.equalsIgnoreCase("ERROR")) {
 						Context.openSession();
-						psidhisException.setStatus(1);
+						psidhisException.setStatus(DHISMapper.SUCCESSSTATUS);
 						psidhisException.setTimestamp(1l);
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
 						Context.clearSession();
@@ -138,9 +141,9 @@ public class DHISListener {
 					Context.openSession();
 					if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
 					        .equalsIgnoreCase(e.toString())) {
-						psidhisException.setStatus(3);
+						psidhisException.setStatus(DHISMapper.CONNECTIONTIMEOUTSTATUS);
 					} else {
-						psidhisException.setStatus(2);
+						psidhisException.setStatus(DHISMapper.FAILEDSTATUS);
 					}
 					
 					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
@@ -206,7 +209,7 @@ public class DHISListener {
 						getPsidhisException.setJson(patientJson.toString());
 						getPsidhisException.setMarkId(eventReceordDTO.getId());
 						getPsidhisException.setUrl(eventReceordDTO.getUrl());
-						getPsidhisException.setStatus(0);
+						getPsidhisException.setStatus(DHISMapper.SUCCESSSTATUS);
 						getPsidhisException.setResponse(response.toString());
 						getPsidhisException.setDateCreated(new Date());
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
@@ -227,7 +230,7 @@ public class DHISListener {
 					getPsidhisException.setJson(patientJson.toString());
 					getPsidhisException.setMarkId(eventReceordDTO.getId());
 					getPsidhisException.setUrl(eventReceordDTO.getUrl());
-					getPsidhisException.setStatus(0);
+					getPsidhisException.setStatus(DHISMapper.DEFAULTERRORSTATUS);
 					getPsidhisException.setResponse(response.toString());
 					getPsidhisException.setDateCreated(new Date());
 					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
@@ -308,7 +311,7 @@ public class DHISListener {
 						getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 						getlastTimeStamp.setVoidReason("else cindtion");
 						psiServiceProvision.setField1("not found");
-						psiServiceProvision.setIsSendToDHIS(0);
+						psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTERRORSTATUS);
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 						Context.clearSession();
@@ -319,7 +322,7 @@ public class DHISListener {
 					getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 					psiServiceProvision.setField1(e.toString());
 					psiServiceProvision.setError(e.toString());
-					psiServiceProvision.setIsSendToDHIS(0);
+					psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTERRORSTATUS);
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					getlastTimeStamp.setVoidReason(e.toString());
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
@@ -358,7 +361,7 @@ public class DHISListener {
 								String referenceId = importSummary.getString("reference");
 								Context.openSession();
 								psiServiceProvision.setDhisId(referenceId);
-								psiServiceProvision.setIsSendToDHIS(1);
+								psiServiceProvision.setIsSendToDHIS(DHISMapper.SUCCESSSTATUS);
 								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 								Context.clearSession();
 							}
@@ -367,7 +370,7 @@ public class DHISListener {
 					} else {
 						Context.openSession();
 						psiServiceProvision.setField1("not found");
-						psiServiceProvision.setIsSendToDHIS(2);
+						psiServiceProvision.setIsSendToDHIS(DHISMapper.FAILEDSTATUS);
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 						Context.clearSession();
 					}
@@ -378,9 +381,9 @@ public class DHISListener {
 					psiServiceProvision.setError(e.toString());
 					if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
 					        .equalsIgnoreCase(e.toString())) {
-						psiServiceProvision.setIsSendToDHIS(3);
+						psiServiceProvision.setIsSendToDHIS(DHISMapper.CONNECTIONTIMEOUTSTATUS);
 					} else {
-						psiServiceProvision.setIsSendToDHIS(2);
+						psiServiceProvision.setIsSendToDHIS(DHISMapper.FAILEDSTATUS);
 					}
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					Context.clearSession();

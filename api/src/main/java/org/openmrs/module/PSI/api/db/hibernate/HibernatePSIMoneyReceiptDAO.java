@@ -31,7 +31,6 @@ public class HibernatePSIMoneyReceiptDAO implements PSIMoneyReceiptDAO {
 	
 	@Override
 	public PSIMoneyReceipt saveOrUpdate(PSIMoneyReceipt psiMoneyReceipt) {
-		
 		sessionFactory.getCurrentSession().saveOrUpdate(psiMoneyReceipt);
 		return psiMoneyReceipt;
 	}

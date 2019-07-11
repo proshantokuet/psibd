@@ -4,9 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -15,7 +13,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
+import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.converter.PSIMoneyReceiptConverter;
+import org.openmrs.module.PSI.utils.DHISMapper;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,11 +38,13 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		JSONObject moneyReceipt = requestBody.getJSONObject("moneyReceipt");
 		JSONArray services = requestBody.getJSONArray("services");
 		PSIMoneyReceipt psiMoneyReceipt = new PSIMoneyReceipt();
+		int moneyReceiptId = 0;
 		try {
 			
 			if (moneyReceipt.has("mid")) {
 				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
-					psiMoneyReceipt.setMid(Integer.parseInt(moneyReceipt.getString("mid")));
+					moneyReceiptId = Integer.parseInt(moneyReceipt.getString("mid"));
+					psiMoneyReceipt.setMid(moneyReceiptId);
 				}
 			}
 			if (moneyReceipt.has("patientName")) {
@@ -149,17 +151,22 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
 			psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
-			
 			psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
-			Set<PSIServiceProvision> serviceProvisions = new HashSet<PSIServiceProvision>();
+			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+			List<PSIServiceProvision> getProvisions = Context.getService(PSIServiceProvisionService.class)
+			        .findAllByMoneyReceiptId(psiMoneyReceipt.getMid());
+			for (PSIServiceProvision psiServiceProvision : getProvisions) {
+				Context.getService(PSIServiceProvisionService.class).delete(psiServiceProvision.getSpid());
+			}
+			//Set<PSIServiceProvision> serviceProvisions = new HashSet<PSIServiceProvision>();
 			for (int i = 0; i < services.length(); i++) {
 				PSIServiceProvision psiServiceProvision = new PSIServiceProvision();
 				JSONObject service = services.getJSONObject(i);
-				if (service.has("spid")) {
+				/*if (service.has("spid")) {
 					if (!service.getString("spid").equalsIgnoreCase("")) {
 						psiServiceProvision.setSpid(Integer.parseInt(service.getString("spid")));
 					}
-				}
+				}*/
 				if (service.has("item")) {
 					JSONObject itemObj = new JSONObject(service.getString("item"));
 					psiServiceProvision.setItem(itemObj.getString("name"));
@@ -201,17 +208,21 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					psiServiceProvision.setPatientUuid(moneyReceipt.getString("patientUuid"));
 				}
 				if (moneyReceipt.has("isComplete")) {
-					psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
+					//psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
+					psiServiceProvision.setIsComplete(getProvisions.size());
 				}
-				
+				psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTSTATUSSERVICEPROVISION);
 				psiServiceProvision.setDateCreated(new Date());
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
 				psiServiceProvision.setUuid(UUID.randomUUID().toString());
 				psiServiceProvision.setTimestamp(System.currentTimeMillis());
-				serviceProvisions.add(psiServiceProvision);
+				psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
+				
+				Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+				//serviceProvisions.add(psiServiceProvision);
 			}
-			psiMoneyReceipt.setServices(serviceProvisions);
-			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+			//psiMoneyReceipt.setServices(serviceProvisions);
+			//psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
 			
 		}
 		catch (Exception e) {

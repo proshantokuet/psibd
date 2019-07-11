@@ -106,4 +106,10 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		return dao.findAllResend();
 	}
 	
+	@Override
+	public List<PSIServiceProvision> findAllByMoneyReceiptId(int moneyReceiptId) {
+		// TODO Auto-generated method stub
+		return dao.findAllByMoneyReceiptId(moneyReceiptId);
+	}
+	
 }

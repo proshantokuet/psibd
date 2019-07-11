@@ -254,8 +254,20 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .getCurrentSession()
 		        .createQuery(
 		            "from PSIServiceProvision where  (isSendToDHIS = :isSendToDHIS0 OR isSendToDHIS= :isSendToDHIS3) and is_complete = :complete  order by spid asc")
-		        .setInteger("isSendToDHIS0", 0).setInteger("isSendToDHIS3", 3).setInteger("complete", 1).setMaxResults(500)
-		        .list();
+		        .setInteger("isSendToDHIS0", DHISMapper.DEFAULTERRORSTATUS)
+		        .setInteger("isSendToDHIS3", DHISMapper.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
+		        .setMaxResults(500).list();
+		
+		return lists;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIServiceProvision> findAllByMoneyReceiptId(int moneyReceiptId) {
+		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
+		lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceProvision where  psiMoneyReceiptId = :moneyReceiptId")
+		        .setInteger("moneyReceiptId", moneyReceiptId).list();
 		
 		return lists;
 	}

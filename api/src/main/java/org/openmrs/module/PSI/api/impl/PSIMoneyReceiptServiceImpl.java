@@ -22,8 +22,8 @@ public class PSIMoneyReceiptServiceImpl extends BaseOpenmrsService implements PS
 	
 	@Override
 	public PSIMoneyReceipt saveOrUpdate(PSIMoneyReceipt psiMoneyReceipt) {
-		
 		return dao.saveOrUpdate(psiMoneyReceipt);
+		
 	}
 	
 	@Override
@@ -39,7 +39,6 @@ public class PSIMoneyReceiptServiceImpl extends BaseOpenmrsService implements PS
 	
 	@Override
 	public PSIMoneyReceipt findById(int id) {
-		
 		return dao.findById(id);
 	}
 	
