@@ -148,16 +148,19 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiMoneyReceipt.setDesignation(designationObj.getString("designation"));
 				psiMoneyReceipt.setDataCollector(designationObj.getString("username"));
 			}
+			
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
 			psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
 			psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
-			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+			
 			List<PSIServiceProvision> getProvisions = Context.getService(PSIServiceProvisionService.class)
 			        .findAllByMoneyReceiptId(psiMoneyReceipt.getMid());
 			for (PSIServiceProvision psiServiceProvision : getProvisions) {
 				Context.getService(PSIServiceProvisionService.class).delete(psiServiceProvision.getSpid());
 			}
+			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+			
 			//Set<PSIServiceProvision> serviceProvisions = new HashSet<PSIServiceProvision>();
 			for (int i = 0; i < services.length(); i++) {
 				PSIServiceProvision psiServiceProvision = new PSIServiceProvision();
@@ -208,8 +211,8 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					psiServiceProvision.setPatientUuid(moneyReceipt.getString("patientUuid"));
 				}
 				if (moneyReceipt.has("isComplete")) {
-					//psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
-					psiServiceProvision.setIsComplete(getProvisions.size());
+					psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
+					
 				}
 				psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTSTATUSSERVICEPROVISION);
 				psiServiceProvision.setDateCreated(new Date());

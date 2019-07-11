@@ -37,7 +37,7 @@ public class DHISListener {
 	
 	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149:1972";
+	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -140,7 +140,9 @@ public class DHISListener {
 				catch (Exception e) {
 					Context.openSession();
 					if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
-					        .equalsIgnoreCase(e.toString())) {
+					        .equalsIgnoreCase(e.toString())
+					        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
+					                .equalsIgnoreCase(e.toString())) {
 						psidhisException.setStatus(DHISMapper.CONNECTIONTIMEOUTSTATUS);
 					} else {
 						psidhisException.setStatus(DHISMapper.FAILEDSTATUS);
@@ -338,13 +340,14 @@ public class DHISListener {
 		        .findAllResend();
 		if (psiServiceProvisions.size() != 0 && psiServiceProvisions != null) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
+				JSONObject eventResponse = new JSONObject();
 				try {
 					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
 					        + psiServiceProvision.getPatientUuid() + "&ou="
 					        + psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
-					JSONObject eventResponse = new JSONObject();
+					
 					if (trackedEntityInstances.length() != 0) {
 						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 						String trackedEntityInstanceId = trackedEntityInstance.getString("trackedEntityInstance");
@@ -353,6 +356,7 @@ public class DHISListener {
 						
 						eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
 						int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
+						System.out.println("statusCode:" + statusCode + "" + eventResponse);
 						if (statusCode == 200) {
 							JSONObject successResponse = eventResponse.getJSONObject("response");
 							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
@@ -378,9 +382,11 @@ public class DHISListener {
 				catch (Exception e) {
 					Context.openSession();
 					psiServiceProvision.setField1(e.toString());
-					psiServiceProvision.setError(e.toString());
+					psiServiceProvision.setError(eventResponse.toString());
 					if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
-					        .equalsIgnoreCase(e.toString())) {
+					        .equalsIgnoreCase(e.toString())
+					        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
+					                .equalsIgnoreCase(e.toString())) {
 						psiServiceProvision.setIsSendToDHIS(DHISMapper.CONNECTIONTIMEOUTSTATUS);
 					} else {
 						psiServiceProvision.setIsSendToDHIS(DHISMapper.FAILEDSTATUS);
