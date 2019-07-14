@@ -55,7 +55,15 @@ public class PSIUniqueIdGeneratorRestController extends MainResourceController {
 			serquenceNumber = serquenceNumberToString;
 		}
 		JSONObject sequence = new JSONObject();
-		sequence.put("sequenceId", serquenceNumber);
+		
+		Calendar cal = Calendar.getInstance();
+		int day = cal.get(Calendar.DATE);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int year = cal.get(Calendar.YEAR);
+		String dayS = day > 10 ? "" + day : "0" + day;
+		String monthS = month > 10 ? "" + month : "0" + month;
+		String healtId = "" + year + monthS + dayS + code.substring(0, 3) + serquenceNumber;
+		sequence.put("sequenceId", healtId);
 		return new ResponseEntity<>(sequence.toString(), HttpStatus.OK);
 		
 	}

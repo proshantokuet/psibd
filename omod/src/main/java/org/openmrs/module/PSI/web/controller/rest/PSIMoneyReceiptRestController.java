@@ -214,7 +214,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
 					
 				}
-				psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTSTATUSSERVICEPROVISION);
+				psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTERRORSTATUS);
 				psiServiceProvision.setDateCreated(new Date());
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
 				psiServiceProvision.setUuid(UUID.randomUUID().toString());
