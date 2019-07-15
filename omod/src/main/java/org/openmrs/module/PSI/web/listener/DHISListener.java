@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
@@ -35,9 +37,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -46,6 +48,8 @@ public class DHISListener {
 	private final String trackInstanceUrl = DHIS2BASEURL + "/api/trackedEntityInstances.json?";
 	
 	private final String EVENTURL = DHIS2BASEURL + "/api/events";
+	
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
@@ -113,8 +117,10 @@ public class DHISListener {
 					patientJson = DHISDataConverter.toConvertPatient(patient);
 					JSONObject person = patient.getJSONObject("person");
 					
-					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
-					        + person.getString("uuid") + "&ou=" + patientJson.getString("orgUnit");
+					String orgUit = patientJson.getString("orgUnit");
+					String uuid = DHISMapper.registrationMapper.get("uuid");
+					String personUuid = person.getString("uuid");
+					String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 					if (trackedEntityInstances.length() != 0) {
@@ -185,9 +191,10 @@ public class DHISListener {
 					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
 					patientJson = DHISDataConverter.toConvertPatient(patient);
 					JSONObject person = patient.getJSONObject("person");
-					
-					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
-					        + person.getString("uuid") + "&ou=" + patientJson.getString("orgUnit");
+					String orgUit = patientJson.getString("orgUnit");
+					String uuid = DHISMapper.registrationMapper.get("uuid");
+					String personUuid = person.getString("uuid");
+					String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 					if (trackedEntityInstances.length() != 0) {
@@ -267,43 +274,46 @@ public class DHISListener {
 		        .findAllByTimestamp(timestamp);
 		if (psiServiceProvisions.size() != 0 && psiServiceProvisions != null) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
+				JSONObject eventResponse = new JSONObject();
+				JSONObject getResponse = new JSONObject();
+				JSONObject moneyReceiptJson = new JSONObject();
+				String orgunit = psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
+				String patientUuid = psiServiceProvision.getPatientUuid();
+				String uuid = DHISMapper.registrationMapper.get("uuid");
+				String URL = "";
+				int statusCode = 0;
 				try {
-					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
-					        + psiServiceProvision.getPatientUuid() + "&ou="
-					        + psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
-					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+					URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgunit;
+					getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
-					JSONObject eventResponse = new JSONObject();
+					eventResponse = new JSONObject();
+					log.info("ADD:URL:" + URL + "getResponse:" + getResponse);
 					if (trackedEntityInstances.length() != 0) {
 						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 						String trackedEntityInstanceId = trackedEntityInstance.getString("trackedEntityInstance");
-						JSONObject moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,
+						moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,
 						    trackedEntityInstanceId);
-						if (psiServiceProvision.getDhisId() != null) {
-							/*eventResponse = psiapiServiceFactory.getAPIType("dhis2").update("", moneyReceiptJson, "",
-							    EVENTURL + "/" + psiServiceProvision.getDhisId());
-							getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
-							Context.openSession();
-							Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
-							Context.clearSession();*/
-							
-						} else {
-							eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
-							int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
-							if (statusCode == 200) {
-								JSONObject successResponse = eventResponse.getJSONObject("response");
-								JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
-								if (importSummaries.length() != 0) {
-									JSONObject importSummary = importSummaries.getJSONObject(0);
-									String referenceId = importSummary.getString("reference");
-									Context.openSession();
-									psiServiceProvision.setDhisId(referenceId);
-									psiServiceProvision.setIsSendToDHIS(1);
-									Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-									getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
-									Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
-									Context.clearSession();
-								}
+						
+						eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+						statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
+						log.info("ADD:statusCode:" + statusCode + "" + eventResponse);
+						if (statusCode == 200) {
+							JSONObject successResponse = eventResponse.getJSONObject("response");
+							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+							if (importSummaries.length() != 0) {
+								JSONObject importSummary = importSummaries.getJSONObject(0);
+								String referenceId = importSummary.getString("reference");
+								Context.openSession();
+								psiServiceProvision.setDhisId(referenceId);
+								psiServiceProvision.setIsSendToDHIS(1);
+								psiServiceProvision.setField1(getResponse + "");
+								psiServiceProvision.setField2(moneyReceiptJson + "");
+								psiServiceProvision.setField3(statusCode);
+								psiServiceProvision.setError(URL);
+								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+								getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
+								Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+								Context.clearSession();
 							}
 						}
 						
@@ -312,7 +322,11 @@ public class DHISListener {
 						Context.openSession();
 						getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 						getlastTimeStamp.setVoidReason("else cindtion");
-						psiServiceProvision.setField1("not found");
+						//psiServiceProvision.setField1("not found");
+						psiServiceProvision.setField1(getResponse + "");
+						psiServiceProvision.setField2(moneyReceiptJson + "");
+						psiServiceProvision.setField3(statusCode);
+						psiServiceProvision.setError(":" + URL);
 						psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTERRORSTATUS);
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
@@ -320,10 +334,13 @@ public class DHISListener {
 					}
 				}
 				catch (Exception e) {
+					e.printStackTrace();
 					Context.openSession();
 					getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
-					psiServiceProvision.setField1(e.toString());
-					psiServiceProvision.setError(e.toString());
+					psiServiceProvision.setField1(getResponse + "");
+					psiServiceProvision.setField2(moneyReceiptJson + "");
+					psiServiceProvision.setField3(statusCode);
+					psiServiceProvision.setError(e + ":" + URL);
 					psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTERRORSTATUS);
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					getlastTimeStamp.setVoidReason(e.toString());
@@ -341,22 +358,27 @@ public class DHISListener {
 		if (psiServiceProvisions.size() != 0 && psiServiceProvisions != null) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
 				JSONObject eventResponse = new JSONObject();
+				JSONObject getResponse = new JSONObject();
+				JSONObject moneyReceiptJson = new JSONObject();
+				String orgunit = psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
+				String patientUuid = psiServiceProvision.getPatientUuid();
+				String uuid = DHISMapper.registrationMapper.get("uuid");
+				String URL = "";
+				int statusCode = 0;
 				try {
-					String URL = trackInstanceUrl + "filter=" + DHISMapper.registrationMapper.get("uuid") + ":EQ:"
-					        + psiServiceProvision.getPatientUuid() + "&ou="
-					        + psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
-					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+					URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgunit;
+					getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
-					
+					log.info("URL:" + URL + "getResponse:" + getResponse);
 					if (trackedEntityInstances.length() != 0) {
 						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 						String trackedEntityInstanceId = trackedEntityInstance.getString("trackedEntityInstance");
-						JSONObject moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,
+						moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,
 						    trackedEntityInstanceId);
 						
 						eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
-						int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
-						System.out.println("statusCode:" + statusCode + "" + eventResponse);
+						statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
+						log.info("statusCode:" + statusCode + "" + eventResponse);
 						if (statusCode == 200) {
 							JSONObject successResponse = eventResponse.getJSONObject("response");
 							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
@@ -364,7 +386,12 @@ public class DHISListener {
 								JSONObject importSummary = importSummaries.getJSONObject(0);
 								String referenceId = importSummary.getString("reference");
 								Context.openSession();
+								psiServiceProvision.setField2(moneyReceiptJson + "");
 								psiServiceProvision.setDhisId(referenceId);
+								psiServiceProvision.setField1(getResponse + "");
+								psiServiceProvision.setField2(moneyReceiptJson + "");
+								psiServiceProvision.setField3(statusCode);
+								psiServiceProvision.setError(":" + URL);
 								psiServiceProvision.setIsSendToDHIS(DHISMapper.SUCCESSSTATUS);
 								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 								Context.clearSession();
@@ -374,6 +401,10 @@ public class DHISListener {
 					} else {
 						Context.openSession();
 						psiServiceProvision.setField1("not found");
+						psiServiceProvision.setField1(getResponse + "");
+						psiServiceProvision.setField2(moneyReceiptJson + "");
+						psiServiceProvision.setField3(statusCode);
+						psiServiceProvision.setError(":" + URL);
 						psiServiceProvision.setIsSendToDHIS(DHISMapper.FAILEDSTATUS);
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 						Context.clearSession();
@@ -381,8 +412,11 @@ public class DHISListener {
 				}
 				catch (Exception e) {
 					Context.openSession();
-					psiServiceProvision.setField1(e.toString());
-					psiServiceProvision.setError(eventResponse.toString());
+					e.printStackTrace();
+					psiServiceProvision.setField1(getResponse + "");
+					psiServiceProvision.setField2(moneyReceiptJson + "");
+					psiServiceProvision.setField3(statusCode);
+					psiServiceProvision.setError(e + ":" + URL);
 					if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
 					        .equalsIgnoreCase(e.toString())
 					        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"

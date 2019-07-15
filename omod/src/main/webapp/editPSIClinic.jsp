@@ -29,7 +29,7 @@
                 		Clinic Name : <form:input style="height: 39px;" path="name" class="form-control" required="required"/>
                   	</div>
                   	<div class="form-group">
-                  		Clinic ID: <form:input style="height: 39px;" path="clinicId" class="form-control" required="required"/>
+                  		Clinic ID: <form:input style="height: 39px;" pattern=".{3,}" path="clinicId" class="form-control" required="required"/>
                    	</div>
              	</div>
               	<div class="col-md-6">

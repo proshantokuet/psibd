@@ -40,7 +40,7 @@
                 		Clinic Name : <form:input path="name" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                   	</div>
                   	<div class="form-group">
-                  		Clinic ID:  <form:input path="clinicId" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
+                  		Clinic ID:  <form:input path="clinicId" pattern=".{3,}" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                    	</div>
              	</div>
               	<div class="col-md-6">
