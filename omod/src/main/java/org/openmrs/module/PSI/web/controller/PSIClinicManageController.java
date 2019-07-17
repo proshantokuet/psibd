@@ -1,6 +1,7 @@
 package org.openmrs.module.PSI.web.controller;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,8 @@ import org.json.JSONException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.dto.PSILocation;
+import org.openmrs.module.PSI.utils.PSIConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -27,6 +30,8 @@ public class PSIClinicManageController {
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	final String USER_URL = "ws/rest/v1/user";
+	
+	final String LOCATION_URL = "ws/rest/v1/location";
 	
 	@RequestMapping(value = "/module/PSI/addPSIClinic", method = RequestMethod.GET)
 	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model) throws JSONException {
@@ -45,6 +50,9 @@ public class PSIClinicManageController {
 		}
 		
 		session.setAttribute("users", usernamesArray.toString());*/
+		List<PSILocation> locations = Context.getService(PSIClinicManagementService.class).findLocationByTag(
+		    PSIConstants.TagName);
+		model.addAttribute("locations", locations);
 		model.addAttribute("pSIClinic", new PSIClinicManagement());
 	}
 	

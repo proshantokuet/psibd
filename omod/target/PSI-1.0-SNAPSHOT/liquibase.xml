@@ -44,6 +44,17 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet author="Proshanto" id="psiclinic-1.0.1">
+	 	<addColumn tableName="psi_clinic">
+	 		<column name="division_id" type="int(11)" />
+			<column name="division_uuid" type="varchar(255)" />			
+			<column name="district_id" type="int(11)" />
+			<column name="district_uuid" type="varchar(255)" />
+			<column name="upazila_id" type="int(11)" />
+			<column name="upazila_uuid" type="varchar(255)" />
+		</addColumn>
+	 </changeSet>
+	
 	<changeSet id="psiclinicuser-1.0.0" author="Proshanto">
 		<createTable tableName="psi_clinic_user">
 			<column name="cuid" type="int(11)" autoIncrement="true">

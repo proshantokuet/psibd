@@ -37,15 +37,23 @@
         	<div class="row">
             	<div class="col-md-6">
                 	<div class="form-group">
-                		Clinic Name : <form:input path="name" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
+                		Clinic Name <form:input path="name" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                   	</div>
                   	<div class="form-group">
                   		Clinic ID:  <form:input path="clinicId" pattern=".{3,}" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                    	</div>
+                   	<div class="form-group">
+                  	Division <form:select path="division" class="form-control selcls" required="required">
+                  				   <form:option value=""/>
+                  				  <c:forEach items="${locations}" var="location">	                  				 
+						              <form:option value="${location.id}">${location.name}</form:option>						             
+					              </c:forEach>				             
+					         </form:select>
+					</div>
              	</div>
               	<div class="col-md-6">
                		<div class="form-group">
-                  	Category: 	<form:select path="category" class="form-control selcls" required="required">
+                  	Category 	<form:select path="category" class="form-control selcls" required="required">
                   				<form:option value=""/>
 					              <form:option value="BEmOC"/>
 					              <form:option value="CEmOC"/>
@@ -53,13 +61,13 @@
 					         </form:select>
 					</div>
                   	<div class="form-group">
-                   	Address: 	<form:input path="address" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>                	
+                   	Address 	<form:input path="address" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>                	
                    	
                   	</div>
               	</div>
               	<div class="col-md-6">               		
                   	<div class="form-group">
-                   	DHIS2 Org ID: <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
+                   	DHIS2 Org ID <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                   	</div>
                   
               	</div>

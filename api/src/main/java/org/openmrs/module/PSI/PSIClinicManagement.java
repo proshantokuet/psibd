@@ -28,9 +28,21 @@ public class PSIClinicManagement extends BaseOpenmrsData implements Serializable
 	
 	private String division;
 	
+	private int divisionId;
+	
+	private String divisionUuid;
+	
 	private String district;
 	
+	private int districtId;
+	
+	private String districtUuid;
+	
 	private String upazila;
+	
+	private int upazilaId;
+	
+	private String upazilaUuid;
 	
 	private String unionName;
 	
@@ -152,6 +164,54 @@ public class PSIClinicManagement extends BaseOpenmrsData implements Serializable
 	
 	public void setpSIClinicUser(Set<PSIClinicUser> pSIClinicUser) {
 		this.pSIClinicUser = pSIClinicUser;
+	}
+	
+	public int getDistrictId() {
+		return districtId;
+	}
+	
+	public void setDistrictId(int districtId) {
+		this.districtId = districtId;
+	}
+	
+	public String getDistrictUuid() {
+		return districtUuid;
+	}
+	
+	public void setDistrictUuid(String districtUuid) {
+		this.districtUuid = districtUuid;
+	}
+	
+	public int getUpazilaId() {
+		return upazilaId;
+	}
+	
+	public void setUpazilaId(int upazilaId) {
+		this.upazilaId = upazilaId;
+	}
+	
+	public String getUpazilaUuid() {
+		return upazilaUuid;
+	}
+	
+	public void setUpazilaUuid(String upazilaUuid) {
+		this.upazilaUuid = upazilaUuid;
+	}
+	
+	public int getDivisionId() {
+		return divisionId;
+	}
+	
+	public void setDivisionId(int divisionId) {
+		this.divisionId = divisionId;
+	}
+	
+	public String getDivisionUuid() {
+		return divisionUuid;
+	}
+	
+	public void setDivisionUuid(String divisionUuid) {
+		this.divisionUuid = divisionUuid;
 	}
 	
 	@Override

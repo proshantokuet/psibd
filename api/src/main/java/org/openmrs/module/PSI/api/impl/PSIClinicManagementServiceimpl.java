@@ -6,6 +6,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.db.PSIClinicManagementDAO;
+import org.openmrs.module.PSI.dto.PSILocation;
 
 public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implements PSIClinicManagementService {
 	
@@ -50,6 +51,24 @@ public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implement
 	public PSIClinicManagement findByIdNotByClinicId(int id, String clinicId) {
 		// TODO Auto-generated method stub
 		return dao.findByIdNotByClinicId(id, clinicId);
+	}
+	
+	@Override
+	public List<PSILocation> findLocationByTag(String tagName) {
+		// TODO Auto-generated method stub
+		return dao.findLocationByTag(tagName);
+	}
+	
+	@Override
+	public PSILocation findLocationById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public List<PSILocation> findByparentLocation(int parentLocationId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
