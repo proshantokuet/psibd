@@ -62,13 +62,13 @@ public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implement
 	@Override
 	public PSILocation findLocationById(int id) {
 		// TODO Auto-generated method stub
-		return null;
+		return dao.findLocationById(id);
 	}
 	
 	@Override
 	public List<PSILocation> findByparentLocation(int parentLocationId) {
 		// TODO Auto-generated method stub
-		return null;
+		return dao.findByparentLocation(parentLocationId);
 	}
 	
 }

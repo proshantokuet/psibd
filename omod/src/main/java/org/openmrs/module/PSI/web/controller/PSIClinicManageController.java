@@ -1,5 +1,6 @@
 package org.openmrs.module.PSI.web.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -63,14 +64,44 @@ public class PSIClinicManageController {
 	
 	@RequestMapping(value = "/module/PSI/editPSIClinic", method = RequestMethod.GET)
 	public void editPSIClinic(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
-		model.addAttribute("pSIClinic", Context.getService(PSIClinicManagementService.class).findById(id));
+		PSIClinicManagement clinic = Context.getService(PSIClinicManagementService.class).findById(id);
 		
+		List<PSILocation> divisions = Context.getService(PSIClinicManagementService.class).findLocationByTag(
+		    PSIConstants.TagName);
+		List<PSILocation> districts = Context.getService(PSIClinicManagementService.class).findByparentLocation(
+		    clinic.getDivisionId());
+		List<PSILocation> upazilas = Context.getService(PSIClinicManagementService.class).findByparentLocation(
+		    clinic.getDistrictId());
+		model.addAttribute("pSIClinic", clinic);
+		model.addAttribute("divisions", divisions);
+		model.addAttribute("districts", districts);
+		model.addAttribute("upazilas", upazilas);
 	}
 	
 	@RequestMapping(value = "/module/PSI/deletePSIClinic", method = RequestMethod.GET)
 	public ModelAndView deletePSIClinic(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		Context.getService(PSIClinicManagementService.class).delete(id);
 		return new ModelAndView("redirect:/module/PSI/PSIClinicList.form");
+	}
+	
+	@RequestMapping(value = "/module/PSI/divisions", method = RequestMethod.GET)
+	public void divisions(HttpServletRequest request, HttpSession session, Model model,
+	                      @RequestParam(required = true) int divisionId) {
+		List<PSILocation> locations = new ArrayList<PSILocation>();
+		if (divisionId != 0) {
+			locations = Context.getService(PSIClinicManagementService.class).findByparentLocation(divisionId);
+		}
+		model.addAttribute("locations", locations);
+	}
+	
+	@RequestMapping(value = "/module/PSI/districts", method = RequestMethod.GET)
+	public void districts(HttpServletRequest request, HttpSession session, Model model,
+	                      @RequestParam(required = true) int districtId) {
+		List<PSILocation> locations = new ArrayList<PSILocation>();
+		if (districtId != 0) {
+			locations = Context.getService(PSIClinicManagementService.class).findByparentLocation(districtId);
+		}
+		model.addAttribute("locations", locations);
 	}
 	
 	@RequestMapping(value = "/module/PSI/addPsiClinic", method = RequestMethod.POST)

@@ -118,20 +118,32 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 		return locations;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public PSILocation findLocationById(int id) {
-		// TODO Auto-generated method stub
+		List<PSILocation> locations = new ArrayList<PSILocation>();
+		String sql = "select location_id as id,name,uuid,address2 from location where location_id = :id ";
+		locations = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("id", StandardBasicTypes.INTEGER)
+		        .addScalar("name", StandardBasicTypes.STRING).addScalar("uuid", StandardBasicTypes.STRING)
+		        .addScalar("address2", StandardBasicTypes.STRING).setInteger("id", id)
+		        .setResultTransformer(new AliasToBeanResultTransformer(PSILocation.class)).list();
+		if (locations.size() != 0) {
+			return locations.get(0);
+		}
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<PSILocation> findByparentLocation(int parentLocationId) {
-		// TODO Auto-generated method stub
+		List<PSILocation> locations = new ArrayList<PSILocation>();
+		String sql = "select location_id as id,name,uuid,address2 from location where parent_location = :parentLocationId";
+		locations = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("id", StandardBasicTypes.INTEGER)
+		        .addScalar("name", StandardBasicTypes.STRING).addScalar("uuid", StandardBasicTypes.STRING)
+		        .addScalar("address2", StandardBasicTypes.STRING).setInteger("parentLocationId", parentLocationId)
+		        .setResultTransformer(new AliasToBeanResultTransformer(PSILocation.class)).list();
 		
-		/*select location_id as id,name,uuid,address2 as code from openmrs.location where  location_id = 50;
-
-		select location_id as id,name from openmrs.location where parent_location = 2;*/
-		return null;
+		return locations;
 	}
 	
 }

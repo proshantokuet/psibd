@@ -9,7 +9,7 @@ import org.openmrs.module.PSI.dto.ClinicDTO;
 
 public class ClinicDataConverter {
 	
-	public static PSIClinicManagement toConvert(ClinicDTO clinicDTO) {
+	public PSIClinicManagement toConvert(ClinicDTO clinicDTO) {
 		PSIClinicManagement psiClinicManagement = new PSIClinicManagement();
 		
 		psiClinicManagement.setAddress(clinicDTO.getAddress());

@@ -32,7 +32,7 @@
 							
 		</div>
 		<span class="text-red" id="usernameUniqueErrorMessage"></span>
-	    <form:form method="POST"  id="clinicInfo" action="${saveUrl}" modelAttribute="pSIClinic">
+	    <form:form method="POST"  id="clinicInfo" action="ff" modelAttribute="pSIClinic">
   		<div class="form-content">
         	<div class="row">
             	<div class="col-md-6">
@@ -43,8 +43,8 @@
                   		Clinic ID:  <form:input path="clinicId" pattern=".{3,}" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                    	</div>
                    	<div class="form-group">
-                  	Division <form:select path="division" class="form-control selcls" required="required">
-                  				   <form:option value=""/>
+                  	Division <form:select path="divisionId" class="form-control selcls" required="required">
+                  			<form:option value="">Please Select</form:option>
                   				  <c:forEach items="${locations}" var="location">	                  				 
 						              <form:option value="${location.id}">${location.name}</form:option>						             
 					              </c:forEach>				             
@@ -54,8 +54,7 @@
               	<div class="col-md-6">
                		<div class="form-group">
                   	Category 	<form:select path="category" class="form-control selcls" required="required">
-                  				<form:option value=""/>
-					              <form:option value="BEmOC"/>
+                  				<form:option value="BEmOC"/>
 					              <form:option value="CEmOC"/>
 					              <form:option value="Vital"/>					             
 					         </form:select>
@@ -64,23 +63,32 @@
                    	Address 	<form:input path="address" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>                	
                    	
                   	</div>
-              	</div>
-              	<div class="col-md-6">               		
+                  	
                   	<div class="form-group">
-                   	DHIS2 Org ID <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
-                  	</div>
+                  	District 
+ 					<form:select path="districtId" class="form-control selcls"  required="required" >
+                  	
+                  	</form:select>
+					</div>
+              	</div>
+              	<div class="col-md-6">  
+              		
+              		<div class="form-group">
+                  	Upazila 
+ 					<form:select path="upazilaId" class="form-control selcls" required="required">
+                  	
+                  	</form:select>
+					</div>             		
+                  	
                   
               	</div>
               	
-              <!-- 	<div class="col-md-6"> 
+              	<div class="col-md-6"> 
                   	<div class="form-group">
-                  		<div id="cm" class="ui-widget">
-							Assign User :
-							<div id="userIds"></div>							
-						</div>
+                   	DHIS2 Org ID <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
                   	</div>
                   	
-              	</div> -->
+              	</div>
           	</div>
           	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Back</a>
       	</div>
@@ -91,31 +99,43 @@
 </form:form>
 
 <script type="text/javascript">
-$("#clinicInfo").submit(function(event) { 
-			$("#loading").show();
+var $JQuery = jQuery.noConflict();
+$JQuery("#clinicInfo").submit(function(event) { 
+	$JQuery("#loading").show();
+			alert("OK");
+			event.preventDefault();
+			alert("OK");
 			var url = "/openmrs/ws/rest/v1/clinic/save";			
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-			//alert(locationMagicSuggest.getValue());
-			//alert($('#team').val());
+			var token = $JQuery("meta[name='_csrf']").attr("content");
+			var header = $JQuery("meta[name='_csrf_header']").attr("content");
 			
 			var e = document.getElementById("category");
 			var category = e.options[e.selectedIndex].value;
-			var formData;
 			
-				formData = {
-			            'name': $('input[name=name]').val(),			           
-			            'clinicId': $('input[name=clinicId]').val(),
+			var division = document.getElementById("divisionId");
+			var divisionId = division.options[division.selectedIndex].value;
+			
+			var district = document.getElementById("districtId");
+			var districtId = district.options[district.selectedIndex].value;
+			
+			var upazila = document.getElementById("upazilaId");
+			var upazilaId = upazila.options[upazila.selectedIndex].value;
+			
+			var formData;			
+			formData = {
+			            'name': $JQuery('input[name=name]').val(),			           
+			            'clinicId': $JQuery('input[name=clinicId]').val(),
 			            'category': category,
-			            'address': $('input[name=address]').val(),
-			            'dhisId': $('input[name=dhisId]').val()	            
+			            'address': $JQuery('input[name=address]').val(),
+			            'dhisId': $JQuery('input[name=dhisId]').val(),
+			            'cid': 0,
+			            'division': divisionId,
+			            'district': districtId,
+			            'upazila': upazilaId
 			           
-			        };
+			 };
 			
-			
-			event.preventDefault();
-			
-			$.ajax({
+			$JQuery.ajax({
 				contentType : "application/json",
 				type: "POST",
 		        url: url,
@@ -127,8 +147,8 @@ $("#clinicInfo").submit(function(event) {
 					 xhr.setRequestHeader(header, token);
 				},
 				success : function(data) {
-				   $("#usernameUniqueErrorMessage").html(data);
-				   $("#loading").hide();
+					$JQuery("#usernameUniqueErrorMessage").html(data);
+					$JQuery("#loading").hide();
 				   if(data == ""){					   
 					   window.location.replace("/openmrs/module/PSI/PSIClinicList.form");
 					   
@@ -141,29 +161,82 @@ $("#clinicInfo").submit(function(event) {
 				done : function(e) {				    
 				    console.log("DONE");				    
 				}
-			});
+			}); 
 		});
 		
+		
+	
+		
 </script>
-<%-- <script type="text/javascript">  
-	var $jq = jQuery.noConflict();
-	 $jq('#userIds').magicSuggest({ 
-		 	required: true,
-			//placeholder: 'Type Locations',
-     		data: <%=users%>,
-	        valueField: 'username',
-	        displayField: 'display',
-	        name: 'usernames',
-	        inputCfg: {"class":"magicInput"},
-	        value: <%=userIds%>,
-	        useCommaKey: true,
-	        allowFreeEntries: false,
-	        maxSelection: 100,
-	        maxEntryLength: 10000,
-	 		maxEntryRenderer: function(v) {
-	 			return '<div style="color:red">Typed Word TOO LONG </div>';
-	 		}	       
-	  });
-  </script>
- --%>
+<script>
+var $JQuery = jQuery.noConflict();
+$JQuery("#divisionId").change(function(event) { 
+var e = document.getElementById("divisionId");
+var divisionId = e.options[e.selectedIndex].value;	
+var url = "/openmrs/module/PSI/divisions.form?divisionId="+divisionId;
+
+alert(divisionId);
+console.log(divisionId);
+if(divisionId ==""){
+	 $JQuery("#districtId").html("");
+	 $JQuery("#upazilaId").html("");			
+	
+} else {
+	event.preventDefault();
+	$JQuery.ajax({
+		   type : "GET",
+		   contentType : "application/json",
+		   url : url,	 
+		   dataType : 'html',		   
+		   beforeSend: function() {    
+		   
+		   },
+		   success : function(data) {		   
+			   $JQuery("#districtId").html(data);			  
+		   },
+		   error : function(e) {
+		    console.log("ERROR: ", e);
+		    display(e);
+		   },
+		   done : function(e) {	    
+		    console.log("DONE");
+		    //enableSearchButton(true);
+		   }
+		}); 
+ 	}
+
+});
+
+$JQuery("#districtId").change(function(event) { 
+	var e = document.getElementById("districtId");
+	var districtId = e.options[e.selectedIndex].value;	
+	var url = "/openmrs/module/PSI/districts.form?districtId="+districtId;			
+	if(districtId ==""){			 
+		 $JQuery("#upazilaId").html("");
+	} else {
+		event.preventDefault();	
+		$JQuery.ajax({
+			   type : "GET",
+			   contentType : "application/json",
+			   url : url,	 
+			   dataType : 'html',		   
+			   beforeSend: function() {	    
+			   
+			   },
+			   success : function(data) {		   
+				   $JQuery("#upazilaId").html(data);			  
+			   },
+			   error : function(e) {
+			    console.log("ERROR: ", e);
+			    display(e);
+			   },
+			   done : function(e) {	    
+			    console.log("DONE");
+			    //enableSearchButton(true);
+			   }
+			}); 
+		}
+	}); 
+</script>
+
 <%@ include file="/WEB-INF/template/footer.jsp"%>
