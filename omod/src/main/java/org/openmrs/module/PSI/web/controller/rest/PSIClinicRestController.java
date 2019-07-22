@@ -5,8 +5,11 @@ import java.util.UUID;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.PSIClinicSpot;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.api.PSIClinicSpotService;
 import org.openmrs.module.PSI.dto.ClinicDTO;
+import org.openmrs.module.PSI.dto.PSIClinicSpotDTO;
 import org.openmrs.module.PSI.dto.PSILocation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.http.HttpStatus;
@@ -99,4 +102,37 @@ public class PSIClinicRestController extends MainResourceController {
 		
 	}
 	
+	@RequestMapping(value = "/spot/save", method = RequestMethod.POST)
+	public ResponseEntity<String> saveClinicSpot(@RequestBody PSIClinicSpotDTO psiClinicSpotDTO, ModelMap model)
+	    throws Exception {
+		
+		String msg = "";
+		PSIClinicSpot psiClinicSpot = new PSIClinicSpot();
+		psiClinicSpot.setDateCreated(new Date());
+		psiClinicSpot.setCreator(Context.getAuthenticatedUser());
+		psiClinicSpot.setUuid(UUID.randomUUID().toString());
+		
+		psiClinicSpot.setName(psiClinicSpotDTO.getName());
+		psiClinicSpot.setCode(psiClinicSpotDTO.getCode());
+		psiClinicSpot.setAddress(psiClinicSpotDTO.getAddress());
+		psiClinicSpot.setCcsid(psiClinicSpotDTO.getCsid());
+		psiClinicSpot.setDhisId(psiClinicSpotDTO.getDhisId());
+		PSIClinicManagement psiClinicManagementId = Context.getService(PSIClinicManagementService.class).findById(
+		    psiClinicSpotDTO.getPsiClinicManagementId());
+		psiClinicSpot.setPsiClinicManagement(psiClinicManagementId);
+		
+		PSIClinicSpot getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(
+		    psiClinicSpot.getCcsid(), psiClinicSpot.getCode());
+		
+		if (getClinicByClinicId != null) {
+			msg = "This clinic Spot code is already taken";
+		} else {
+			Context.openSession();
+			Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
+			Context.clearSession();
+			msg = "";
+		}
+		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
+		
+	}
 }

@@ -4,7 +4,7 @@
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="Clinic List" otherwise="/login.htm" />
 
-<a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
+<a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicSpot.form?id="${id}><spring:message
 				code="PSI.psiClinicAddNew" /></a> 
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
@@ -18,26 +18,24 @@
 	        <tr>
 	            <th>#Id</th>
 	            <th>Clinic Name</th>
-	            <th>Clinic ID</th>
-	            <th>Category</th>
+	            <th>Spot Name</th>
+	            <th>Code</th>	            
 	            <th>Address</th>
+	            <th>Dhis2 Org Id</th>
 	            <th>Actions</th>
 	        </tr>
 	    </thead>
 	    <tbody>
-	    	<c:forEach var="clinic" items="${ pSIClinics }">
+	    	<c:forEach var="spot" items="${ pSIClinicSpots }">
 	        <tr>
-	        	<td>${ clinic.cid }</td>
-	            <td>${ clinic.name }</td>
-	            <td>${ clinic.clinicId }</td>
-	            <td>${ clinic.category }</td>
-	            <td>${ clinic.address }</td>
-	            <td> 
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a>
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicServiceList.form?id=${clinic.cid}"/>"> Services</a> 
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicSpotList.form?id=${ clinic.cid }"/>"> Add Spot</a>
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a>
+	        	<td>${ spot.ccsid }</td>
+	        	<td>${ spot.psiClinicManagement.name }</td>
+	            <td>${ spot.name }</td>
+	            <td>${ spot.code }</td>
+	             <td>${ spot.address }</td>
+	            <td>${ spot.dhisId }</td>	           
+	            <td> 	            
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicSpot.form?id=${ spot.ccsid }"/>"> Edit</a>
 	             
 	            </td>
 	        </tr>
@@ -60,7 +58,7 @@ $jq(document).ready( function () {
        },
        bFilter: true,
        bInfo: false,
-       "order": [[ 1, "asc" ]]
+       "order": [[ 2, "asc" ]]
        }		
 	);
 } );

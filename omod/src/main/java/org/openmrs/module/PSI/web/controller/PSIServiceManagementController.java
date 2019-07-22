@@ -45,8 +45,10 @@ public class PSIServiceManagementController {
 	}
 	
 	@RequestMapping(value = "/module/PSI/PSIClinicServiceList", method = RequestMethod.GET)
-	public void pSIClinicList(HttpServletRequest request, HttpSession session, Model model) {
-		model.addAttribute("pSIServiceManagements", Context.getService(PSIServiceManagementService.class).getAll());
+	public void pSIClinicList(HttpServletRequest request, HttpSession session, Model model,
+	                          @RequestParam(required = true) int id) {
+		model.addAttribute("pSIServiceManagements",
+		    Context.getService(PSIServiceManagementService.class).getAllByClinicId(id));
 	}
 	
 	@RequestMapping(value = "/module/PSI/editPSIClinicService", method = RequestMethod.GET)
@@ -118,7 +120,7 @@ public class PSIServiceManagementController {
 				
 				if (index != 0) {
 					PSIServiceManagement findByCodeAndClinicId = Context.getService(PSIServiceManagementService.class)
-					        .findByCode(service[1], id);
+					        .findByCodeAndClinicId(service[1], id);
 					if (findByCodeAndClinicId == null) {
 						PSIServiceManagement pSIServiceManagement = new PSIServiceManagement();
 						pSIServiceManagement.setName(service[0]);

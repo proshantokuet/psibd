@@ -13,7 +13,9 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.PSIClinicSpot;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.api.PSIClinicSpotService;
 import org.openmrs.module.PSI.dto.PSILocation;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.springframework.stereotype.Controller;
@@ -84,12 +86,12 @@ public class PSIClinicManageController {
 		return new ModelAndView("redirect:/module/PSI/PSIClinicList.form");
 	}
 	
-	@RequestMapping(value = "/module/PSI/divisions", method = RequestMethod.GET)
-	public void divisions(HttpServletRequest request, HttpSession session, Model model,
-	                      @RequestParam(required = true) int divisionId) {
+	@RequestMapping(value = "/module/PSI/locations", method = RequestMethod.GET)
+	public void locations(HttpServletRequest request, HttpSession session, Model model,
+	                      @RequestParam(required = true) int locationId) {
 		List<PSILocation> locations = new ArrayList<PSILocation>();
-		if (divisionId != 0) {
-			locations = Context.getService(PSIClinicManagementService.class).findByparentLocation(divisionId);
+		if (locationId != 0) {
+			locations = Context.getService(PSIClinicManagementService.class).findByparentLocation(locationId);
 		}
 		model.addAttribute("locations", locations);
 	}
@@ -133,5 +135,27 @@ public class PSIClinicManageController {
 			
 		}
 		return null;
+	}
+	
+	@RequestMapping(value = "/module/PSI/PSIClinicSpotList", method = RequestMethod.GET)
+	public void pSIClinicSpotList(HttpServletRequest request, HttpSession session, Model model,
+	                              @RequestParam(required = true) int id) {
+		model.addAttribute("pSIClinicSpots", Context.getService(PSIClinicSpotService.class).findByClinicId(id));
+		model.addAttribute("id", id);
+	}
+	
+	@RequestMapping(value = "/module/PSI/addPSIClinicSpot", method = RequestMethod.GET)
+	public void addPSIClinicSpot(HttpServletRequest request, HttpSession session, Model model,
+	                             @RequestParam(required = true) int id) throws JSONException {
+		model.addAttribute("pSIClinicSpot", new PSIClinicSpot());
+		model.addAttribute("id", id);
+	}
+	
+	@RequestMapping(value = "/module/PSI/editPSIClinicSpot", method = RequestMethod.GET)
+	public void editPSIClinicSpot(HttpServletRequest request, HttpSession session, Model model,
+	                              @RequestParam(required = true) int id) throws JSONException {
+		PSIClinicSpot pSIClinicSpot = Context.getService(PSIClinicSpotService.class).findById(id);
+		model.addAttribute("pSIClinicSpot", pSIClinicSpot);
+		
 	}
 }

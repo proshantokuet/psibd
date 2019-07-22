@@ -37,7 +37,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PSIServiceManagement> getAll(int clinicId) {
+	public List<PSIServiceManagement> getAllByClinicId(int clinicId) {
 		List<PSIServiceManagement> clinics = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIServiceManagement where psiClinicManagement=:clinicId  order by name asc ")
 		        .setInteger("clinicId", clinicId).list();
@@ -80,7 +80,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public PSIServiceManagement findByCode(String code, int clinicId) {
+	public PSIServiceManagement findByCodeAndClinicId(String code, int clinicId) {
 		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIServiceManagement where code = :code and  psiClinicManagement=:clinicId ")
 		        .setString("code", code).setInteger("clinicId", clinicId).list();
@@ -93,7 +93,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public PSIServiceManagement findByIdNotByCode(int id, String code, int clinicId) {
+	public PSIServiceManagement findByIdNotByClinicId(int id, String code, int clinicId) {
 		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIServiceManagement where sid !=:id and  psiClinicManagement=:clinicId and code=:code")
 		        .setString("code", code).setInteger("id", id).setInteger("clinicId", clinicId).list();

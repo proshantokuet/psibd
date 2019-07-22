@@ -7,6 +7,7 @@
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/converter/PSIClinicUserConverter.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/db/hibernate/HibernatePSIServiceProvisionDAO.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/PSIDHISMarkerService.java
+/home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/impl/PSIClinicSpotServiceImpl.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/dto/EventReceordDTO.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/db/PSIClinicUserDAO.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/impl/PSIUniqueIdGeneratorServiceimpl.java
@@ -25,9 +26,11 @@
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/PSIMoneyReceiptService.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/PSIService.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/db/PSIUniqueIdGeneratorDAO.java
+/home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/PSIClinicSpot.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/converter/ClinicServiceConverter.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/PSIClinicUserService.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/PSIServiceManagementService.java
+/home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/db/PSIClinicSpotDAO.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/dto/PSILocation.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/converter/PSIServiceProvisionConverter.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/utils/ClinicUser.java
@@ -67,6 +70,9 @@
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/dhis/service/PSIAPIServiceFactory.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/impl/OpenMRSAPIServiceImpl.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/dto/DashboardDTO.java
+/home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/dto/PSIClinicSpotDTO.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/PSIUniqueIdGenerator.java
+/home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/PSIClinicSpotService.java
+/home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/db/hibernate/HibernatePSIClinicSpotDAO.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/dhis/service/impl/PSIDHISAPIServiceImpl.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/dhis/service/PSIAPIService.java

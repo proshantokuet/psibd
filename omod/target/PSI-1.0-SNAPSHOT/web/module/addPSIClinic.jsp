@@ -6,9 +6,9 @@
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 
 <%@ include file="template/localHeader.jsp"%>
-<link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/magicsuggest-min.css">
+
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
+
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
 <c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
 <%
@@ -37,13 +37,13 @@
         	<div class="row">
             	<div class="col-md-6">
                 	<div class="form-group">
-                		Clinic Name <form:input path="name" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
+                		Clinic Name <form:input path="name" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="0"/>
                   	</div>
                   	<div class="form-group">
-                  		Clinic ID:  <form:input path="clinicId" pattern=".{3,}" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
+                  		Clinic ID:  <form:input path="clinicId" pattern=".{3,}" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="1"/>
                    	</div>
                    	<div class="form-group">
-                  	Division <form:select path="divisionId" class="form-control selcls" required="required">
+                  	Division <form:select path="divisionId" class="form-control selcls" required="required" tabindex="4">
                   			<form:option value="">Please Select</form:option>
                   				  <c:forEach items="${locations}" var="location">	                  				 
 						              <form:option value="${location.id}">${location.name}</form:option>						             
@@ -53,20 +53,20 @@
              	</div>
               	<div class="col-md-6">
                		<div class="form-group">
-                  	Category 	<form:select path="category" class="form-control selcls" required="required">
+                  	Category 	<form:select path="category" class="form-control selcls" required="required" tabindex="1">
                   				<form:option value="BEmOC"/>
 					              <form:option value="CEmOC"/>
 					              <form:option value="Vital"/>					             
 					         </form:select>
 					</div>
                   	<div class="form-group">
-                   	Address 	<form:input path="address" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>                	
+                   	Address 	<form:input path="address" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="3"/>                	
                    	
                   	</div>
                   	
                   	<div class="form-group">
                   	District 
- 					<form:select path="districtId" class="form-control selcls"  required="required" >
+ 					<form:select path="districtId" class="form-control selcls"  required="required" tabindex="5">
                   	
                   	</form:select>
 					</div>
@@ -75,7 +75,7 @@
               		
               		<div class="form-group">
                   	Upazila 
- 					<form:select path="upazilaId" class="form-control selcls" required="required">
+ 					<form:select path="upazilaId" class="form-control selcls" required="required" tabindex="6">
                   	
                   	</form:select>
 					</div>             		
@@ -85,7 +85,7 @@
               	
               	<div class="col-md-6"> 
                   	<div class="form-group">
-                   	DHIS2 Org ID <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
+                   	DHIS2 Org ID <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="7"/>
                   	</div>
                   	
               	</div>
@@ -97,146 +97,7 @@
 	
 
 </form:form>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/clinic.js"></script>
 
-<script type="text/javascript">
-var $JQuery = jQuery.noConflict();
-$JQuery("#clinicInfo").submit(function(event) { 
-	$JQuery("#loading").show();
-			alert("OK");
-			event.preventDefault();
-			alert("OK");
-			var url = "/openmrs/ws/rest/v1/clinic/save";			
-			var token = $JQuery("meta[name='_csrf']").attr("content");
-			var header = $JQuery("meta[name='_csrf_header']").attr("content");
-			
-			var e = document.getElementById("category");
-			var category = e.options[e.selectedIndex].value;
-			
-			var division = document.getElementById("divisionId");
-			var divisionId = division.options[division.selectedIndex].value;
-			
-			var district = document.getElementById("districtId");
-			var districtId = district.options[district.selectedIndex].value;
-			
-			var upazila = document.getElementById("upazilaId");
-			var upazilaId = upazila.options[upazila.selectedIndex].value;
-			
-			var formData;			
-			formData = {
-			            'name': $JQuery('input[name=name]').val(),			           
-			            'clinicId': $JQuery('input[name=clinicId]').val(),
-			            'category': category,
-			            'address': $JQuery('input[name=address]').val(),
-			            'dhisId': $JQuery('input[name=dhisId]').val(),
-			            'cid': 0,
-			            'division': divisionId,
-			            'district': districtId,
-			            'upazila': upazilaId
-			           
-			 };
-			
-			$JQuery.ajax({
-				contentType : "application/json",
-				type: "POST",
-		        url: url,
-		        data: JSON.stringify(formData), 
-		        dataType : 'json',
-		        
-				timeout : 100000,
-				beforeSend: function(xhr) {				    
-					 xhr.setRequestHeader(header, token);
-				},
-				success : function(data) {
-					$JQuery("#usernameUniqueErrorMessage").html(data);
-					$JQuery("#loading").hide();
-				   if(data == ""){					   
-					   window.location.replace("/openmrs/module/PSI/PSIClinicList.form");
-					   
-				   }
-				   
-				},
-				error : function(e) {
-				   
-				},
-				done : function(e) {				    
-				    console.log("DONE");				    
-				}
-			}); 
-		});
-		
-		
-	
-		
-</script>
-<script>
-var $JQuery = jQuery.noConflict();
-$JQuery("#divisionId").change(function(event) { 
-var e = document.getElementById("divisionId");
-var divisionId = e.options[e.selectedIndex].value;	
-var url = "/openmrs/module/PSI/divisions.form?divisionId="+divisionId;
-
-alert(divisionId);
-console.log(divisionId);
-if(divisionId ==""){
-	 $JQuery("#districtId").html("");
-	 $JQuery("#upazilaId").html("");			
-	
-} else {
-	event.preventDefault();
-	$JQuery.ajax({
-		   type : "GET",
-		   contentType : "application/json",
-		   url : url,	 
-		   dataType : 'html',		   
-		   beforeSend: function() {    
-		   
-		   },
-		   success : function(data) {		   
-			   $JQuery("#districtId").html(data);			  
-		   },
-		   error : function(e) {
-		    console.log("ERROR: ", e);
-		    display(e);
-		   },
-		   done : function(e) {	    
-		    console.log("DONE");
-		    //enableSearchButton(true);
-		   }
-		}); 
- 	}
-
-});
-
-$JQuery("#districtId").change(function(event) { 
-	var e = document.getElementById("districtId");
-	var districtId = e.options[e.selectedIndex].value;	
-	var url = "/openmrs/module/PSI/districts.form?districtId="+districtId;			
-	if(districtId ==""){			 
-		 $JQuery("#upazilaId").html("");
-	} else {
-		event.preventDefault();	
-		$JQuery.ajax({
-			   type : "GET",
-			   contentType : "application/json",
-			   url : url,	 
-			   dataType : 'html',		   
-			   beforeSend: function() {	    
-			   
-			   },
-			   success : function(data) {		   
-				   $JQuery("#upazilaId").html(data);			  
-			   },
-			   error : function(e) {
-			    console.log("ERROR: ", e);
-			    display(e);
-			   },
-			   done : function(e) {	    
-			    console.log("DONE");
-			    //enableSearchButton(true);
-			   }
-			}); 
-		}
-	}); 
-</script>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

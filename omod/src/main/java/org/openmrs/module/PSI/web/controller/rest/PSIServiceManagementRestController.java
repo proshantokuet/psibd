@@ -66,7 +66,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		
 		JSONArray psiServiceManagementArrayOject = new JSONArray();
 		try {
-			psiServiceManagement = Context.getService(PSIServiceManagementService.class).getAll(clinicId);
+			psiServiceManagement = Context.getService(PSIServiceManagementService.class).getAllByClinicId(clinicId);
 			if (psiServiceManagement != null) {
 				psiServiceManagementArrayOject = new PSIServiceManagementConverter().toConvert(psiServiceManagement);
 			}
@@ -85,7 +85,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		psiServiceManagement.setPsiClinicManagement(Context.getService(PSIClinicManagementService.class).findById(
 		    clinicServiceDTO.getPsiClinicManagement()));
 		String msg = "";
-		PSIServiceManagement getByCode = Context.getService(PSIServiceManagementService.class).findByCode(
+		PSIServiceManagement getByCode = Context.getService(PSIServiceManagementService.class).findByCodeAndClinicId(
 		    clinicServiceDTO.getCode(), clinicServiceDTO.getPsiClinicManagement());
 		if (getByCode != null) {
 			msg = "This code is already taken";
@@ -104,7 +104,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 	    throws Exception {
 		
 		String msg = "";
-		PSIServiceManagement getByIdAndNotByCode = Context.getService(PSIServiceManagementService.class).findByIdNotByCode(
+		PSIServiceManagement getByIdAndNotByCode = Context.getService(PSIServiceManagementService.class).findByIdNotByClinicId(
 		    clinicServiceDTO.getSid(), clinicServiceDTO.getCode(), clinicServiceDTO.getPsiClinicManagement());
 		if (getByIdAndNotByCode == null) {
 			PSIServiceManagement getById = Context.getService(PSIServiceManagementService.class).findById(
@@ -178,7 +178,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 				String[] service = line.split(cvsSplitBy);
 				if (index != 0) {
 					PSIServiceManagement psiServiceManagement = Context.getService(PSIServiceManagementService.class)
-					        .findByCode(service[1], id);
+					        .findByCodeAndClinicId(service[1], id);
 					if (psiServiceManagement == null) {
 						psiServiceManagement = new PSIServiceManagement();
 					}

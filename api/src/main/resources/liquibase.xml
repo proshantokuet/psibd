@@ -361,4 +361,38 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="psiclinicspot-1.0.0" author="Proshanto">
+		<createTable tableName="psi_clinic_spot">
+			<column name="ccsid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(255)" />
+			<column name="code" type="varchar(255)" />
+			<column name="address" type="varchar(255)" />
+			<column name="psi_clinic_management_id" type="int(11)" />
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet author="Proshanto" id="psiclinicspot-1.0.1">
+	 	<addColumn tableName="psi_clinic_spot">
+			<column name="dhis_id" type="varchar(255)" />			
+		</addColumn>
+	 </changeSet>
+	
 </databaseChangeLog>

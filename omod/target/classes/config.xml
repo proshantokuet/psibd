@@ -31,6 +31,7 @@
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>				
 		psiclinic.hbm.xml
+		psiclinicspot.hbm.xml
 		psiclinicuser.hbm.xml
 		psiservicemanagement.hbm.xml
 		psimoneyreceipt.hbm.xml
@@ -39,7 +40,6 @@
 		psidhismarker.hbm.xml
 		psidhisexception.hbm.xml
 		psiuniqueidgenerator.hbm.xml
-				
 	</mappingFiles>
 
 	<!-- Internationalization -->
