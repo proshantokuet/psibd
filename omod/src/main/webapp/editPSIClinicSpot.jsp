@@ -10,7 +10,7 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
 
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
-<c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
+<c:url var="cancelUrl" value="/module/PSI/PSIClinicSpotList.form?id=${pSIClinicSpot.psiClinicManagement.cid}" />
 <%
 //String users = (String)session.getAttribute("users");
 //String userIds = (String)session.getAttribute("userIds");
@@ -49,7 +49,7 @@
                    	Address <form:input path="address" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="3"/>                	
                    	</div>
                   	<form:hidden path="ccsid" />
-                  	<form:hidden path="psiClinicManagement" />
+                  	<form:hidden path="psiClinicManagement" value="${pSIClinicSpot.psiClinicManagement.cid}"/>
                   	<div class="form-group">
                   	DHIS2 Org ID
                   		<form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="4"/>

@@ -142,6 +142,8 @@ public class PSIClinicManageController {
 	                              @RequestParam(required = true) int id) {
 		model.addAttribute("pSIClinicSpots", Context.getService(PSIClinicSpotService.class).findByClinicId(id));
 		model.addAttribute("id", id);
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
 	}
 	
 	@RequestMapping(value = "/module/PSI/addPSIClinicSpot", method = RequestMethod.GET)

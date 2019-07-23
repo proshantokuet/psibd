@@ -120,17 +120,24 @@ public class PSIClinicRestController extends MainResourceController {
 		PSIClinicManagement psiClinicManagementId = Context.getService(PSIClinicManagementService.class).findById(
 		    psiClinicSpotDTO.getPsiClinicManagementId());
 		psiClinicSpot.setPsiClinicManagement(psiClinicManagementId);
-		
+		psiClinicSpot.setCcsid(psiClinicSpotDTO.getCsid());
 		PSIClinicSpot getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(
 		    psiClinicSpot.getCcsid(), psiClinicSpot.getCode());
 		
 		if (getClinicByClinicId != null) {
 			msg = "This clinic Spot code is already taken";
 		} else {
-			Context.openSession();
-			Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
-			Context.clearSession();
-			msg = "";
+			
+			try {
+				Context.openSession();
+				Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
+				Context.clearSession();
+				msg = "";
+			}
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				return new ResponseEntity<>(new Gson().toJson(e.getMessage()), HttpStatus.OK);
+			}
 		}
 		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 		

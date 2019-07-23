@@ -36,7 +36,7 @@
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicServiceList.form?id=${clinic.cid}"/>"> Services</a> 
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicSpotList.form?id=${ clinic.cid }"/>"> Add Spot</a>
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicSpotList.form?id=${ clinic.cid }"/>">Spots</a>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a>
 	             
 	            </td>

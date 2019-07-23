@@ -37,11 +37,13 @@ public class PSIServiceManagementController {
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping(value = "/module/PSI/addPSIClinicService", method = RequestMethod.GET)
-	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model) {
+	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model,
+	                         @RequestParam(required = false) int id) {
 		List<PSIClinicManagement> psiClinicManagements = Context.getService(PSIClinicManagementService.class).getAllClinic();
 		model.addAttribute("clinics", psiClinicManagements);
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		model.addAttribute("pSIServiceManagement", new PSIServiceManagement());
+		model.addAttribute("id", id);
 	}
 	
 	@RequestMapping(value = "/module/PSI/PSIClinicServiceList", method = RequestMethod.GET)
@@ -49,6 +51,9 @@ public class PSIServiceManagementController {
 	                          @RequestParam(required = true) int id) {
 		model.addAttribute("pSIServiceManagements",
 		    Context.getService(PSIServiceManagementService.class).getAllByClinicId(id));
+		model.addAttribute("id", id);
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
 	}
 	
 	@RequestMapping(value = "/module/PSI/editPSIClinicService", method = RequestMethod.GET)
@@ -62,7 +67,9 @@ public class PSIServiceManagementController {
 	@RequestMapping(value = "/module/PSI/uploadPSIClinicService", method = RequestMethod.GET)
 	public void uploadPSIClinicService(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		model.addAttribute("id", id);
-		model.addAttribute("pSIServiceManagement", Context.getService(PSIServiceManagementService.class).findById(id));
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
+		model.addAttribute("pSIServiceManagement", new PSIClinicManagement());
 		
 	}
 	

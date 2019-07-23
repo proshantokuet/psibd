@@ -132,6 +132,33 @@
 			<column name="eligible" type="varchar(255)" />			
 		</addColumn>
 	 </changeSet>
+	 
+	 <changeSet author="Proshanto" id="psiservicemanagement-1.0.3">
+	 	<addColumn tableName="psi_service_management">
+			<column name="gender" type="varchar(255)" />
+			<column name="age_to" type="int(11)" />
+			<column name="age_from" type="int(11)" />
+			
+			<column name="year_to" type="int(11)" />
+			<column name="month_to" type="int(11)" />
+			<column name="days_to" type="int(11)" />
+			<column name="year_from" type="int(11)" />
+			<column name="month_from" type="int(11)" />
+			<column name="days_from" type="int(11)" />
+										
+		</addColumn>
+		<sql>
+			update openmrs.psi_service_management set `age_to` = 0 ;
+			update openmrs.psi_service_management set `age_from` = 0 ;
+			 
+			update openmrs.psi_service_management set `year_to` = 0 ;
+			update openmrs.psi_service_management set `month_to` = 0 ;
+			update openmrs.psi_service_management set `days_to` = 0 ;
+			update openmrs.psi_service_management set `year_from` = 0 ;
+			update openmrs.psi_service_management set `month_from` = 0 ;
+			update openmrs.psi_service_management set `days_from` = 0 ;
+		</sql>
+	 </changeSet>
 	
 	<changeSet id="psimoneyreceipt-1.0.0" author="Proshanto">
 		<createTable tableName="psi_money_receipt">

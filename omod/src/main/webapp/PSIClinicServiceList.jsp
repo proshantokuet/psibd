@@ -4,12 +4,12 @@
 
 <%@ include file="template/localHeader.jsp"%>
 <p><a
-		href="${pageContext.request.contextPath}/module/PSI/addPSIClinicService.form"><spring:message
+		href="${pageContext.request.contextPath}/module/PSI/addPSIClinicService.form?id=${id}"><spring:message
 				code="PSI.psiservice" /></a> </p>
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
 		<div class="note">
-		<p>Service List</p>        	
+		<p>Service List of ${psiClinicManagement.name } (${psiClinicManagement.clinicId })</p>        	
 		</div>	
 	</div>
 	<br />			

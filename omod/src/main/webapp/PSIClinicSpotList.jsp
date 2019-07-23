@@ -4,12 +4,12 @@
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="Clinic List" otherwise="/login.htm" />
 
-<a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicSpot.form?id="${id}><spring:message
-				code="PSI.psiClinicAddNew" /></a> 
+<a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicSpot.form?id=${id}"><spring:message
+				code="PSI.psiClinicSpotAddNew" /></a> 
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
 		<div class="note">
-		<p>Community Clinic List</p>        	
+		<p>Community Clinic Spot List of ${psiClinicManagement.name } (${psiClinicManagement.clinicId })</p>        	
 		</div>	
 	</div>
 	<br />

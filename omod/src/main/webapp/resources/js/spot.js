@@ -5,15 +5,15 @@ $JQuery("#spotInfo").submit(function(event) {
 			var url = "/openmrs/ws/rest/v1/clinic/spot/save";			
 			var token = $JQuery("meta[name='_csrf']").attr("content");
 			var header = $JQuery("meta[name='_csrf_header']").attr("content");
-			
+			var psiClinicManagementId = $JQuery('input[name=psiClinicManagement]').val();
 			var formData;			
 			formData = {
 			            'name': $JQuery('input[name=name]').val(),			           
 			            'code': $JQuery('input[name=code]').val(),			           
 			            'address': $JQuery('input[name=address]').val(),
 			            'dhisId': $JQuery('input[name=dhisId]').val(),
-			            'csid': $JQuery('input[name=csid]').val(),
-			            'psiClinicManagementId': $JQuery('input[name=psiClinicManagement]').val()
+			            'csid': $JQuery('input[name=ccsid]').val(),
+			            'psiClinicManagementId': psiClinicManagementId
 			 };
 			
 			$JQuery.ajax({
@@ -30,7 +30,7 @@ $JQuery("#spotInfo").submit(function(event) {
 					$JQuery("#usernameUniqueErrorMessage").html(data);
 					$JQuery("#loading").hide();
 				   if(data == ""){					   
-					   window.location.replace("/openmrs/module/PSI/PSIClinicList.form");
+					   window.location.replace("/openmrs/module/PSI/PSIClinicSpotList.form?id="+psiClinicManagementId);
 				   }
 				   
 				},

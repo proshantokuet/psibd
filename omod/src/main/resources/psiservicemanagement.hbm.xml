@@ -15,6 +15,17 @@
 	    <property name="field1" column="field1" type="java.lang.String"/>
 	    <property name="field2" column="field2" type="java.lang.String"/>
 	    <property name="field3" column="field3" type="int"/>
+	    <property name="gender" column="gender" type="java.lang.String"/>
+	    <property name="ageTo" column="age_to" type="int"/>
+	    <property name="ageFrom" column="age_from" type="int"/>
+	    
+	    <property name="yearTo" column="year_to" type="int"/>
+	    <property name="monthTo" column="month_to" type="int"/>
+	    <property name="daysTo" column="days_to" type="int"/>
+	    <property name="yearFrom" column="year_from" type="int"/>
+	    <property name="monthFrom" column="month_from" type="int"/>
+	    <property name="daysFrom" column="days_from" type="int"/>
+	    
 	    <many-to-one name="psiClinicManagement" column ="psi_clinic_management_id" class="org.openmrs.module.PSI.PSIClinicManagement"/>
 	    
 	    <property name="timestamp" column="timestamp" type="long"/>

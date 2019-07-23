@@ -10,7 +10,7 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
 
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
-<c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
+<c:url var="cancelUrl" value="/module/PSI/PSIClinicSpotList.form?id=${id}" />
 <%
 //String users = (String)session.getAttribute("users");
 //String userIds = (String)session.getAttribute("userIds");
@@ -23,7 +23,7 @@
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
-        	<p>Add Community Clinic Spot.</p>
+        	<p>Add Community Clinic Spot</p>
         	
        	</div>
 		

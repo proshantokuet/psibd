@@ -85,44 +85,20 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		psiServiceManagement.setPsiClinicManagement(Context.getService(PSIClinicManagementService.class).findById(
 		    clinicServiceDTO.getPsiClinicManagement()));
 		String msg = "";
-		PSIServiceManagement getByCode = Context.getService(PSIServiceManagementService.class).findByCodeAndClinicId(
-		    clinicServiceDTO.getCode(), clinicServiceDTO.getPsiClinicManagement());
+		PSIServiceManagement getByCode = Context.getService(PSIServiceManagementService.class).findByIdNotByClinicId(
+		    clinicServiceDTO.getSid(), clinicServiceDTO.getCode(), clinicServiceDTO.getPsiClinicManagement());
 		if (getByCode != null) {
 			msg = "This code is already taken";
 		} else {
-			Context.openSession();
-			Context.getService(PSIServiceManagementService.class).saveOrUpdate(psiServiceManagement);
-			Context.clearSession();
-			msg = "";
-		}
-		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
-		
-	}
-	
-	@RequestMapping(value = "/edit", method = RequestMethod.POST)
-	public ResponseEntity<String> editClinicService(@RequestBody ClinicServiceDTO clinicServiceDTO, ModelMap model)
-	    throws Exception {
-		
-		String msg = "";
-		PSIServiceManagement getByIdAndNotByCode = Context.getService(PSIServiceManagementService.class).findByIdNotByClinicId(
-		    clinicServiceDTO.getSid(), clinicServiceDTO.getCode(), clinicServiceDTO.getPsiClinicManagement());
-		if (getByIdAndNotByCode == null) {
-			PSIServiceManagement getById = Context.getService(PSIServiceManagementService.class).findById(
-			    clinicServiceDTO.getSid());
-			getById.setName(clinicServiceDTO.getName());
-			getById.setCategory(clinicServiceDTO.getCategory());
-			getById.setCode(clinicServiceDTO.getCode());
-			getById.setProvider(clinicServiceDTO.getProvider());
-			getById.setUnitCost(clinicServiceDTO.getUnitCost());
-			getById.setPsiClinicManagement(Context.getService(PSIClinicManagementService.class).findById(
-			    clinicServiceDTO.getPsiClinicManagement()));
-			getById.setTimestamp(System.currentTimeMillis());
-			Context.openSession();
-			Context.getService(PSIServiceManagementService.class).saveOrUpdate(getById);
-			Context.clearSession();
-			msg = "";
-		} else {
-			msg = "This Code is already taken";
+			try {
+				Context.openSession();
+				Context.getService(PSIServiceManagementService.class).saveOrUpdate(psiServiceManagement);
+				Context.clearSession();
+				msg = "";
+			}
+			catch (Exception e) {
+				return new ResponseEntity<>(new Gson().toJson(e.toString()), HttpStatus.OK);
+			}
 		}
 		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 		
