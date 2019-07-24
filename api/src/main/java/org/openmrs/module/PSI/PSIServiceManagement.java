@@ -35,9 +35,9 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	private String eligible;
 	
-	private int ageTo;
+	private int ageTo; // calculative field from yearTo,monthTo,daysTo. Starting range
 	
-	private int ageFrom;
+	private int ageFrom; // calculative field from yearFrom,monthFrom,daysFrom. Ending range
 	
 	private int yearTo;
 	

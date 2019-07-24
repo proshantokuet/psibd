@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
@@ -158,13 +159,80 @@ public class PSIServiceManagementRestController extends MainResourceController {
 					if (psiServiceManagement == null) {
 						psiServiceManagement = new PSIServiceManagement();
 					}
-					psiServiceManagement.setName(service[0]);
+					String name = "";
+					if (!StringUtils.isBlank(service[0])) {
+						name = service[0];
+					}
+					psiServiceManagement.setName(name);
+					String code = "";
+					if (!StringUtils.isBlank(service[1])) {
+						code = service[1];
+					}
 					psiServiceManagement.setEligible("");
-					psiServiceManagement.setCode(service[1]);
-					psiServiceManagement.setCategory(service[2]);
-					psiServiceManagement.setProvider(service[3]);
-					psiServiceManagement.setUnitCost(Float.parseFloat(service[4]));
+					psiServiceManagement.setCode(code);
+					String category = "";
+					if (!StringUtils.isBlank(service[2])) {
+						category = service[2];
+					}
+					psiServiceManagement.setCategory(category);
+					String provider = "";
+					if (!StringUtils.isBlank(service[3])) {
+						provider = service[3];
+					}
+					psiServiceManagement.setProvider(provider);
+					Float unitCost = 0f;
+					if (service[4] != null || !service[11].isEmpty()) {
+						unitCost = Float.parseFloat(service[11]);
+					}
+					psiServiceManagement.setUnitCost(unitCost);
 					psiServiceManagement.setPsiClinicManagement(psiClinicManagement);
+					String gender = "";
+					if (!StringUtils.isBlank(service[4])) {
+						gender = service[4];
+					}
+					
+					int yearTo = 0;
+					if (!StringUtils.isBlank(service[5])) {
+						yearTo = Integer.parseInt(service[5]);
+					}
+					int monthTo = 0;
+					if (!StringUtils.isBlank(service[6])) {
+						monthTo = Integer.parseInt(service[6]);
+					}
+					int dayTo = 0;
+					if (!StringUtils.isBlank(service[7])) {
+						dayTo = Integer.parseInt(service[7]);
+					}
+					int yearFrom = 0;
+					if (!StringUtils.isBlank(service[8])) {
+						yearFrom = Integer.parseInt(service[8]);
+					}
+					int monthFrom = 0;
+					if (!StringUtils.isBlank(service[9])) {
+						monthFrom = Integer.parseInt(service[9]);
+					}
+					int dayFrom = 0;
+					if (!StringUtils.isBlank(service[10])) {
+						dayFrom = Integer.parseInt(service[10]);
+					}
+					
+					int ageTo = ClinicServiceConverter.getDaysFromYMD(yearTo, monthTo, dayTo);
+					int ageFrom = ClinicServiceConverter.getDaysFromYMD(yearFrom, monthFrom, dayFrom);
+					
+					psiServiceManagement.setGender(gender);
+					
+					psiServiceManagement.setYearTo(yearTo);
+					psiServiceManagement.setYearFrom(yearFrom);
+					
+					psiServiceManagement.setMonthFrom(monthFrom);
+					psiServiceManagement.setMonthTo(monthTo);
+					
+					psiServiceManagement.setDaysFrom(dayFrom);
+					psiServiceManagement.setDaysTo(dayTo);
+					
+					psiServiceManagement.setAgeFrom(ageFrom);
+					psiServiceManagement.setAgeTo(ageTo);
+					
 					psiServiceManagement.setDateCreated(new Date());
 					psiServiceManagement.setCreator(Context.getAuthenticatedUser());
 					psiServiceManagement.setTimestamp(System.currentTimeMillis());
@@ -178,9 +246,9 @@ public class PSIServiceManagementRestController extends MainResourceController {
 			
 		}
 		catch (Exception e) {
-			
-			failedMessage = "failed to process file because : " + e.getCause();
-			return new ResponseEntity<>(new Gson().toJson(msg + " and got error at position: " + index + 1 + " due to "
+			e.printStackTrace();
+			failedMessage = "failed to process file because : " + e;
+			return new ResponseEntity<>(new Gson().toJson(" got error at column : " + (index + 1) + " due to "
 			        + failedMessage), HttpStatus.OK);
 		}
 		

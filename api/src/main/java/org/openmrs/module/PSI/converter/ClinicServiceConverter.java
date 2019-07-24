@@ -18,7 +18,9 @@ public class ClinicServiceConverter {
 		psiServiceManagement.setSid(clinicServiceDTO.getSid());
 		psiServiceManagement.setProvider(clinicServiceDTO.getProvider());
 		psiServiceManagement.setUnitCost(clinicServiceDTO.getUnitCost());
+		
 		psiServiceManagement.setGender(clinicServiceDTO.getGender());
+		
 		psiServiceManagement.setYearTo(clinicServiceDTO.getYearTo());
 		psiServiceManagement.setYearFrom(clinicServiceDTO.getYearFrom());
 		
@@ -43,7 +45,7 @@ public class ClinicServiceConverter {
 	
 	public static int getDaysFromYMD(int y, int m, int d) {
 		int days = y * 365 + m * 30 + d;
-		int modMonth = m % 2;
+		int modMonth = (int) Math.floor(m / 2);
 		return days + modMonth;
 	}
 	
