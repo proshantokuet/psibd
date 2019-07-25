@@ -56,4 +56,10 @@ public class PSIClinicUserRestController extends MainResourceController {
 		}
 		return new ResponseEntity<String>(usersJson.toString(), HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/get-by-org/{uuid}", method = RequestMethod.GET)
+	public ResponseEntity<String> findUser(@PathVariable String uuid) throws Exception {
+		UserDTO userDTO = Context.getService(PSIClinicUserService.class).findOrgUnitFromOpenMRS(uuid);
+		return new ResponseEntity<String>(userDTO.toString(), HttpStatus.OK);
+	}
 }

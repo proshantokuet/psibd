@@ -23,6 +23,8 @@ public interface PSIClinicUserDAO {
 	
 	public List<UserDTO> findUsersNotInClinic(int clinicId);
 	
+	public UserDTO findOrgUnitFromOpenMRS(String uuid);
+	
 	public void delete(int id);
 	
 }

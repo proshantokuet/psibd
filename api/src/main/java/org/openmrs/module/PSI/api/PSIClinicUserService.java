@@ -26,6 +26,8 @@ public interface PSIClinicUserService extends OpenmrsService {
 	
 	public List<UserDTO> findUserByCode(String code);
 	
+	public UserDTO findOrgUnitFromOpenMRS(String uuid);
+	
 	public void delete(int id);
 	
 }

@@ -12,6 +12,8 @@ public class UserDTO {
 	
 	private String fullName;
 	
+	private String orgUnit;
+	
 	public int getId() {
 		return id;
 	}
@@ -52,9 +54,18 @@ public class UserDTO {
 		this.fullName = fullName;
 	}
 	
+	public String getOrgUnit() {
+		return orgUnit;
+	}
+	
+	public void setOrgUnit(String orgUnit) {
+		this.orgUnit = orgUnit;
+	}
+	
 	@Override
 	public String toString() {
-		return "UserDTO [id=" + id + ", username=" + username + ", userRole=" + userRole + "]";
+		return "UserDTO [id=" + id + ", username=" + username + ", userRole=" + userRole + ", role=" + role + ", fullName="
+		        + fullName + ", orgUnit=" + orgUnit + "]";
 	}
 	
 }
