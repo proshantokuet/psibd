@@ -34,12 +34,12 @@
 		<property name="uuid" column="uuid" type="java.lang.String" not-null="true" />
 		
 		
-		<set name="pSIClinicUser" cascade="all">
+		<!-- <set name="pSIClinicUser">
 	       <key>
 	           <column name="psi_clinic_management_id" not-null="true" />
 	       </key>
 	       <one-to-many class="org.openmrs.module.PSI.PSIClinicUser"/>
-	    </set>
+	    </set> -->
 	    
     </class>
 </hibernate-mapping>

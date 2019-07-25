@@ -159,6 +159,13 @@
 			update openmrs.psi_service_management set `days_from` = 0 ;
 		</sql>
 	 </changeSet>
+	 
+	 <changeSet author="Proshanto" id="psiservicemanagement-1.0.4">	 	
+		<sql>
+			update openmrs.psi_service_management set `gender` = "" ;
+			
+		</sql>
+	 </changeSet>
 	
 	<changeSet id="psimoneyreceipt-1.0.0" author="Proshanto">
 		<createTable tableName="psi_money_receipt">

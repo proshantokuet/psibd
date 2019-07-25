@@ -56,24 +56,27 @@ public class PSIServiceManagementRestController extends MainResourceController {
 			
 		}
 		catch (Exception e) {
-			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<String>(psiServiceManagementJsonOject.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<String>(psiServiceManagementJsonOject.toString(), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/get-all/{clinicId}", method = RequestMethod.GET)
-	public ResponseEntity<String> getAll(@PathVariable int clinicId) throws Exception {
+	@RequestMapping(value = "/get-all/{clinicId}/{age}/{gender}", method = RequestMethod.GET)
+	public ResponseEntity<String> getAll(@PathVariable int clinicId, @PathVariable int age, @PathVariable String gender)
+	    throws Exception {
 		List<PSIServiceManagement> psiServiceManagement = new ArrayList<PSIServiceManagement>();
 		
 		JSONArray psiServiceManagementArrayOject = new JSONArray();
 		try {
-			psiServiceManagement = Context.getService(PSIServiceManagementService.class).getAllByClinicId(clinicId);
+			psiServiceManagement = Context.getService(PSIServiceManagementService.class).getAllByClinicIdAgeGender(clinicId,
+			    age, gender);
 			if (psiServiceManagement != null) {
 				psiServiceManagementArrayOject = new PSIServiceManagementConverter().toConvert(psiServiceManagement);
 			}
 		}
 		catch (Exception e) {
-			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+			
+			return new ResponseEntity<String>(psiServiceManagementArrayOject.toString(), HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(psiServiceManagementArrayOject.toString(), HttpStatus.OK);
 	}
@@ -248,7 +251,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		catch (Exception e) {
 			e.printStackTrace();
 			failedMessage = "failed to process file because : " + e;
-			return new ResponseEntity<>(new Gson().toJson(" got error at column : " + (index + 1) + " due to "
+			return new ResponseEntity<>(new Gson().toJson(msg + ", and  got error at column : " + (index + 1) + " due to "
 			        + failedMessage), HttpStatus.OK);
 		}
 		

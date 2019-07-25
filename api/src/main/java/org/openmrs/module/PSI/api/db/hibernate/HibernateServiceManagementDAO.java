@@ -1,5 +1,6 @@
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -115,4 +116,18 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 		return null;
 	}
 	
+	@Override
+	public List<PSIServiceManagement> getAllByClinicIdAgeGender(int clinicId, int age, String gender) {
+		// TODO Auto-generated method stub
+		List<PSIServiceManagement> clinics = new ArrayList<PSIServiceManagement>();
+		clinics = sessionFactory
+		        .getCurrentSession()
+		        .createQuery(
+		            "from PSIServiceManagement where ((gender = :gender and (age_to >= :ageTO OR age_from >= :ageFrom)) OR (gender = ''  AND (age_to =0 and age_from=0))) and  psi_clinic_management_id = :psi_clinic_management_id order by name asc")
+		        .setString("gender", gender).setInteger("ageTO", age).setInteger("ageFrom", age)
+		        .setInteger("psi_clinic_management_id", clinicId).list();
+		
+		return clinics;
+		
+	}
 }

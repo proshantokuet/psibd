@@ -66,4 +66,10 @@ public class PSIServiceManagementServiceImpl extends BaseOpenmrsService implemen
 		return dao.getAll();
 	}
 	
+	@Override
+	public List<PSIServiceManagement> getAllByClinicIdAgeGender(int clinicId, int age, String gender) {
+		// TODO Auto-generated method stub
+		return dao.getAllByClinicIdAgeGender(clinicId, age, gender);
+	}
+	
 }

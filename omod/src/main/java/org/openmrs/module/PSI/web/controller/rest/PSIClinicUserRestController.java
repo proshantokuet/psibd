@@ -30,10 +30,13 @@ public class PSIClinicUserRestController extends MainResourceController {
 			psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(username);
 			if (psiClinicUser != null) {
 				psiClinic = new PSIClinicUserConverter().toConvertClinic(psiClinicUser);
+				psiClinic.put("status", "success");
 			}
 		}
 		catch (Exception e) {
-			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+			psiClinic.put("msg", e.toString());
+			psiClinic.put("status", "error");
+			return new ResponseEntity<String>(psiClinic.toString(), HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(psiClinic.toString(), HttpStatus.OK);
 	}
