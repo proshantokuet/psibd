@@ -33,8 +33,9 @@ public class ClinicServiceConverter {
 		int ageTo = getDaysFromYMD(clinicServiceDTO.getYearTo(), clinicServiceDTO.getMonthTo(), clinicServiceDTO.getDaysTo());
 		int ageFrom = getDaysFromYMD(clinicServiceDTO.getYearFrom(), clinicServiceDTO.getMonthFrom(),
 		    clinicServiceDTO.getDaysFrom());
-		psiServiceManagement.setAgeFrom(ageFrom);
-		psiServiceManagement.setAgeTo(ageTo);
+		psiServiceManagement.setAgeStart(ageTo);
+		psiServiceManagement.setAgeEnd(ageFrom);
+		
 		psiServiceManagement.setTimestamp(System.currentTimeMillis());
 		psiServiceManagement.setCreator(Context.getAuthenticatedUser());
 		psiServiceManagement.setUuid(UUID.randomUUID().toString());

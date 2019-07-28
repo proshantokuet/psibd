@@ -16,8 +16,9 @@
 	    <property name="field2" column="field2" type="java.lang.String"/>
 	    <property name="field3" column="field3" type="int"/>
 	    <property name="gender" column="gender" type="java.lang.String"/>
-	    <property name="ageTo" column="age_to" type="int"/>
-	    <property name="ageFrom" column="age_from" type="int"/>
+	     <property name="ageStart" column="age_start" type="int"/>
+	    <property name="ageEnd" column="age_end" type="int"/>
+	   
 	    
 	    <property name="yearTo" column="year_to" type="int"/>
 	    <property name="monthTo" column="month_to" type="int"/>

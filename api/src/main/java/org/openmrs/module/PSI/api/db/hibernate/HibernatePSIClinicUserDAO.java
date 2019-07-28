@@ -196,4 +196,17 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		}
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIClinicUser> findByClinicId(int clinicId) {
+		List<PSIClinicUser> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIClinicUser where  psiClinicManagementId = :clinicId  order by cuid desc")
+		        .setInteger("clinicId", clinicId).list();
+		if (lists.size() != 0) {
+			return lists;
+		} else {
+			return null;
+		}
+	}
 }

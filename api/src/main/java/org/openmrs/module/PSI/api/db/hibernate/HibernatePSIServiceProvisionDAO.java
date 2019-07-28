@@ -119,7 +119,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		List<Object[]> data = null;
 		List<PSIReport> reportDTOs = new ArrayList<PSIReport>();
 		
-		String sql = "select code, item, category, sum(Static) as Static, sum(Satellite) as Satellite,  sum(CSP) as CSP , sum(Static)+sum(Satellite)+sum(CSP) as total from ( select code,item ,  category,service_point, sum(net_payable) as ttt,count(*), CASE WHEN service_point = 'Static' THEN sum(net_payable) ELSE 0 END Static,  CASE WHEN service_point = 'Satellite' THEN sum(net_payable) ELSE 0 END Satellite, CASE WHEN service_point = 'CSP' THEN sum(net_payable)  ELSE 0 END CSP from openmrs.psi_service_provision as sp  left join  openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid  where DATE(sp.money_receipt_date)  between  '"
+		String sql = "select code, item, category, sum(Static) as Static, sum(Satellite) as Satellite,  sum(CSP) as CSP , sum(Static)+sum(Satellite)+sum(CSP) as total from ( select code,item ,  category,service_point, sum(net_payable) as ttt,count(*), CASE WHEN service_point = 'Static' THEN sum(net_payable) ELSE 0 END Static,  CASE WHEN service_point = 'Satellite' THEN sum(net_payable) ELSE 0 END Satellite, CASE WHEN service_point = 'CSP' THEN sum(net_payable)  ELSE 0 END CSP from openmrs.psi_service_provision as sp  left join  openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid  where sp.is_complete = 1 and DATE(sp.money_receipt_date)  between  '"
 		        + startDate
 		        + "'  and  '"
 		        + endDate
@@ -149,7 +149,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		List<Object[]> data = null;
 		List<PSIReport> reportDTOs = new ArrayList<PSIReport>();
 		
-		String sql = "select code,item ,category, count(*) as serviceCount ,sum(net_payable) as total from openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid where DATE(sp.money_receipt_date)  between '"
+		String sql = "select code,item ,category, count(*) as serviceCount ,sum(net_payable) as total from openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid where sp.is_complete = 1 and DATE(sp.money_receipt_date)  between '"
 		        + startDate
 		        + "' and '"
 		        + endDate
@@ -210,7 +210,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			dashboardDTO.setServedPatient(servedValue.intValue());
 		}
 		//List<Object[]> earnedData = null;
-		String earnedPatientSql = "SELECT sum(net_payable) FROM openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr  on sp.psi_money_receipt_id = mr.mid where sp.money_receipt_date = :mdate and mr.clinic_code = :code";
+		String earnedPatientSql = "SELECT sum(net_payable) FROM openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr  on sp.psi_money_receipt_id = mr.mid where sp.is_complete = 1 and sp.money_receipt_date = :mdate and mr.clinic_code = :code";
 		SQLQuery earnedQuery = sessionFactory.getCurrentSession().createSQLQuery(earnedPatientSql);
 		List<Double> earnedData = earnedQuery.setString("code", code).setString("mdate", start).list();
 		if (earnedData.size() != 0) {

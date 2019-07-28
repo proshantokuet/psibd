@@ -116,6 +116,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<PSIServiceManagement> getAllByClinicIdAgeGender(int clinicId, int age, String gender) {
 		// TODO Auto-generated method stub
@@ -123,9 +124,12 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 		clinics = sessionFactory
 		        .getCurrentSession()
 		        .createQuery(
-		            "from PSIServiceManagement where ((gender = :gender and (age_to >= :ageTO OR age_from >= :ageFrom)) OR (gender = ''  AND (age_to =0 and age_from=0))) and  psi_clinic_management_id = :psi_clinic_management_id order by name asc")
-		        .setString("gender", gender).setInteger("ageTO", age).setInteger("ageFrom", age)
-		        .setInteger("psi_clinic_management_id", clinicId).list();
+		            "  from PSIServiceManagement where ((gender = :gender OR (age_start = 0 and age_end= 0)) OR "
+		                    + " (gender is null OR (" + age + "  between age_start and  age_end)) OR "
+		                    + " (gender is null OR (age_start = 0 and age_end= 0)) OR  (gender = :gender and " + age
+		                    + " between age_start and  age_end) ) "
+		                    + " and  psi_clinic_management_id = :psi_clinic_management_id order by name asc ")
+		        .setString("gender", gender).setInteger("psi_clinic_management_id", clinicId).list();
 		
 		return clinics;
 		

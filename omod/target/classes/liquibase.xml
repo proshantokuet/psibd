@@ -166,6 +166,13 @@
 			
 		</sql>
 	 </changeSet>
+	 
+	 <changeSet id="psiservicemanagement-1.0.5" author="Proshanto">
+		<sql>
+			ALTER TABLE psi_service_management CHANGE age_to age_start int(11) not null;
+			ALTER TABLE psi_service_management CHANGE age_from age_end int(11) not null;  
+		</sql>
+	</changeSet>
 	
 	<changeSet id="psimoneyreceipt-1.0.0" author="Proshanto">
 		<createTable tableName="psi_money_receipt">

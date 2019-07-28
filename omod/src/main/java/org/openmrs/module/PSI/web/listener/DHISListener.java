@@ -13,12 +13,14 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
+import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -37,9 +39,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -277,13 +279,16 @@ public class DHISListener {
 				JSONObject eventResponse = new JSONObject();
 				JSONObject getResponse = new JSONObject();
 				JSONObject moneyReceiptJson = new JSONObject();
-				String orgunit = psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
 				String patientUuid = psiServiceProvision.getPatientUuid();
 				String uuid = DHISMapper.registrationMapper.get("uuid");
 				String URL = "";
 				int statusCode = 0;
+				String orgUnit = "";
+				
 				try {
-					URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgunit;
+					UserDTO userDTO = Context.getService(PSIClinicUserService.class).findOrgUnitFromOpenMRS(patientUuid);
+					orgUnit = userDTO.getOrgUnit();
+					URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgUnit;
 					getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 					eventResponse = new JSONObject();
@@ -360,13 +365,15 @@ public class DHISListener {
 				JSONObject eventResponse = new JSONObject();
 				JSONObject getResponse = new JSONObject();
 				JSONObject moneyReceiptJson = new JSONObject();
-				String orgunit = psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit();
 				String patientUuid = psiServiceProvision.getPatientUuid();
 				String uuid = DHISMapper.registrationMapper.get("uuid");
 				String URL = "";
 				int statusCode = 0;
+				String orgUnit = "";
 				try {
-					URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgunit;
+					UserDTO userDTO = Context.getService(PSIClinicUserService.class).findOrgUnitFromOpenMRS(patientUuid);
+					orgUnit = userDTO.getOrgUnit();
+					URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgUnit;
 					getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 					log.info("URL:" + URL + "getResponse:" + getResponse);

@@ -35,9 +35,9 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	private String eligible;
 	
-	private int ageTo; // calculative field from yearTo,monthTo,daysTo. Starting range
+	private int ageStart; // calculative field from yearTo,monthTo,daysTo. Starting range
 	
-	private int ageFrom; // calculative field from yearFrom,monthFrom,daysFrom. Ending range
+	private int ageEnd; // calculative field from yearFrom,monthFrom,daysFrom. Ending range
 	
 	private int yearTo;
 	
@@ -161,20 +161,20 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 		this.eligible = eligible;
 	}
 	
-	public int getAgeTo() {
-		return ageTo;
+	public int getAgeStart() {
+		return ageStart;
 	}
 	
-	public void setAgeTo(int ageTo) {
-		this.ageTo = ageTo;
+	public void setAgeStart(int ageStart) {
+		this.ageStart = ageStart;
 	}
 	
-	public int getAgeFrom() {
-		return ageFrom;
+	public int getAgeEnd() {
+		return ageEnd;
 	}
 	
-	public void setAgeFrom(int ageFrom) {
-		this.ageFrom = ageFrom;
+	public void setAgeEnd(int ageEnd) {
+		this.ageEnd = ageEnd;
 	}
 	
 	public String getGender() {

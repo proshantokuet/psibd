@@ -5,7 +5,6 @@ package org.openmrs.module.PSI.web.controller;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +69,7 @@ public class PSIClinicUserManageController {
 	                          @RequestParam(required = true) int id) {
 		model.addAttribute("id", id);
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
-		Set<PSIClinicUser> psiClinicUsers = psiClinicManagement.getpSIClinicUser();
+		List<PSIClinicUser> psiClinicUsers = Context.getService(PSIClinicUserService.class).findByClinicId(id);
 		model.addAttribute("name", psiClinicManagement.getName());
 		model.addAttribute("pSIClinicUsers", psiClinicUsers);
 	}

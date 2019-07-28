@@ -173,6 +173,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				if (service.has("item")) {
 					JSONObject itemObj = new JSONObject(service.getString("item"));
 					psiServiceProvision.setItem(itemObj.getString("name"));
+					psiServiceProvision.setCategory(itemObj.getString("category"));
 				}
 				if (service.has("description")) {
 					psiServiceProvision.setDescription(service.getString("description"));

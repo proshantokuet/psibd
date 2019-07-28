@@ -219,9 +219,11 @@ public class PSIServiceManagementRestController extends MainResourceController {
 						dayFrom = Integer.parseInt(service[10]);
 					}
 					
-					int ageTo = ClinicServiceConverter.getDaysFromYMD(yearTo, monthTo, dayTo);
-					int ageFrom = ClinicServiceConverter.getDaysFromYMD(yearFrom, monthFrom, dayFrom);
-					
+					int ageStart = ClinicServiceConverter.getDaysFromYMD(yearTo, monthTo, dayTo);
+					int ageEnd = ClinicServiceConverter.getDaysFromYMD(yearFrom, monthFrom, dayFrom);
+					if (ageStart != 0 && ageEnd == 0) {
+						ageEnd = 43800;
+					}
 					psiServiceManagement.setGender(gender);
 					
 					psiServiceManagement.setYearTo(yearTo);
@@ -232,9 +234,8 @@ public class PSIServiceManagementRestController extends MainResourceController {
 					
 					psiServiceManagement.setDaysFrom(dayFrom);
 					psiServiceManagement.setDaysTo(dayTo);
-					
-					psiServiceManagement.setAgeFrom(ageFrom);
-					psiServiceManagement.setAgeTo(ageTo);
+					psiServiceManagement.setAgeStart(ageStart);
+					psiServiceManagement.setAgeEnd(ageEnd);
 					
 					psiServiceManagement.setDateCreated(new Date());
 					psiServiceManagement.setCreator(Context.getAuthenticatedUser());

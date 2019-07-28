@@ -77,4 +77,10 @@ public class PSIClinicUserServiceImpl extends BaseOpenmrsService implements PSIC
 		return dao.findOrgUnitFromOpenMRS(uuid);
 	}
 	
+	@Override
+	public List<PSIClinicUser> findByClinicId(int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.findByClinicId(clinicId);
+	}
+	
 }
