@@ -54,6 +54,14 @@
 			<column name="upazila_uuid" type="varchar(255)" />
 		</addColumn>
 	 </changeSet>
+	 
+	  <changeSet author="Proshanto" id="psiclinic-1.0.2">	 	
+		<sql>
+			update openmrs.psi_clinic set division_id = 0 ;
+			update openmrs.psi_clinic set `district_id` = 0 ;
+			update openmrs.psi_clinic set `upazila_id` = 0 ;
+		</sql>
+	 </changeSet>
 	
 	<changeSet id="psiclinicuser-1.0.0" author="Proshanto">
 		<createTable tableName="psi_clinic_user">
@@ -315,6 +323,15 @@
 			<column name="error" type="varchar(255)" />	
 		</addColumn>
 	 </changeSet> 
+	 
+	  <changeSet author="Proshanto" id="psiserviceprovision-1.2.3">	 	
+		<sql>
+			update openmrs.psi_service_provision set is_send_to_dhis = 1 where dhis_id is not null;
+			update openmrs.psi_service_provision set is_send_to_dhis = 0 where dhis_id is  null;
+			update openmrs.psi_service_provision set is_complete = 1 ;
+			
+		</sql>
+	 </changeSet>
 	
 	<changeSet id="psidhismarker-1.0.0" author="Proshanto">
 		<createTable tableName="psi_dhis_marker">

@@ -50,6 +50,9 @@ public class OpenmrsAPIController extends MainResourceController {
 	@RequestMapping(value = "/fakecall", method = RequestMethod.GET)
 	public ResponseEntity<String> emptyCall() throws Exception {
 		//dhisListener.sendPatient();
+		
+		/*Context.getService(UserService.class).changePassword(Context.getService(UserService.class).getUser(4), "Admin1234",
+		    "Admin12345");*/
 		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient");
 		JSONObject res = new JSONObject();
 		res.putOpt("OK", "OKK");

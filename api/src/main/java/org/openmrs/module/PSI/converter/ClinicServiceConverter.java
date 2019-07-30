@@ -46,8 +46,9 @@ public class ClinicServiceConverter {
 	
 	public static int getDaysFromYMD(int y, int m, int d) {
 		int days = y * 365 + m * 30 + d;
-		int modMonth = (int) Math.floor(m / 2);
-		return days + modMonth;
+		int leapYearDaysApprox = (int) Math.ceil(y / 4f);
+		int modMonth = (int) Math.ceil(m / 2f);
+		return days + modMonth + leapYearDaysApprox;
 	}
 	
 }
