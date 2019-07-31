@@ -118,16 +118,23 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public List<PSIReport> servicePointWiseReport(String startDate, String endDate, String code) {
 		List<Object[]> data = null;
 		List<PSIReport> reportDTOs = new ArrayList<PSIReport>();
-		
+		String clinicCondition = "";
+		if (!code.equalsIgnoreCase("0")) {
+			clinicCondition = " and clinic_code = :code ";
+		}
 		String sql = "select code, item, category, sum(Static) as Static, sum(Satellite) as Satellite,  sum(CSP) as CSP , sum(Static)+sum(Satellite)+sum(CSP) as total from ( select code,item ,  category,service_point, sum(net_payable) as ttt,count(*), CASE WHEN service_point = 'Static' THEN sum(net_payable) ELSE 0 END Static,  CASE WHEN service_point = 'Satellite' THEN sum(net_payable) ELSE 0 END Satellite, CASE WHEN service_point = 'CSP' THEN sum(net_payable)  ELSE 0 END CSP from openmrs.psi_service_provision as sp  left join  openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid  where sp.is_complete = 1 and DATE(sp.money_receipt_date)  between  '"
 		        + startDate
 		        + "'  and  '"
 		        + endDate
-		        + "'  and clinic_code = :code"
+		        + "'"
+		        + clinicCondition
 		        + "  group by code ,item,service_point,category order  by code) as Report  group by code, item ";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-		
-		data = query.setString("code", code).list();
+		if (!code.equalsIgnoreCase("0")) {
+			data = query.setString("code", code).list();
+		} else {
+			data = query.list();
+		}
 		
 		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
 			PSIReport report = new PSIReport();
@@ -153,10 +160,10 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        + startDate
 		        + "' and '"
 		        + endDate
-		        + "' and mr.data_collector = :dataCollector group by code ,item,category order  by code";
+		        + "' and clinic_code = :code and mr.data_collector = :dataCollector group by code ,item,category order  by code";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		
-		data = query.setString("dataCollector", dataCollector).list();
+		data = query.setString("code", code).setString("dataCollector", dataCollector).list();
 		
 		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
 			PSIReport report = new PSIReport();
@@ -226,7 +233,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String newPatientSql = "SELECT count(*) FROM openmrs.patient as p left join openmrs.person_attribute  as pa on p.patient_id = pa.person_id where person_attribute_type_id = :typeId and value = :code and DATE(p.date_created) = :mdate";
 		SQLQuery newPatientQuery = sessionFactory.getCurrentSession().createSQLQuery(newPatientSql);
 		List<BigInteger> newPatientData = newPatientQuery.setString("code", code).setString("mdate", start)
-		        .setInteger("typeId", DHISMapper.attributeTypeId).list();
+		        .setInteger("typeId", DHISMapper.attributeTypeClinicCode).list();
 		for (BigInteger newPatient : newPatientData) {
 			dashboardDTO.setNewPatient(newPatient.intValue());
 		}

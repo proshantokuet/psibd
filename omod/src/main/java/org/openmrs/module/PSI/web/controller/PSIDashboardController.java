@@ -43,8 +43,12 @@ public class PSIDashboardController {
 			String today = dateFormat.format(date);
 			DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, "",
 			    psiClinicManagement.getClinicId());
-			
+			model.addAttribute("showClinic", 0);
 			model.addAttribute("dashboard", dashboardDTO);
+		} else {
+			List<PSIClinicManagement> clinics = Context.getService(PSIClinicManagementService.class).getAllClinic();
+			model.addAttribute("clinics", clinics);
+			model.addAttribute("showClinic", 1);
 		}
 		/*select code, item, category, sum(Clilic) as Clilic, sum(Satellite) as Satellite,
 			sum(CSP) as CSP , sum(Clilic)+sum(Satellite)+sum(CSP) as total
@@ -86,11 +90,22 @@ public class PSIDashboardController {
 	@RequestMapping(value = "/module/PSI/ServicePointWise", method = RequestMethod.GET)
 	public void ServicePointWiseReport(HttpServletRequest request, HttpSession session, Model model,
 	                                   @RequestParam(required = true) String startDate,
-	                                   @RequestParam(required = true) String endDate) {
-		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
-		    Context.getAuthenticatedUser().getUsername());
+	                                   @RequestParam(required = true) String endDate,
+	                                   @RequestParam(required = true) String clinic_code) {
+		
+		String ClinicCode = "";
+		if (clinic_code.equalsIgnoreCase("-1")) { // for user who is assinged to a clinic
+			PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+			    Context.getAuthenticatedUser().getUsername());
+			ClinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+			
+		} else { // for selected clinic or all clinic
+		
+			ClinicCode = clinic_code;
+		}
+		
 		List<PSIReport> reports = Context.getService(PSIServiceProvisionService.class).servicePointWiseReport(startDate,
-		    endDate, psiClinicUser.getPsiClinicManagementId().getClinicId());
+		    endDate, ClinicCode);
 		model.addAttribute("reports", reports);
 		/*model.addAttribute("reportr",
 		    Context.getService(PSIServiceProvisionService.class).servicePointWiseRepor(startDate, endDate, "mouha84s"));
@@ -101,12 +116,32 @@ public class PSIDashboardController {
 	public void ServiceProviderWiseReport(HttpServletRequest request, HttpSession session, Model model,
 	                                      @RequestParam(required = true) String startDate,
 	                                      @RequestParam(required = true) String endDate,
-	                                      @RequestParam(required = true) String dataCollector) {
+	                                      @RequestParam(required = true) String dataCollector,
+	                                      @RequestParam(required = true) String code) {
 		/*Context.getAuthenticatedUser()*/
 		/*UserDTO userDTO = Context.getService(PSIClinicUserService.class).findByUserNameFromOpenmrs(provider);*/
+		String clinicCode = "";
+		if (code.equalsIgnoreCase("-1")) { // for user who is assinged to a clinic
+			PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+			    Context.getAuthenticatedUser().getUsername());
+			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+			
+		} else { // for selected clinic or all clinic
+		
+			clinicCode = code;
+		}
+		
 		List<PSIReport> reports = Context.getService(PSIServiceProvisionService.class).serviceProviderWiseReport(startDate,
-		    endDate, "", dataCollector);
+		    endDate, clinicCode, dataCollector);
 		model.addAttribute("reports", reports);
+		
+	}
+	
+	@RequestMapping(value = "/module/PSI/providerByClinic", method = RequestMethod.GET)
+	public void providerByClinic(HttpServletRequest request, HttpSession session, Model model,
+	                             @RequestParam(required = true) String code) {
+		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUserByCode(code);
+		model.addAttribute("psiClinicUsers", psiClinicUsers);
 		
 	}
 }

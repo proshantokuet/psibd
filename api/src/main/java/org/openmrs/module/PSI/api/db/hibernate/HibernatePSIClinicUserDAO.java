@@ -187,7 +187,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		        + " p.uuid = :uuid ";
 		patients = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("orgUnit", StandardBasicTypes.STRING)
 		
-		.setInteger("person_attribute_type_id", PSIConstants.PersonAattributeTypeId).setString("uuid", uuid)
+		.setInteger("person_attribute_type_id", PSIConstants.attributeTypeOrgUnit).setString("uuid", uuid)
 		        .setResultTransformer(new AliasToBeanResultTransformer(UserDTO.class)).list();
 		if (patients.size() != 0) {
 			return patients.get(0);

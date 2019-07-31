@@ -37,22 +37,36 @@
   <form:form id="ServicePointWise">
   	<div class="form-content">
         	<div class="row">
-            	<div class="col-md-4">
+            	<div class="col-md-3">
                 	<div class="form-group">                							
-						From
+						<label for="Service Code"> From</label><br />
 						<input id="startDate"  name="startDate" type="text"  required="true"/>
                   	</div>
                   	
              	</div>
-              	<div class="col-md-4">
+              	<div class="col-md-3">
                		<div class="form-group">
-                  	<label for="Service Code">To</label>
+                  	<label for="Service Code">To</label><br />
 						<input id="endDate" name="endDate" type="text"  required="true"/>                  			
 					</div>
                   	
               	</div>
-              	<div class="col-md-4">
+              	<c:if test="${showClinic eq 1}">
+	              	<div class="col-md-3">
+	               		<div class="form-group">
+	                  		<label for="Service Code">Clinic</label> <br />
+	                  		<select name="clinic" id="clinic" class="form-control selcls">
+	                  			<option value="0">Please Select</option>
+								<c:forEach items="${clinics}" var="clinic">	                  				 
+									<option value="${clinic.clinicId}">${clinic.name}</option>						             
+								</c:forEach>
+							</select>                			
+						</div>                  	
+	              	</div>
+              	</c:if>
+              	<div class="col-md-3">
                		<div class="form-group">
+               		<label for="Service Code"></label><br />
                   	<button style="width: 120px" type="submit" class="btnSubmit">Submit</button>                  			
 					</div>
                   	
@@ -75,21 +89,34 @@
         	<div class="row">
             	<div class="col-md-3">
                 	<div class="form-group">                							
-						From
+						<label for="Service Code">From</label><br />
 						<input style="width: 160px" id="from"  name="from" type="text"  required="true"/>
                   	</div>
                   	
              	</div>
               	<div class="col-md-3">
                		<div class="form-group">
-                  	<label for="Service Code">To</label>
+                  	<label for="Service Code">To</label> <br/>
 						<input style="width: 160px" id="to" name="to" type="text"  required="true"/>                  			
 					</div>
                   	
               	</div>
+              	<c:if test="${showClinic eq 1}">
+	              	<div class="col-md-3">
+	               		<div class="form-group">
+	                  		<label for="Service Code">Clinic</label> <br />
+	                  		<select name="clinics" id="clinics" class="form-control selcls">
+	                  			<option value="0">Please Select</option>
+								<c:forEach items="${clinics}" var="clinic">	                  				 
+									<option value="${clinic.clinicId}">${clinic.name}</option>						             
+								</c:forEach>
+							</select>                			
+						</div>                  	
+	              	</div>
+              	</c:if>
               	<div class="col-md-3">
                		<div class="form-group">
-                  	<label for="Service Code">Provider</label>
+                  	<label for="Service Code">Provider</label><br />
 						<select id="provider" required="true" style="width: 160px" >
 						  <option value=""></option>
 						  <c:forEach var="user" items="${ psiClinicUsers }">
@@ -101,6 +128,7 @@
               	</div>
               	<div class="col-md-3">
                		<div class="form-group">
+               		<label for="Service Code"></label><br />
                   	<button style="width: 120px" type="submit" class="btnSubmit">Submit</button>                  			
 					</div>
                   	
@@ -154,7 +182,18 @@ $JQuery("#ServiceProviderWise").submit(function(event) {
 var e = document.getElementById("provider");
 var provider = e.options[e.selectedIndex].value;
 var userRole = "Service Provider Wise Revenue Report( "+$JQuery("#provider option:selected").html()+" )";
-var url = "/openmrs/module/PSI/ServiceProviderWise.form?startDate="+$JQuery('input[name=from]').val()+"&endDate="+$JQuery('input[name=to]').val()+"&dataCollector="+provider;
+var startDate = $JQuery('input[name=from]').val();
+var endDate = $JQuery('input[name=to]').val();
+
+var clinic = document.getElementById("clinics");
+var clinicCode = "";
+if(clinic !== null){		
+	clinicCode = clinic.options[clinic.selectedIndex].value;
+}else {
+	clinicCode = -1;
+}
+
+var url = "/openmrs/module/PSI/ServiceProviderWise.form?startDate="+startDate+"&endDate="+endDate+"&dataCollector="+provider+"&code="+clinicCode;
 event.preventDefault();
 $JQuery.ajax({
 	   type : "GET",
@@ -194,9 +233,22 @@ $JQuery.ajax({
 	  }); 
 });
 
-$JQuery("#ServicePointWise").submit(function(event) { 
-	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+$JQuery('input[name=startDate]').val()+"&endDate="+$JQuery('input[name=endDate]').val();
-	event.preventDefault();
+$JQuery("#ServicePointWise").submit(function(event) {	
+	
+	var clinic = document.getElementById("clinic");
+	var clinicCode = "";
+	if(clinic !== null){		
+		clinicCode = clinic.options[clinic.selectedIndex].value;
+	}else {
+		clinicCode = -1;
+	}
+	
+	var startDate = $JQuery('input[name=startDate]').val();
+	var endDate = $JQuery('input[name=endDate]').val();
+	
+	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&clinic_code="+clinicCode;
+	
+	event.preventDefault();	
 	
 	$JQuery.ajax({
 		   type : "GET",
@@ -235,7 +287,39 @@ $JQuery("#ServicePointWise").submit(function(event) {
 		  }); 
 	});
 	  
+$JQuery("#clinics").change(function(event) { 
+	var clinicForProvider = document.getElementById("clinics");
+	var clinicForProviderValue = clinicForProvider.options[clinicForProvider.selectedIndex].value;	
+	var url = "/openmrs/module/PSI/providerByClinic.form?code="+clinicForProviderValue;
+
+	if(clinicForProviderValue ==""){
+		 $JQuery("#provider").html("");	 			
 		
+	} else {
+		event.preventDefault();
+		$JQuery.ajax({
+			   type : "GET",
+			   contentType : "application/json",
+			   url : url,	 
+			   dataType : 'html',		   
+			   beforeSend: function() {    
+			   
+			   },
+			   success : function(data) {		   
+				   $JQuery("#provider").html(data);			  
+			   },
+			   error : function(e) {
+			    console.log("ERROR: ", e);
+			    display(e);
+			   },
+			   done : function(e) {	    
+			    console.log("DONE");
+			    //enableSearchButton(true);
+			   }
+			}); 
+	 	}
+
+	});	
 </script>
  
 
