@@ -2,11 +2,13 @@ package org.openmrs.module.PSI.api.impl;
 
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.db.PSIClinicManagementDAO;
 import org.openmrs.module.PSI.dto.PSILocation;
+import org.openmrs.module.PSI.dto.PSILocationTag;
 
 public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implements PSIClinicManagementService {
 	
@@ -69,6 +71,30 @@ public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implement
 	public List<PSILocation> findByparentLocation(int parentLocationId) {
 		// TODO Auto-generated method stub
 		return dao.findByparentLocation(parentLocationId);
+	}
+	
+	@Override
+	public PSILocation findLocationByNameCode(String name, String code) {
+		// TODO Auto-generated method stub
+		return dao.findLocationByNameCode(name, code);
+	}
+	
+	@Override
+	public PSILocationTag findLocationTagByName(String name) {
+		// TODO Auto-generated method stub
+		return dao.findLocationTagByName(name);
+	}
+	
+	@Override
+	public int save(Location location) {
+		// TODO Auto-generated method stub
+		return dao.save(location);
+	}
+	
+	@Override
+	public PSILocation findLastLocation() {
+		// TODO Auto-generated method stub
+		return dao.findLastLocation();
 	}
 	
 }

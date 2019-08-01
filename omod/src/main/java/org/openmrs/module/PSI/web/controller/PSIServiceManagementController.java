@@ -160,6 +160,13 @@ public class PSIServiceManagementController {
 		
 	}
 	
+	@RequestMapping(value = "/module/PSI/uploadPSIClinicLocation", method = RequestMethod.GET)
+	public void uploadPSIClinicLocation(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
+		
+		model.addAttribute("pSIServiceManagement", new PSIClinicManagement());
+		
+	}
+	
 	@RequestMapping(value = "/module/PSI/deletePSIClinicService", method = RequestMethod.GET)
 	public ModelAndView deletePSIClinic(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		Context.getService(PSIServiceManagementService.class).delete(id);

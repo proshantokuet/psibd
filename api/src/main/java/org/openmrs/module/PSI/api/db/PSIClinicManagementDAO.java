@@ -2,8 +2,10 @@ package org.openmrs.module.PSI.api.db;
 
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.dto.PSILocation;
+import org.openmrs.module.PSI.dto.PSILocationTag;
 
 public interface PSIClinicManagementDAO {
 	
@@ -24,4 +26,13 @@ public interface PSIClinicManagementDAO {
 	public PSILocation findLocationById(int id);
 	
 	public List<PSILocation> findByparentLocation(int parentLocationId);
+	
+	public PSILocation findLocationByNameCode(String name, String code);
+	
+	public PSILocationTag findLocationTagByName(String name);
+	
+	public int save(Location location);
+	
+	public PSILocation findLastLocation();
+	
 }

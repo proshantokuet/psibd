@@ -23,6 +23,7 @@
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/impl/PSIServiceProvisionServiceImpl.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/PSIDHISException.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/db/PSIMoneyReceiptDAO.java
+/home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/dto/PSILocationTag.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/PSIMoneyReceiptService.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/PSIService.java
 /home/proshanto/projectOpensrp/openmrs-module/PSI/PSI/api/src/main/java/org/openmrs/module/PSI/api/db/PSIUniqueIdGeneratorDAO.java

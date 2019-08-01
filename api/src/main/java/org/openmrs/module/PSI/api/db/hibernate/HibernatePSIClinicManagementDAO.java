@@ -1,16 +1,22 @@
 package org.openmrs.module.PSI.api.db.hibernate;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
+import org.openmrs.Location;
+import org.openmrs.LocationTag;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.api.db.PSIClinicManagementDAO;
 import org.openmrs.module.PSI.dto.PSILocation;
+import org.openmrs.module.PSI.dto.PSILocationTag;
 
 public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 	
@@ -38,6 +44,7 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 		sessionFactory.getCurrentSession().saveOrUpdate(psiClinic);
 		
 		return psiClinic;
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -144,6 +151,85 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 		        .setResultTransformer(new AliasToBeanResultTransformer(PSILocation.class)).list();
 		
 		return locations;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSILocation findLocationByNameCode(String name, String code) {
+		List<PSILocation> locations = new ArrayList<PSILocation>();
+		String sql = "select location_id as id,name,uuid,address2 from location where name = :name and  address2 = :address2";
+		locations = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("id", StandardBasicTypes.INTEGER)
+		        .addScalar("name", StandardBasicTypes.STRING).addScalar("uuid", StandardBasicTypes.STRING)
+		        .addScalar("address2", StandardBasicTypes.STRING).setString("name", name).setString("address2", code)
+		        .setResultTransformer(new AliasToBeanResultTransformer(PSILocation.class)).list();
+		if (locations.size() != 0) {
+			return locations.get(0);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSILocationTag findLocationTagByName(String name) {
+		List<PSILocationTag> tags = new ArrayList<PSILocationTag>();
+		String sql = "select location_tag_id as id,name,uuid from location_tag where name = :name ";
+		tags = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("id", StandardBasicTypes.INTEGER)
+		        .addScalar("name", StandardBasicTypes.STRING).addScalar("uuid", StandardBasicTypes.STRING)
+		        .setString("name", name).setResultTransformer(new AliasToBeanResultTransformer(PSILocationTag.class)).list();
+		if (tags.size() != 0) {
+			return tags.get(0);
+		}
+		return null;
+	}
+	
+	@Override
+	public int save(Location location) {
+		Query query = sessionFactory
+		        .getCurrentSession()
+		        .createSQLQuery(
+		            "INSERT INTO location (location_id, name, uuid,address2,date_created,creator,retired,parent_location) "
+		                    + " VALUES (:location_id, :name, :uuid, :address2, :date_created, :creator, :retired, :parent_location)");
+		query.setParameter("location_id", location.getLocationId());
+		query.setParameter("name", location.getName());
+		query.setParameter("uuid", location.getUuid());
+		query.setParameter("address2", location.getAddress2());
+		query.setParameter("date_created", new Date());
+		query.setParameter("creator", 1);
+		query.setParameter("retired", 0);
+		
+		if (location.getParentLocation() != null) {
+			query.setParameter("parent_location", location.getParentLocation().getLocationId());
+		} else {
+			query.setParameter("parent_location", null);
+		}
+		int s = query.executeUpdate();
+		
+		Set<LocationTag> tagList = location.getTags();
+		for (LocationTag locationTag : tagList) {
+			Query queryTag = sessionFactory.getCurrentSession().createSQLQuery(
+			    "INSERT INTO location_tag_map (location_id, location_tag_id )  VALUES (:location_id, :location_tag_id)");
+			queryTag.setParameter("location_id", location.getLocationId());
+			queryTag.setParameter("location_tag_id", locationTag.getLocationTagId());
+			
+			queryTag.executeUpdate();
+		}
+		
+		return s;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSILocation findLastLocation() {
+		List<PSILocation> locations = new ArrayList<PSILocation>();
+		String sql = "select location_id as id,name,uuid,address2 from location order by location_id desc limit 1 ";
+		locations = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("id", StandardBasicTypes.INTEGER)
+		        .addScalar("name", StandardBasicTypes.STRING).addScalar("uuid", StandardBasicTypes.STRING)
+		        .addScalar("address2", StandardBasicTypes.STRING)
+		        .setResultTransformer(new AliasToBeanResultTransformer(PSILocation.class)).list();
+		if (locations.size() != 0) {
+			return locations.get(0);
+		}
+		return null;
 	}
 	
 }
