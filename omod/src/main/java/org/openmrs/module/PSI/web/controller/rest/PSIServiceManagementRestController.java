@@ -314,73 +314,100 @@ public class PSIServiceManagementRestController extends MainResourceController {
 			br = new BufferedReader(new FileReader(csvFile));
 			
 			while ((line = br.readLine()) != null) {
-				String tag = "";
-				String code = "";
-				String name = "";
-				String parent = "";
+				String locationTag = "";
+				String locationCode = "";
+				String locationName = "";
+				String parentLocationName = "";
+				String parentLocationCode = "";
+				String parentLocationtag = "";
 				String[] locations = line.split(cvsSplitBy);
 				if (position == 0) {
 					tags = locations;
 				} else {
 					for (int i = 0; i < locations.length; i = i + 2) {
-						code = locations[i].trim();
-						name = locations[i + 1].trim();
-						String parentCode = "";
+						locationCode = locations[i].trim();
+						locationName = locations[i + 1].trim();
+						
 						if (i != 0) {
-							parent = locations[i - 1];
-							parentCode = locations[i - 2];
+							parentLocationName = locations[i - 1];
+							parentLocationCode = locations[i - 2];
+							parentLocationtag = tags[i - 1].trim();
 						}
-						tag = tags[i + 1].trim();
+						locationTag = tags[i + 1].trim();
+						
 						PSILocationTag psiLocationTag = Context.getService(PSIClinicManagementService.class)
-						        .findLocationTagByName(tag);
-						LocationTag mainTag = new LocationTag();
-						mainTag.setLocationTagId(psiLocationTag.getId());
-						mainTag.setName(psiLocationTag.getName());
-						mainTag.setUuid(psiLocationTag.getUuid());
-						Set<LocationTag> tagList = new HashSet<LocationTag>();
-						tagList.add(mainTag);
-						
-						PSILocationTag psiTagLoginLocation = Context.getService(PSIClinicManagementService.class)
-						        .findLocationTagByName("Login Location");
-						LocationTag tagLoginLocation = new LocationTag();
-						tagLoginLocation.setLocationTagId(psiTagLoginLocation.getId());
-						tagLoginLocation.setName(psiTagLoginLocation.getName());
-						tagLoginLocation.setUuid(psiTagLoginLocation.getUuid());
-						
-						tagList.add(tagLoginLocation);
-						
-						PSILocationTag psiTagVisitLocation = Context.getService(PSIClinicManagementService.class)
-						        .findLocationTagByName("Visit Location");
-						LocationTag tagVisitLocation = new LocationTag();
-						tagVisitLocation.setLocationTagId(psiTagVisitLocation.getId());
-						tagVisitLocation.setName(psiTagVisitLocation.getName());
-						tagVisitLocation.setUuid(psiTagVisitLocation.getUuid());
-						
-						tagList.add(tagVisitLocation);
-						Location location = new Location();
-						location.setTags(tagList);
+						        .findLocationTagByName(locationTag);
+						int psiLocationTagId = 0;
+						if (psiLocationTag != null) {
+							psiLocationTagId = psiLocationTag.getId();
+						}
 						
 						PSILocation psiLocation = Context.getService(PSIClinicManagementService.class)
-						        .findLocationByNameCode(parent, parentCode);
-						Location parentLocation = new Location();
-						if (psiLocation != null) {
-							parentLocation.setLocationId(psiLocation.getId());
-						} else {
-							parentLocation = null;
-						}
+						        .findLocationByNameCodeLocationTag(locationName, locationCode, psiLocationTagId);
 						
-						PSILocation lastLocation = Context.getService(PSIClinicManagementService.class).findLastLocation();
-						if (lastLocation != null) {
-							int id = lastLocation.getId() + 1;
-							location.setLocationId(id);
+						if (psiLocation == null) {
+							
+							LocationTag mainTag = new LocationTag();
+							mainTag.setLocationTagId(psiLocationTag.getId());
+							mainTag.setName(psiLocationTag.getName());
+							mainTag.setUuid(psiLocationTag.getUuid());
+							Set<LocationTag> tagList = new HashSet<LocationTag>();
+							tagList.add(mainTag);
+							
+							PSILocationTag psiTagLoginLocation = Context.getService(PSIClinicManagementService.class)
+							        .findLocationTagByName("Login Location");
+							LocationTag tagLoginLocation = new LocationTag();
+							tagLoginLocation.setLocationTagId(psiTagLoginLocation.getId());
+							tagLoginLocation.setName(psiTagLoginLocation.getName());
+							tagLoginLocation.setUuid(psiTagLoginLocation.getUuid());
+							
+							tagList.add(tagLoginLocation);
+							
+							PSILocationTag psiTagVisitLocation = Context.getService(PSIClinicManagementService.class)
+							        .findLocationTagByName("Visit Location");
+							LocationTag tagVisitLocation = new LocationTag();
+							tagVisitLocation.setLocationTagId(psiTagVisitLocation.getId());
+							tagVisitLocation.setName(psiTagVisitLocation.getName());
+							tagVisitLocation.setUuid(psiTagVisitLocation.getUuid());
+							
+							tagList.add(tagVisitLocation);
+							Location location = new Location();
+							location.setTags(tagList);
+							
+							PSILocationTag psiParentLocationTag = Context.getService(PSIClinicManagementService.class)
+							        .findLocationTagByName(parentLocationtag);
+							int parentLocationTagId = 0;
+							if (psiParentLocationTag != null) {
+								parentLocationTagId = psiParentLocationTag.getId();
+							}
+							PSILocation psiParentLocation = Context.getService(PSIClinicManagementService.class)
+							        .findLocationByNameCodeLocationTag(parentLocationName, parentLocationCode,
+							            parentLocationTagId);
+							
+							Location parentLocation = new Location();
+							if (psiParentLocation != null) {
+								parentLocation.setLocationId(psiParentLocation.getId());
+							} else {
+								parentLocation = null;
+							}
+							
+							PSILocation lastLocation = Context.getService(PSIClinicManagementService.class)
+							        .findLastLocation();
+							if (lastLocation != null) {
+								int id = lastLocation.getId() + 1;
+								location.setLocationId(id);
+							} else {
+								location.setLocationId(1);
+							}
+							location.setName(locationName);
+							location.setUuid(UUID.randomUUID().toString());
+							location.setAddress2(locationCode);
+							location.setParentLocation(parentLocation);
+							Context.getService(PSIClinicManagementService.class).save(location);
+							
 						} else {
-							location.setLocationId(1);
+							
 						}
-						location.setName(name);
-						location.setUuid(UUID.randomUUID().toString());
-						location.setAddress2(code);
-						location.setParentLocation(parentLocation);
-						Context.getService(PSIClinicManagementService.class).save(location);
 						//Context.getService(LocationService.class).saveLocation(location);
 						
 					}

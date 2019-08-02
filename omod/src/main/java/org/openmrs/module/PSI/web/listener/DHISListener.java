@@ -39,9 +39,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -55,24 +55,14 @@ public class DHISListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
-		JSONObject getResponse = null;
+		/*JSONObject getResponse = null;
 		boolean status = true;
 		try {
 			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
-			/*PSIDHISMarker psidhisMarker = new PSIDHISMarker();
-			psidhisMarker.setVoidReason(" " + getResponse);
-			psidhisMarker.setDateCreated(new Date());
-			Context.openSession();
-			Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
-			Context.clearSession();*/
+			
 		}
 		catch (Exception e) {
-			/*PSIDHISMarker psidhisMarker = new PSIDHISMarker();
-			psidhisMarker.setVoidReason(e.toString() + " " + getResponse);
-			Context.openSession();
-			psidhisMarker.setDateCreated(new Date());
-			Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
-			Context.clearSession();*/
+			
 			status = false;
 		}
 		
@@ -102,7 +92,7 @@ public class DHISListener {
 			catch (Exception e) {
 				
 			}
-		}
+		}*/
 	}
 	
 	public void sendPatientAgain() {

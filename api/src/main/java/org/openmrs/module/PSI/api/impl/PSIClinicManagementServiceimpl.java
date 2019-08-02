@@ -74,9 +74,9 @@ public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implement
 	}
 	
 	@Override
-	public PSILocation findLocationByNameCode(String name, String code) {
+	public PSILocation findLocationByNameCodeLocationTag(String name, String code, int location_tag_id) {
 		// TODO Auto-generated method stub
-		return dao.findLocationByNameCode(name, code);
+		return dao.findLocationByNameCodeLocationTag(name, code, location_tag_id);
 	}
 	
 	@Override

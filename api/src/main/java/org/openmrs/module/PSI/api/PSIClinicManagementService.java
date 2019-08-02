@@ -30,7 +30,7 @@ public interface PSIClinicManagementService extends OpenmrsService {
 	
 	public List<PSILocation> findByparentLocation(int parentLocationId);
 	
-	public PSILocation findLocationByNameCode(String name, String code);
+	public PSILocation findLocationByNameCodeLocationTag(String name, String code, int location_tag_id);
 	
 	public PSILocationTag findLocationTagByName(String name);
 	

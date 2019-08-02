@@ -155,12 +155,14 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public PSILocation findLocationByNameCode(String name, String code) {
+	public PSILocation findLocationByNameCodeLocationTag(String name, String code, int location_tag_id) {
 		List<PSILocation> locations = new ArrayList<PSILocation>();
-		String sql = "select location_id as id,name,uuid,address2 from location where name = :name and  address2 = :address2";
+		String sql = "select location.location_id as id,name,uuid,address2 from location left join location_tag_map on location.location_id = location_tag_map.location_id where "
+		        + " name = :name and  address2 = :address2  and location_tag_map.location_tag_id = :location_tag_id limit 1 ";
 		locations = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("id", StandardBasicTypes.INTEGER)
 		        .addScalar("name", StandardBasicTypes.STRING).addScalar("uuid", StandardBasicTypes.STRING)
 		        .addScalar("address2", StandardBasicTypes.STRING).setString("name", name).setString("address2", code)
+		        .setInteger("location_tag_id", location_tag_id)
 		        .setResultTransformer(new AliasToBeanResultTransformer(PSILocation.class)).list();
 		if (locations.size() != 0) {
 			return locations.get(0);

@@ -55,6 +55,8 @@ public class OpenmrsAPIController extends MainResourceController {
 		Context.getService(LocationService.class).saveLocation(l);
 		Context.getService(UserService.class).changePassword(Context.getService(UserService.class).getUser(4), "Admin1234",
 		    "Admin12345");*/
+		/*Context.getService(UserService.class).changePassword(Context.getService(UserService.class).getUser(4), "Admin12345",
+		    "Admin123456");*/
 		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient");
 		JSONObject res = new JSONObject();
 		res.putOpt("OK", "OKK");
