@@ -97,4 +97,11 @@ public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implement
 		return dao.findLastLocation();
 	}
 	
+	@Override
+	public PSILocation findLocationByNameCodeLocationTagParent(String name, String code, int location_tag_id,
+	                                                           int parentLocation) {
+		// TODO Auto-generated method stub
+		return dao.findLocationByNameCodeLocationTagParent(name, code, location_tag_id, parentLocation);
+	}
+	
 }

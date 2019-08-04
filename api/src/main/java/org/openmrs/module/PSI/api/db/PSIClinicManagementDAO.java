@@ -31,6 +31,9 @@ public interface PSIClinicManagementDAO {
 	
 	public PSILocationTag findLocationTagByName(String name);
 	
+	public PSILocation findLocationByNameCodeLocationTagParent(String name, String code, int location_tag_id,
+	                                                           int parentLocation);
+	
 	public int save(Location location);
 	
 	public PSILocation findLastLocation();

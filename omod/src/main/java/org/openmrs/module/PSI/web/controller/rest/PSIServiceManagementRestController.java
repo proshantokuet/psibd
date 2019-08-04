@@ -326,14 +326,24 @@ public class PSIServiceManagementRestController extends MainResourceController {
 				} else {
 					for (int i = 0; i < locations.length; i = i + 2) {
 						locationCode = locations[i].trim();
-						locationName = locations[i + 1].trim();
+						locationName = (locations[i + 1].trim());
 						
 						if (i != 0) {
-							parentLocationName = locations[i - 1];
+							parentLocationName = (locations[i - 1]);
 							parentLocationCode = locations[i - 2];
 							parentLocationtag = tags[i - 1].trim();
 						}
 						locationTag = tags[i + 1].trim();
+						
+						PSILocationTag psiParentLocationTag = Context.getService(PSIClinicManagementService.class)
+						        .findLocationTagByName(parentLocationtag);
+						int parentLocationTagId = 0;
+						if (psiParentLocationTag != null) {
+							parentLocationTagId = psiParentLocationTag.getId();
+						}
+						PSILocation psiParentLocation = Context.getService(PSIClinicManagementService.class)
+						        .findLocationByNameCodeLocationTag(parentLocationName, parentLocationCode,
+						            parentLocationTagId);
 						
 						PSILocationTag psiLocationTag = Context.getService(PSIClinicManagementService.class)
 						        .findLocationTagByName(locationTag);
@@ -341,10 +351,16 @@ public class PSIServiceManagementRestController extends MainResourceController {
 						if (psiLocationTag != null) {
 							psiLocationTagId = psiLocationTag.getId();
 						}
-						
-						PSILocation psiLocation = Context.getService(PSIClinicManagementService.class)
-						        .findLocationByNameCodeLocationTag(locationName, locationCode, psiLocationTagId);
-						
+						PSILocation psiLocation = new PSILocation();
+						if (i == 6) {
+							psiLocation = Context.getService(PSIClinicManagementService.class)
+							        .findLocationByNameCodeLocationTagParent(locationName, locationCode, psiLocationTagId,
+							            psiParentLocation.getId());
+							
+						} else {
+							psiLocation = Context.getService(PSIClinicManagementService.class)
+							        .findLocationByNameCodeLocationTag(locationName, locationCode, psiLocationTagId);
+						}
 						if (psiLocation == null) {
 							
 							LocationTag mainTag = new LocationTag();
@@ -373,16 +389,6 @@ public class PSIServiceManagementRestController extends MainResourceController {
 							tagList.add(tagVisitLocation);
 							Location location = new Location();
 							location.setTags(tagList);
-							
-							PSILocationTag psiParentLocationTag = Context.getService(PSIClinicManagementService.class)
-							        .findLocationTagByName(parentLocationtag);
-							int parentLocationTagId = 0;
-							if (psiParentLocationTag != null) {
-								parentLocationTagId = psiParentLocationTag.getId();
-							}
-							PSILocation psiParentLocation = Context.getService(PSIClinicManagementService.class)
-							        .findLocationByNameCodeLocationTag(parentLocationName, parentLocationCode,
-							            parentLocationTagId);
 							
 							Location parentLocation = new Location();
 							if (psiParentLocation != null) {

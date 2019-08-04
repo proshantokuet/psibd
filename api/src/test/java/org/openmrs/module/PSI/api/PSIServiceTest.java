@@ -76,7 +76,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		//435
 		// 6632
 		
-		int y = 18;
+		/*int y = 18;
 		
 		int yr = (int) Math.ceil(y / 4f);
 		System.out.println(yr);
@@ -86,7 +86,11 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		int mm = (int) Math.ceil(m / 2f);
 		System.out.println(mm);
 		int modMonth = (int) Math.ceil(m / 2f);
-		System.out.println((days + modMonth + yr));
+		System.out.println((days + modMonth + yr));*/
+		
+		for (int i = 0; i < 7; i = i + 2) {
+			System.out.println(i);
+		}
 		
 	}
 }
