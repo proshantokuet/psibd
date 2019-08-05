@@ -21,6 +21,7 @@ import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
+import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -44,6 +45,10 @@ public class PSIServiceManagementController {
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		model.addAttribute("pSIServiceManagement", new PSIServiceManagement());
 		model.addAttribute("id", id);
+		model.addAttribute("hasDashboardPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		model.addAttribute("hasClinicPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 	}
 	
 	@RequestMapping(value = "/module/PSI/PSIClinicServiceList", method = RequestMethod.GET)
@@ -54,6 +59,10 @@ public class PSIServiceManagementController {
 		model.addAttribute("id", id);
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
 		model.addAttribute("psiClinicManagement", psiClinicManagement);
+		model.addAttribute("hasDashboardPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		model.addAttribute("hasClinicPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 	}
 	
 	@RequestMapping(value = "/module/PSI/editPSIClinicService", method = RequestMethod.GET)
@@ -61,7 +70,10 @@ public class PSIServiceManagementController {
 		List<PSIClinicManagement> psiClinicManagements = Context.getService(PSIClinicManagementService.class).getAllClinic();
 		model.addAttribute("clinics", psiClinicManagements);
 		model.addAttribute("pSIServiceManagement", Context.getService(PSIServiceManagementService.class).findById(id));
-		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		model.addAttribute("hasClinicPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 	}
 	
 	@RequestMapping(value = "/module/PSI/uploadPSIClinicService", method = RequestMethod.GET)
@@ -70,6 +82,10 @@ public class PSIServiceManagementController {
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
 		model.addAttribute("psiClinicManagement", psiClinicManagement);
 		model.addAttribute("pSIServiceManagement", new PSIClinicManagement());
+		model.addAttribute("hasDashboardPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		model.addAttribute("hasClinicPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 		
 	}
 	
@@ -164,13 +180,22 @@ public class PSIServiceManagementController {
 	public void uploadPSIClinicLocation(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		
 		model.addAttribute("pSIServiceManagement", new PSIClinicManagement());
+		model.addAttribute("hasDashboardPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		model.addAttribute("hasClinicPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 		
 	}
 	
 	@RequestMapping(value = "/module/PSI/deletePSIClinicService", method = RequestMethod.GET)
 	public ModelAndView deletePSIClinic(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		Context.getService(PSIServiceManagementService.class).delete(id);
+		model.addAttribute("hasDashboardPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		model.addAttribute("hasClinicPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 		return new ModelAndView("redirect:/module/PSI/PSIClinicServiceList.form");
+		
 	}
 	
 	@RequestMapping(value = "/module/PSI/addPPSIClinicService", method = RequestMethod.POST)

@@ -8,22 +8,25 @@
 	
 	
 <ul id="menu">
-	<li class="first"><a
+	<%-- <li class="first"><a
 		href="${pageContext.request.contextPath}/admin"><spring:message
-				code="admin.title.short" /></a></li>
-				
+				code="admin.title.short" /></a></li> --%>
+	<c:if test="${hasDashboardPermission}">			
 	<li
 		<c:if test='<%= request.getRequestURI().contains("/dashboard") %>'>class="active"</c:if>>
 		<a
 		href="${pageContext.request.contextPath}/module/PSI/dashboard.form"><spring:message
 				code="PSI.dahboard" /></a>
 	</li>	
+	</c:if>
+	<c:if test="${hasClinicPermission}">
 	<li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicList") %>'>class="active"</c:if>>
 		<a
 		href="${pageContext.request.contextPath}/module/PSI/PSIClinicList.form"><spring:message
 				code="PSI.psiclinic" /></a>
 	</li>
+	</c:if>
 	<%-- <li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicServiceList") %>'>class="active"</c:if>>
 		<a
@@ -37,6 +40,6 @@
 	
 	<!-- Add further links here -->
 </ul>
-<!-- <h2>
-	<spring:message code="PSI.title" />
-</h2> -->
+<h2>
+	<p>${pre }</p> <p>${report }</p>
+</h2>

@@ -49,6 +49,8 @@ public class OpenmrsAPIController extends MainResourceController {
 	
 	@RequestMapping(value = "/fakecall", method = RequestMethod.GET)
 	public ResponseEntity<String> emptyCall() throws Exception {
+		Context.getAuthenticatedUser().getRoles().contains("View Report");
+		
 		//dhisListener.sendPatient();
 		/*Location l = new Location();
 		LocationTag lt = new LocationTag();

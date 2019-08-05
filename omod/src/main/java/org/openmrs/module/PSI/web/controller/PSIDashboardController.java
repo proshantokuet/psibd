@@ -18,6 +18,7 @@ import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.UserDTO;
+import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,6 +86,12 @@ public class PSIDashboardController {
 		openmrs.psi_money_receipt as mr  on sp.psi_money_receipt_id = mr.mid  
 		where sp.money_receipt_date = '2019-05-05 ' and mr.clinic_code = 'mouha84s';
 		*/
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		model.addAttribute("hasClinicPermission",
+		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
+		
 	}
 	
 	@RequestMapping(value = "/module/PSI/ServicePointWise", method = RequestMethod.GET)
