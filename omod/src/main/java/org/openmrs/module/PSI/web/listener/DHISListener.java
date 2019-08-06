@@ -22,6 +22,7 @@ import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
+import org.openmrs.module.PSI.utils.PSIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -98,7 +99,7 @@ public class DHISListener {
 	public void sendPatientAgain() {
 		
 		List<PSIDHISException> psidhisExceptions = Context.getService(PSIDHISExceptionService.class).findAllByStatus(
-		    DHISMapper.DEFAULTERRORSTATUS);
+		    PSIConstants.DEFAULTERRORSTATUS);
 		
 		JSONObject response = new JSONObject();
 		JSONObject patientJson = new JSONObject();
@@ -128,7 +129,7 @@ public class DHISListener {
 					
 					if (!status.equalsIgnoreCase("ERROR")) {
 						Context.openSession();
-						psidhisException.setStatus(DHISMapper.SUCCESSSTATUS);
+						psidhisException.setStatus(PSIConstants.SUCCESSSTATUS);
 						psidhisException.setTimestamp(1l);
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
 						Context.clearSession();
@@ -141,9 +142,9 @@ public class DHISListener {
 					        .equalsIgnoreCase(e.toString())
 					        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
 					                .equalsIgnoreCase(e.toString())) {
-						psidhisException.setStatus(DHISMapper.CONNECTIONTIMEOUTSTATUS);
+						psidhisException.setStatus(PSIConstants.CONNECTIONTIMEOUTSTATUS);
 					} else {
-						psidhisException.setStatus(DHISMapper.FAILEDSTATUS);
+						psidhisException.setStatus(PSIConstants.FAILEDSTATUS);
 					}
 					
 					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
@@ -210,7 +211,7 @@ public class DHISListener {
 						getPsidhisException.setJson(patientJson.toString());
 						getPsidhisException.setMarkId(eventReceordDTO.getId());
 						getPsidhisException.setUrl(eventReceordDTO.getUrl());
-						getPsidhisException.setStatus(DHISMapper.SUCCESSSTATUS);
+						getPsidhisException.setStatus(PSIConstants.SUCCESSSTATUS);
 						getPsidhisException.setResponse(response.toString());
 						getPsidhisException.setDateCreated(new Date());
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
@@ -231,7 +232,7 @@ public class DHISListener {
 					getPsidhisException.setJson(patientJson.toString());
 					getPsidhisException.setMarkId(eventReceordDTO.getId());
 					getPsidhisException.setUrl(eventReceordDTO.getUrl());
-					getPsidhisException.setStatus(DHISMapper.DEFAULTERRORSTATUS);
+					getPsidhisException.setStatus(PSIConstants.DEFAULTERRORSTATUS);
 					getPsidhisException.setResponse(response.toString());
 					getPsidhisException.setDateCreated(new Date());
 					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
@@ -322,7 +323,7 @@ public class DHISListener {
 						psiServiceProvision.setField2(moneyReceiptJson + "");
 						psiServiceProvision.setField3(statusCode);
 						psiServiceProvision.setError(":" + URL);
-						psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTERRORSTATUS);
+						psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 						Context.clearSession();
@@ -336,7 +337,7 @@ public class DHISListener {
 					psiServiceProvision.setField2(moneyReceiptJson + "");
 					psiServiceProvision.setField3(statusCode);
 					psiServiceProvision.setError(e + ":" + URL);
-					psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTERRORSTATUS);
+					psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					getlastTimeStamp.setVoidReason(e.toString());
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
@@ -389,7 +390,7 @@ public class DHISListener {
 								psiServiceProvision.setField2(moneyReceiptJson + "");
 								psiServiceProvision.setField3(statusCode);
 								psiServiceProvision.setError(":" + URL);
-								psiServiceProvision.setIsSendToDHIS(DHISMapper.SUCCESSSTATUS);
+								psiServiceProvision.setIsSendToDHIS(PSIConstants.SUCCESSSTATUS);
 								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 								Context.clearSession();
 							}
@@ -402,7 +403,7 @@ public class DHISListener {
 						psiServiceProvision.setField2(moneyReceiptJson + "");
 						psiServiceProvision.setField3(statusCode);
 						psiServiceProvision.setError(":" + URL);
-						psiServiceProvision.setIsSendToDHIS(DHISMapper.FAILEDSTATUS);
+						psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 						Context.clearSession();
 					}
@@ -418,9 +419,9 @@ public class DHISListener {
 					        .equalsIgnoreCase(e.toString())
 					        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
 					                .equalsIgnoreCase(e.toString())) {
-						psiServiceProvision.setIsSendToDHIS(DHISMapper.CONNECTIONTIMEOUTSTATUS);
+						psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
 					} else {
-						psiServiceProvision.setIsSendToDHIS(DHISMapper.FAILEDSTATUS);
+						psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
 					}
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					Context.clearSession();

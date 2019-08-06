@@ -7,6 +7,21 @@ public class PSIConstants {
 	//public static final int attributeTypeOrgUnit = 78; // tanvir
 	
 	//public static final int attributeTypeOrgUnit = 39; // local
+	
 	public static final int attributeTypeOrgUnit = 33; // live / qa
+	
+	//public static final int attributeTypeClinicCode = 38; // local
+	
+	public static final int attributeTypeClinicCode = 32; // live / qa
+	
+	public static final int DEFAULTERRORSTATUS = 0;
+	
+	public static final int CONNECTIONTIMEOUTSTATUS = 3;
+	
+	public static final int DEFAULTSTATUSSERVICEPROVISION = 4;
+	
+	public static final int FAILEDSTATUS = 2;
+	
+	public static final int SUCCESSSTATUS = 1;
 	
 }

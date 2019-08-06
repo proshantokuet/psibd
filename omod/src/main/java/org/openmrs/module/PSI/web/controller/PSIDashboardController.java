@@ -3,12 +3,14 @@ package org.openmrs.module.PSI.web.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicUser;
@@ -32,65 +34,38 @@ public class PSIDashboardController {
 	public void dashboard(HttpServletRequest request, HttpSession session, Model model) {
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 		    Context.getAuthenticatedUser().getUsername());
-		if (psiClinicUser != null) {
-			PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(
-			    psiClinicUser.getPsiClinicManagementId().getCid());
-			List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUserByCode(
-			    psiClinicManagement.getClinicId());
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		String clinicCode = "";
+		boolean isAdmin = Utils.hasPrivilige(privileges, "Admin-User");
+		
+		Date date = Calendar.getInstance().getTime();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String today = dateFormat.format(date);
+		if (isAdmin) {
+			clinicCode = "";
+		} else {
+			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+		}
+		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, "",
+		    clinicCode);
+		model.addAttribute("dashboard", dashboardDTO);
+		
+		if (psiClinicUser != null && !isAdmin) {
+			
+			List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUserByCode(clinicCode);
 			model.addAttribute("psiClinicUsers", psiClinicUsers);
 			
-			Date date = Calendar.getInstance().getTime();
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			String today = dateFormat.format(date);
-			DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, "",
-			    psiClinicManagement.getClinicId());
 			model.addAttribute("showClinic", 0);
-			model.addAttribute("dashboard", dashboardDTO);
+			
 		} else {
 			List<PSIClinicManagement> clinics = Context.getService(PSIClinicManagementService.class).getAllClinic();
 			model.addAttribute("clinics", clinics);
 			model.addAttribute("showClinic", 1);
+			
 		}
-		/*select code, item, category, sum(Clilic) as Clilic, sum(Satellite) as Satellite,
-			sum(CSP) as CSP , sum(Clilic)+sum(Satellite)+sum(CSP) as total
-		from (
-			select code,item ,category,service_point, sum(net_payable) as ttt,count(*),
-			CASE WHEN service_point = 'Clinic' THEN sum(net_payable) ELSE 0 END Clilic,
-			CASE WHEN service_point = 'Satellite' THEN sum(net_payable) ELSE 0 END Satellite,
-			CASE WHEN service_point = 'CSP' THEN sum(net_payable)  ELSE 0 END CSP
-				from openmrs.psi_service_provision as sp left join
-				openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid
-				where DATE(sp.money_receipt_date)  between '2019-03-31' and '2019-05-31' 
-		        and clinic_code = 'mouha84s'
-			group by code ,item,service_point,category order  by code) 
-		as Report  group by code,item
-
-
-
-		select code,item ,category, count(*) as serviceCount ,sum(net_payable) as total
-		from openmrs.psi_service_provision as sp left join
-			openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid
-			where DATE(sp.money_receipt_date)  between '2019-03-31' and '2019-05-31' 
-		    and clinic_code = 'mouha84s' and sp.creator = 4
-		group by code ,item,category order  by code
 		
-		
-		SELECT count(*) FROM openmrs.patient as p left join openmrs.person_attribute  as
-		pa on p.patient_id = pa.person_id where person_attribute_type_id = 38 
-		and value = 'mouha84s' and DATE(p.date_created) = '2019-05-26';
-
-		SELECT count(*)  FROM openmrs.psi_money_receipt where clinic_code = 'mouha84s' 
-		and money_receipt_date = '2019-05-05' ;
-
-		SELECT sum(net_payable) FROM openmrs.psi_service_provision as sp left join 
-		openmrs.psi_money_receipt as mr  on sp.psi_money_receipt_id = mr.mid  
-		where sp.money_receipt_date = '2019-05-05 ' and mr.clinic_code = 'mouha84s';
-		*/
-		
-		model.addAttribute("hasDashboardPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
-		model.addAttribute("hasClinicPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
+		model.addAttribute("hasDashboardPermission", Utils.hasPrivilige(privileges, "dashboard"));
+		model.addAttribute("hasClinicPermission", Utils.hasPrivilige(privileges, "Clinic List"));
 		
 	}
 	

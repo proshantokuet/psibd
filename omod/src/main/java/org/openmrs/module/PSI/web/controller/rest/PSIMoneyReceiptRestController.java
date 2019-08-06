@@ -15,7 +15,7 @@ import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.converter.PSIMoneyReceiptConverter;
-import org.openmrs.module.PSI.utils.DHISMapper;
+import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -215,7 +215,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
 					
 				}
-				psiServiceProvision.setIsSendToDHIS(DHISMapper.DEFAULTERRORSTATUS);
+				psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
 				psiServiceProvision.setDateCreated(new Date());
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
 				psiServiceProvision.setUuid(UUID.randomUUID().toString());

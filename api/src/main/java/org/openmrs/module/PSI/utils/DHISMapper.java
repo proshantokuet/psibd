@@ -84,17 +84,4 @@ public class DHISMapper {
 		dateMapper.put("RegistrationDate", "");
 	}
 	
-	//public static final int attributeTypeClinicCode = 38; // local
-	public static final int attributeTypeClinicCode = 32;
-	
-	public static final int DEFAULTERRORSTATUS = 0;
-	
-	public static final int CONNECTIONTIMEOUTSTATUS = 3;
-	
-	public static final int DEFAULTSTATUSSERVICEPROVISION = 4;
-	
-	public static final int FAILEDSTATUS = 2;
-	
-	public static final int SUCCESSSTATUS = 1;
-	
 }

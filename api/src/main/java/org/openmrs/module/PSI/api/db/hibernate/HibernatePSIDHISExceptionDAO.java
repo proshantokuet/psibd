@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.api.db.PSIDHISExceptionDAO;
-import org.openmrs.module.PSI.utils.DHISMapper;
+import org.openmrs.module.PSI.utils.PSIConstants;
 
 public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 	
@@ -41,7 +41,7 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 	public List<PSIDHISException> findAllByStatus(int status) {
 		List<PSIDHISException> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIDHISException where (status = :id0 OR status = :id3)").setInteger("id0", status)
-		        .setInteger("id3", DHISMapper.CONNECTIONTIMEOUTSTATUS).list();
+		        .setInteger("id3", PSIConstants.CONNECTIONTIMEOUTSTATUS).list();
 		
 		return lists;
 		

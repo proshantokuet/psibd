@@ -48,9 +48,9 @@ public class PSIClinicUserManageController {
 		model.addAttribute("pSIClinicUser", new PSIClinicUser());
 		model.addAttribute("psiClinicManagementId", id);
 		model.addAttribute("hasDashboardPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
 		model.addAttribute("hasClinicPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 		JSONArray usernamesArray = new JSONArray();
 		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUsersNotInClinic(id);
 		for (UserDTO user : psiClinicUsers) {
@@ -77,9 +77,9 @@ public class PSIClinicUserManageController {
 		model.addAttribute("name", psiClinicManagement.getName());
 		model.addAttribute("pSIClinicUsers", psiClinicUsers);
 		model.addAttribute("hasDashboardPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
 		model.addAttribute("hasClinicPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 	}
 	
 	@RequestMapping(value = "/module/PSI/editPSIClinicUser", method = RequestMethod.GET)
@@ -104,9 +104,9 @@ public class PSIClinicUserManageController {
 		session.setAttribute("users", usernamesArray.toString());
 		model.addAttribute("pSIClinicUser", psiClinicUser);
 		model.addAttribute("hasDashboardPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
 		model.addAttribute("hasClinicPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 		
 	}
 	
@@ -114,9 +114,9 @@ public class PSIClinicUserManageController {
 	public ModelAndView deletePSIClinic(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		Context.getService(PSIClinicUserService.class).delete(id);
 		model.addAttribute("hasDashboardPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), "dashboard"));
 		model.addAttribute("hasClinicPermission",
-		    Utils.getPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), "Clinic List"));
 		return new ModelAndView("redirect:/module/PSI/PSIClinicUserList.form");
 	}
 	

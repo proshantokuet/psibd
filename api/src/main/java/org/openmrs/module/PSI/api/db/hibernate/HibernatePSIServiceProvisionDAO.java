@@ -14,7 +14,7 @@ import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
-import org.openmrs.module.PSI.utils.DHISMapper;
+import org.openmrs.module.PSI.utils.PSIConstants;
 
 public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	
@@ -207,19 +207,39 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@SuppressWarnings({ "unused", "unchecked" })
 	@Override
 	public DashboardDTO dashboardReport(String start, String end, String code) {
+		String servedPatienClinicCondition = "";
+		if (!"".equalsIgnoreCase(code)) {
+			servedPatienClinicCondition = " clinic_code = :code and";
+		}
 		
 		DashboardDTO dashboardDTO = new DashboardDTO();
-		String servedPatientSql = "SELECT count(distinct(patient_uuid)) as count FROM openmrs.psi_money_receipt where clinic_code = :code and money_receipt_date = :mdate";
+		String servedPatientSql = "SELECT count(distinct(patient_uuid)) as count FROM openmrs.psi_money_receipt where "
+		        + servedPatienClinicCondition + " money_receipt_date = :mdate";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(servedPatientSql);
-		
-		List<BigInteger> servedPatientData = query.setString("code", code).setString("mdate", start).list();
+		List<BigInteger> servedPatientData = new ArrayList<BigInteger>();
+		if (!"".equalsIgnoreCase(code)) {
+			servedPatientData = query.setString("code", code).setString("mdate", start).list();
+		} else {
+			servedPatientData = query.setString("mdate", start).list();
+		}
 		for (BigInteger servedValue : servedPatientData) {
 			dashboardDTO.setServedPatient(servedValue.intValue());
 		}
 		//List<Object[]> earnedData = null;
-		String earnedPatientSql = "SELECT sum(net_payable) FROM openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr  on sp.psi_money_receipt_id = mr.mid where sp.is_complete = 1 and sp.money_receipt_date = :mdate and mr.clinic_code = :code";
+		String earnedPatientClinicCondition = "";
+		if (!"".equalsIgnoreCase(code)) {
+			earnedPatientClinicCondition = " and mr.clinic_code = :code ";
+		}
+		String earnedPatientSql = "SELECT sum(net_payable) FROM openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr  on sp.psi_money_receipt_id = mr.mid where sp.is_complete = 1 and sp.money_receipt_date = :mdate "
+		        + earnedPatientClinicCondition + "";
 		SQLQuery earnedQuery = sessionFactory.getCurrentSession().createSQLQuery(earnedPatientSql);
-		List<Double> earnedData = earnedQuery.setString("code", code).setString("mdate", start).list();
+		List<Double> earnedData = new ArrayList<Double>();
+		if (!"".equalsIgnoreCase(code)) {
+			earnedData = earnedQuery.setString("code", code).setString("mdate", start).list();
+		} else {
+			earnedData = earnedQuery.setString("mdate", start).list();
+		}
+		
 		if (earnedData.size() != 0) {
 			for (Double double1 : earnedData) {
 				if (double1 != null) {
@@ -230,10 +250,21 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			dashboardDTO.setEarned(0);
 		}
 		
-		String newPatientSql = "SELECT count(*) FROM openmrs.patient as p left join openmrs.person_attribute  as pa on p.patient_id = pa.person_id where person_attribute_type_id = :typeId and value = :code and DATE(p.date_created) = :mdate";
+		String newPatienClinicCondition = "";
+		if (!"".equalsIgnoreCase(code)) {
+			newPatienClinicCondition = " person_attribute_type_id = :typeId  and value = :code and ";
+		}
+		String newPatientSql = "SELECT count(distinct(p.patient_id)) FROM openmrs.patient as p left join openmrs.person_attribute  as pa on p.patient_id = pa.person_id where "
+		        + newPatienClinicCondition + "  DATE(p.date_created) = :mdate";
 		SQLQuery newPatientQuery = sessionFactory.getCurrentSession().createSQLQuery(newPatientSql);
-		List<BigInteger> newPatientData = newPatientQuery.setString("code", code).setString("mdate", start)
-		        .setInteger("typeId", DHISMapper.attributeTypeClinicCode).list();
+		List<BigInteger> newPatientData = new ArrayList<BigInteger>();
+		if (!"".equalsIgnoreCase(code)) {
+			newPatientData = newPatientQuery.setString("code", code).setString("mdate", start)
+			        .setInteger("typeId", PSIConstants.attributeTypeClinicCode).list();
+			
+		} else {
+			newPatientData = newPatientQuery.setString("mdate", start).list();
+		}
 		for (BigInteger newPatient : newPatientData) {
 			dashboardDTO.setNewPatient(newPatient.intValue());
 		}
@@ -261,8 +292,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .getCurrentSession()
 		        .createQuery(
 		            "from PSIServiceProvision where  (isSendToDHIS = :isSendToDHIS0 OR isSendToDHIS= :isSendToDHIS3) and is_complete = :complete  order by spid asc")
-		        .setInteger("isSendToDHIS0", DHISMapper.DEFAULTERRORSTATUS)
-		        .setInteger("isSendToDHIS3", DHISMapper.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
+		        .setInteger("isSendToDHIS0", PSIConstants.DEFAULTERRORSTATUS)
+		        .setInteger("isSendToDHIS3", PSIConstants.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
 		        .setMaxResults(500).list();
 		
 		return lists;
