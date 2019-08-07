@@ -37,17 +37,16 @@
                   	<div class="form-group">
                   	Service Category: 
                   			<form:select path="category" class="form-control selcls" required="required">
-                  				  <form:option value=""/>
-					              <form:option value="Child health"/>
-					              <form:option value="Maternal health"/>
-					              <form:option value="NID-Immunization"/>
+                  				 <form:option value=""/>
+                  				   <form:option value="Child Health"/>					              
 					              <form:option value="Family Planning"/>
-					              <form:option value="Others"/>
-					              <form:option value="Referral"/>
-					              <form:option value="Lab"/>
-					              <form:option value="Pharmacy"/>
-					              <form:option value="Non-ESD"/>
-					              <form:option value="Medicine"/>
+					              <form:option value="Lab Services"/>
+					              <form:option value="Maternal Health"/>
+					              <form:option value="NID-Immunization"/>
+					              <form:option value="Non ESD Services"/>
+					              <form:option value="Other Health"/>
+					              <form:option value="Pharmacy Service"/>
+					              <form:option value="Referral Cases"/>	
 					         </form:select>	
                    	</div>
              	</div>
@@ -59,11 +58,15 @@
                   	<div class="form-group">
                   	Service Provider: 
                   			<form:select path="provider" class="form-control selcls" required="required">                  			 
-                  	 			  <form:option value=""/>
-					             <form:option value="Doctor"/>
-					              <form:option value="Paramedic"/>
+                  	 			 
+					             <form:option value=""/>
+					              <form:option value="Doctor"/>
 					              <form:option value="Counselor"/>
-					              <form:option value="Lab Technician"/>    
+					              <form:option value="Paramedic(Static)"/>
+					              <form:option value="Lab Technician"/>
+					              <form:option value="Paramedic(Satellite)"/>					              
+					              <form:option value="CSP"/>
+					              <form:option value="Pharmacist"/>   
 							</form:select>	
 					</div>
               	</div>

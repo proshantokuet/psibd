@@ -20,6 +20,7 @@ import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.UserDTO;
+import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +37,7 @@ public class PSIDashboardController {
 		    Context.getAuthenticatedUser().getUsername());
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
 		String clinicCode = "";
-		boolean isAdmin = Utils.hasPrivilige(privileges, "Admin-User");
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
 		
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -57,15 +58,17 @@ public class PSIDashboardController {
 			
 			model.addAttribute("showClinic", 0);
 			
-		} else {
+		} else if (psiClinicUser != null && isAdmin) {
 			List<PSIClinicManagement> clinics = Context.getService(PSIClinicManagementService.class).getAllClinic();
 			model.addAttribute("clinics", clinics);
 			model.addAttribute("showClinic", 1);
 			
+		} else {
+			
 		}
 		
-		model.addAttribute("hasDashboardPermission", Utils.hasPrivilige(privileges, "dashboard"));
-		model.addAttribute("hasClinicPermission", Utils.hasPrivilige(privileges, "Clinic List"));
+		model.addAttribute("hasDashboardPermission", Utils.hasPrivilige(privileges, PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission", Utils.hasPrivilige(privileges, PSIConstants.ClinicList));
 		
 	}
 	

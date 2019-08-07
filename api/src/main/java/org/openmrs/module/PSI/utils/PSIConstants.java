@@ -24,4 +24,10 @@ public class PSIConstants {
 	
 	public static final int SUCCESSSTATUS = 1;
 	
+	public static final String AdminUser = "Admin-User";
+	
+	public static final String Dashboard = "dashboard";
+	
+	public static final String ClinicList = "Clinic List";
+	
 }
