@@ -13,8 +13,14 @@
 	    <property name="dhisId" column="dhis_id" type="java.lang.String"/>
 	    <property name="description" column="description" type="java.lang.String"/>
 	    <property name="division" column="division" type="java.lang.String"/>
+	    <property name="divisionId" column="division_id" type="int"/>
+	    <property name="divisionUuid" column="division_uuid" type="java.lang.String"/>
 	    <property name="district" column="district" type="java.lang.String"/>
+	    <property name="districtId" column="district_id" type="int"/>
+	    <property name="districtUuid" column="district_uuid" type="java.lang.String"/>
 	    <property name="upazila" column="upazila" type="java.lang.String"/>
+	    <property name="upazilaId" column="upazila_id" type="int"/>
+	    <property name="upazilaUuid" column="upazila_uuid" type="java.lang.String"/>
 	    <property name="unionName" column="union_name" type="java.lang.String"/>
 	    <property name="timestamp" column="timestamp" type="long"/>
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
@@ -28,12 +34,12 @@
 		<property name="uuid" column="uuid" type="java.lang.String" not-null="true" />
 		
 		
-		<set name="pSIClinicUser" cascade="all">
+		<!-- <set name="pSIClinicUser">
 	       <key>
 	           <column name="psi_clinic_management_id" not-null="true" />
 	       </key>
 	       <one-to-many class="org.openmrs.module.PSI.PSIClinicUser"/>
-	    </set>
+	    </set> -->
 	    
     </class>
 </hibernate-mapping>

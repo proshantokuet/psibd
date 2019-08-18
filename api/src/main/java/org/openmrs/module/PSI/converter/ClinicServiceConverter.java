@@ -15,8 +15,27 @@ public class ClinicServiceConverter {
 		psiServiceManagement.setCategory(clinicServiceDTO.getCategory());
 		psiServiceManagement.setName(clinicServiceDTO.getName());
 		psiServiceManagement.setCode(clinicServiceDTO.getCode());
+		psiServiceManagement.setSid(clinicServiceDTO.getSid());
 		psiServiceManagement.setProvider(clinicServiceDTO.getProvider());
 		psiServiceManagement.setUnitCost(clinicServiceDTO.getUnitCost());
+		
+		psiServiceManagement.setGender(clinicServiceDTO.getGender());
+		
+		psiServiceManagement.setYearTo(clinicServiceDTO.getYearTo());
+		psiServiceManagement.setYearFrom(clinicServiceDTO.getYearFrom());
+		
+		psiServiceManagement.setMonthFrom(clinicServiceDTO.getMonthFrom());
+		psiServiceManagement.setMonthTo(clinicServiceDTO.getMonthTo());
+		
+		psiServiceManagement.setDaysFrom(clinicServiceDTO.getDaysFrom());
+		psiServiceManagement.setDaysTo(clinicServiceDTO.getDaysTo());
+		
+		int ageTo = getDaysFromYMD(clinicServiceDTO.getYearTo(), clinicServiceDTO.getMonthTo(), clinicServiceDTO.getDaysTo());
+		int ageFrom = getDaysFromYMD(clinicServiceDTO.getYearFrom(), clinicServiceDTO.getMonthFrom(),
+		    clinicServiceDTO.getDaysFrom());
+		psiServiceManagement.setAgeStart(ageTo);
+		psiServiceManagement.setAgeEnd(ageFrom);
+		
 		psiServiceManagement.setTimestamp(System.currentTimeMillis());
 		psiServiceManagement.setCreator(Context.getAuthenticatedUser());
 		psiServiceManagement.setUuid(UUID.randomUUID().toString());
@@ -24,4 +43,12 @@ public class ClinicServiceConverter {
 		return psiServiceManagement;
 		
 	}
+	
+	public static int getDaysFromYMD(int y, int m, int d) {
+		int days = y * 365 + m * 30 + d;
+		int leapYearDaysApprox = (int) Math.ceil(y / 4f);
+		int modMonth = (int) Math.ceil(m / 2f);
+		return days + modMonth + leapYearDaysApprox;
+	}
+	
 }

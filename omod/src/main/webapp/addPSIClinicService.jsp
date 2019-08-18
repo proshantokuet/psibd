@@ -8,7 +8,7 @@
 <openmrs:require privilege="Add Clinic Service" otherwise="/login.htm" />
 
 <c:url var="saveUrl" value="/module/PSI/addPPSIClinicService.form" />
-<c:url var="cancelUrl" value="/module/PSI/PSIClinicServiceList.form" />
+<c:url var="cancelUrl" value="/module/PSI/PSIClinicServiceList.form?id=${id}" />
 
 
 
@@ -23,7 +23,7 @@
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
 							
 		</div>
-		<form:form id="serviceForm" method="POST" action="${saveUrl}" modelAttribute="pSIServiceManagement">
+		<form:form id="serviceForm" method="POST" action="ff" modelAttribute="pSIServiceManagement">
 		
   		<div class="form-content">
         	<div class="row">
@@ -36,16 +36,15 @@
                   	Service Category: 
                   			<form:select path="category" class="form-control selcls" required="required">
                   				<form:option value=""/>
-					              <form:option value="Child health"/>
-					              <form:option value="Maternal health"/>
-					              <form:option value="NID-Immunization"/>
+					              <form:option value="Child Health"/>					              
 					              <form:option value="Family Planning"/>
-					              <form:option value="Others"/>
-					              <form:option value="Referral"/>
-					              <form:option value="Lab"/>
-					              <form:option value="Pharmacy"/>
-					              <form:option value="Non-ESD"/>
-					              <form:option value="Medicine"/>
+					              <form:option value="Lab Services"/>
+					              <form:option value="Maternal Health"/>
+					              <form:option value="NID-Immunization"/>
+					              <form:option value="Non ESD Services"/>
+					              <form:option value="Other Health"/>
+					              <form:option value="Pharmacy Service"/>
+					              <form:option value="Referral Cases"/>					             
 					         </form:select>	
                    	</div>
              	</div>
@@ -70,28 +69,57 @@
 					</div>
               	</div>
               	
-              	
-              	<div class="col-md-6"> 
+              	<form:hidden path="sid" value="0" />
+              		<form:hidden path="psiClinicManagement" value="${id}"/>
+              	<div class="col-md-6">
+              		
               		<div class="form-group">
+                  	Unit Cost:
+                  		<form:input style="height: 39px;" path="unitCost" class="form-control" required="required" min="0"/>
+                   	 	
+                  	</div> 
+              		<%-- <div class="form-group">
                   	Clinic: 
                   		<form:select path="psiClinicManagement" class="form-control selcls" required="required">                  			 
                   	 			  <form:option value=""/>
                   	 			  
                   	 			  <form:options items="${clinics}" itemValue="cid" itemLabel="name"/>
-					             <%--  <c:forEach items="${clinics}" var="clinic"> 
+					              <c:forEach items="${clinics}" var="clinic"> 
 					              <form:option value="clinic.cid" label="clinic.name"/>					              
-					              </c:forEach> --%>
+					              </c:forEach>
 						</form:select>	
-                  	</div>              		
+                  	</div> --%> 
+                  	
+                  	<div class="form-inline form-group">
+                  		<label for="email">Year's</label>
+						 <form:input path="yearTo" value="0" class="input-size"  min="0" placeholder="Year's"/>
+						 <label for="email">Month's</label>
+						 <form:input path="monthTo" value="0" class="input-size" min="0"  placeholder="Month's"/>
+						 <label for="email">Day's</label>
+						<form:input path="daysTo" value="0" class="input-size" min="0"  placeholder="Day's"/>
+                  	</div>             		
                   	
               	</div>
               	
               	<div class="col-md-6">               		
                   	<div class="form-group">
-                  	Unit Cost:
-                  		<form:input style="height: 39px;" path="unitCost" class="form-control" required="required" min="0"/>
-                   	 	
-                  	</div>
+                  	Gender 
+                  			<form:select path="gender" class="form-control selcls" required="required">                  			 
+                  	 			  <form:option value=""> Please Select </form:option>
+					              <form:option value="M">Male</form:option>
+					              <form:option value="F">Female</form:option>
+					              <form:option value="O">Others</form:option>
+							</form:select>	
+					</div>
+					
+					<div class="form-inline form-group">
+                  		<label for="email">Year's</label>
+						 <form:input path="yearFrom" value="0" class="input-size" min="0"  placeholder="Year's"/>
+						 <label for="email">Month's</label>
+						 <form:input path="monthFrom" value="0" class="input-size" min="0"  placeholder="Month's"/>
+						 <label for="email">Day's</label>
+						<form:input path="daysFrom" value="0" class="input-size" min="0"  placeholder="Day's"/>
+                  	</div> 
               	</div>
           	</div>
           	<button type="submit" class="btnSubmit">Submit</button>  <a href="${cancelUrl}">Back</a>
@@ -101,61 +129,8 @@
 	
 
 </form:form>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/service.js"></script>
 
-<script type="text/javascript">
-$("#serviceForm").submit(function(event) { 
-			$("#loading").show();
-			var url = "/openmrs/ws/rest/v1/service-management/save";			
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");			
-			
-			var e = document.getElementById("category");
-			var category = e.options[e.selectedIndex].value;
-			var e1 = document.getElementById("provider");
-			var provider = e1.options[e1.selectedIndex].value;
-			var clinic = document.getElementById("psiClinicManagement");
-			var clinicValue = clinic.options[clinic.selectedIndex].value;
-			var formData;			
-				formData = {
-			            'name': $('input[name=name]').val(),			           
-			            'code': $('input[name=code]').val(),
-			            'category': category,
-			            'provider': provider,
-			            'unitCost': $('input[name=unitCost]').val(),
-			            'psiClinicManagement': clinicValue	
-			           
-			        };			
-			
-			event.preventDefault();			
-			$.ajax({
-				contentType : "application/json",
-				type: "POST",
-		        url: url,
-		        data: JSON.stringify(formData), 
-		        dataType : 'json',
-		        
-				timeout : 100000,
-				beforeSend: function(xhr) {				    
-					 xhr.setRequestHeader(header, token);
-				},
-				success : function(data) {
-				   $("#usernameUniqueErrorMessage").html(data);
-				   $("#loading").hide();
-				   if(data == ""){					   
-					   window.location.replace("/openmrs/module/PSI/PSIClinicServiceList.form");
-					   
-				   }
-				   
-				},
-				error : function(e) {
-				   
-				},
-				done : function(e) {				    
-				    console.log("DONE");				    
-				}
-			}); 
-		});
-		
-</script>
+
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

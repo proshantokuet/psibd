@@ -21,6 +21,8 @@ import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
+import org.openmrs.module.PSI.utils.PSIConstants;
+import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -37,16 +39,33 @@ public class PSIServiceManagementController {
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping(value = "/module/PSI/addPSIClinicService", method = RequestMethod.GET)
-	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model) {
+	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model,
+	                         @RequestParam(required = false) int id) {
 		List<PSIClinicManagement> psiClinicManagements = Context.getService(PSIClinicManagementService.class).getAllClinic();
 		model.addAttribute("clinics", psiClinicManagements);
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		model.addAttribute("pSIServiceManagement", new PSIServiceManagement());
+		model.addAttribute("id", id);
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 	}
 	
 	@RequestMapping(value = "/module/PSI/PSIClinicServiceList", method = RequestMethod.GET)
-	public void pSIClinicList(HttpServletRequest request, HttpSession session, Model model) {
-		model.addAttribute("pSIServiceManagements", Context.getService(PSIServiceManagementService.class).getAll());
+	public void pSIClinicList(HttpServletRequest request, HttpSession session, Model model,
+	                          @RequestParam(required = true) int id) {
+		model.addAttribute("pSIServiceManagements",
+		    Context.getService(PSIServiceManagementService.class).getAllByClinicId(id));
+		model.addAttribute("id", id);
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 	}
 	
 	@RequestMapping(value = "/module/PSI/editPSIClinicService", method = RequestMethod.GET)
@@ -55,12 +74,23 @@ public class PSIServiceManagementController {
 		model.addAttribute("clinics", psiClinicManagements);
 		model.addAttribute("pSIServiceManagement", Context.getService(PSIServiceManagementService.class).findById(id));
 		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 	}
 	
 	@RequestMapping(value = "/module/PSI/uploadPSIClinicService", method = RequestMethod.GET)
 	public void uploadPSIClinicService(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		model.addAttribute("id", id);
-		model.addAttribute("pSIServiceManagement", Context.getService(PSIServiceManagementService.class).findById(id));
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
+		model.addAttribute("pSIServiceManagement", new PSIClinicManagement());
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		
 	}
 	
@@ -118,7 +148,7 @@ public class PSIServiceManagementController {
 				
 				if (index != 0) {
 					PSIServiceManagement findByCodeAndClinicId = Context.getService(PSIServiceManagementService.class)
-					        .findByCode(service[1], id);
+					        .findByCodeAndClinicId(service[1], id);
 					if (findByCodeAndClinicId == null) {
 						PSIServiceManagement pSIServiceManagement = new PSIServiceManagement();
 						pSIServiceManagement.setName(service[0]);
@@ -151,10 +181,28 @@ public class PSIServiceManagementController {
 		
 	}
 	
+	@RequestMapping(value = "/module/PSI/uploadPSIClinicLocation", method = RequestMethod.GET)
+	public void uploadPSIClinicLocation(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
+		
+		model.addAttribute("pSIServiceManagement", new PSIClinicManagement());
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		
+	}
+	
 	@RequestMapping(value = "/module/PSI/deletePSIClinicService", method = RequestMethod.GET)
 	public ModelAndView deletePSIClinic(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		Context.getService(PSIServiceManagementService.class).delete(id);
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		return new ModelAndView("redirect:/module/PSI/PSIClinicServiceList.form");
+		
 	}
 	
 	@RequestMapping(value = "/module/PSI/addPPSIClinicService", method = RequestMethod.POST)

@@ -1,10 +1,16 @@
 package org.openmrs.module.PSI.web.controller.rest;
 
+import java.util.Date;
+import java.util.UUID;
+
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.PSIClinicSpot;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
-import org.openmrs.module.PSI.converter.ClinicDataConverter;
+import org.openmrs.module.PSI.api.PSIClinicSpotService;
 import org.openmrs.module.PSI.dto.ClinicDTO;
+import org.openmrs.module.PSI.dto.PSIClinicSpotDTO;
+import org.openmrs.module.PSI.dto.PSILocation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +28,44 @@ public class PSIClinicRestController extends MainResourceController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public ResponseEntity<String> saveClinic(@RequestBody ClinicDTO clinicDTO, ModelMap model) throws Exception {
-		PSIClinicManagement psiClinicManagement = ClinicDataConverter.toConvert(clinicDTO);
+		PSILocation getDivison = Context.getService(PSIClinicManagementService.class).findLocationById(
+		    clinicDTO.getDivision());
+		PSILocation getDistrict = Context.getService(PSIClinicManagementService.class).findLocationById(
+		    clinicDTO.getDistrict());
+		
+		PSILocation getUpazila = Context.getService(PSIClinicManagementService.class).findLocationById(
+		    clinicDTO.getUpazila());
+		
+		PSIClinicManagement psiClinicManagement = new PSIClinicManagement();
+		
+		psiClinicManagement.setAddress(clinicDTO.getAddress());
+		psiClinicManagement.setCategory(clinicDTO.getCategory());
+		psiClinicManagement.setClinicId(clinicDTO.getClinicId());
+		psiClinicManagement.setName(clinicDTO.getName());
+		psiClinicManagement.setDhisId(clinicDTO.getDhisId());
+		psiClinicManagement.setDateCreated(new Date());
+		psiClinicManagement.setCreator(Context.getAuthenticatedUser());
+		psiClinicManagement.setUuid(UUID.randomUUID().toString());
+		psiClinicManagement.setTimestamp(System.currentTimeMillis());
+		psiClinicManagement.setDivision(getDivison.getName());
+		psiClinicManagement.setDivisionUuid(getDivison.getUuid());
+		psiClinicManagement.setDivisionId(getDivison.getId());
+		
+		psiClinicManagement.setDistrict(getDistrict.getName());
+		psiClinicManagement.setDistrictUuid(getDistrict.getUuid());
+		psiClinicManagement.setDistrictId(getDistrict.getId());
+		
+		psiClinicManagement.setUpazila(getUpazila.getName());
+		psiClinicManagement.setUpazilaUuid(getUpazila.getUuid());
+		psiClinicManagement.setUpazilaId(getUpazila.getId());
+		if (clinicDTO.getCid() != 0) {
+			psiClinicManagement.setCid(clinicDTO.getCid());
+		} else {
+			psiClinicManagement.setCid(0);
+		}
 		String msg = "";
-		PSIClinicManagement getClinicByClinicId = Context.getService(PSIClinicManagementService.class).findByClinicId(
-		    psiClinicManagement.getClinicId());
+		PSIClinicManagement getClinicByClinicId = Context.getService(PSIClinicManagementService.class)
+		        .findByIdNotByClinicId(clinicDTO.getCid(), psiClinicManagement.getClinicId());
 		if (getClinicByClinicId != null) {
 			msg = "This clinic id is already taken";
 		} else {
@@ -62,4 +102,44 @@ public class PSIClinicRestController extends MainResourceController {
 		
 	}
 	
+	@RequestMapping(value = "/spot/save", method = RequestMethod.POST)
+	public ResponseEntity<String> saveClinicSpot(@RequestBody PSIClinicSpotDTO psiClinicSpotDTO, ModelMap model)
+	    throws Exception {
+		
+		String msg = "";
+		PSIClinicSpot psiClinicSpot = new PSIClinicSpot();
+		psiClinicSpot.setDateCreated(new Date());
+		psiClinicSpot.setCreator(Context.getAuthenticatedUser());
+		psiClinicSpot.setUuid(UUID.randomUUID().toString());
+		
+		psiClinicSpot.setName(psiClinicSpotDTO.getName());
+		psiClinicSpot.setCode(psiClinicSpotDTO.getCode());
+		psiClinicSpot.setAddress(psiClinicSpotDTO.getAddress());
+		psiClinicSpot.setCcsid(psiClinicSpotDTO.getCsid());
+		psiClinicSpot.setDhisId(psiClinicSpotDTO.getDhisId());
+		PSIClinicManagement psiClinicManagementId = Context.getService(PSIClinicManagementService.class).findById(
+		    psiClinicSpotDTO.getPsiClinicManagementId());
+		psiClinicSpot.setPsiClinicManagement(psiClinicManagementId);
+		psiClinicSpot.setCcsid(psiClinicSpotDTO.getCsid());
+		PSIClinicSpot getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(
+		    psiClinicSpot.getCcsid(), psiClinicSpot.getCode());
+		
+		if (getClinicByClinicId != null) {
+			msg = "This clinic Spot code is already taken";
+		} else {
+			
+			try {
+				Context.openSession();
+				Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
+				Context.clearSession();
+				msg = "";
+			}
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				return new ResponseEntity<>(new Gson().toJson(e.getMessage()), HttpStatus.OK);
+			}
+		}
+		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
+		
+	}
 }

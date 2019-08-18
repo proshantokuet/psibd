@@ -16,13 +16,13 @@ public class ClinicDTO {
 	
 	private String description;
 	
-	private String division;
+	private int division;
 	
-	private String district;
+	private int district;
 	
-	private String upazila;
+	private int upazila;
 	
-	private String unionName;
+	private int unionName;
 	
 	public String getName() {
 		return name;
@@ -72,35 +72,35 @@ public class ClinicDTO {
 		this.description = description;
 	}
 	
-	public String getDivision() {
+	public int getDivision() {
 		return division;
 	}
 	
-	public void setDivision(String division) {
+	public void setDivision(int division) {
 		this.division = division;
 	}
 	
-	public String getDistrict() {
+	public int getDistrict() {
 		return district;
 	}
 	
-	public void setDistrict(String district) {
+	public void setDistrict(int district) {
 		this.district = district;
 	}
 	
-	public String getUpazila() {
+	public int getUpazila() {
 		return upazila;
 	}
 	
-	public void setUpazila(String upazila) {
+	public void setUpazila(int upazila) {
 		this.upazila = upazila;
 	}
 	
-	public String getUnionName() {
+	public int getUnionName() {
 		return unionName;
 	}
 	
-	public void setUnionName(String unionName) {
+	public void setUnionName(int unionName) {
 		this.unionName = unionName;
 	}
 	

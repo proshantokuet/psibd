@@ -4,9 +4,11 @@
     <!-- default header name is X-CSRF-TOKEN -->
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <%@ include file="template/localHeader.jsp"%>
-<link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/magicsuggest-min.css">
+
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
+ 
+
+
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
 <c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
 <openmrs:require privilege="Edit Clinic" otherwise="/login.htm" />
@@ -21,20 +23,28 @@
 		 	<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
 		 </div>
 		<span class="text-red" id="usernameUniqueErrorMessage"></span>
-        <form:form method="POST"  id="clinicInfo" action="${saveUrl}" modelAttribute="pSIClinic">
+        <form:form method="POST"  id="clinicInfo" action="ff" modelAttribute="pSIClinic">
   		<div class="form-content">
         	<div class="row">
             	<div class="col-md-6">
                 	<div class="form-group">
-                		Clinic Name : <form:input style="height: 39px;" path="name" class="form-control" required="required"/>
+                		Clinic Name : <form:input style="height: 39px;" path="name" class="form-control" required="required" tabindex="0"/>
                   	</div>
                   	<div class="form-group">
-                  		Clinic ID: <form:input style="height: 39px;" pattern=".{3,}" path="clinicId" class="form-control" required="required"/>
+                  		Clinic ID: <form:input style="height: 39px;" pattern=".{3,}" path="clinicId" class="form-control" required="required" tabindex="2"/>
                    	</div>
+                   	<div class="form-group">
+                  	Division <form:select path="divisionId" class="form-control selcls" required="required" tabindex="4">
+                  			<form:option value="">Please Select</form:option>
+                  				  <c:forEach items="${divisions}" var="division">	                  				 
+						              <form:option value="${division.id}">${division.name}</form:option>						             
+					              </c:forEach>				             
+					         </form:select>
+					</div>
              	</div>
               	<div class="col-md-6">
                		<div class="form-group">
-                  	Category: 	<form:select path="category" class="form-control selcls" required="required">
+                  	Category: 	<form:select path="category" class="form-control selcls" required="required" tabindex="1">
                   				<form:option value=""/>
 					              <form:option value="BEmOC"/>
 					              <form:option value="CEmOC"/>
@@ -42,15 +52,38 @@
 					         </form:select>
 					</div>
                   	<div class="form-group">
-                   	Address: 	<form:input style="height: 39px;" path="address" class="form-control" required="required"/>                	
+                   	Address: <form:input style="height: 39px;" path="address" class="form-control" required="required" tabindex="3"/>                	
                    	
                   	</div>
+                  	<div class="form-group">
+                  	District 
+ 					<form:select path="districtId" class="form-control selcls"  required="required" tabindex="5">
+ 						<form:option value=""/>
+                  		<c:forEach items="${districts}" var="district">	                  				 
+							<form:option value="${district.id}">${district.name}</form:option>						             
+					        </c:forEach>
+                  	</form:select>
+					</div>
               	</div>
               	<form:hidden path="cid" />
-              	<div class="col-md-6">               		
+              	
+              	<div class="col-md-6">  
+              		<div class="form-group">
+                  	Upazila 
+ 					<form:select path="upazilaId" class="form-control selcls" required="required" tabindex="6">
+ 					    <form:option value=""/>
+                  		<c:forEach items="${upazilas}" var="upazila">	                  				 
+							<form:option value="${upazila.id}">${upazila.name}</form:option>						             
+					    </c:forEach>
+                  	</form:select>
+					</div> 
+              	</div>
+              	
+              	<div class="col-md-6"> 
                   	<div class="form-group">
-                   	DHIS2 ID: <form:input style="height: 39px;" path="dhisId" class="form-control" required="required"/>
+                   	DHIS2 Org ID <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="7"/>
                   	</div>
+                  	
               	</div>
           	</div>
           	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Back</a>
@@ -60,58 +93,7 @@
 	
 
 </form:form>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/clinic.js"></script>
 
-<script type="text/javascript">
-$("#clinicInfo").submit(function(event) { 
-			$("#loading").show();
-			var url = "/openmrs/ws/rest/v1/clinic/edit";			
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");			
-			
-			var e = document.getElementById("category");
-			var category = e.options[e.selectedIndex].value;
-			var formData;
-			
-				formData = {
-			            'name': $('input[name=name]').val(),			           
-			            'clinicId': $('input[name=clinicId]').val(),
-			            'category': category,
-			            'address': $('input[name=address]').val(),
-			            'dhisId': $('input[name=dhisId]').val(),
-			            'cid': $('input[name=cid]').val()
-			           
-			        };
-			
-			
-			event.preventDefault();
-			
-			$.ajax({
-				contentType : "application/json",
-				type: "POST",
-		        url: url,
-		        data: JSON.stringify(formData), 
-		        dataType : 'json',
-		        
-				timeout : 100000,
-				beforeSend: function(xhr) {				    
-					 xhr.setRequestHeader(header, token);
-				},
-				success : function(data) {
-				   $("#usernameUniqueErrorMessage").html(data);
-				   $("#loading").hide();
-				   if(data == ""){					   
-					   window.location.replace("/openmrs/module/PSI/PSIClinicList.form");					   
-				   }				   
-				},
-				error : function(e) {
-				   
-				},
-				done : function(e) {				    
-				    console.log("DONE");				    
-				}
-			});
-		});
-		
-</script>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

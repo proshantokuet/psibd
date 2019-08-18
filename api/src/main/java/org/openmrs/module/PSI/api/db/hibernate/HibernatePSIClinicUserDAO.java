@@ -11,9 +11,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.db.PSIClinicUserDAO;
 import org.openmrs.module.PSI.dto.UserDTO;
+import org.openmrs.module.PSI.utils.PSIConstants;
 
 /**
  * @author proshanto
@@ -175,4 +178,35 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		return users;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public UserDTO findOrgUnitFromOpenMRS(String uuid) {
+		List<UserDTO> patients = new ArrayList<UserDTO>();
+		String sql = "SELECT value as orgUnit FROM openmrs.person as p left join openmrs.person_attribute  as pa "
+		        + " on p.person_id = pa.person_id where person_attribute_type_id = :person_attribute_type_id and "
+		        + " p.uuid = :uuid ";
+		patients = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("orgUnit", StandardBasicTypes.STRING)
+		
+		.setInteger("person_attribute_type_id", PSIConstants.attributeTypeOrgUnit).setString("uuid", uuid)
+		        .setResultTransformer(new AliasToBeanResultTransformer(UserDTO.class)).list();
+		if (patients.size() != 0) {
+			return patients.get(0);
+		} else {
+			return null;
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIClinicUser> findByClinicId(int clinicId) {
+		List<PSIClinicUser> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIClinicUser where  psiClinicManagementId = :clinicId  order by cuid desc")
+		        .setInteger("clinicId", clinicId).list();
+		if (lists.size() != 0) {
+			return lists;
+		} else {
+			return null;
+		}
+	}
 }

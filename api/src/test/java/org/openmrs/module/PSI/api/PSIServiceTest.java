@@ -73,6 +73,24 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		System.out.println("Day of Year: " + doy);
 		
 		System.out.println("1234".substring(0, 3));*/
+		//435
+		// 6632
+		
+		/*int y = 18;
+		
+		int yr = (int) Math.ceil(y / 4f);
+		System.out.println(yr);
+		int m = 2;
+		int d = 1;
+		int days = y * 365 + m * 30 + d;
+		int mm = (int) Math.ceil(m / 2f);
+		System.out.println(mm);
+		int modMonth = (int) Math.ceil(m / 2f);
+		System.out.println((days + modMonth + yr));*/
+		
+		for (int i = 0; i < 7; i = i + 2) {
+			System.out.println(i);
+		}
 		
 	}
 }

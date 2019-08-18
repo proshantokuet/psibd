@@ -2,10 +2,13 @@ package org.openmrs.module.PSI.api.impl;
 
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.db.PSIClinicManagementDAO;
+import org.openmrs.module.PSI.dto.PSILocation;
+import org.openmrs.module.PSI.dto.PSILocationTag;
 
 public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implements PSIClinicManagementService {
 	
@@ -50,6 +53,55 @@ public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implement
 	public PSIClinicManagement findByIdNotByClinicId(int id, String clinicId) {
 		// TODO Auto-generated method stub
 		return dao.findByIdNotByClinicId(id, clinicId);
+	}
+	
+	@Override
+	public List<PSILocation> findLocationByTag(String tagName) {
+		// TODO Auto-generated method stub
+		return dao.findLocationByTag(tagName);
+	}
+	
+	@Override
+	public PSILocation findLocationById(int id) {
+		// TODO Auto-generated method stub
+		return dao.findLocationById(id);
+	}
+	
+	@Override
+	public List<PSILocation> findByparentLocation(int parentLocationId) {
+		// TODO Auto-generated method stub
+		return dao.findByparentLocation(parentLocationId);
+	}
+	
+	@Override
+	public PSILocation findLocationByNameCodeLocationTag(String name, String code, int location_tag_id) {
+		// TODO Auto-generated method stub
+		return dao.findLocationByNameCodeLocationTag(name, code, location_tag_id);
+	}
+	
+	@Override
+	public PSILocationTag findLocationTagByName(String name) {
+		// TODO Auto-generated method stub
+		return dao.findLocationTagByName(name);
+	}
+	
+	@Override
+	public int save(Location location) {
+		// TODO Auto-generated method stub
+		return dao.save(location);
+	}
+	
+	@Override
+	public PSILocation findLastLocation() {
+		// TODO Auto-generated method stub
+		return dao.findLastLocation();
+	}
+	
+	@Override
+	public PSILocation findLocationByNameCodeLocationTagParent(String name, String code, int location_tag_id,
+	                                                           int parentLocation) {
+		// TODO Auto-generated method stub
+		return dao.findLocationByNameCodeLocationTagParent(name, code, location_tag_id, parentLocation);
 	}
 	
 }

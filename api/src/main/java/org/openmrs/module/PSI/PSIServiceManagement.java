@@ -35,6 +35,24 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	private String eligible;
 	
+	private int ageStart; // calculative field from yearTo,monthTo,daysTo. Starting range
+	
+	private int ageEnd; // calculative field from yearFrom,monthFrom,daysFrom. Ending range
+	
+	private int yearTo;
+	
+	private int monthTo;
+	
+	private int daysTo;
+	
+	private int yearFrom;
+	
+	private int monthFrom;
+	
+	private int daysFrom;
+	
+	private String gender;
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -141,6 +159,78 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	public void setEligible(String eligible) {
 		this.eligible = eligible;
+	}
+	
+	public int getAgeStart() {
+		return ageStart;
+	}
+	
+	public void setAgeStart(int ageStart) {
+		this.ageStart = ageStart;
+	}
+	
+	public int getAgeEnd() {
+		return ageEnd;
+	}
+	
+	public void setAgeEnd(int ageEnd) {
+		this.ageEnd = ageEnd;
+	}
+	
+	public String getGender() {
+		return gender;
+	}
+	
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
+	public int getYearTo() {
+		return yearTo;
+	}
+	
+	public void setYearTo(int yearTo) {
+		this.yearTo = yearTo;
+	}
+	
+	public int getMonthTo() {
+		return monthTo;
+	}
+	
+	public void setMonthTo(int monthTo) {
+		this.monthTo = monthTo;
+	}
+	
+	public int getDaysTo() {
+		return daysTo;
+	}
+	
+	public void setDaysTo(int daysTo) {
+		this.daysTo = daysTo;
+	}
+	
+	public int getYearFrom() {
+		return yearFrom;
+	}
+	
+	public void setYearFrom(int yearFrom) {
+		this.yearFrom = yearFrom;
+	}
+	
+	public int getMonthFrom() {
+		return monthFrom;
+	}
+	
+	public void setMonthFrom(int monthFrom) {
+		this.monthFrom = monthFrom;
+	}
+	
+	public int getDaysFrom() {
+		return daysFrom;
+	}
+	
+	public void setDaysFrom(int daysFrom) {
+		this.daysFrom = daysFrom;
 	}
 	
 }

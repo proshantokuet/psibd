@@ -13,6 +13,8 @@ String userIds = (String)session.getAttribute("userIds");
 //String message = (String)session.getAttribute("message");
 %>
 
+<openmrs:require privilege="Edit Clinic User" otherwise="/login.htm" />
+
 <a href="${pageContext.request.contextPath}/module/PSI/PSIClinicList.form"><spring:message
 				code="PSI.psiclinic" /></a>Edit Assinged User
 <form:form method="POST" action="${saveUrl}" modelAttribute="pSIClinicUser">

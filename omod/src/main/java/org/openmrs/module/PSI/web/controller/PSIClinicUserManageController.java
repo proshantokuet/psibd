@@ -5,7 +5,6 @@ package org.openmrs.module.PSI.web.controller;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +21,8 @@ import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.dto.UserDTO;
+import org.openmrs.module.PSI.utils.PSIConstants;
+import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -46,7 +47,13 @@ public class PSIClinicUserManageController {
 	public ModelAndView addPSIClinic(HttpServletRequest request, HttpSession session, Model model,
 	                                 @RequestParam(required = true) int id) throws JSONException {
 		model.addAttribute("pSIClinicUser", new PSIClinicUser());
+		
 		model.addAttribute("psiClinicManagementId", id);
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		
 		JSONArray usernamesArray = new JSONArray();
 		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUsersNotInClinic(id);
@@ -70,9 +77,14 @@ public class PSIClinicUserManageController {
 	                          @RequestParam(required = true) int id) {
 		model.addAttribute("id", id);
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
-		Set<PSIClinicUser> psiClinicUsers = psiClinicManagement.getpSIClinicUser();
+		List<PSIClinicUser> psiClinicUsers = Context.getService(PSIClinicUserService.class).findByClinicId(id);
 		model.addAttribute("name", psiClinicManagement.getName());
 		model.addAttribute("pSIClinicUsers", psiClinicUsers);
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 	}
 	
 	@RequestMapping(value = "/module/PSI/editPSIClinicUser", method = RequestMethod.GET)
@@ -97,11 +109,21 @@ public class PSIClinicUserManageController {
 		session.setAttribute("users", usernamesArray.toString());
 		model.addAttribute("pSIClinicUser", psiClinicUser);
 		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		
 	}
 	
 	@RequestMapping(value = "/module/PSI/deletePSIClinicUser", method = RequestMethod.GET)
 	public ModelAndView deletePSIClinic(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		Context.getService(PSIClinicUserService.class).delete(id);
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		return new ModelAndView("redirect:/module/PSI/PSIClinicUserList.form");
 	}
 	

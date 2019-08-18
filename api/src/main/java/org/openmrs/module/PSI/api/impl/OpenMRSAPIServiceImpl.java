@@ -11,7 +11,7 @@ public class OpenMRSAPIServiceImpl {
 	
 	public JSONObject get(String payload, String uuid, String URL) throws JSONException {
 		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + "/" + URL + "/" + uuid, payload,
-		    "superman", "Admin123");
+		    "admins", "Sohel@1234");
 		return new JSONObject(op.body());
 	}
 }

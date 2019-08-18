@@ -6,9 +6,9 @@
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 
 <%@ include file="template/localHeader.jsp"%>
-<link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/magicsuggest-min.css">
+
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script>
+
 <c:url var="saveUrl" value="/module/PSI/addPsiClinic.form" />
 <c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
 <%
@@ -32,47 +32,63 @@
 							
 		</div>
 		<span class="text-red" id="usernameUniqueErrorMessage"></span>
-	    <form:form method="POST"  id="clinicInfo" action="${saveUrl}" modelAttribute="pSIClinic">
+	    <form:form method="POST"  id="clinicInfo" action="ff" modelAttribute="pSIClinic">
   		<div class="form-content">
         	<div class="row">
             	<div class="col-md-6">
                 	<div class="form-group">
-                		Clinic Name : <form:input path="name" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
+                		Clinic Name <form:input path="name" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="0"/>
                   	</div>
                   	<div class="form-group">
-                  		Clinic ID:  <form:input path="clinicId" pattern=".{3,}" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
+                  		Clinic ID:  <form:input path="clinicId" pattern=".{3,}" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="1"/>
                    	</div>
+                   	<div class="form-group">
+                  	Division <form:select path="divisionId" class="form-control selcls" required="required" tabindex="4">
+                  			<form:option value="">Please Select</form:option>
+                  				  <c:forEach items="${locations}" var="location">	                  				 
+						              <form:option value="${location.id}">${location.name}</form:option>						             
+					              </c:forEach>				             
+					         </form:select>
+					</div>
              	</div>
               	<div class="col-md-6">
                		<div class="form-group">
-                  	Category: 	<form:select path="category" class="form-control selcls" required="required">
-                  				<form:option value=""/>
-					              <form:option value="BEmOC"/>
+                  	Category 	<form:select path="category" class="form-control selcls" required="required" tabindex="1">
+                  				<form:option value="BEmOC"/>
 					              <form:option value="CEmOC"/>
 					              <form:option value="Vital"/>					             
 					         </form:select>
 					</div>
                   	<div class="form-group">
-                   	Address: 	<form:input path="address" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>                	
+                   	Address 	<form:input path="address" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="3"/>                	
                    	
                   	</div>
-              	</div>
-              	<div class="col-md-6">               		
+                  	
                   	<div class="form-group">
-                   	DHIS2 Org ID: <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off"/>
-                  	</div>
+                  	District 
+ 					<form:select path="districtId" class="form-control selcls"  required="required" tabindex="5">
+                  	
+                  	</form:select>
+					</div>
+              	</div>
+              	<div class="col-md-6">  
+              		
+              		<div class="form-group">
+                  	Upazila 
+ 					<form:select path="upazilaId" class="form-control selcls" required="required" tabindex="6">
+                  	
+                  	</form:select>
+					</div>             		
+                  	
                   
               	</div>
               	
-              <!-- 	<div class="col-md-6"> 
+              	<div class="col-md-6"> 
                   	<div class="form-group">
-                  		<div id="cm" class="ui-widget">
-							Assign User :
-							<div id="userIds"></div>							
-						</div>
+                   	DHIS2 Org ID <form:input path="dhisId" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="7"/>
                   	</div>
                   	
-              	</div> -->
+              	</div>
           	</div>
           	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Back</a>
       	</div>
@@ -81,81 +97,7 @@
 	
 
 </form:form>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/clinic.js"></script>
 
-<script type="text/javascript">
-$("#clinicInfo").submit(function(event) { 
-			$("#loading").show();
-			var url = "/openmrs/ws/rest/v1/clinic/save";			
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-			//alert(locationMagicSuggest.getValue());
-			//alert($('#team').val());
-			
-			var e = document.getElementById("category");
-			var category = e.options[e.selectedIndex].value;
-			var formData;
-			
-				formData = {
-			            'name': $('input[name=name]').val(),			           
-			            'clinicId': $('input[name=clinicId]').val(),
-			            'category': category,
-			            'address': $('input[name=address]').val(),
-			            'dhisId': $('input[name=dhisId]').val()	            
-			           
-			        };
-			
-			
-			event.preventDefault();
-			
-			$.ajax({
-				contentType : "application/json",
-				type: "POST",
-		        url: url,
-		        data: JSON.stringify(formData), 
-		        dataType : 'json',
-		        
-				timeout : 100000,
-				beforeSend: function(xhr) {				    
-					 xhr.setRequestHeader(header, token);
-				},
-				success : function(data) {
-				   $("#usernameUniqueErrorMessage").html(data);
-				   $("#loading").hide();
-				   if(data == ""){					   
-					   window.location.replace("/openmrs/module/PSI/PSIClinicList.form");
-					   
-				   }
-				   
-				},
-				error : function(e) {
-				   
-				},
-				done : function(e) {				    
-				    console.log("DONE");				    
-				}
-			});
-		});
-		
-</script>
-<%-- <script type="text/javascript">  
-	var $jq = jQuery.noConflict();
-	 $jq('#userIds').magicSuggest({ 
-		 	required: true,
-			//placeholder: 'Type Locations',
-     		data: <%=users%>,
-	        valueField: 'username',
-	        displayField: 'display',
-	        name: 'usernames',
-	        inputCfg: {"class":"magicInput"},
-	        value: <%=userIds%>,
-	        useCommaKey: true,
-	        allowFreeEntries: false,
-	        maxSelection: 100,
-	        maxEntryLength: 10000,
-	 		maxEntryRenderer: function(v) {
-	 			return '<div style="color:red">Typed Word TOO LONG </div>';
-	 		}	       
-	  });
-  </script>
- --%>
+
 <%@ include file="/WEB-INF/template/footer.jsp"%>

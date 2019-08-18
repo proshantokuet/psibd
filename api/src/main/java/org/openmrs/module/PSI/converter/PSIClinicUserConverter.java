@@ -10,6 +10,8 @@ public class PSIClinicUserConverter {
 		JSONObject clinic = new JSONObject();
 		clinic.putOpt("clinicName", psiClinicUser.getPsiClinicManagementId().getName());
 		clinic.putOpt("clinicId", psiClinicUser.getPsiClinicManagementId().getClinicId());
+		clinic.putOpt("locationName", psiClinicUser.getPsiClinicManagementId().getUpazila());
+		clinic.putOpt("locationUuid", psiClinicUser.getPsiClinicManagementId().getUpazilaUuid());
 		clinic.putOpt("id", psiClinicUser.getPsiClinicManagementId().getCid());
 		clinic.putOpt("uuid", psiClinicUser.getPsiClinicManagementId().getUuid());
 		clinic.putOpt("orgUnit", psiClinicUser.getPsiClinicManagementId().getDhisId());

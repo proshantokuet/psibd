@@ -21,7 +21,7 @@
 	            <th>Clinic ID</th>
 	            <th>Category</th>
 	            <th>Address</th>
-	            <th>Action</th>
+	            <th>Actions</th>
 	        </tr>
 	    </thead>
 	    <tbody>
@@ -32,7 +32,14 @@
 	            <td>${ clinic.clinicId }</td>
 	            <td>${ clinic.category }</td>
 	            <td>${ clinic.address }</td>
-	            <td> <a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a> <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a> </td>
+	            <td> 
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a>
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicServiceList.form?id=${clinic.cid}"/>"> Services</a> 
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicSpotList.form?id=${ clinic.cid }"/>">Spots</a>
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a>
+	             
+	            </td>
 	        </tr>
 	       </c:forEach>
 	        
@@ -44,7 +51,18 @@
 
 var $jq = jQuery.noConflict();
 $jq(document).ready( function () {
-	$jq('#table_id').DataTable();
+	$jq('#table_id').DataTable(
+	{
+		language: {
+        emptyTable: "no Clinic available", //
+        loadingRecords: "Please wait .. ", // default Loading...
+        zeroRecords: "No matching service found"
+       },
+       bFilter: true,
+       bInfo: false,
+       "order": [[ 1, "asc" ]]
+       }		
+	);
 } );
 </script>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

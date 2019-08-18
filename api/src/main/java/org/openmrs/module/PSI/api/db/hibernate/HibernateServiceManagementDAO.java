@@ -1,5 +1,6 @@
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -37,7 +38,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PSIServiceManagement> getAll(int clinicId) {
+	public List<PSIServiceManagement> getAllByClinicId(int clinicId) {
 		List<PSIServiceManagement> clinics = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIServiceManagement where psiClinicManagement=:clinicId  order by name asc ")
 		        .setInteger("clinicId", clinicId).list();
@@ -80,7 +81,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public PSIServiceManagement findByCode(String code, int clinicId) {
+	public PSIServiceManagement findByCodeAndClinicId(String code, int clinicId) {
 		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIServiceManagement where code = :code and  psiClinicManagement=:clinicId ")
 		        .setString("code", code).setInteger("clinicId", clinicId).list();
@@ -93,7 +94,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public PSIServiceManagement findByIdNotByCode(int id, String code, int clinicId) {
+	public PSIServiceManagement findByIdNotByClinicId(int id, String code, int clinicId) {
 		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIServiceManagement where sid !=:id and  psiClinicManagement=:clinicId and code=:code")
 		        .setString("code", code).setInteger("id", id).setInteger("clinicId", clinicId).list();
@@ -115,4 +116,22 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIServiceManagement> getAllByClinicIdAgeGender(int clinicId, int age, String gender) {
+		// TODO Auto-generated method stub
+		List<PSIServiceManagement> clinics = new ArrayList<PSIServiceManagement>();
+		clinics = sessionFactory
+		        .getCurrentSession()
+		        .createQuery(
+		            "  from PSIServiceManagement where ((gender = :gender AND (age_start = 0 and age_end= 0)) OR "
+		                    + " (gender = '' AND (" + age + "  between age_start and  age_end)) OR "
+		                    + " (gender = '' AND (age_start = 0 and age_end= 0)) OR  (gender = :gender and " + age
+		                    + " between age_start and  age_end) ) "
+		                    + " and  psi_clinic_management_id = :psi_clinic_management_id order by name asc ")
+		        .setString("gender", gender).setInteger("psi_clinic_management_id", clinicId).list();
+		
+		return clinics;
+		
+	}
 }

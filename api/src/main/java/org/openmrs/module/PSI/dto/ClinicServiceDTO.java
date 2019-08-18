@@ -1,6 +1,5 @@
 package org.openmrs.module.PSI.dto;
 
-
 public class ClinicServiceDTO {
 	
 	private int sid;
@@ -16,6 +15,20 @@ public class ClinicServiceDTO {
 	private float unitCost;
 	
 	private int psiClinicManagement;
+	
+	private int yearTo;
+	
+	private int monthTo;
+	
+	private int daysTo;
+	
+	private int yearFrom;
+	
+	private int monthFrom;
+	
+	private int daysFrom;
+	
+	private String gender;
 	
 	public int getSid() {
 		return sid;
@@ -71,6 +84,62 @@ public class ClinicServiceDTO {
 	
 	public void setPsiClinicManagement(int psiClinicManagement) {
 		this.psiClinicManagement = psiClinicManagement;
+	}
+	
+	public int getYearTo() {
+		return yearTo;
+	}
+	
+	public void setYearTo(int yearTo) {
+		this.yearTo = yearTo;
+	}
+	
+	public int getMonthTo() {
+		return monthTo;
+	}
+	
+	public void setMonthTo(int monthTo) {
+		this.monthTo = monthTo;
+	}
+	
+	public int getDaysTo() {
+		return daysTo;
+	}
+	
+	public void setDaysTo(int daysTo) {
+		this.daysTo = daysTo;
+	}
+	
+	public int getYearFrom() {
+		return yearFrom;
+	}
+	
+	public void setYearFrom(int yearFrom) {
+		this.yearFrom = yearFrom;
+	}
+	
+	public int getMonthFrom() {
+		return monthFrom;
+	}
+	
+	public void setMonthFrom(int monthFrom) {
+		this.monthFrom = monthFrom;
+	}
+	
+	public int getDaysFrom() {
+		return daysFrom;
+	}
+	
+	public void setDaysFrom(int daysFrom) {
+		this.daysFrom = daysFrom;
+	}
+	
+	public String getGender() {
+		return gender;
+	}
+	
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 	
 }
