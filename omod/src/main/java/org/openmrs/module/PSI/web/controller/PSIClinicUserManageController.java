@@ -15,6 +15,8 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmrs.Role;
+import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicUser;
@@ -64,6 +66,8 @@ public class PSIClinicUserManageController {
 			usernamesArray.put(nameObject);
 		}
 		
+		List<Role> roles = Context.getService(UserService.class).getAllRoles();
+		model.addAttribute("roles", roles);
 		session.setAttribute("users", usernamesArray.toString());
 		if (id == 0) {
 			return new ModelAndView("redirect:/module/PSI/PSIClinicList.form");
