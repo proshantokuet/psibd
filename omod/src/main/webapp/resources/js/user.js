@@ -45,10 +45,10 @@ $JQuery("#userForm").submit(function(event) {
 					 xhr.setRequestHeader(header, token);
 				},
 				success : function(data) {
-					//$JQuery("#usernameUniqueErrorMessage").html(data);
+					$JQuery("#mesage").html(data);
 					$JQuery("#loading").hide();
 				   if(data == ""){					   
-					   window.location.replace("/openmrs/module/PSI/PSIClinicServiceList.form?id="+clinicValue);
+					   window.location.replace("/openmrs/module/PSI/PSIClinicUserList.form?id="+clinicValue);
 					   
 				   }
 				   

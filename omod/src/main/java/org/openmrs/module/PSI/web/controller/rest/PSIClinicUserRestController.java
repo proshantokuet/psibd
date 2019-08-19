@@ -1,9 +1,13 @@
 package org.openmrs.module.PSI.web.controller.rest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,6 +19,7 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicUser;
+import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.converter.PSIClinicUserConverter;
 import org.openmrs.module.PSI.converter.UserDataConverter;
@@ -79,26 +84,66 @@ public class PSIClinicUserRestController extends MainResourceController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public ResponseEntity<String> saveUser(@RequestBody ClinicUserDTO clinicUserDTO, ModelMap model) throws Exception {
-		PersonName personName = new PersonName();
-		personName.setGivenName(clinicUserDTO.getFirstName());
-		personName.setFamilyName(clinicUserDTO.getLastName());
-		Set<PersonName> names = new TreeSet<PersonName>();
-		names.add(personName);
-		Person person = new Person();
-		person.setNames(names);
-		person.setGender(clinicUserDTO.getGender());
-		
-		person = Context.getService(PersonService.class).savePerson(person);
-		
-		Role role = Context.getService(UserService.class).getRole("Admin");
-		
-		Set<Role> roles = new HashSet<Role>();
-		roles.add(role);
-		User user = new User();
-		user.setRoles(roles);
-		user.setPerson(person);
-		user.setUsername(clinicUserDTO.getUserName());
-		Context.getService(UserService.class).createUser(user, clinicUserDTO.getPassword());
-		return new ResponseEntity<>(new Gson().toJson(""), HttpStatus.OK);
+		String msg = "";
+		try {
+			String firstName = clinicUserDTO.getFirstName();
+			String lastName = clinicUserDTO.getLastName();
+			String password = clinicUserDTO.getPassword();
+			String userName = clinicUserDTO.getUserName();
+			String rolesNames = clinicUserDTO.getRoles();
+			String gender = clinicUserDTO.getGender();
+			int clinicId = clinicUserDTO.getClinicId();
+			int cuid = clinicUserDTO.getCuid();
+			String email = clinicUserDTO.getEmail();
+			String mobile = clinicUserDTO.getMobile();
+			PersonName personName = new PersonName();
+			personName.setGivenName(firstName);
+			personName.setFamilyName(lastName);
+			Set<PersonName> names = new TreeSet<PersonName>();
+			names.add(personName);
+			Person person = new Person();
+			person.setNames(names);
+			person.setGender(gender);
+			
+			List<String> roleList = new ArrayList<String>(Arrays.asList(rolesNames.split(",")));
+			Set<Role> roles = new HashSet<Role>();
+			for (String roleName : roleList) {
+				Role role = Context.getService(UserService.class).getRole(roleName);
+				roles.add(role);
+			}
+			
+			User user = new User();
+			user.setRoles(roles);
+			User findUser = Context.getService(UserService.class).getUserByUsername(userName);
+			if (findUser == null) {
+				person = Context.getService(PersonService.class).savePerson(person);
+				user.setPerson(person);
+				user.setUsername(userName);
+				
+				user = Context.getService(UserService.class).createUser(user, password);
+				
+				PSIClinicUser pSIClinicUser = new PSIClinicUser();
+				pSIClinicUser.setUserName(user.getUsername());
+				pSIClinicUser.setEmail(email);
+				pSIClinicUser.setMobile(mobile);
+				if (cuid != 0) {
+					pSIClinicUser.setCuid(cuid);
+				}
+				pSIClinicUser.setDateCreated(new Date());
+				pSIClinicUser.setCreator(Context.getAuthenticatedUser());
+				pSIClinicUser.setUuid(UUID.randomUUID().toString());
+				pSIClinicUser.setPsiClinicManagementId(Context.getService(PSIClinicManagementService.class).findById(
+				    clinicId));
+				Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
+				msg = "";
+			} else {
+				msg = "User name already exists";
+			}
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			return new ResponseEntity<>(new Gson().toJson(e.getMessage()), HttpStatus.OK);
+		}
 	}
 }
