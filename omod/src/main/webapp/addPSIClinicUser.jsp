@@ -18,6 +18,11 @@
 .margin-top{
 margin-top: 4px;
 }
+.form-content {
+    padding: 2%;
+    border: 1px solid #ced4da;
+    margin-bottom: 1%;
+}
 .row {
     display: -ms-flexbox;
     display: flex;
@@ -25,6 +30,26 @@ margin-top: 4px;
     flex-wrap: wrap;
     /* margin-right: -15px; */
     /* margin-left: -15px; */
+}
+.listItemBox {
+    width: 1024px;
+    padding: 2px;
+    border: 1px solid lightgray;
+    float: left;
+    background-color: #EFEFEF;
+}
+.listItem {
+    padding: 2px;
+    float: left;
+    margin: 2px;
+    width: 250px;
+    font-size: .9em;
+    border: 1px solid lightgrey;
+    background-color: white;
+}
+input[type="text"], input[type="password"] {
+    
+    border: 1px solid cadetblue;
 }
 </style>
 <%
@@ -40,6 +65,15 @@ String userIds = (String)session.getAttribute("userIds");
     	<div class="note">
         	<p>Create User</p>
        	</div>
+       	 <div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
+							
+		</div>
+		<div style="clear: both;"></div>
+		 <div id="mesage" style="color: red; font-weight: bold;display: none;position: absolute; z-index: 1000;margin-left:13%"> 
+							
+		</div>
+		<div style="clear: both;"></div>
 
   		<div class="form-content">
         	<div class="row">
@@ -84,16 +118,16 @@ String userIds = (String)session.getAttribute("userIds");
 	            	</tr>
 	            	
 	            	<tr>
-	            		<td>Password<span class="required">*</span></td>
+	            		<td>Password<span class="required">*</span> </td>
 	            		<td><input type="password" name="password" id="password" class="form-control margin-top" required="required" autocomplete="off"></td>
 	            	</tr>
 	            	
 	            	<tr>
-	            		<td>Retype Password<span class="required">*</span></td>
-	            		<td><input type="password" name="reTypePassword" class="form-control margin-top" required="required" autocomplete="off"></td>
+	            		<td>Retype Password<span class="required">*</span> </td>
+	            		<td><input type="password" name="reTypePassword" id="reTypePassword" class="form-control margin-top" required="required" autocomplete="off"></td>
 	            	</tr>
 					<tr>
-						<td valign="top">Roles</td>
+						<td valign="top">Roles <span class="required">*</span> </td>
 						<td valign="top">							
 						<div id="roleStrings" class="listItemBox">
 							<c:forEach items="${roles}" var="role">	
@@ -107,7 +141,7 @@ String userIds = (String)session.getAttribute("userIds");
             	</table>
           	</div>
           	
-          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Back</a>
+          	<input type="submit" class="btnSubmit" onclick="return Validate()" value="Submit"/> <a href="${cancelUrl}">Back</a>
       	</div>
    	</div>
 </div>       

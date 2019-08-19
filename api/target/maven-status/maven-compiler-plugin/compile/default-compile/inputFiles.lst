@@ -28,6 +28,7 @@
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/api/PSIUniqueIdGeneratorService.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/api/impl/PSIClinicSpotServiceImpl.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/api/db/PSIUniqueIdGeneratorDAO.java
+/home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/dto/ClinicUserDTO.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/dto/UserDTO.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/PSIServiceManagement.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/converter/PSIServiceManagementConverter.java
