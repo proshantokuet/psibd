@@ -3,7 +3,13 @@
 
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="Clinic List" otherwise="/login.htm" />
-
+<style>
+.btn-primary {
+    color: #fff;
+    background-color: #387c7c;
+    border-color: #387c7c;
+}
+</style>
 <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
 				code="PSI.psiClinicAddNew" /></a> 
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
@@ -20,7 +26,7 @@
 	            <th>Clinic Name</th>
 	            <th>Clinic ID</th>
 	            <th>Category</th>
-	            <th>Address</th>
+	            <th>Upazila</th>
 	            <th>Actions</th>
 	        </tr>
 	    </thead>
@@ -31,7 +37,7 @@
 	            <td>${ clinic.name }</td>
 	            <td>${ clinic.clinicId }</td>
 	            <td>${ clinic.category }</td>
-	            <td>${ clinic.address }</td>
+	            <td>${ clinic.upazila }</td>
 	            <td> 
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicServiceList.form?id=${clinic.cid}"/>"> Services</a> 

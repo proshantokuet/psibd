@@ -13,9 +13,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
+import org.openmrs.Provider;
 import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.PersonService;
+import org.openmrs.api.ProviderService;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicUser;
@@ -119,7 +121,10 @@ public class PSIClinicUserRestController extends MainResourceController {
 				person = Context.getService(PersonService.class).savePerson(person);
 				user.setPerson(person);
 				user.setUsername(userName);
-				
+				Provider provider = new Provider();
+				provider.setPerson(person);
+				provider.setIdentifier(userName);
+				Context.getService(ProviderService.class).saveProvider(provider);
 				user = Context.getService(UserService.class).createUser(user, password);
 				
 				PSIClinicUser pSIClinicUser = new PSIClinicUser();

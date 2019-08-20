@@ -29,7 +29,7 @@ public interface PSIServiceProvisionDAO {
 	
 	public List<PSIReport> serviceProviderWiseReport(String startDate, String endDate, String code, String dataCollector);
 	
-	public DashboardDTO dashboardReport(String start, String end, String code);
+	public DashboardDTO dashboardReport(String start, String end, String code, String dataCollector);
 	
 	public List<PSIServiceProvision> findAllByTimestampNotSending(long timestamp);
 	

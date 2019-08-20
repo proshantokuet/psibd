@@ -9,7 +9,7 @@
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
-        	<p>Assign User List of ${ name }</p>
+        	<p>User List of ${ name }</p>
        	</div>					
 	<table id="table_id" class="display">
 	    <thead>

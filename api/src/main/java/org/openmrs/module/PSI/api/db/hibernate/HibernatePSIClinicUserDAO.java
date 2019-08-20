@@ -137,7 +137,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		        + "FROM openmrs.psi_clinic as pcl left join openmrs.psi_clinic_user pclu "
 		        + "on pcl.cid = pclu.psi_clinic_management_id left join openmrs.users as U "
 		        + "on pclu.user_uame = U.username left join openmrs.user_role as UL on "
-		        + "U.user_id = UL.user_id where  pcl.clinic_id= :code and role in('Doctor','Counselor','Paramedic(Static)','Lab Technician','Paramedic(Satellite)','CSP','Pharmacist')";
+		        + "U.user_id = UL.user_id where  pcl.clinic_id= :code and role in('Doctor','Counselor','Paramedic(Static)','Lab Technician','Paramedic(Satellite)','CSP','Pharmacist','Admin-Assistant')";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		
 		data = query.setString("code", code).list();

@@ -60,7 +60,8 @@ public class OpenmrsAPIController extends MainResourceController {
 	
 	@RequestMapping(value = "/fakecall", method = RequestMethod.GET)
 	public ResponseEntity<String> emptyCall() throws Exception {
-		Context.getAuthenticatedUser().getRoles().contains("View Report");
+		return null;
+		/*Context.getAuthenticatedUser().getRoles().contains("View Report");
 		
 		//dhisListener.sendPatient();
 		Location l = new Location();
@@ -74,10 +75,10 @@ public class OpenmrsAPIController extends MainResourceController {
 		JSONObject res = new JSONObject();
 		res.putOpt("OK", "OKK");
 		
-		/*Context.getService(ProviderService.class)
+		Context.getService(ProviderService.class)
 		Context.getService(PersonService.class).savePerson(person);
-		Context.getService(UserService.class).saveUser(user);*/
-		return new ResponseEntity<String>(res.toString(), HttpStatus.OK);
+		Context.getService(UserService.class).saveUser(user);
+		return new ResponseEntity<String>(res.toString(), HttpStatus.OK);*/
 		
 	}
 	

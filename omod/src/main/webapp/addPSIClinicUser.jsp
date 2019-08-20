@@ -49,7 +49,8 @@ margin-top: 4px;
 }
 input[type="text"], input[type="password"] {
     
-    border: 1px solid cadetblue;
+    border: 1px solid #c1c5c5;
+    padding: 4px;
 }
 </style>
 <%
@@ -108,7 +109,7 @@ String userIds = (String)session.getAttribute("userIds");
 	            	
 	            	<tr>
 	            		<td>Mobile<span class="required">*</span></td>
-	            		<td><input type="text" name="mobile" id="mobile" class="form-control margin-top" required="required" autocomplete="off"></td>
+	            		<td><input type="text" name="mobile" id="mobile" class="form-control margin-top" required="required" autocomplete="off" pattern="01[3-9]{1}[0-9]{8}"></td>
 	            	</tr>	            	
 	            	
 	            	
