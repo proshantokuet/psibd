@@ -22,19 +22,19 @@ public class PSIClinicChildServiceImpl extends BaseOpenmrsService implements PSI
 	@Override
 	public PSIClinicChild saveOrUpdate(PSIClinicChild psiClinicAddChild) {
 		// TODO Auto-generated method stub
-		return null;
+		return dao.saveOrUpdate(psiClinicAddChild);
 	}
 
 	@Override
 	public PSIClinicChild findById(int id) {
 		// TODO Auto-generated method stub
-		return null;
+		return dao.findById(id);
 	}
 
 	@Override
 	public List<PSIClinicChild> findByMotherUuid(String motherUuid) {
 		// TODO Auto-generated method stub
-		return null;
+		return dao.findByMotherUuid(motherUuid);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package org.openmrs.module.PSI;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 import org.openmrs.BaseOpenmrsData;
 
@@ -15,7 +15,7 @@ public class PSIClinicChild extends BaseOpenmrsData implements Serializable  {
 	
 	private int outComeNo;
 	
-	private Date outComeDate; 
+	private Date outComeDate;
 	
 	private String result;
 	
@@ -31,12 +31,13 @@ public class PSIClinicChild extends BaseOpenmrsData implements Serializable  {
 	
 	private String lastHealthStatus;
 	
-	public int getChildID() {
+
+	public int getChildId() {
 		return childId;
 	}
 
-	public void setChildID(int childID) {
-		this.childId = childID;
+	public void setChildId(int childId) {
+		this.childId = childId;
 	}
 
 	public String getMotherUuid() {
@@ -55,14 +56,6 @@ public class PSIClinicChild extends BaseOpenmrsData implements Serializable  {
 		this.outComeNo = outComeNo;
 	}
 
-	public Date getOutComeDate() {
-		return outComeDate;
-	}
-
-	public void setOutComeDate(Date outComeDate) {
-		this.outComeDate = outComeDate;
-	}
-
 	public String getResult() {
 		return result;
 	}
@@ -71,9 +64,18 @@ public class PSIClinicChild extends BaseOpenmrsData implements Serializable  {
 		this.result = result;
 	}
 
+	public Date getOutComeDate() {
+		return outComeDate;
+	}
+
+	public void setOutComeDate(Date outComeDate) {
+		this.outComeDate = outComeDate;
+	}
+
 	public String getComplications() {
 		return complications;
 	}
+	
 
 	public void setComplications(String complications) {
 		this.complications = complications;
