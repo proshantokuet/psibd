@@ -2,6 +2,8 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%-- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  --%>
+ 
+ <div class="form-content" id="servicePointWiseReport">	</div> 
  <div class="form-content">
         <div class="row">
             <div class="col-md-4">
@@ -25,7 +27,7 @@
        </div>          	
 </div>
 
-<div class="form-content" id="servicePointWiseReport">	</div>  
+ 
  <table id="servicePoint" class="display">
  	<thead>
 	        <tr>

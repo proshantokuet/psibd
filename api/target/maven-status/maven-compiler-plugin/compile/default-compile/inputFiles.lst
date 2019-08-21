@@ -74,6 +74,7 @@
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/dto/DashboardDTO.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/dto/ClinicServiceDTO.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/dhis/service/PSIAPIServiceFactory.java
+/home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/utils/PSIMapper.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/utils/Utils.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/api/impl/PSIServiceImpl.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/utils/HttpResponse.java

@@ -16,7 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.Role;
-import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicUser;
@@ -24,6 +23,7 @@ import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
+import org.openmrs.module.PSI.utils.PSIMapper;
 import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,18 +57,19 @@ public class PSIClinicUserManageController {
 		model.addAttribute("hasClinicPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		
-		JSONArray usernamesArray = new JSONArray();
+		/*JSONArray usernamesArray = new JSONArray();
 		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUsersNotInClinic(id);
 		for (UserDTO user : psiClinicUsers) {
 			JSONObject nameObject = new JSONObject();
 			nameObject.put("username", user.getUsername());
 			nameObject.put("display", user.getFullName());
 			usernamesArray.put(nameObject);
-		}
+		}*/
 		
-		List<Role> roles = Context.getService(UserService.class).getAllRoles();
+		//List<Role> roles = Context.getService(UserService.class).getAllRoles();
+		List<Role> roles = PSIMapper.getRoles();
 		model.addAttribute("roles", roles);
-		session.setAttribute("users", usernamesArray.toString());
+		//session.setAttribute("users", usernamesArray.toString());
 		if (id == 0) {
 			return new ModelAndView("redirect:/module/PSI/PSIClinicList.form");
 		}
@@ -81,10 +82,12 @@ public class PSIClinicUserManageController {
 	                          @RequestParam(required = true) int id) {
 		model.addAttribute("id", id);
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
-		List<PSIClinicUser> psiClinicUsers = Context.getService(PSIClinicUserService.class).findByClinicId(id);
+		//List<PSIClinicUser> psiClinicUsers = Context.getService(PSIClinicUserService.class).findByClinicId(id);
 		model.addAttribute("name", psiClinicManagement.getName());
-		model.addAttribute("pSIClinicUsers", psiClinicUsers);
 		
+		List<UserDTO> users = Context.getService(PSIClinicUserService.class).findUserByClinicIdWithRawQuery(
+		    psiClinicManagement.getCid());
+		model.addAttribute("pSIClinicUsers", users);
 		model.addAttribute("hasDashboardPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission",
@@ -98,20 +101,24 @@ public class PSIClinicUserManageController {
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findById(id);
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(
 		    psiClinicUser.getPsiClinicManagementId().getCid());
-		JSONArray usernamesArray = new JSONArray();
+		/*JSONArray usernamesArray = new JSONArray();
 		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUsersNotInClinic(id);
 		for (UserDTO user : psiClinicUsers) {
 			JSONObject nameObject = new JSONObject();
 			nameObject.put("username", user.getUsername());
 			nameObject.put("display", user.getFullName());
 			usernamesArray.put(nameObject);
-		}
+		}*/
 		model.addAttribute("psiClinicManagementId", psiClinicManagement.getCid());
-		JSONArray userIds = new JSONArray();
-		userIds.put(psiClinicUser.getUserName());
-		session.setAttribute("userIds", userIds.toString());
-		session.setAttribute("users", usernamesArray.toString());
+		//JSONArray userIds = new JSONArray();
+		//userIds.put(psiClinicUser.getUserName());
+		//session.setAttribute("userIds", userIds.toString());
+		//session.setAttribute("users", usernamesArray.toString());
 		model.addAttribute("pSIClinicUser", psiClinicUser);
+		UserDTO user = Context.getService(PSIClinicUserService.class).findUserByIdWithRawQuery(psiClinicUser.getUserName());
+		List<Role> roles = PSIMapper.getRoles();
+		model.addAttribute("roles", roles);
+		model.addAttribute("user", user);
 		
 		model.addAttribute("hasDashboardPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));

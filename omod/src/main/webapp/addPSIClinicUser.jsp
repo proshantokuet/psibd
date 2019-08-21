@@ -11,7 +11,7 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
 <!-- <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/magicsuggest-min.js"></script> -->
 <c:url var="saveUrl" value="/module/PSI/addPSIClinicUser.form" />
-<c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form" />
+<c:url var="cancelUrl" value="/module/PSI/PSIClinicUserList.form?id=${psiClinicManagementId }" />
 
 <openmrs:require privilege="Add Clinic User" otherwise="/login.htm" />
 <style>
@@ -64,7 +64,7 @@ String userIds = (String)session.getAttribute("userIds");
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
-        	<p>Create User</p>
+        	<p>Create New User</p>
        	</div>
        	 <div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
@@ -78,8 +78,8 @@ String userIds = (String)session.getAttribute("userIds");
 
   		<div class="form-content">
         	<div class="row">
-        	<input type="hidden" id="clinicId" name="clinicId" value="${psiClinicManagementId}">
-        	<input type="hidden" id="cuid" name="cuid" value="0">
+        		<input type="hidden" id="clinicId" name="clinicId" value="${psiClinicManagementId}">
+        		<input type="hidden" id="cuid" name="cuid" value="0">
             	<table>
 	            	<tr>
 	            		<td>First Name<span class="required">*</span></td>
@@ -141,8 +141,11 @@ String userIds = (String)session.getAttribute("userIds");
 					
             	</table>
           	</div>
+          	<div class="row" style="    margin-left: 558px; margin-top: 5px;">
           	
           	<input type="submit" class="btnSubmit" onclick="return Validate()" value="Submit"/> <a href="${cancelUrl}">Back</a>
+          	
+          	</div>
       	</div>
    	</div>
 </div>       

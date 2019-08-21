@@ -78,7 +78,7 @@
   </form:form>
   
     <div id="servicePoints">
-    
+    	<div class="form-content" id="servicePointWiseReport">	</div> 
     	<div class="form-content">
         <div class="row">
             <div class="col-md-4">
@@ -101,8 +101,8 @@
               </div>              	
        </div>          	
 	</div>
-
-	<div class="form-content" id="servicePointWiseReport">	</div>  
+	
+	 
 	 <table id="servicePointDefault" class="display">
 	 	<thead>
 		        <tr>
@@ -132,21 +132,22 @@
 	
 	</table>
 	    
-	</div>
+	
+  </div>
   </div>
   <div id="tabs-2">
     <form:form id="ServiceProviderWise">
   	<div class="form-content">
   	
         	<div class="row">
-            	<div class="col-md-3">
+            	<div class="col-md-2">
                 	<div class="form-group">                							
 						<label for="Service Code">From</label><br />
 						<input style="width: 160px" id="from"  name="from" type="text"  required="true"/>
                   	</div>
                   	
              	</div>
-              	<div class="col-md-3">
+              	<div class="col-md-2">
                		<div class="form-group">
                   	<label for="Service Code">To</label> <br/>
 						<input style="width: 160px" id="to" name="to" type="text"  required="true"/>                  			
@@ -178,10 +179,10 @@
 					</div>
                   	
               	</div>
-              	<div class="col-md-3">
+              	<div class="col-md-2">
                		<div class="form-group">
                		<label for="Service Code"></label><br />
-                  	<button style="width: 120px" type="submit" class="btnSubmit">Submit</button>                  			
+                  	<button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>                  			
 					</div>
                   	
               	</div>
@@ -192,7 +193,10 @@
   </form:form>
  
     <div id="serviceProviders">
-	    <div class="form-content">
+    
+     
+    <div class="form-content" id="serviceProviderReports"></div>
+	<div class="form-content">
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">                							
@@ -213,11 +217,10 @@
 				</div>                  	
               </div>              	
        </div>          	
-	</div>
-
- <div class="form-content" id="serviceProviderReports">
-  
- </div>
+	</div>  
+ 
+ 
+ 
   
 	<table id="serviceProviderDefault" class="display">
 		  <thead>
@@ -244,8 +247,8 @@
 	</table>
 	</div>
   </div>
-  
-</div>
+ </div>
+
  
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
@@ -280,9 +283,10 @@ var $JQuery = jQuery.noConflict();
 $JQuery("#ServiceProviderWise").submit(function(event) { 
 var e = document.getElementById("provider");
 var provider = e.options[e.selectedIndex].value;
-var userRole = "Service Provider Wise Revenue Report( "+$JQuery("#provider option:selected").html()+" )";
 var startDate = $JQuery('input[name=from]').val();
 var endDate = $JQuery('input[name=to]').val();
+var reportTitle = "Service Provider Wise Revenue Report for "+$JQuery("#provider option:selected").html()+ " (" +startDate +" to "+ endDate+")" ;
+
 var title = "Service Provider Wise Revenue Report_"+startDate+"_"+endDate;
 var clinic = document.getElementById("clinics");
 var clinicCode = "";
@@ -319,7 +323,7 @@ $JQuery.ajax({
 			         ]
 			   
 		   });
-		   $JQuery("#serviceProviderReports").html(userRole);
+		   $JQuery("#serviceProviderReports").html(reportTitle);
 	   },
 	   error : function(e) {
 	    console.log("ERROR: ", e);
@@ -373,7 +377,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				             }			         
 				         ]
 			   });
-			   $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report");
+			   $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for "+startDate + " to " + endDate);
 		   },
 		   error : function(e) {
 		    console.log("ERROR: ", e);
@@ -435,7 +439,7 @@ $JQuery('#servicePointDefault').DataTable({
 	             }			         
 	         ]
 });
-$JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report of Today");
+$JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for Today");
 
 $JQuery('#serviceProviderDefault').DataTable({
 	   bFilter: false,
@@ -450,7 +454,7 @@ $JQuery('#serviceProviderDefault').DataTable({
 	             }			         
 	         ]
 });
-$JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report of Today");
+$JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report for Today");
 </script>
  
 
@@ -462,7 +466,7 @@ $JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report of
   float:none;  
   text-align:right;
   position: absolute;
-  top: -55px;
+  top: -26px;
   margin-left: 1036px
 }
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {

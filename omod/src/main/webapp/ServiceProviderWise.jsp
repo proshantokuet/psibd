@@ -1,6 +1,8 @@
 <%-- ${reportr } --%>
 <%@ include file="/WEB-INF/template/include.jsp"%>
-
+ <div class="form-content" id="serviceProviderReports">
+  
+ </div>
  <div class="form-content">
         <div class="row">
             <div class="col-md-4">
@@ -24,9 +26,7 @@
        </div>          	
 </div>
 
- <div class="form-content" id="serviceProviderReports">
-  
- </div>
+
   
 <table id="serviceProvider" class="display">
 	  <thead>

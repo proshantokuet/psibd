@@ -6,6 +6,8 @@ public class UserDTO {
 	
 	private String username;
 	
+	private String userName;
+	
 	private String userRole;
 	
 	private String role;
@@ -13,6 +15,94 @@ public class UserDTO {
 	private String fullName;
 	
 	private String orgUnit;
+	
+	private String mobile;
+	
+	private String email;
+	
+	private int cuid;
+	
+	private int userId;
+	
+	private String gender;
+	
+	private int personId;
+	
+	private String firstName;
+	
+	private String lastName;
+	
+	public String getUserName() {
+		return userName;
+	}
+	
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
+	public String getMobile() {
+		return mobile;
+	}
+	
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	public String getGender() {
+		return gender;
+	}
+	
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
+	public int getCuid() {
+		return cuid;
+	}
+	
+	public void setCuid(int cuid) {
+		this.cuid = cuid;
+	}
+	
+	public int getUserId() {
+		return userId;
+	}
+	
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	
+	public int getPersonId() {
+		return personId;
+	}
+	
+	public void setPersonId(int personId) {
+		this.personId = personId;
+	}
+	
+	public String getFirstName() {
+		return firstName;
+	}
+	
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	
+	public String getLastName() {
+		return lastName;
+	}
+	
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 	
 	public int getId() {
 		return id;

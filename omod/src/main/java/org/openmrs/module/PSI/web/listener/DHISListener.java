@@ -56,7 +56,7 @@ public class DHISListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
-		JSONObject getResponse = null;
+		/*JSONObject getResponse = null;
 		boolean status = true;
 		try {
 			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
@@ -93,7 +93,7 @@ public class DHISListener {
 			catch (Exception e) {
 				
 			}
-		}
+		}*/
 	}
 	
 	public void sendFailedPatient() {

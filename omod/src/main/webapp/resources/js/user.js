@@ -14,9 +14,9 @@ $JQuery("#userForm").submit(function(event) {
 			var userName = $JQuery('input[name=userName]').val();
 			var password = $JQuery('input[name=password]').val();			
 			var gender = getGender();
-			alert(gender);
+			
 			var roles = getRoles();
-			alert(roles);
+			
 			var formData;			
 				formData = {
 			            'firstName': firstName,			           
@@ -85,7 +85,7 @@ function getRoles(){
 	/* we join the array separated by the comma */
 	var selected;
 	selected = chkArray.join(',') ;		
-	alert(selected);
+	
 	return selected;
 }
 
@@ -118,9 +118,9 @@ function Validate() {
     }
     $JQuery("#mesage").hide();
     $JQuery("#mesage").html("");
-    alert(checkPassword(password));
+    
     if(!checkPassword(password)){
-    	$JQuery("#mesage").html("Please choose a password that is at least 8 characters long that contains both upper- and lower-case letters and  at least one number");
+    	$JQuery("#mesage").html("Please choose a password that is at least 8 characters long that contains both upper- and lower-case letters and  at least one number and one special character");
     	$JQuery("#mesage").show();
     	$JQuery('html, body').animate({ scrollTop: 0 }, 'slow');
     	document.getElementById("password").focus();

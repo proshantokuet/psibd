@@ -209,4 +209,56 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UserDTO> findUserByClinicIdWithRawQuery(int clincicId) {
+		List<UserDTO> patients = new ArrayList<UserDTO>();
+		String sql = "SELECT PCU.mobile,PCU.email,PCU.cuid,U.user_id as userId,U.username as userName,P.gender,P.person_id as personId,PN.given_name as firstName,PN.family_name as lastName"
+		        + " ,(select GROUP_CONCAT(role SEPARATOR ' , ')  from openmrs.user_role where user_id = U.user_id) role"
+		        + " from openmrs.psi_clinic_user as PCU  left join"
+		        + " openmrs.users as U on PCU.user_uame = U.username left join openmrs.person as P"
+		        + " on U.person_id = P.person_id left join openmrs.person_name PN on  P.person_id =  PN.person_id"
+		        + " where PCU.psi_clinic_management_id = :clincicId ";
+		patients = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("mobile", StandardBasicTypes.STRING)
+		        .addScalar("email", StandardBasicTypes.STRING).addScalar("cuid", StandardBasicTypes.INTEGER)
+		        .addScalar("userId", StandardBasicTypes.INTEGER).addScalar("userName", StandardBasicTypes.STRING)
+		        .addScalar("personId", StandardBasicTypes.INTEGER).addScalar("firstName", StandardBasicTypes.STRING)
+		        .addScalar("lastName", StandardBasicTypes.STRING).addScalar("role", StandardBasicTypes.STRING)
+		        .addScalar("gender", StandardBasicTypes.STRING)
+		        
+		        .setInteger("clincicId", clincicId).setResultTransformer(new AliasToBeanResultTransformer(UserDTO.class))
+		        .list();
+		if (patients.size() != 0) {
+			return patients;
+		} else {
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public UserDTO findUserByIdWithRawQuery(String userName) {
+		List<UserDTO> user = new ArrayList<UserDTO>();
+		String sql = "SELECT PCU.mobile,PCU.email,PCU.cuid,U.user_id as userId,U.username as userName,P.gender,P.person_id as personId,PN.given_name as firstName,PN.family_name as lastName"
+		        + " ,(select GROUP_CONCAT(role SEPARATOR ' , ')  from openmrs.user_role where user_id = U.user_id) role"
+		        + " from openmrs.psi_clinic_user as PCU  left join"
+		        + " openmrs.users as U on PCU.user_uame = U.username left join openmrs.person as P"
+		        + " on U.person_id = P.person_id left join openmrs.person_name PN on  P.person_id =  PN.person_id"
+		        + " where  U.username = :userName ";
+		user = sessionFactory.getCurrentSession().createSQLQuery(sql).addScalar("mobile", StandardBasicTypes.STRING)
+		        .addScalar("email", StandardBasicTypes.STRING).addScalar("cuid", StandardBasicTypes.INTEGER)
+		        .addScalar("userId", StandardBasicTypes.INTEGER).addScalar("userName", StandardBasicTypes.STRING)
+		        .addScalar("personId", StandardBasicTypes.INTEGER).addScalar("firstName", StandardBasicTypes.STRING)
+		        .addScalar("lastName", StandardBasicTypes.STRING).addScalar("role", StandardBasicTypes.STRING)
+		        .addScalar("gender", StandardBasicTypes.STRING)
+		        
+		        .setString("userName", userName).setResultTransformer(new AliasToBeanResultTransformer(UserDTO.class))
+		        .list();
+		if (user.size() != 0) {
+			return user.get(0);
+		} else {
+			return null;
+		}
+	}
 }
