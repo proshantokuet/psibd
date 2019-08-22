@@ -32,6 +32,36 @@ public class UserDTO {
 	
 	private String lastName;
 	
+	private int clinicId;
+	
+	private String roles;
+	
+	private String password;
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public int getClinicId() {
+		return clinicId;
+	}
+	
+	public void setClinicId(int clinicId) {
+		this.clinicId = clinicId;
+	}
+	
+	public String getRoles() {
+		return roles;
+	}
+	
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
+	
 	public String getUserName() {
 		return userName;
 	}

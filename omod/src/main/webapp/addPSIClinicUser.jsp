@@ -99,6 +99,8 @@ String userIds = (String)session.getAttribute("userIds");
 						
 							<input type="radio" name="gender" id="F" value="F">
 								<label for="F"> Female </label>
+							<input type="radio" name="gender" id="O" value="O">
+								<label for="F"> Other </label>
 						</td>
 					</tr>
 					

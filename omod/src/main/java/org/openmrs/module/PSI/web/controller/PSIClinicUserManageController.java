@@ -119,7 +119,7 @@ public class PSIClinicUserManageController {
 		List<Role> roles = PSIMapper.getRoles();
 		model.addAttribute("roles", roles);
 		model.addAttribute("user", user);
-		
+		model.addAttribute("defaultPassword", PSIConstants.DefaultPassword);
 		model.addAttribute("hasDashboardPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission",

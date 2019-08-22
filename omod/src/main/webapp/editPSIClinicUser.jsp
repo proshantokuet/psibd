@@ -14,6 +14,8 @@ String users = (String)session.getAttribute("users");
 String userIds = (String)session.getAttribute("userIds");
 //String message = (String)session.getAttribute("message");
 %>
+
+<%@page import="org.openmrs.module.PSI.utils.HtmlUtils"%>
 <style>
 .margin-top{
 margin-top: 4px;
@@ -55,15 +57,15 @@ input[type="text"], input[type="password"] {
 </style>
 <openmrs:require privilege="Edit Clinic User" otherwise="/login.htm" />
 
-<a href="${pageContext.request.contextPath}/module/PSI/PSIClinicList.form"><spring:message
-				code="PSI.psiclinic" /></a>Edit Assinged User
+<%-- <a href="${pageContext.request.contextPath}/module/PSI/PSIClinicList.form"><spring:message
+				code="PSI.psiclinic" /></a>Edit Assinged User --%>
 <form:form method="POST" id="userForm" action="${saveUrl}" modelAttribute="pSIClinicUser">
 
 
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
-        	<p>Create New User</p>
+        	<p>Edit User</p>
        	</div>
        	 <div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
@@ -79,6 +81,9 @@ input[type="text"], input[type="password"] {
         	<div class="row">
         		<input type="hidden" id="clinicId" name="clinicId" value="${psiClinicManagementId}">
         		<form:hidden path="cuid" />
+        		
+        		<input type="hidden" id="personId" name="personId" value="${user.personId }">
+        		<input type="hidden" id="userId" name="userId" value="${user.userId }">
             	<table>
 	            	<tr>
 	            		<td>First Name<span class="required">*</span></td>
@@ -86,53 +91,76 @@ input[type="text"], input[type="password"] {
 	            	</tr>
 	            	<tr>
 	            		<td>Last Name<span class="required">*</span></td>
-	            		<td><input type="text" name="lastName" id="lastName" class="form-control margin-top" required="required" autocomplete="off"></td>
+	            		<td><input type="text" value="${user.lastName }" name="lastName" id="lastName" class="form-control margin-top" required="required" autocomplete="off"></td>
 	            	</tr>
-	            	
+	            	<c:set var="gender" value="${user.gender }"/>	
+	            	<%
+	            	String gender = (String)pageContext.getAttribute("gender");
+	            	String m = HtmlUtils.genderChecked("M", gender);
+	            	String f = HtmlUtils.genderChecked("F", gender);
+	            	String other = HtmlUtils.genderChecked("O", gender);
+	            	%>
 	            	<tr>
 					<td>Gender<span class="required">*</span></td>
 						<td>
 						
-							<input type="radio" name="gender" id="M" value="M">
+							<input type="radio" name="gender" id="M" value="M" <%=m %>>
 								<label for="M"> Male </label>
 						
-							<input type="radio" name="gender" id="F" value="F">
+							<input type="radio" name="gender" id="F" value="F" <%=f %>>
 								<label for="F"> Female </label>
+								<input type="radio" name="gender" id="O" value="O" <%=other %>>
+								<label for="F"> Other </label>
 						</td>
 					</tr>
 					
 					<tr>
 	            		<td>Email<span class="required">*</span></td>
-	            		<td><input type="email" name="email" id="email" class="form-control margin-top" required="required" autocomplete="off"></td>
+	            		<td><input value="${user.email }" type="email" name="email" id="email" class="form-control margin-top" required="required" autocomplete="off"></td>
 	            	</tr>
 	            	
 	            	<tr>
 	            		<td>Mobile<span class="required">*</span></td>
-	            		<td><input type="text" name="mobile" id="mobile" class="form-control margin-top" required="required" autocomplete="off" pattern="01[3-9]{1}[0-9]{8}"></td>
+	            		<td><input value="${user.mobile }" type="text" name="mobile" id="mobile" class="form-control margin-top" required="required" autocomplete="off" pattern="01[3-9]{1}[0-9]{8}"></td>
 	            	</tr>	            	
 	            	
 	            	
 	            	<tr>
 	            		<td>UserName<span class="required">*</span></td>
-	            		<td><input type="text" name="userName" id="userName" class="form-control margin-top" required="required" autocomplete="off"></td>
+	            		<td><input value="${user.userName }" type="text" name="userName" id="userName" class="form-control margin-top" required="required" autocomplete="off"></td>
 	            	</tr>
 	            	
 	            	<tr>
 	            		<td>Password<span class="required">*</span> </td>
-	            		<td><input type="password" name="password" id="password" class="form-control margin-top" required="required" autocomplete="off"></td>
+	            		<td><input value="${defaultPassword }" type="password" name="password" id="password" class="form-control margin-top" required="required" autocomplete="off"></td>
 	            	</tr>
 	            	
 	            	<tr>
 	            		<td>Retype Password<span class="required">*</span> </td>
-	            		<td><input type="password" name="reTypePassword" id="reTypePassword" class="form-control margin-top" required="required" autocomplete="off"></td>
+	            		<td><input value="${defaultPassword }" type="password" name="reTypePassword" id="reTypePassword" class="form-control margin-top" required="required" autocomplete="off"></td>
 	            	</tr>
 					<tr>
 						<td valign="top">Roles <span class="required">*</span> </td>
-						<td valign="top">							
+						<td valign="top">
+						 <c:set var="roleString" value="${user.role }"/>	
+						 
+						 
 						<div id="roleStrings" class="listItemBox">
 							<c:forEach items="${roles}" var="role">	
-							<span class="listItem"><input type="checkbox" name="roleStrings" class="roles" id="roleStrings.${role.role }" value="${role.role }">
+							<c:set var="roleName" value="${role.role }"/>							
+							<% 
+							String roleStrings = (String)pageContext.getAttribute("roleString");
+							String roleName = (String)pageContext.getAttribute("roleName");
+							if(HtmlUtils.roleChecked(roleStrings, roleName)){ %>
+							<span class="listItem">
+								<input type="checkbox" name="roleStrings" class="roles" id="roleStrings.${role.role }" value="${role.role }" checked>
 							<label for="roleStrings.${role.role }">${role.role }</label></span>
+							<%} else { %>
+								<span class="listItem">
+								<input type="checkbox" name="roleStrings" class="roles" id="roleStrings.${role.role }" value="${role.role }">
+								<label for="roleStrings.${role.role }">${role.role }</label></span>
+							<% } %>				
+							
 							</c:forEach>
 						</div>
 						</td>

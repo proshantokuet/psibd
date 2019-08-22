@@ -90,7 +90,7 @@ function getRoles(){
 }
 
 function checkPassword(password) { 
-	var regx = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+	var regx = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,30}$/;
     return regx.test(password);
 }
 function Validate() {

@@ -18,6 +18,7 @@
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/converter/ClinicDataConverter.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/api/impl/PSIClinicManagementServiceimpl.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/api/impl/PSIClinicUserServiceImpl.java
+/home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/utils/HtmlUtils.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/api/db/PSIDHISMarkerDAO.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/api/db/hibernate/HibernatePSIClinicSpotDAO.java
 /home/proshanto/projectOpensrp/openmrs-module/userManagements/psibd/api/src/main/java/org/openmrs/module/PSI/PSIServiceProvision.java

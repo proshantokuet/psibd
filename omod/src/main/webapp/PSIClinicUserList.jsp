@@ -35,7 +35,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 	            <td>${ user.email }</td>
 	            <td>${ user.mobile }</td>
 	            <td>${ user.role }</td>
-	            <td><%-- <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicUser.form?id=${ user.cuid }"/>"> Edit</a>  --%></td>
+	            <td><a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicUser.form?id=${ user.cuid }"/>"> Edit</a> </td>
 	        </tr>
 	       </c:forEach>
 	        
