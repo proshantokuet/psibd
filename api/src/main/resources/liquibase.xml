@@ -461,6 +461,70 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="psiclinicchild-1.0.0" author="Tanvir">
+		<createTable tableName="psi_clinic_child">
+			<column name="child_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="mother_uuid" type="varchar(255)" />
+			<column name="out_come_no" type="int(11)" />
+			<column name="out_come_date" type="datetime" />
+			<column name="results" type="varchar(255)" />
+			<column name="complications" type="varchar(255)" />
+			<column name="type_of_delivery" type="varchar(255)" />
+			<column name="sex" type="varchar(50)" />
+			<column name="birth_weight" type="float" />
+			<column name="vaccine" type="varchar(255)" />
+			<column name="last_health_status" type="varchar(255)" />
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="psiclinicinwardreferral-1.0.0" author="Tanvir">
+		<createTable tableName="psi_clinic_inward_referral">
+			<column name="inward_referral_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="referral_no" type="varchar(20)" />
+			<column name="referral_date" type="datetime" />
+			<column name="referred_by" type="varchar(255)" />
+			<column name="csp_id" type="varchar(255)" />
+			<column name="notes" type="varchar(2000)" />
+			<column name="patient_uuid" type="varchar(255)" />
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
 	<changeSet author="Proshanto" id="psiclinicspot-1.0.1">
 	 	<addColumn tableName="psi_clinic_spot">
 			<column name="dhis_id" type="varchar(255)" />			
