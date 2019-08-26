@@ -30,4 +30,6 @@ public class PSIConstants {
 	
 	public static final String ClinicList = "Clinic List";
 	
+	public static final String DefaultPassword = "Admin@AdminAdmin@123";
+	
 }

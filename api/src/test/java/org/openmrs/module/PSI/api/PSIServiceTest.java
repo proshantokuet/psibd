@@ -16,7 +16,12 @@ package org.openmrs.module.PSI.api;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.derby.tools.sysinfo;
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -87,10 +92,20 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		System.out.println(mm);
 		int modMonth = (int) Math.ceil(m / 2f);
 		System.out.println((days + modMonth + yr));*/
-		
-		for (int i = 0; i < 7; i = i + 2) {
-			System.out.println(i);
+		/*String stringTxt = "asd ,asdsdsdsd ,fgtt";
+		List<String> list = new ArrayList<>(Arrays.asList(stringTxt.split(",")));
+		System.out.println(list.contains("asd"));
+		for (String string : list) {
+			System.out.println(string);
 		}
+		String[] dd = stringTxt.split(",");
+		for (String string : dd) {
+			System.err.println(string);
+		}*/
+		
+		/*for (int i = 0; i < 7; i = i + 2) {
+			System.out.println(i);
+		}*/
 		
 	}
 }

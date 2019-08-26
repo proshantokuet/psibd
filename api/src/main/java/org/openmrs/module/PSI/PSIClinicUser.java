@@ -16,6 +16,9 @@ public class PSIClinicUser extends BaseOpenmrsData implements Serializable {
 	private String userName;
 	
 	private String userUuid;
+	private String mobile;
+	private String email;
+	private int personId;
 	
 	private PSIClinicManagement psiClinicManagementId;
 	
@@ -61,6 +64,30 @@ public class PSIClinicUser extends BaseOpenmrsData implements Serializable {
 	
 	public void setCuid(int cuid) {
 		this.cuid = cuid;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public int getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(int personId) {
+		this.personId = personId;
 	}
 	
 }

@@ -4,7 +4,7 @@
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="dashboard" otherwise="/login.htm" />
 
-<div class="form-content">
+<%-- <div class="form-content">
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">                							
@@ -25,7 +25,7 @@
 				</div>                  	
               </div>              	
        </div>          	
-</div>
+</div> --%>
      
 <div id="tabs">
   <ul>
@@ -67,7 +67,7 @@
               	<div class="col-md-3">
                		<div class="form-group">
                		<label for="Service Code"></label><br />
-                  	<button style="width: 120px" type="submit" class="btnSubmit">Submit</button>                  			
+                  	<button style="width: 120px ;margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>                  			
 					</div>
                   	
               	</div>
@@ -76,25 +76,78 @@
           	
      </div>
   </form:form>
-  <div class="form-content" id="servicePointWiseReport">
   
-  </div>
-    <table id="servicePoint" class="display">
-	    
+    <div id="servicePoints">
+    	<div class="form-content" id="servicePointWiseReport">	</div> 
+    	<div class="form-content">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">                							
+						<label> ${dashboard.servedPatient } </label>  &nbsp;&nbsp; Patients Served						
+                 </div>
+                  	
+             </div>
+              <div class="col-md-4">
+               	<div class="form-group">
+                  	<label for="Service Code">${dashboard.earned }</label>
+						&nbsp;&nbsp; Revenue Earned                  			
+				</div>
+                  	
+              </div>
+              <div class="col-md-4">
+               	<div class="form-group">
+                  	<label for="Service Code">${dashboard.newPatient }</label>  &nbsp;&nbsp; New Registration                 			
+				</div>                  	
+              </div>              	
+       </div>          	
+	</div>
+	
+	 
+	 <table id="servicePointDefault" class="display">
+	 	<thead>
+		        <tr>
+		            <th>Category</th>
+		            <th>Code</th>
+		            <th>Item</th>
+		            <th>Static</th>
+		            <th>Satellite</th>
+		            <th>CSP</th>
+		            <th>Total</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		    	<c:forEach var="report" items="${ servicePointWiseReports }">
+		        <tr>
+		            <td>${ report.category }</td>
+		        	<td>${ report.code }</td>
+		            <td>${ report.item }</td>
+		            <td>${ report.clinic }</td>
+		            <td>${ report.satelite }</td>
+		            <td>${ report.csp }</td>
+		            <td>${ report.total }</td>
+		        </tr>
+		       </c:forEach>
+		        
+		    </tbody>
+	
 	</table>
+	    
+	
+  </div>
   </div>
   <div id="tabs-2">
     <form:form id="ServiceProviderWise">
   	<div class="form-content">
+  	
         	<div class="row">
-            	<div class="col-md-3">
+            	<div class="col-md-2">
                 	<div class="form-group">                							
 						<label for="Service Code">From</label><br />
 						<input style="width: 160px" id="from"  name="from" type="text"  required="true"/>
                   	</div>
                   	
              	</div>
-              	<div class="col-md-3">
+              	<div class="col-md-2">
                		<div class="form-group">
                   	<label for="Service Code">To</label> <br/>
 						<input style="width: 160px" id="to" name="to" type="text"  required="true"/>                  			
@@ -126,10 +179,10 @@
 					</div>
                   	
               	</div>
-              	<div class="col-md-3">
+              	<div class="col-md-2">
                		<div class="form-group">
                		<label for="Service Code"></label><br />
-                  	<button style="width: 120px" type="submit" class="btnSubmit">Submit</button>                  			
+                  	<button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>                  			
 					</div>
                   	
               	</div>
@@ -138,15 +191,64 @@
           	
      </div>
   </form:form>
-  <div class="form-content" id="userRole">
+ 
+    <div id="serviceProviders">
+    
+     
+    <div class="form-content" id="serviceProviderReports"></div>
+	<div class="form-content">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">                							
+						<label> ${dashboard.servedPatient } </label>  &nbsp;&nbsp; Patients Served						
+                 </div>
+                  	
+             </div>
+              <div class="col-md-4">
+               	<div class="form-group">
+                  	<label for="Service Code">${dashboard.earned }</label>
+						&nbsp;&nbsp; Revenue Earned                  			
+				</div>
+                  	
+              </div>
+              <div class="col-md-4">
+               	<div class="form-group">
+                  	<label for="Service Code">${dashboard.newPatient }</label>  &nbsp;&nbsp; New Registration                 			
+				</div>                  	
+              </div>              	
+       </div>          	
+	</div>  
+ 
+ 
+ 
   
-  </div>
-    <table id="serviceProvider" class="display">
-	    
+	<table id="serviceProviderDefault" class="display">
+		  <thead>
+		        <tr>
+		            <th>Category</th>	            
+		            <th>Item</th>
+		            <th>Code</th>
+		            <th>Number of Service</th>	            
+		            <th>Total</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		    	<c:forEach var="report" items="${ providerWiseReports }">
+		        <tr>
+		            <td>${ report.category }</td>	            
+		        	<td>${ report.code }</td>
+		        	<td>${ report.item }</td>
+		            <td>${ report.serviceCount }</td>
+		            <td>${ report.total }</td>
+		        </tr>
+		       </c:forEach>
+		        
+		    </tbody>
 	</table>
+	</div>
   </div>
-  
-</div>
+ </div>
+
  
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
@@ -181,10 +283,11 @@ var $JQuery = jQuery.noConflict();
 $JQuery("#ServiceProviderWise").submit(function(event) { 
 var e = document.getElementById("provider");
 var provider = e.options[e.selectedIndex].value;
-var userRole = "Service Provider Wise Revenue Report( "+$JQuery("#provider option:selected").html()+" )";
 var startDate = $JQuery('input[name=from]').val();
 var endDate = $JQuery('input[name=to]').val();
+var reportTitle = "Service Provider Wise Revenue Report for "+$JQuery("#provider option:selected").html()+ " (" +startDate +" to "+ endDate+")" ;
 
+var title = "Service Provider Wise Revenue Report_"+startDate+"_"+endDate;
 var clinic = document.getElementById("clinics");
 var clinicCode = "";
 if(clinic !== null){		
@@ -205,7 +308,7 @@ $JQuery.ajax({
 	   
 	   },
 	   success : function(data) {		   
-		   $JQuery("#serviceProvider").html(data);
+		   $JQuery("#serviceProviders").html(data);
 		   $JQuery('#serviceProvider').DataTable({
 			   bFilter: false,
 		       bInfo: false,
@@ -214,13 +317,13 @@ $JQuery.ajax({
 			   buttons: [
 			             {
 			                 extend: 'excelHtml5',
-			                 title: 'providerWiseReport',
+			                 title: title,
 			                 text: 'Export as .xlxs'
 			             }			         
 			         ]
 			   
 		   });
-		   $JQuery("#userRole").html(userRole);
+		   $JQuery("#serviceProviderReports").html(reportTitle);
 	   },
 	   error : function(e) {
 	    console.log("ERROR: ", e);
@@ -247,7 +350,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 	var endDate = $JQuery('input[name=endDate]').val();
 	
 	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&clinic_code="+clinicCode;
-	
+	var title = "Service Point Wise Revenue Report_"+startDate+"_"+endDate;
 	event.preventDefault();	
 	
 	$JQuery.ajax({
@@ -260,7 +363,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 		   
 		   },
 		   success : function(data) {	   
-			   $JQuery("#servicePoint").html(data);			  
+			   $JQuery("#servicePoints").html(data);			  
 			   $JQuery('#servicePoint').DataTable({
 				   bFilter: false,
 			       bInfo: false,
@@ -269,12 +372,12 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				   buttons: [
 				             {
 				                 extend: 'excelHtml5',
-				                 title: 'pointWiseReport',
+				                 title: title,
 				                 text: 'Export as .xlxs'
 				             }			         
 				         ]
 			   });
-			   $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report");
+			   $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for "+startDate + " to " + endDate);
 		   },
 		   error : function(e) {
 		    console.log("ERROR: ", e);
@@ -320,6 +423,38 @@ $JQuery("#clinics").change(function(event) {
 	 	}
 
 	});	
+	
+	
+	
+$JQuery('#servicePointDefault').DataTable({
+	   bFilter: false,
+       bInfo: false,
+	   dom: 'Bfrtip',
+	   destroy: true,
+	   buttons: [
+	             {
+	                 extend: 'excelHtml5',
+	                 title: "Service Point Wise Revenue Report_"+ new Date(),
+	                 text: 'Export as .xlxs'
+	             }			         
+	         ]
+});
+$JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for Today");
+
+$JQuery('#serviceProviderDefault').DataTable({
+	   bFilter: false,
+    bInfo: false,
+	   dom: 'Bfrtip',
+	   destroy: true,
+	   buttons: [
+	             {
+	                 extend: 'excelHtml5',
+	                 title: "Service Provider Wise Revenue Report_"+ new Date(),
+	                 text: 'Export as .xlxs'
+	             }			         
+	         ]
+});
+$JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report for Today");
 </script>
  
 
@@ -331,7 +466,7 @@ $JQuery("#clinics").change(function(event) {
   float:none;  
   text-align:right;
   position: absolute;
-  top: -55px;
+  top: -26px;
   margin-left: 1036px
 }
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {

@@ -89,9 +89,9 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	}
 	
 	@Override
-	public DashboardDTO dashboardReport(String start, String end, String code) {
+	public DashboardDTO dashboardReport(String start, String end, String code, String dataCollector) {
 		// TODO Auto-generated method stub
-		return dao.dashboardReport(start, end, code);
+		return dao.dashboardReport(start, end, code, dataCollector);
 	}
 	
 	@Override

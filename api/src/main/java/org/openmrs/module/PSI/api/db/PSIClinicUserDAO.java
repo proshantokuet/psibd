@@ -29,4 +29,7 @@ public interface PSIClinicUserDAO {
 	
 	public void delete(int id);
 	
+	public List<UserDTO> findUserByClinicIdWithRawQuery(int clincicId);
+	
+	public UserDTO findUserByIdWithRawQuery(String userName);
 }

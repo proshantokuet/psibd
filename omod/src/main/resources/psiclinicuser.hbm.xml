@@ -9,6 +9,11 @@
 	    <property name="userName" column="user_uame" type="java.lang.String"/>
 	    <property name="userUuid" column="user_uuid" type="java.lang.String"/>
 	    <many-to-one name="psiClinicManagementId" column="psi_clinic_management_id" class="org.openmrs.module.PSI.PSIClinicManagement" />
+	    
+	    <property name="mobile" column="mobile" type="java.lang.String"/>
+	    <property name="email" column="email" type="java.lang.String"/>
+	    <property name="personId" column="person_id" type="int"/>
+	    
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
 		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>
 		<many-to-one name="changedBy" column="changed_by" class="org.openmrs.User" />

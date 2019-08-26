@@ -69,7 +69,7 @@ public class DHISListener {
 		
 		if (status) {
 			try {
-				sendPatientAgain();
+				sendFailedPatient();
 			}
 			catch (Exception e) {
 				
@@ -88,7 +88,7 @@ public class DHISListener {
 			}
 			
 			try {
-				sendNotSendingMoneyReceipt();
+				sendFailedMoneyReceipt();
 			}
 			catch (Exception e) {
 				
@@ -96,7 +96,7 @@ public class DHISListener {
 		}*/
 	}
 	
-	public void sendPatientAgain() {
+	public void sendFailedPatient() {
 		
 		List<PSIDHISException> psidhisExceptions = Context.getService(PSIDHISExceptionService.class).findAllByStatus(
 		    PSIConstants.DEFAULTERRORSTATUS);
@@ -348,7 +348,7 @@ public class DHISListener {
 		}
 	}
 	
-	private void sendNotSendingMoneyReceipt() {
+	private void sendFailedMoneyReceipt() {
 		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
 		        .findAllResend();
 		if (psiServiceProvisions.size() != 0 && psiServiceProvisions != null) {

@@ -5,8 +5,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.management.relation.RoleStatus;
+
+import org.hibernate.service.internal.ProvidedService;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.openmrs.Location;
+import org.openmrs.LocationTag;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.PersonService;
+
+import org.openmrs.api.ProviderService;
+import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.PSIServiceProvision;
@@ -18,6 +28,7 @@ import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
 import org.openmrs.module.PSI.web.listener.DHISListener;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
+import org.openmrs.validator.RoleValidatorTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,20 +60,25 @@ public class OpenmrsAPIController extends MainResourceController {
 	
 	@RequestMapping(value = "/fakecall", method = RequestMethod.GET)
 	public ResponseEntity<String> emptyCall() throws Exception {
-		Context.getAuthenticatedUser().getRoles().contains("View Report");
+		return null;
+		/*Context.getAuthenticatedUser().getRoles().contains("View Report");
 		
 		//dhisListener.sendPatient();
-		/*Location l = new Location();
+		Location l = new Location();
 		LocationTag lt = new LocationTag();
 		Context.getService(LocationService.class).saveLocation(l);
 		Context.getService(UserService.class).changePassword(Context.getService(UserService.class).getUser(4), "Admin1234",
-		    "Admin12345");*/
-		/*Context.getService(UserService.class).changePassword(Context.getService(UserService.class).getUser(4), "Admin12345",
-		    "Admin123456");*/
+		    "Admin12345");
+		Context.getService(UserService.class).changePassword(Context.getService(UserService.class).getUser(4), "Admin12345",
+		    "Admin123456");
 		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient");
 		JSONObject res = new JSONObject();
 		res.putOpt("OK", "OKK");
-		return new ResponseEntity<String>(res.toString(), HttpStatus.OK);
+		
+		Context.getService(ProviderService.class)
+		Context.getService(PersonService.class).savePerson(person);
+		Context.getService(UserService.class).saveUser(user);
+		return new ResponseEntity<String>(res.toString(), HttpStatus.OK);*/
 		
 	}
 	

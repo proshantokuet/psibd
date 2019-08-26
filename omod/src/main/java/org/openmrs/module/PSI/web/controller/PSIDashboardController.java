@@ -36,20 +36,28 @@ public class PSIDashboardController {
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 		    Context.getAuthenticatedUser().getUsername());
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
-		String clinicCode = "";
+		String clinicCode = "0";
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
 		
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String today = dateFormat.format(date);
 		if (isAdmin) {
-			clinicCode = "";
+			clinicCode = "0";
 		} else {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 		}
-		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, "",
-		    clinicCode);
+		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, today,
+		    clinicCode, "");
 		model.addAttribute("dashboard", dashboardDTO);
+		
+		List<PSIReport> providerWiseReports = Context.getService(PSIServiceProvisionService.class)
+		        .serviceProviderWiseReport(today, today, clinicCode, "");
+		model.addAttribute("providerWiseReports", providerWiseReports);
+		
+		List<PSIReport> servicePointWiseReports = Context.getService(PSIServiceProvisionService.class)
+		        .servicePointWiseReport(today, today, clinicCode);
+		model.addAttribute("servicePointWiseReports", servicePointWiseReports);
 		
 		if (psiClinicUser != null && !isAdmin) {
 			
@@ -89,6 +97,9 @@ public class PSIDashboardController {
 			ClinicCode = clinic_code;
 		}
 		
+		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
+		    ClinicCode, "");
+		model.addAttribute("dashboard", dashboardDTO);
 		List<PSIReport> reports = Context.getService(PSIServiceProvisionService.class).servicePointWiseReport(startDate,
 		    endDate, ClinicCode);
 		model.addAttribute("reports", reports);
@@ -116,8 +127,11 @@ public class PSIDashboardController {
 			clinicCode = code;
 		}
 		
+		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
+		    clinicCode, dataCollector);
 		List<PSIReport> reports = Context.getService(PSIServiceProvisionService.class).serviceProviderWiseReport(startDate,
 		    endDate, clinicCode, dataCollector);
+		model.addAttribute("dashboard", dashboardDTO);
 		model.addAttribute("reports", reports);
 		
 	}

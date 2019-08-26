@@ -104,7 +104,7 @@
               	<div class="col-md-6">               		
                   	<div class="form-group">
                   	Gender 
-                  			<form:select path="gender" class="form-control selcls" required="required">                  			 
+                  			<form:select path="gender" class="form-control selcls">                  			 
                   	 			  <form:option value=""> Please Select </form:option>
 					              <form:option value="M">Male</form:option>
 					              <form:option value="F">Female</form:option>
