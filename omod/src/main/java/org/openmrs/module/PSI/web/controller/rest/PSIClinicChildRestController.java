@@ -32,8 +32,16 @@ public class PSIClinicChildRestController extends MainResourceController {
 			@RequestBody String jsonStr) throws Exception {
 		JSONObject childInfo = new JSONObject(jsonStr);
 		PSIClinicChild psiClinicChild = new PSIClinicChild();
+		int childId = 0;
 
 		try {
+			
+			if (childInfo.has("childId")) {
+				if (!childInfo.getString("childId").equalsIgnoreCase("")) {
+					childId = Integer.parseInt(childInfo.getString("childId"));
+					psiClinicChild.setChildId(childId);
+				}
+			}
 			
 			if (childInfo.has("outcomeNo")) {
 				psiClinicChild.setOutComeNo(childInfo.getInt("outcomeNo"));
@@ -106,5 +114,16 @@ public class PSIClinicChildRestController extends MainResourceController {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(psiClinicChildObject.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<String> delete(@PathVariable int id) throws Exception {
+		try {
+			Context.getService(PSIClinicChildService.class).delete(id);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 	}
 }

@@ -39,6 +39,7 @@ public class PSIClinicChildServiceImpl extends BaseOpenmrsService implements PSI
 
 	@Override
 	public void delete(int id) {
+		dao.delete(id);
 		// TODO Auto-generated method stub
 		
 	}
