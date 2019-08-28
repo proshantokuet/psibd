@@ -525,6 +525,45 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="psiclinicoutwardreferral-1.0.0" author="Tanvir">
+		<createTable tableName="psi_clinic_outward_referral">
+			<column name="outward_referral_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="referred_to" type="varchar(255)" />
+			<column name="provisonal_diagnosis" type="varchar(255)" />
+			<column name="chief_complaints" type="varchar(255)" />
+			<column name="referral_reason" type="varchar(255)" />
+			<column name="patient_uuid" type="varchar(255)" />
+			<column name="allergy" type="varchar(255)" />
+			<column name="airway" type="varchar(255)" />
+			<column name="medication" type="varchar(255)" />
+			<column name="breathing" type="varchar(255)" />
+			<column name="past_medical_history" type="varchar(255)" />
+			<column name="circulation" type="varchar(255)" />
+			<column name="last_meal" type="varchar(255)" />
+			<column name="conscious" type="varchar(255)" />
+			<column name="events" type="varchar(255)" />
+			<column name="exposure" type="varchar(255)" />
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
 	<changeSet author="Proshanto" id="psiclinicspot-1.0.1">
 	 	<addColumn tableName="psi_clinic_spot">
 			<column name="dhis_id" type="varchar(255)" />			

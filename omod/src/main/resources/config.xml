@@ -42,6 +42,7 @@
 		psiuniqueidgenerator.hbm.xml
 		psiclinicchild.hbm.xml
 		psiclinicinwardreferral.hbm.xml
+		psiclinicoutwardreferral.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

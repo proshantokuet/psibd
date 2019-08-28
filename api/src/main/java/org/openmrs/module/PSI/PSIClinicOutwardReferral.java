@@ -14,7 +14,7 @@ public class PSIClinicOutwardReferral extends BaseOpenmrsData implements Seriali
 	
 	private String provisonalDiagnosis;
 	
-	private String cheiefComplaints;
+	private String chiefComplaints;
 	
 	private String referralReason;
 	
@@ -34,7 +34,7 @@ public class PSIClinicOutwardReferral extends BaseOpenmrsData implements Seriali
 	
 	private String lastMeal;
 	
-	private String Conscious;
+	private String conscious;
 	
 	private String events;
 	
@@ -64,12 +64,12 @@ public class PSIClinicOutwardReferral extends BaseOpenmrsData implements Seriali
 		this.provisonalDiagnosis = provisonalDiagnosis;
 	}
 
-	public String getCheiefComplaints() {
-		return cheiefComplaints;
+	public String getChiefComplaints() {
+		return chiefComplaints;
 	}
 
-	public void setCheiefComplaints(String cheiefComplaints) {
-		this.cheiefComplaints = cheiefComplaints;
+	public void setChiefComplaints(String chiefComplaints) {
+		this.chiefComplaints = chiefComplaints;
 	}
 
 	public String getReferralReason() {
@@ -145,11 +145,11 @@ public class PSIClinicOutwardReferral extends BaseOpenmrsData implements Seriali
 	}
 
 	public String getConscious() {
-		return Conscious;
+		return conscious;
 	}
 
 	public void setConscious(String conscious) {
-		Conscious = conscious;
+		this.conscious = conscious;
 	}
 
 	public String getEvents() {

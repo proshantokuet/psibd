@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.openmrs.module.PSI.PSIClinicOutwardReferral" table="psi_clinic_outward_referral">
+        <id column="outward_referral_id" name="outwardReferralId" type="int">
+            <generator class="native"/>
+        </id> 
+        
+	    <property name="referredTo" column="referred_to" type="java.lang.String"/>
+	    <property name="provisonalDiagnosis" column="provisonal_diagnosis" type="java.lang.String"/>
+	    <property name="chiefComplaints" column="chief_complaints" type="java.lang.String"/>
+	    <property name="referralReason" column="referral_reason" type="java.lang.String"/>
+	    <property name="patientUuid" column="patient_uuid" type="java.lang.String"/>
+	    <property name="allergy" column="allergy" type="java.lang.String"/>
+	    <property name="airway" column="airway" type="java.lang.String"/>
+	    <property name="medication" column="medication" type="java.lang.String"/>
+	    <property name="breathing" column="breathing" type="java.lang.String"/>
+	    <property name="pastMedicalHistory" column="past_medical_history" type="java.lang.String"/>
+	    <property name="circulation" column="circulation" type="java.lang.String"/>
+	    <property name="lastMeal" column="last_meal" type="java.lang.String"/>
+	    <property name="conscious" column="conscious" type="java.lang.String"/>
+	    <property name="events" column="events" type="java.lang.String"/>
+	    <property name="exposure" column="exposure" type="java.lang.String"/>
+	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
+		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>
+		<many-to-one name="changedBy" column="changed_by" class="org.openmrs.User" />
+		<property name="dateChanged" column="date_changed" type="java.util.Date" />
+		<property name="voided" column="voided" type="boolean" not-null="true"/>
+		<many-to-one name="voidedBy" column="voided_by" class="org.openmrs.User" />
+		<property name="dateVoided" column="date_voided" type="java.util.Date" />
+		<property name="voidReason" column="void_reason" type="java.lang.String" /> 
+		<property name="uuid" column="uuid" type="java.lang.String" not-null="true" />
+		
+    </class>
+</hibernate-mapping>
