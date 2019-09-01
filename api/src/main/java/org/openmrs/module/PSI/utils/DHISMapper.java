@@ -7,67 +7,70 @@ public class DHISMapper {
 	
 	public static final Map<String, String> registrationMapper = new HashMap<String, String>();
 	static {
-		registrationMapper.put("IDno", "dqbLVslqgwj");
-		registrationMapper.put("SelectanIDcard", "UxHmrIJjp5r");
-		registrationMapper.put("RegistrationPoint", "yUMmDMyEjcE");
-		registrationMapper.put("FinancialStatus", "dnu7y5kb0kA");
-		registrationMapper.put("RegistrationDate", "B3o30mpWeee");
-		registrationMapper.put("MaritalStatus", "A2lb2vYZTH5");
-		registrationMapper.put("MobileNoOwner", "zwQhTfKy344");
-		registrationMapper.put("MobileNo", "vtpYa8qSjpi");
-		registrationMapper.put("UIC", "mlJZ2Gktgpn");
+		registrationMapper.put("IDno", "ncDUQ63WGMq");
+		registrationMapper.put("SelectanIDcard", "CKjTmuYrlJI");
+		registrationMapper.put("RegistrationPoint", "oga1dnA50Yn");
+		registrationMapper.put("FinancialStatus", "FoMLHU7uLT7");
+		registrationMapper.put("RegistrationDate", "m4Ugf7IyAKT");
+		registrationMapper.put("MobileNoOwner", "aeg04huFGjq");
+		registrationMapper.put("MobileNo", "uerw9vcwNQW");
+		registrationMapper.put("UIC", "EhGAasyq73e");
 		
-		registrationMapper.put("givenName", "ibiAQos7YlS");
-		registrationMapper.put("familyName", "WaWfKtxwKL6");
-		registrationMapper.put("birthMothersFirstName", "kuiDlfyUAaj");
-		registrationMapper.put("birthRank", "D8rFmAxwELy");
-		registrationMapper.put("birthDistrict", "uPE5YFtACYE");
-		registrationMapper.put("birthUpazilla", "XYUG5v89Wcg");
-		registrationMapper.put("gender", "OBAJuHmsCLw");
-		registrationMapper.put("birthdate", "XsgBRwanI9y");
+		registrationMapper.put("givenName", "pwfKehQdh97");
+		registrationMapper.put("familyName", "yWEqgzbdhWt");
+		registrationMapper.put("birthMothersFirstName", "EGXASsHOq4a");
+		registrationMapper.put("birthRank", "qVfDyAIDrNV");
+		registrationMapper.put("birthDistrict", "aA51MHDmkBU");
+		registrationMapper.put("birthUpazilla", "zGDqX95hHp4");
+		registrationMapper.put("gender", "etYMZTKI74a");
+		registrationMapper.put("birthdate", "r1JB3f1OAnA");
 		registrationMapper.put("age", "xqnrmX6z7ew");
 		registrationMapper.put("PatientUUID", "PlytPA42Nbe");
 		
-		registrationMapper.put("countyDistrict", "xqnrmX6z7ew");
-		registrationMapper.put("stateProvince", "xqnrmX6z7ew");
+		registrationMapper.put("uuid", "oW51s5NUIqo");
 		
-		registrationMapper.put("uuid", "nlwOL9RrqGC");
+		registrationMapper.put("stateProvince", "vwkkJFdFhTf");
+		registrationMapper.put("countyDistrict", "Cy82HbkRQSR");
+		registrationMapper.put("cityVillage", "E70xA9pLSJe");
+		registrationMapper.put("address2", "q1m3gMByl6v");
+		registrationMapper.put("address1", "vbiiaD1vlEb");
+		registrationMapper.put("address3", "BHh4UtACHPc");
+		registrationMapper.put("trackedEntityType", "NpKZqkyYZFk");
+		registrationMapper.put("program", "q2uZRqRc0UD");
+		registrationMapper.put("AlternateMobileNumber", "q2uZRqRc0UD"); //newly added
 		
-		registrationMapper.put("stateProvince", "yrbd4rRgRcR");
-		registrationMapper.put("countyDistrict", "DPSa3yVkyJg");
-		registrationMapper.put("cityVillage", "dLt4JC3UB4d");
-		registrationMapper.put("address2", "gpy80dko26B");
-		registrationMapper.put("address1", "LagD6DiN58S");
-		registrationMapper.put("address3", "PHBH7RJozpn");
-		registrationMapper.put("trackedEntityType", "c9H923L9Lbz");
-		registrationMapper.put("program", "o6zWmo6on9K");
-		
-		registrationMapper.put("patientId", "Ae9PjZczL9z");
+		registrationMapper.put("patientId", "IiW2IfHRxfG");
+		registrationMapper.put("Spouse/FathersName", "Ng4MW4SP7wM"); //newly added
+		registrationMapper.put("Gov_Card_Type", "Ph40wkLaX1T"); // newly added
+		registrationMapper.put("PreferredCallingTime", "AY39jOq51CP"); //newly added
 		
 	}
 	
 	public static final Map<String, String> ServiceProvision = new HashMap<String, String>();
 	static {
-		ServiceProvision.put("programStage", "UKTFJZZ5I66");
-		ServiceProvision.put("clinicName", "iiZK5h6CDnG");
-		ServiceProvision.put("clinicId", "oNgz5FFG5Az");
-		ServiceProvision.put("servicePoint", "WgfyHCvhqYK");
-		ServiceProvision.put("saletilteClinicId", "CMNIQFwqSUl");
-		ServiceProvision.put("serviceDate", "bKEmultRiUQ");
-		ServiceProvision.put("teamNo", "MJ7nruCm0ub");
-		
-		ServiceProvision.put("slipNo", "LAGnqBgA1pG");
-		ServiceProvision.put("reference", "dXwORvJ4ODG");
-		ServiceProvision.put("referenceId", "DyHphdoGGXQ");
-		ServiceProvision.put("item", "gFQGgrmfYX9");
-		ServiceProvision.put("description", "AGuYIDbmiIY");
-		ServiceProvision.put("unitCost", "sydU3SHbPoR");
-		ServiceProvision.put("quantity", "bNrHdhSMqxA");
-		ServiceProvision.put("totalAmount", "zKtNgQuvN1O");
-		ServiceProvision.put("discount", "qyhmRo71iYR");
-		ServiceProvision.put("code", "z8HUVAzi3Mf");
-		ServiceProvision.put("category", "WMvvgynOSW0");
-		ServiceProvision.put("netPayableAmount", "u4GXgQ54Fpn");
+		ServiceProvision.put("programStage", "UXgONLVlRlA");
+		ServiceProvision.put("clinicName", "NOOR11jHbxK");
+		ServiceProvision.put("clinicId", "d49IcANqJh9");
+		ServiceProvision.put("servicePoint", "OH8Bn6DK4sU");
+		ServiceProvision.put("saletilteClinicId", "gqY36WgTq73");
+		ServiceProvision.put("serviceDate", "mfFgHWjJI8E");
+		ServiceProvision.put("teamNo", "FszGIJF3Ypl");
+		ServiceProvision.put("cspId", "miEwNVVW8ar");// newly added
+		ServiceProvision.put("dataCollector", "DLzjJdIteUN"); // newly added
+		ServiceProvision.put("slipNo", "LeqJ8Eymj9W");
+		ServiceProvision.put("reference", "deL99WbV9Ra");
+		ServiceProvision.put("referenceId", "RQqYt5aQbQ1");
+		ServiceProvision.put("item", "c0tuO285CZB");
+		ServiceProvision.put("description", "oLdDkadPIF5");
+		ServiceProvision.put("unitCost", "RoOpVdj0wi7");
+		ServiceProvision.put("quantity", "AQws6wNieQ3");
+		ServiceProvision.put("totalAmount", "HTBprdCWSDx");
+		ServiceProvision.put("discount", "vvojvJk7o8E");
+		ServiceProvision.put("code", "Gep3YabXrJi");
+		ServiceProvision.put("category", "oW1rh8s2SQ4");
+		ServiceProvision.put("netPayableAmount", "Ey8wpnMTGl3");
+		ServiceProvision.put("session", "FzFCFM4Zr43"); // newly added
+		ServiceProvision.put("other", "otXoI3cMuJU"); // newly added
 	}
 	
 	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();
