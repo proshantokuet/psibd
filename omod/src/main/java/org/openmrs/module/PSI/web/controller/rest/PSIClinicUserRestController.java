@@ -176,10 +176,11 @@ public class PSIClinicUserRestController extends MainResourceController {
 				msg = "Person doesn't exists";
 				return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 			}
-			PersonName personName = new PersonName();
+			int personNameId = person.getPersonName().getPersonNameId();
+			PersonName personName = Context.getService(PersonService.class).getPersonName(personNameId);
 			personName.setGivenName(firstName);
 			personName.setFamilyName(lastName);
-			Set<PersonName> names = new TreeSet<PersonName>();
+			Set<PersonName> names = person.getNames();
 			names.add(personName);
 			person.setNames(names);
 			person.setGender(gender);
@@ -196,7 +197,7 @@ public class PSIClinicUserRestController extends MainResourceController {
 				person = Context.getService(PersonService.class).savePerson(person);
 				user.setPerson(person);
 				user.setUsername(userName);
-				
+				user.setRoles(roles);
 				user = Context.getService(UserService.class).saveUser(user);
 				if (!PSIConstants.DefaultPassword.equalsIgnoreCase(password)) {
 					String salt = Security.getRandomToken();
