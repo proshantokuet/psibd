@@ -59,7 +59,7 @@ input[type="text"], input[type="password"] {
 
 <%-- <a href="${pageContext.request.contextPath}/module/PSI/PSIClinicList.form"><spring:message
 				code="PSI.psiclinic" /></a>Edit Assinged User --%>
-<form:form method="POST" id="userForm" action="${saveUrl}" modelAttribute="pSIClinicUser">
+<form:form method="POST" id="editUserForm" action="${saveUrl}" modelAttribute="pSIClinicUser">
 
 
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
@@ -127,7 +127,7 @@ input[type="text"], input[type="password"] {
 	            	
 	            	<tr>
 	            		<td>UserName<span class="required">*</span></td>
-	            		<td><input value="${user.userName }" type="text" name="userName" id="userName" class="form-control margin-top" required="required" autocomplete="off"></td>
+	            		<td><input value="${user.userName }" type="text" name="userName" id="userName" class="form-control margin-top" required="required" autocomplete="off" readonly></td>
 	            	</tr>
 	            	
 	            	<tr>
@@ -168,7 +168,7 @@ input[type="text"], input[type="password"] {
 					
             	</table>
           	</div>
-          	<div class="row" style="    margin-left: 558px; margin-top: 5px;">
+          	<div class="row" style="margin-left: 558px; margin-top: 5px;">
           	
           	<input type="submit" class="btnSubmit" onclick="return Validate()" value="Submit"/> <a href="${cancelUrl}">Back</a>
           	
