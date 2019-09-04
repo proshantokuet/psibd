@@ -40,9 +40,11 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	// private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	// private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	
+	private final String DHIS2BASEURL = "http://192.168.19.162:8080";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -56,7 +58,7 @@ public class DHISListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
-		/*JSONObject getResponse = null;
+		JSONObject getResponse = null;
 		boolean status = true;
 		try {
 			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
@@ -93,7 +95,7 @@ public class DHISListener {
 			catch (Exception e) {
 				
 			}
-		}*/
+		}
 	}
 	
 	public void sendFailedPatient() {
@@ -115,7 +117,10 @@ public class DHISListener {
 					String personUuid = person.getString("uuid");
 					String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					JSONArray trackedEntityInstances = new JSONArray();
+					if (getResponse.has("trackedEntityInstances")) {
+						 trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					}
 					if (trackedEntityInstances.length() != 0) {
 						patientJson.remove("enrollments");
 						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
@@ -189,7 +194,11 @@ public class DHISListener {
 					String personUuid = person.getString("uuid");
 					String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
 					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					JSONArray trackedEntityInstances = new JSONArray();
+					if (getResponse.has("trackedEntityInstances")) {
+						 trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					}
+					
 					if (trackedEntityInstances.length() != 0) {
 						patientJson.remove("enrollments");
 						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
@@ -203,6 +212,19 @@ public class DHISListener {
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					String status = response.getString("status");
 					if (!status.equalsIgnoreCase("ERROR")) {
+						if (getPsidhisException == null) {
+							PSIDHISException newPsidhisException = new PSIDHISException();
+							getPsidhisException = newPsidhisException;
+						}
+						getPsidhisException.setError("");
+						getPsidhisException.setJson(patientJson.toString());
+						getPsidhisException.setMarkId(eventReceordDTO.getId());
+						getPsidhisException.setUrl(eventReceordDTO.getUrl());
+						getPsidhisException.setStatus(PSIConstants.SUCCESSSTATUS);
+						getPsidhisException.setResponse(response.toString());
+						getPsidhisException.setDateCreated(new Date());
+						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
+					}else {
 						if (getPsidhisException == null) {
 							PSIDHISException newPsidhisException = new PSIDHISException();
 							getPsidhisException = newPsidhisException;
@@ -281,7 +303,11 @@ public class DHISListener {
 					orgUnit = userDTO.getOrgUnit();
 					URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgUnit;
 					getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					JSONArray trackedEntityInstances = new JSONArray();
+					if (getResponse.has("trackedEntityInstances")) {
+						 trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					}
+					
 					eventResponse = new JSONObject();
 					log.info("ADD:URL:" + URL + "getResponse:" + getResponse);
 					if (trackedEntityInstances.length() != 0) {
@@ -366,7 +392,11 @@ public class DHISListener {
 					orgUnit = userDTO.getOrgUnit();
 					URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgUnit;
 					getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-					JSONArray trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					JSONArray trackedEntityInstances = new JSONArray();
+					if (getResponse.has("trackedEntityInstances")) {
+						 trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					}
+					
 					log.info("URL:" + URL + "getResponse:" + getResponse);
 					if (trackedEntityInstances.length() != 0) {
 						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);

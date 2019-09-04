@@ -24,7 +24,7 @@ public class DHISMapper {
 		registrationMapper.put("birthUpazilla", "zGDqX95hHp4");
 		registrationMapper.put("gender", "etYMZTKI74a");
 		registrationMapper.put("birthdate", "r1JB3f1OAnA");
-		registrationMapper.put("age", "xqnrmX6z7ew");
+		registrationMapper.put("age", "YeScM5bHQOI");
 		registrationMapper.put("PatientUUID", "PlytPA42Nbe");
 		
 		registrationMapper.put("uuid", "oW51s5NUIqo");
@@ -37,7 +37,7 @@ public class DHISMapper {
 		registrationMapper.put("address3", "BHh4UtACHPc");
 		registrationMapper.put("trackedEntityType", "NpKZqkyYZFk");
 		registrationMapper.put("program", "q2uZRqRc0UD");
-		registrationMapper.put("AlternateMobileNumber", "q2uZRqRc0UD"); //newly added
+		registrationMapper.put("AlternateMobileNumber", "qATeZGtk5sL"); //newly added
 		
 		registrationMapper.put("patientId", "IiW2IfHRxfG");
 		registrationMapper.put("Spouse/FathersName", "Ng4MW4SP7wM"); //newly added
@@ -70,7 +70,7 @@ public class DHISMapper {
 		ServiceProvision.put("category", "oW1rh8s2SQ4");
 		ServiceProvision.put("netPayableAmount", "Ey8wpnMTGl3");
 		ServiceProvision.put("session", "FzFCFM4Zr43"); // newly added
-		ServiceProvision.put("other", "otXoI3cMuJU"); // newly added
+		ServiceProvision.put("others", "otXoI3cMuJU"); // newly added
 	}
 	
 	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();
@@ -80,6 +80,8 @@ public class DHISMapper {
 		selectOptionMapper.put("FinancialStatus", "");
 		selectOptionMapper.put("MaritalStatus", "");
 		selectOptionMapper.put("MobileNoOwner", "");
+		selectOptionMapper.put("Gov_Card_Type", "");
+		selectOptionMapper.put("PreferredCallingTime", "");
 	}
 	
 	public static final Map<String, String> dateMapper = new HashMap<String, String>();

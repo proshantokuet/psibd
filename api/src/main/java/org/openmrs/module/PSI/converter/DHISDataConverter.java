@@ -8,6 +8,7 @@ import java.util.Date;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.utils.DHISMapper;
 import org.springframework.stereotype.Component;
@@ -98,7 +99,7 @@ public class DHISDataConverter {
 				}
 			}
 		}
-		if (person.has("age")) {
+/*		if (person.has("age")) {
 			if (!person.isNull("age")) {
 				if (DHISMapper.registrationMapper.containsKey("age")) {
 					JSONObject age = new JSONObject();
@@ -107,7 +108,7 @@ public class DHISDataConverter {
 					attributes.put(age);
 				}
 			}
-		}
+		}*/
 		if (person.has("gender")) {
 			if (!person.isNull("gender")) {
 				if (DHISMapper.registrationMapper.containsKey("gender")) {
@@ -138,6 +139,51 @@ public class DHISDataConverter {
 				}
 			}
 		}
+		
+		if (person.has("AlternateMobileNumber")) {
+			if (!person.isNull("AlternateMobileNumber")) {
+				if (DHISMapper.registrationMapper.containsKey("AlternateMobileNumber")) {
+					JSONObject alternateMobileNUmber = new JSONObject();
+					alternateMobileNUmber.put("attribute", DHISMapper.registrationMapper.get("AlternateMobileNumber"));
+					alternateMobileNUmber.put("value", person.getString("AlternateMobileNumber"));
+					attributes.put(alternateMobileNUmber);
+				}
+			}
+		}
+		
+		if (person.has("Spouse/FathersName")) {
+			if (!person.isNull("Spouse/FathersName")) {
+				if (DHISMapper.registrationMapper.containsKey("Spouse/FathersName")) {
+					JSONObject spouseorFatherName = new JSONObject();
+					spouseorFatherName.put("attribute", DHISMapper.registrationMapper.get("Spouse/FathersName"));
+					spouseorFatherName.put("value", person.getString("Spouse/FathersName"));
+					attributes.put(spouseorFatherName);
+				}
+			}
+		}
+		
+//		if (person.has("Gov_Card_Type")) {
+//			if (!person.isNull("Gov_Card_Type")) {
+//				if (DHISMapper.registrationMapper.containsKey("Gov_Card_Type")) {
+//					JSONObject govCardType = new JSONObject();
+//					govCardType.put("attribute", DHISMapper.registrationMapper.get("Gov_Card_Type"));
+//					govCardType.put("value", person.getString("Gov_Card_Type"));
+//					attributes.put(govCardType);
+//				}
+//			}
+//		}
+		
+//		if (person.has("PreferredCallingTime")) {
+//			if (!person.isNull("PreferredCallingTime")) {
+//				if (DHISMapper.registrationMapper.containsKey("PreferredCallingTime")) {
+//					JSONObject preferredCallingTime = new JSONObject();
+//					preferredCallingTime.put("attribute", DHISMapper.registrationMapper.get("PreferredCallingTime"));
+//					preferredCallingTime.put("value", person.getString("PreferredCallingTime"));
+//					attributes.put(preferredCallingTime);
+//				}
+//			}
+//		}
+		
 		if (person.has("preferredAddress")) {
 			if (!person.isNull("preferredAddress")) {
 				
@@ -212,9 +258,24 @@ public class DHISDataConverter {
 	public static JSONObject toConvertMoneyReceipt(PSIServiceProvision psiServiceProvision, String trackedEntityInstanceId)
 	    throws JSONException {
 		JSONObject event = new JSONObject();
+		PSIMoneyReceipt psiMoneyReceipt =  psiServiceProvision.getPsiMoneyReceiptId();
+		String orgUit = psiMoneyReceipt.getOrgUnit();
+		String getClinicName = psiMoneyReceipt.getClinicName();
+		String getClinicCOde = psiMoneyReceipt.getClinicCode();
+		String getServicePoint = psiMoneyReceipt.getServicePoint();
+		String getSateliteClinicId = psiMoneyReceipt.getSateliteClinicId();
+		Date getServiceDate = psiMoneyReceipt.getMoneyReceiptDate();
+		String getTeamNo = psiMoneyReceipt.getTeamNo();
+		String getSlipNo = psiMoneyReceipt.getSlipNo();
+		String getreferenceId = psiMoneyReceipt.getReferenceId();
+		String getreference = psiMoneyReceipt.getReference();
+		String getSession = psiMoneyReceipt.getSession();
+		String getOthers = psiMoneyReceipt.getOthers();
+		String getCspId = psiMoneyReceipt.getCspId();
+		String getDataCollector = psiMoneyReceipt.getDataCollector();
 		
 		event.put("trackedEntityInstance", trackedEntityInstanceId);
-		event.put("orgUnit", psiServiceProvision.getPsiMoneyReceiptId().getOrgUnit());
+		event.put("orgUnit", orgUit);
 		event.put("program", DHISMapper.registrationMapper.get("program"));
 		event.put("programStage", DHISMapper.ServiceProvision.get("programStage"));
 		event.put("status", "COMPLETED");
@@ -226,47 +287,47 @@ public class DHISDataConverter {
 		
 		JSONObject clinicName = new JSONObject();
 		clinicName.put("dataElement", DHISMapper.ServiceProvision.get("clinicName"));
-		clinicName.put("value", psiServiceProvision.getPsiMoneyReceiptId().getClinicName());
+		clinicName.put("value", getClinicName);
 		dataValues.put(clinicName);
 		
 		JSONObject clinicId = new JSONObject();
 		clinicId.put("dataElement", DHISMapper.ServiceProvision.get("clinicId"));
-		clinicId.put("value", psiServiceProvision.getPsiMoneyReceiptId().getClinicCode());
+		clinicId.put("value",getClinicCOde);
 		dataValues.put(clinicId);
 		
 		JSONObject servicePoint = new JSONObject();
 		servicePoint.put("dataElement", DHISMapper.ServiceProvision.get("servicePoint"));
-		servicePoint.put("value", psiServiceProvision.getPsiMoneyReceiptId().getServicePoint());
+		servicePoint.put("value",getServicePoint);
 		dataValues.put(servicePoint);
 		
 		JSONObject saletilteClinicId = new JSONObject();
 		saletilteClinicId.put("dataElement", DHISMapper.ServiceProvision.get("saletilteClinicId"));
-		saletilteClinicId.put("value", psiServiceProvision.getPsiMoneyReceiptId().getSateliteClinicId());
+		saletilteClinicId.put("value",getSateliteClinicId);
 		dataValues.put(saletilteClinicId);
 		
 		JSONObject serviceDate = new JSONObject();
 		serviceDate.put("dataElement", DHISMapper.ServiceProvision.get("serviceDate"));
-		serviceDate.put("value", dateFormat.format(psiServiceProvision.getPsiMoneyReceiptId().getMoneyReceiptDate()));
+		serviceDate.put("value", dateFormat.format(getServiceDate));
 		dataValues.put(serviceDate);
 		
 		JSONObject teamNo = new JSONObject();
 		teamNo.put("dataElement", DHISMapper.ServiceProvision.get("teamNo"));
-		teamNo.put("value", psiServiceProvision.getPsiMoneyReceiptId().getTeamNo());
+		teamNo.put("value", getTeamNo);
 		dataValues.put(teamNo);
 		
 		JSONObject slipNo = new JSONObject();
 		slipNo.put("dataElement", DHISMapper.ServiceProvision.get("slipNo"));
-		slipNo.put("value", psiServiceProvision.getPsiMoneyReceiptId().getSlipNo());
+		slipNo.put("value", getSlipNo);
 		dataValues.put(slipNo);
 		
 		JSONObject reference = new JSONObject();
 		reference.put("dataElement", DHISMapper.ServiceProvision.get("reference"));
-		reference.put("value", psiServiceProvision.getPsiMoneyReceiptId().getReference());
+		reference.put("value", getreference);
 		dataValues.put(reference);
 		
 		JSONObject referenceId = new JSONObject();
 		referenceId.put("dataElement", DHISMapper.ServiceProvision.get("referenceId"));
-		referenceId.put("value", psiServiceProvision.getPsiMoneyReceiptId().getReferenceId());
+		referenceId.put("value", getreferenceId);
 		dataValues.put(referenceId);
 		
 		/*JSONObject session = new JSONObject();
@@ -317,6 +378,26 @@ public class DHISDataConverter {
 		category.put("dataElement", DHISMapper.ServiceProvision.get("category"));
 		category.put("value", psiServiceProvision.getCategory());
 		dataValues.put(category);
+		
+		JSONObject session = new JSONObject();
+		session.put("dataElement", DHISMapper.ServiceProvision.get("session"));
+		session.put("value", getSession);
+		dataValues.put(session);
+		
+		JSONObject sessionName = new JSONObject();
+		sessionName.put("dataElement", DHISMapper.ServiceProvision.get("others"));
+		sessionName.put("value", getOthers);
+		dataValues.put(sessionName);
+		
+		JSONObject cspId = new JSONObject();
+		cspId.put("dataElement", DHISMapper.ServiceProvision.get("cspId"));
+		cspId.put("value", getCspId);
+		dataValues.put(cspId);
+		
+		JSONObject dataCollector = new JSONObject();
+		dataCollector.put("dataElement", DHISMapper.ServiceProvision.get("dataCollector"));
+		dataCollector.put("value", getDataCollector);
+		dataValues.put(dataCollector);
 		
 		/*JSONObject provider = new JSONObject();
 		provider.put("dataElement", "sNpMqQaWrUV");
