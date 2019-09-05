@@ -75,6 +75,12 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private String designation;
 	
+	private float totalAmount;
+	
+	private float totalDiscount;
+	
+	private Date patientRegisteredDate;
+	
 	private PSIClinicManagement PSIClinicManagement;
 	
 	@Override
@@ -345,6 +351,31 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 		this.designation = designation;
 	}
 	
+
+	public float getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(float totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public float getTotalDiscount() {
+		return totalDiscount;
+	}
+
+	public void setTotalDiscount(float totalDiscount) {
+		this.totalDiscount = totalDiscount;
+	}
+
+	public Date getPatientRegisteredDate() {
+		return patientRegisteredDate;
+	}
+
+	public void setPatientRegisteredDate(Date patientRegisteredDate) {
+		this.patientRegisteredDate = patientRegisteredDate;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

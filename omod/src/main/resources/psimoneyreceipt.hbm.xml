@@ -31,6 +31,9 @@
 	    <property name="cspId" column="cspid" type="java.lang.String"/>
 	    <property name="dataCollector" column="data_collector" type="java.lang.String"/>
 	    <property name="designation" column="designation" type="java.lang.String"/>
+	    <property name="totalAmount" column="total_amount" type="float"/>
+	    <property name="totalDiscount" column="total_discount" type="float"/>
+	    <property name="patientRegisteredDate" column="patient_registered_date" type="java.util.Date"/>
 	    
 	    <set name="services" cascade="all">
 	       <key>
