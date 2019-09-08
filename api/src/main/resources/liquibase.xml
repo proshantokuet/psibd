@@ -268,6 +268,17 @@
 			<column name="designation" type="varchar(255)" />			
 		</addColumn>
 	 </changeSet>
+	 <changeSet author="Tanvir" id="psimoneyreceipt-1.0.5">
+	 	<addColumn tableName="psi_money_receipt">
+			<column name="total_amount" type="float" />			
+		</addColumn>
+		<addColumn tableName="psi_money_receipt">
+			<column name="total_discount" type="float" />			
+		</addColumn>
+		<addColumn tableName="psi_money_receipt">
+			<column name="patient_registered_date" type="datetime" />			
+		</addColumn>
+	 </changeSet>
 	
 	<changeSet id="psiserviceprovision-1.0.0" author="Proshanto">
 		<createTable tableName="psi_service_provision">

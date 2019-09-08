@@ -1,5 +1,7 @@
 package org.openmrs.module.PSI.web.controller.rest;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -148,6 +150,17 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiMoneyReceipt.setDesignation(designationObj.getString("designation"));
 				psiMoneyReceipt.setDataCollector(designationObj.getString("username"));
 			}
+			if (moneyReceipt.has("totalAmount")) {
+				psiMoneyReceipt.setTotalAmount(Float.parseFloat(moneyReceipt.getString("totalAmount")));
+			}
+			
+			if (moneyReceipt.has("totalDiscount")) {
+				psiMoneyReceipt.setTotalDiscount(Float.parseFloat(moneyReceipt.getString("totalDiscount")));
+			}
+			
+			if (moneyReceipt.has("patientRegisteredDate")) {
+				psiMoneyReceipt.setPatientRegisteredDate(yyyyMMdd.parse(moneyReceipt.getString("patientRegisteredDate")));
+			}
 			
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
@@ -230,7 +243,11 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			
 		}
 		catch (Exception e) {
-			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			String sStackTrace = sw.toString(); // stack trace as a string
+			return new ResponseEntity<String>(sStackTrace, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		return new ResponseEntity<String>(psiMoneyReceipt.getMid() + "", HttpStatus.OK);
