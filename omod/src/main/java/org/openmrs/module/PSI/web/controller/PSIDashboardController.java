@@ -85,9 +85,12 @@ public class PSIDashboardController {
 	                                   @RequestParam(required = true) String startDate,
 	                                   @RequestParam(required = true) String endDate,
 	                                   @RequestParam(required = true) String clinic_code) {
-		
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
 		String ClinicCode = "";
-		if (clinic_code.equalsIgnoreCase("-1")) { // for user who is assinged to a clinic
+		if(isAdmin){
+			ClinicCode = "0";
+		}else if (clinic_code.equalsIgnoreCase("-1")) { // for user who is assinged to a clinic vfor manager
 			PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 			    Context.getAuthenticatedUser().getUsername());
 			ClinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
@@ -103,9 +106,7 @@ public class PSIDashboardController {
 		List<PSIReport> reports = Context.getService(PSIServiceProvisionService.class).servicePointWiseReport(startDate,
 		    endDate, ClinicCode);
 		model.addAttribute("reports", reports);
-		/*model.addAttribute("reportr",
-		    Context.getService(PSIServiceProvisionService.class).servicePointWiseRepor(startDate, endDate, "mouha84s"));
-		*/
+		
 	}
 	
 	@RequestMapping(value = "/module/PSI/ServiceProviderWise", method = RequestMethod.GET)
@@ -114,10 +115,13 @@ public class PSIDashboardController {
 	                                      @RequestParam(required = true) String endDate,
 	                                      @RequestParam(required = true) String dataCollector,
 	                                      @RequestParam(required = true) String code) {
-		/*Context.getAuthenticatedUser()*/
-		/*UserDTO userDTO = Context.getService(PSIClinicUserService.class).findByUserNameFromOpenmrs(provider);*/
+		
 		String clinicCode = "";
-		if (code.equalsIgnoreCase("-1")) { // for user who is assinged to a clinic
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		if(isAdmin){
+			clinicCode = "0";
+		} else if (code.equalsIgnoreCase("-1")) { // for user who is assinged to a clinic
 			PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 			    Context.getAuthenticatedUser().getUsername());
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();

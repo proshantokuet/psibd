@@ -295,20 +295,26 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String newPatienClinicCondition = "";
 		String newPatienDataCollectorCondition = "";
 		if (!"0".equalsIgnoreCase(code)) {
-			newPatienClinicCondition = " person_attribute_type_id = :typeId  and value = :code and ";
+			newPatienClinicCondition = " where PAT.person_attribute_type_id = :typeId  and PAT.value = :code ";
 		}
 		int creator = 0;
 		if (!"".equalsIgnoreCase(dataCollector)) {
 			User findUser = Context.getService(UserService.class).getUserByUsername(dataCollector);
 			creator = findUser.getId();
-			newPatienDataCollectorCondition = " p.creator = :creator   and ";
+			newPatienDataCollectorCondition = " pa.creator = :creator   and ";
 		}
-		String newPatientSql = "SELECT count(distinct(p.patient_id)) FROM openmrs.patient as p left join openmrs.person_attribute  as pa on p.patient_id = pa.person_id where "
-		        + newPatienClinicCondition
-		        + newPatienDataCollectorCondition
-		        + "  DATE(p.date_created) between '"
-		        + start
-		        + "' and '" + end + "'";
+		
+		
+		String newPatientSql = " select count(*) from ( select  pa.person_id personId from person_attribute pa where "
+				+ " pa.person_attribute_type_id = " + PSIConstants.attributeTypeRegDate+ " and  "
+				+  newPatienDataCollectorCondition				
+				+ " DATE(pa.value) between '"
+				+ start
+				+ "' and '" + end + "' "
+				+ " ) as a  "
+				+ " join  ( SELECT distinct (PAT.person_id) personId "
+				+ " FROM person_attribute as PAT " + newPatienClinicCondition + " ) as b  "
+				+ "  on a.personId = b.personId ";
 		SQLQuery newPatientQuery = sessionFactory.getCurrentSession().createSQLQuery(newPatientSql);
 		List<BigInteger> newPatientData = new ArrayList<BigInteger>();
 		if (!"0".equalsIgnoreCase(code)) {

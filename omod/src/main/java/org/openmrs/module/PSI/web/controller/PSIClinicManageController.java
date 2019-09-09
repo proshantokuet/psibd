@@ -1,5 +1,12 @@
 package org.openmrs.module.PSI.web.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,14 +15,17 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicSpot;
+import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicSpotService;
+import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.dto.PSILocation;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
@@ -26,6 +36,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -192,6 +203,119 @@ public class PSIClinicManageController {
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+	}
+	
+	@RequestMapping(value = "/module/PSI/uploadPSIClinicSpot", method = RequestMethod.GET)
+	public void uploadPSIClinicSpot(HttpServletRequest request, HttpSession session, Model model,
+	                             @RequestParam(required = true) int id) throws JSONException {
+		model.addAttribute("pSIClinicSpot", new PSIClinicSpot());
+		model.addAttribute("id", id);
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+	}
+	
+	@SuppressWarnings("resource")
+	@RequestMapping(value = "/module/PSI/uploadPSIClinicSpot", method = RequestMethod.POST)
+	public void uploadPSIClinicService(@RequestParam MultipartFile file, HttpServletRequest request, ModelMap model,
+	                                           @RequestParam(required = false) int id) throws Exception {
+		
+		String msg = "";
+		if (file.isEmpty()) {
+			// model.put("msg", "failed to upload file because its empty");
+			model.addAttribute("msg", "failed to upload file because its empty");
+			model.addAttribute("id", id);
+			// return new ModelAndView("redirect:/module/PSI/uploadPSIClinicSpot.form?id=" + id);
+		} else if (!"text/csv".equalsIgnoreCase(file.getContentType())) {
+			model.addAttribute("msg", "file type should be '.csv'");
+			model.addAttribute("id", id);
+			// return new ModelAndView("redirect:/module/PSI/uploadPSIClinicSpot.form?id=" + id);
+		}
+		
+		String rootPath = request.getSession().getServletContext().getRealPath("/");
+		File dir = new File(rootPath + File.separator + "uploadedfile");
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		
+		File csvFile = new File(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+		
+		try {
+			try (InputStream is = file.getInputStream();
+			        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(csvFile))) {
+				int i;
+				
+				while ((i = is.read()) != -1) {
+					stream.write(i);
+				}
+				stream.flush();
+			}
+		}
+		catch (IOException e) {
+			model.put("msg", "failed to process file because : " + e.getMessage());
+			//return new ModelAndView("redirect:/module/PSI/uploadPSIClinicSpot.form?id=" + id);
+		}
+		log.info("CSV FIle:" + csvFile.getName());
+		
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		int index = 0;
+		try {
+			PSIClinicManagement psiClinicManagement = Context.getService(
+					PSIClinicManagementService.class).findById(id);
+			br = new BufferedReader(new FileReader(csvFile));
+
+			while ((line = br.readLine()) != null) {
+				String[] spot = line.split(cvsSplitBy);
+				if (index != 0) {
+					PSIClinicSpot psiClinicSpot = new PSIClinicSpot();
+					String name = "";
+					if (!StringUtils.isBlank(spot[0])) {
+						name = spot[0];
+					}
+					psiClinicSpot.setName(name);
+					String code = "";
+					if (!StringUtils.isBlank(spot[1])) {
+						code = spot[1];
+					}
+					psiClinicSpot.setCode(code);
+					String address = "";
+					if (!StringUtils.isBlank(spot[2])) {
+						address = spot[2];
+					}
+					psiClinicSpot.setAddress(address);
+					psiClinicSpot.setPsiClinicManagement(psiClinicManagement);
+					String orgId = "";
+					if (!StringUtils.isBlank(spot[3])) {
+						orgId = spot[3];
+					}
+					psiClinicSpot.setDhisId(orgId);
+
+					psiClinicSpot.setDateCreated(new Date());
+					psiClinicSpot.setCreator(Context
+							.getAuthenticatedUser());
+					psiClinicSpot.setUuid(UUID.randomUUID().toString());
+					Context.getService(PSIClinicSpotService.class)
+							.saveOrUpdate(psiClinicSpot);
+
+				}
+				index++;
+			}
+			model.addAttribute("pSIClinicSpot", new PSIClinicSpot());
+			model.addAttribute("id", id);
+			model.addAttribute("msg","Total successfully Spot uploaded: " + (index - 1));
+		}
+		catch (Exception e) {
+			log.info("Some problem occured, please contact with admin..");
+			msg = "failed to process file because : " + e.fillInStackTrace();
+			e.printStackTrace();
+			//return new ModelAndView("redirect:/module/PSI/uploadPSIClinicSpot.form?id=" + id);
+		}
+		//return new ModelAndView("redirect:/module/PSI/uploadPSIClinicSpot.form?id=" + id);
+		
 	}
 	
 	@RequestMapping(value = "/module/PSI/editPSIClinicSpot", method = RequestMethod.GET)
