@@ -11,7 +11,7 @@
 	<div class="form">
     	<div class="note">
     	    
-        	<p style="padding-left: 10px;">Upload CSV</p>
+        	<p>Upload Community Clinic Spot Via CSV</p>
         	
        	</div>
 		<div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
