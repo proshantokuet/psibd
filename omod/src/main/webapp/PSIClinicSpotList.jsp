@@ -5,11 +5,13 @@
 <openmrs:require privilege="Clinic Spot List" otherwise="/login.htm" />
 
 <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicSpot.form?id=${id}"><spring:message
-				code="PSI.psiClinicSpotAddNew" /></a> 
+				code="PSI.psiClinicSpotAddNew" /></a>
+<a style="padding-left: 10px;" href="${pageContext.request.contextPath}/module/PSI/uploadPSIClinicSpot.form?id=${id}"><spring:message
+                code="PSI.psiClinicUploadCsv" /></a>  
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
 		<div class="note">
-		<p>Community Clinic Spot List of ${psiClinicManagement.name } (${psiClinicManagement.clinicId })</p>        	
+		<p>Community Clinic Spot List of ${PSIClinicManagement.name } (${psiClinicManagement.clinicId })</p>        	
 		</div>	
 	</div>
 	<br />

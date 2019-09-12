@@ -32,8 +32,8 @@
 	  <thead>
 	        <tr>
 	            <th>Category</th>	            
-	            <th>Item</th>
 	            <th>Code</th>
+	            <th>Item</th>
 	            <th>Number of Service</th>	            
 	            <th>Total</th>
 	        </tr>
