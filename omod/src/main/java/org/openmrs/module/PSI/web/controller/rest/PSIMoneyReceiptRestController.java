@@ -162,6 +162,10 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiMoneyReceipt.setPatientRegisteredDate(yyyyMMdd.parse(moneyReceipt.getString("patientRegisteredDate")));
 			}
 			
+			if (moneyReceipt.has("isComplete")) {
+				psiMoneyReceipt.setIsComplete(moneyReceipt.getInt("isComplete"));
+			}
+			
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
 			psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
@@ -243,11 +247,8 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			
 		}
 		catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			String sStackTrace = sw.toString(); // stack trace as a string
-			return new ResponseEntity<String>(sStackTrace, HttpStatus.INTERNAL_SERVER_ERROR);
+
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		return new ResponseEntity<String>(psiMoneyReceipt.getMid() + "", HttpStatus.OK);

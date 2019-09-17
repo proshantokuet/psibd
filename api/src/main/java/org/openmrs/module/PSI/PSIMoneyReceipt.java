@@ -81,6 +81,8 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private Date patientRegisteredDate;
 	
+	private int isComplete;
+	
 	private PSIClinicManagement PSIClinicManagement;
 	
 	@Override
@@ -374,6 +376,14 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 
 	public void setPatientRegisteredDate(Date patientRegisteredDate) {
 		this.patientRegisteredDate = patientRegisteredDate;
+	}
+
+	public int getIsComplete() {
+		return isComplete;
+	}
+
+	public void setIsComplete(int isComplete) {
+		this.isComplete = isComplete;
 	}
 
 	@Override

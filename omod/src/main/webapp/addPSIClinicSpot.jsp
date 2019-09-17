@@ -40,7 +40,7 @@
                 		Spot Name <form:input path="name" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="1"/>
                   	</div>
                   	<div class="form-group">
-                  		Code:  <form:input path="code" pattern=".{3,}" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="2"/>
+                  		Code:  <form:input path="code" pattern=".{1,}" style="height: 39px;" class="form-control" required="required" autocomplete="off" tabindex="2"/>
                    	</div>
                    	
              	</div>

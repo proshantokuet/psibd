@@ -109,7 +109,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .getCurrentSession()
 		        .createQuery(
 		            "from PSIServiceProvision where timestamp > :timestamp and is_complete = :complete order by timestamp asc ")
-		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(500)
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(200)
 		        
 		        .list();
 		return lists;
@@ -241,7 +241,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 		DashboardDTO dashboardDTO = new DashboardDTO();
 		String servedPatientSql = "SELECT count(distinct(patient_uuid)) as count FROM openmrs.psi_money_receipt where "
-		        + servedPatienClinicCondition + servedPatienDataCollectorCondition + " DATE(money_receipt_date) between '"
+		        + servedPatienClinicCondition + servedPatienDataCollectorCondition + " is_complete = 1 and DATE(money_receipt_date) between '"
 		        + start + "' and '" + end + "'";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(servedPatientSql);
 		
@@ -305,7 +305,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}
 		
 		
-		String newPatientSql = " select count(*) from ( select  pa.person_id personId from person_attribute pa where "
+		String newPatientSql = " select count(*) from ( select distinct(pa.person_id) personId from person_attribute pa where "
 				+ " pa.person_attribute_type_id = " + PSIConstants.attributeTypeRegDate+ " and  "
 				+  newPatienDataCollectorCondition				
 				+ " DATE(pa.value) between '"

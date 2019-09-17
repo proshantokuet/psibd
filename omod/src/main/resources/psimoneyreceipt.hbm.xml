@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.openmrs.module.PSI.PSIMoneyReceipt" table="psi_money_receipt">
+    <class name="org.openmrs.module.PSI.PSIMoneyReceipt" table="psi_money_receipt" lazy="false">
         <id column="mid" name="mid" type="int">
             <generator class="native"/>
         </id> 
@@ -34,6 +34,7 @@
 	    <property name="totalAmount" column="total_amount" type="float"/>
 	    <property name="totalDiscount" column="total_discount" type="float"/>
 	    <property name="patientRegisteredDate" column="patient_registered_date" type="java.util.Date"/>
+	    <property name="isComplete" column="is_complete" type="int"/>
 	    
 	    <set name="services" cascade="all">
 	       <key>

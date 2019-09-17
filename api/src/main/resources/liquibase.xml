@@ -279,6 +279,11 @@
 			<column name="patient_registered_date" type="datetime" />			
 		</addColumn>
 	 </changeSet>
+	 <changeSet author="Tanvir" id="psimoneyreceipt-1.0.6">
+	 	 	<addColumn tableName="psi_money_receipt">
+			<column name="is_complete" type="int(1)" />			
+		</addColumn>
+	 </changeSet>
 	
 	<changeSet id="psiserviceprovision-1.0.0" author="Proshanto">
 		<createTable tableName="psi_service_provision">
