@@ -278,11 +278,18 @@
 		<addColumn tableName="psi_money_receipt">
 			<column name="patient_registered_date" type="datetime" />			
 		</addColumn>
+		<sql>
+	 		update openmrs.psi_money_receipt set `total_amount` = 0 ;
+	 		update openmrs.psi_money_receipt set `total_discount` = 0 ;
+	 	</sql>
 	 </changeSet>
 	 <changeSet author="Tanvir" id="psimoneyreceipt-1.0.6">
 	 	 	<addColumn tableName="psi_money_receipt">
 			<column name="is_complete" type="int(1)" />			
 		</addColumn>
+		<sql>
+	 		update openmrs.psi_money_receipt set `is_complete` = 1 ;
+	 	</sql>
 	 </changeSet>
 	
 	<changeSet id="psiserviceprovision-1.0.0" author="Proshanto">
