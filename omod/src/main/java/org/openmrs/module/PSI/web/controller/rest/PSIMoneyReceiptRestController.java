@@ -6,7 +6,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -39,14 +41,17 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		JSONObject requestBody = new JSONObject(jsonStr);
 		JSONObject moneyReceipt = requestBody.getJSONObject("moneyReceipt");
 		JSONArray services = requestBody.getJSONArray("services");
-		PSIMoneyReceipt psiMoneyReceipt = new PSIMoneyReceipt();
+		PSIMoneyReceipt psiMoneyReceipt = null;
 		int moneyReceiptId = 0;
 		try {
 			
 			if (moneyReceipt.has("mid")) {
 				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
 					moneyReceiptId = Integer.parseInt(moneyReceipt.getString("mid"));
-					psiMoneyReceipt.setMid(moneyReceiptId);
+					psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(moneyReceiptId);
+					//psiMoneyReceipt.setMid(moneyReceiptId);
+				}else{
+					psiMoneyReceipt = new PSIMoneyReceipt();
 				}
 			}
 			if (moneyReceipt.has("patientName")) {
@@ -171,22 +176,23 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
 			psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
 			
-			List<PSIServiceProvision> getProvisions = Context.getService(PSIServiceProvisionService.class)
+			/*List<PSIServiceProvision> getProvisions = Context.getService(PSIServiceProvisionService.class)
 			        .findAllByMoneyReceiptId(psiMoneyReceipt.getMid());
 			for (PSIServiceProvision psiServiceProvision : getProvisions) {
 				Context.getService(PSIServiceProvisionService.class).delete(psiServiceProvision.getSpid());
-			}
-			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+			}*/
+			//psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
 			
-			//Set<PSIServiceProvision> serviceProvisions = new HashSet<PSIServiceProvision>();
+			Set<PSIServiceProvision> serviceProvisions = new HashSet<PSIServiceProvision>();
 			for (int i = 0; i < services.length(); i++) {
 				PSIServiceProvision psiServiceProvision = new PSIServiceProvision();
 				JSONObject service = services.getJSONObject(i);
-				/*if (service.has("spid")) {
+				if (service.has("spid")) {
 					if (!service.getString("spid").equalsIgnoreCase("")) {
-						psiServiceProvision.setSpid(Integer.parseInt(service.getString("spid")));
+						psiServiceProvision = Context.getService(PSIServiceProvisionService.class).findById(Integer.parseInt(service.getString("spid")));
+						//psiServiceProvision.setSpid(Integer.parseInt(service.getString("spid")));
 					}
-				}*/
+				}
 				if (service.has("item")) {
 					JSONObject itemObj = new JSONObject(service.getString("item"));
 					psiServiceProvision.setItem(itemObj.getString("name"));
@@ -237,13 +243,14 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
 				psiServiceProvision.setUuid(UUID.randomUUID().toString());
 				psiServiceProvision.setTimestamp(System.currentTimeMillis());
-				psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
+				//psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
 				
-				Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-				//serviceProvisions.add(psiServiceProvision);
+				//Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+				serviceProvisions.add(psiServiceProvision);
 			}
-			//psiMoneyReceipt.setServices(serviceProvisions);
-			//psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+			
+			psiMoneyReceipt.setServices(serviceProvisions);
+			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
 			
 		}
 		catch (Exception e) {
