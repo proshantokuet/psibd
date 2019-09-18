@@ -23,6 +23,7 @@ public class DHISDataConverter {
 		//trackentityInstances.put("orgUnit", "DcDZR6okGhw");
 		JSONArray attributes = new JSONArray();
 		String orgUnit = "";
+		String registeredDate = "";
 		JSONObject person = patient.getJSONObject("person");
 		JSONArray patientAttributes = person.getJSONArray("attributes");
 		for (int i = 0; i < patientAttributes.length(); i++) {
@@ -41,6 +42,7 @@ public class DHISDataConverter {
 					if (DHISMapper.selectOptionMapper.containsKey(attributeTypeName)) {
 						attribute.put("value", patientAttribute.getString("display"));
 					} else if (DHISMapper.dateMapper.containsKey(attributeTypeName)) {
+						registeredDate = patientAttribute.getString("value").substring(0, 10);
 						attribute.put("value", patientAttribute.getString("value").substring(0, 10));
 					} else {
 						attribute.put("value", patientAttribute.getString("value"));
@@ -246,8 +248,8 @@ public class DHISDataConverter {
 		JSONObject enrollment = new JSONObject();
 		enrollment.put("orgUnit", orgUnit);
 		enrollment.put("program", DHISMapper.registrationMapper.get("program"));
-		enrollment.put("enrollmentDate", today);
-		enrollment.put("incidentDate", today);
+		enrollment.put("enrollmentDate", registeredDate);
+		enrollment.put("incidentDate", registeredDate);
 		//enrollment.put("status", "COMPLETED");
 		enrollments.put(enrollment);
 		trackentityInstances.put("enrollments", enrollments);
@@ -282,7 +284,8 @@ public class DHISDataConverter {
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String today = dateFormat.format(date);
-		event.put("eventDate", today);
+		String moneyReceiptDate = getServiceDate.toString();
+		event.put("eventDate", moneyReceiptDate);
 		JSONArray dataValues = new JSONArray();
 		
 		JSONObject clinicName = new JSONObject();

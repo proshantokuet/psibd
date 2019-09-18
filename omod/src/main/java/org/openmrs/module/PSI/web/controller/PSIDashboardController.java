@@ -88,9 +88,10 @@ public class PSIDashboardController {
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
 		String ClinicCode = "";
-		if(isAdmin){
-			ClinicCode = "0";
-		}else if (clinic_code.equalsIgnoreCase("-1")) { // for user who is assinged to a clinic vfor manager
+//		if(isAdmin){
+//			ClinicCode = "0";
+//		}else 
+		if (clinic_code.equalsIgnoreCase("-1")) { // for user who is assinged to a clinic vfor manager
 			PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 			    Context.getAuthenticatedUser().getUsername());
 			ClinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
