@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.openmrs.module.PSI.PSIClinicInwardReferral" table="psi_clinic_inward_referral">
+    <class name="org.openmrs.module.PSI.PSIClinicInwardReferral" table="psi_clinic_inward_referral" lazy="false">
         <id column="inward_referral_id" name="inwardReferralId" type="int">
             <generator class="native"/>
         </id> 

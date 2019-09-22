@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.velocity.runtime.directive.Foreach;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.User;
@@ -109,7 +110,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .getCurrentSession()
 		        .createQuery(
 		            "from PSIServiceProvision where timestamp > :timestamp and is_complete = :complete order by timestamp asc ")
-		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(500)
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(200)
 		        
 		        .list();
 		return lists;
@@ -241,7 +242,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 		DashboardDTO dashboardDTO = new DashboardDTO();
 		String servedPatientSql = "SELECT count(distinct(patient_uuid)) as count FROM openmrs.psi_money_receipt where "
-		        + servedPatienClinicCondition + servedPatienDataCollectorCondition + " DATE(money_receipt_date) between '"
+		        + servedPatienClinicCondition + servedPatienDataCollectorCondition + " is_complete = 1 and DATE(money_receipt_date) between '"
 		        + start + "' and '" + end + "'";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(servedPatientSql);
 		
@@ -305,7 +306,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}
 		
 		
-		String newPatientSql = " select count(*) from ( select  pa.person_id personId from person_attribute pa where "
+		String newPatientSql = " select count(*) from ( select distinct(pa.person_id) personId from person_attribute pa where "
 				+ " pa.person_attribute_type_id = " + PSIConstants.attributeTypeRegDate+ " and  "
 				+  newPatienDataCollectorCondition				
 				+ " DATE(pa.value) between '"
@@ -370,5 +371,19 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .setInteger("moneyReceiptId", moneyReceiptId).list();
 		
 		return lists;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void deleteByPatientUuidAndMoneyReceiptIdNull(String patientUuid) {
+		
+		List<PSIServiceProvision> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceProvision where psi_money_receipt_id is null and patient_uuid = :id").setString("id", patientUuid).list();
+		if (lists.size() != 0) {
+			for (PSIServiceProvision serviceProvision : lists) {
+				int spid = serviceProvision.getSpid();
+			    delete(spid);
+			} 
+		}
 	}
 }
