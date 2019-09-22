@@ -38,4 +38,6 @@ public interface PSIServiceProvisionDAO {
 	public List<PSIServiceProvision> findAllResend();
 	
 	public List<PSIServiceProvision> findAllByMoneyReceiptId(int moneyReceiptId);
+	
+	public void deleteByPatientUuidAndMoneyReceiptIdNull(String patientUuid);
 }

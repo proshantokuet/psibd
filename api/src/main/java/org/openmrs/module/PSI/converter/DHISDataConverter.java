@@ -284,7 +284,7 @@ public class DHISDataConverter {
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String today = dateFormat.format(date);
-		String moneyReceiptDate = getServiceDate.toString();
+		String moneyReceiptDate = dateFormat.format(getServiceDate);
 		event.put("eventDate", moneyReceiptDate);
 		JSONArray dataValues = new JSONArray();
 		

@@ -251,6 +251,11 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			
 			psiMoneyReceipt.setServices(serviceProvisions);
 			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+			if (moneyReceipt.has("mid")) {
+				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
+					Context.getService(PSIServiceProvisionService.class).deleteByPatientUuidAndMoneyReceiptIdNull(moneyReceipt.getString("patientUuid"));
+				}
+			}
 			
 		}
 		catch (Exception e) {

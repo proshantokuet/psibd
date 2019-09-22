@@ -111,5 +111,11 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		// TODO Auto-generated method stub
 		return dao.findAllByMoneyReceiptId(moneyReceiptId);
 	}
+
+	@Override
+	public void deleteByPatientUuidAndMoneyReceiptIdNull(String patientUuid) {
+		dao.deleteByPatientUuidAndMoneyReceiptIdNull(patientUuid);
+		
+	}
 	
 }

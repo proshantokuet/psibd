@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.velocity.runtime.directive.Foreach;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.User;
@@ -370,5 +371,19 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .setInteger("moneyReceiptId", moneyReceiptId).list();
 		
 		return lists;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void deleteByPatientUuidAndMoneyReceiptIdNull(String patientUuid) {
+		
+		List<PSIServiceProvision> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceProvision where psi_money_receipt_id is null and patient_uuid = :id").setString("id", patientUuid).list();
+		if (lists.size() != 0) {
+			for (PSIServiceProvision serviceProvision : lists) {
+				int spid = serviceProvision.getSpid();
+			    delete(spid);
+			} 
+		}
 	}
 }
