@@ -43,7 +43,7 @@ public class DHISDataConverter {
 						attribute.put("value", patientAttribute.getString("display"));
 					} else if (DHISMapper.dateMapper.containsKey(attributeTypeName)) {
 						registeredDate = patientAttribute.getString("value").substring(0, 10);
-						attribute.put("value", patientAttribute.getString("value").substring(0, 10));
+						attribute.put("value", registeredDate);
 					} else {
 						attribute.put("value", patientAttribute.getString("value"));
 					}

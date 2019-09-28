@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.velocity.runtime.directive.Parse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.Person;
@@ -39,7 +41,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import antlr.Utils;
+
 import com.google.gson.Gson;
+import com.mchange.v2.codegen.bean.ParsedPropertyBeanDocument;
 
 @RequestMapping("/rest/v1/clinic-user/")
 @RestController
@@ -164,6 +169,11 @@ public class PSIClinicUserRestController extends MainResourceController {
 			String userName = clinicUserDTO.getUserName();
 			String rolesNames = clinicUserDTO.getRoles();
 			String gender = clinicUserDTO.getGender();
+			String isRetired = clinicUserDTO.getRetireStatus(); 
+			String deactivateReasonString = "";
+			if(!StringUtils.isBlank(clinicUserDTO.getDeactivateReason())) {
+			   deactivateReasonString = clinicUserDTO.getDeactivateReason();
+			}
 			int clinicId = clinicUserDTO.getClinicId();
 			int cuid = clinicUserDTO.getCuid();
 			int personId = clinicUserDTO.getPersonId();
@@ -197,6 +207,11 @@ public class PSIClinicUserRestController extends MainResourceController {
 				person = Context.getService(PersonService.class).savePerson(person);
 				user.setPerson(person);
 				user.setUsername(userName);
+				if (!StringUtils.isBlank(deactivateReasonString)) {
+					user.setRetired(true);
+					user.setRetiredBy(Context.getAuthenticatedUser());
+					user.setRetireReason(deactivateReasonString);
+				}
 				user.setRoles(roles);
 				user = Context.getService(UserService.class).saveUser(user);
 				if (!PSIConstants.DefaultPassword.equalsIgnoreCase(password)) {
@@ -218,7 +233,16 @@ public class PSIClinicUserRestController extends MainResourceController {
 				    clinicId));
 				Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
 				msg = "";
-			} else {
+			}
+
+			else if (StringUtils.isBlank(deactivateReasonString)
+					&& !StringUtils.isBlank(isRetired)) {
+				List<User> retiredUsersList = Context.getService(UserService.class).getUsersByPerson(person, true);
+				User retiredUser = retiredUsersList.get(0);
+				Context.getService(UserService.class).unretireUser(retiredUser);
+			}
+
+			else {
 				msg = "User name doesn't exists";
 			}
 			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);

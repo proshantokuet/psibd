@@ -137,7 +137,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		        + "FROM openmrs.psi_clinic as pcl left join openmrs.psi_clinic_user pclu "
 		        + "on pcl.cid = pclu.psi_clinic_management_id left join openmrs.users as U "
 		        + "on pclu.user_uame = U.username left join openmrs.user_role as UL on "
-		        + "U.user_id = UL.user_id where  pcl.clinic_id= :code and role in('Doctor','Counselor','Paramedic(Static)','Lab Technician','Paramedic(Satellite)','CSP','Pharmacist','Admin-Assistant')";
+		        + "U.user_id = UL.user_id where  pcl.clinic_id= :code and U.retired='0' and role in('Doctor','Counselor','Paramedic','Lab Technician','Clinic Aid','CSP','Pharmacist','Admin-Assistant')";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		
 		data = query.setString("code", code).list();
@@ -155,6 +155,32 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		
 	}
 	
+	@Override
+	public List<UserDTO> findAllactiveAndInactiveUserByCode(String code) {
+		List<Object[]> data = null;
+		List<UserDTO> users = new ArrayList<UserDTO>();
+		
+		String sql = "SELECT U.user_id,pclu.user_uame, role "
+		        + "FROM openmrs.psi_clinic as pcl left join openmrs.psi_clinic_user pclu "
+		        + "on pcl.cid = pclu.psi_clinic_management_id left join openmrs.users as U "
+		        + "on pclu.user_uame = U.username left join openmrs.user_role as UL on "
+		        + "U.user_id = UL.user_id where  pcl.clinic_id= :code and role in('Doctor','Counselor','Paramedic','Lab Technician','Clinic Aid','CSP','Pharmacist','Admin-Assistant')";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		
+		data = query.setString("code", code).list();
+		
+		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+			Object[] objects = (Object[]) iterator.next();
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(Integer.parseInt(objects[0] + ""));
+			userDTO.setUsername(objects[1] + "");
+			userDTO.setUserRole(objects[1] + "-" + objects[2] + "");
+			userDTO.setRole(objects[2] + "");
+			users.add(userDTO);
+		}
+		return users;
+	}
+
 	@Override
 	public List<UserDTO> findUsersNotInClinic(int clinicId) {
 		List<Object[]> data = null;
@@ -214,7 +240,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 	@Override
 	public List<UserDTO> findUserByClinicIdWithRawQuery(int clincicId) {
 		List<UserDTO> patients = new ArrayList<UserDTO>();
-		String sql = "SELECT PCU.mobile,PCU.email,PCU.cuid,U.user_id as userId,U.username as userName,P.gender,P.person_id as personId,PN.given_name as firstName,PN.family_name as lastName"
+		String sql = "SELECT PCU.mobile,PCU.email,PCU.cuid,U.user_id as userId,U.username as userName,U.retired,P.gender,P.person_id as personId,PN.given_name as firstName,PN.family_name as lastName"
 		        + " ,(select GROUP_CONCAT(role SEPARATOR ' , ')  from openmrs.user_role where user_id = U.user_id) role"
 		        + " from openmrs.psi_clinic_user as PCU  left join"
 		        + " openmrs.users as U on PCU.user_uame = U.username left join openmrs.person as P"
@@ -225,7 +251,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		        .addScalar("userId", StandardBasicTypes.INTEGER).addScalar("userName", StandardBasicTypes.STRING)
 		        .addScalar("personId", StandardBasicTypes.INTEGER).addScalar("firstName", StandardBasicTypes.STRING)
 		        .addScalar("lastName", StandardBasicTypes.STRING).addScalar("role", StandardBasicTypes.STRING)
-		        .addScalar("gender", StandardBasicTypes.STRING)
+		        .addScalar("gender", StandardBasicTypes.STRING).addScalar("retired", StandardBasicTypes.BOOLEAN)
 		        
 		        .setInteger("clincicId", clincicId).setResultTransformer(new AliasToBeanResultTransformer(UserDTO.class))
 		        .list();
@@ -240,7 +266,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 	@Override
 	public UserDTO findUserByIdWithRawQuery(String userName) {
 		List<UserDTO> user = new ArrayList<UserDTO>();
-		String sql = "SELECT PCU.mobile,PCU.email,PCU.cuid,U.user_id as userId,U.username as userName,P.gender,P.person_id as personId,PN.given_name as firstName,PN.family_name as lastName"
+		String sql = "SELECT PCU.mobile,PCU.email,PCU.cuid,U.user_id as userId,U.username as userName,U.retired,P.gender,P.person_id as personId,PN.given_name as firstName,PN.family_name as lastName"
 		        + " ,(select GROUP_CONCAT(role SEPARATOR ' , ')  from openmrs.user_role where user_id = U.user_id) role"
 		        + " from openmrs.psi_clinic_user as PCU  left join"
 		        + " openmrs.users as U on PCU.user_uame = U.username left join openmrs.person as P"
@@ -251,7 +277,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		        .addScalar("userId", StandardBasicTypes.INTEGER).addScalar("userName", StandardBasicTypes.STRING)
 		        .addScalar("personId", StandardBasicTypes.INTEGER).addScalar("firstName", StandardBasicTypes.STRING)
 		        .addScalar("lastName", StandardBasicTypes.STRING).addScalar("role", StandardBasicTypes.STRING)
-		        .addScalar("gender", StandardBasicTypes.STRING)
+		        .addScalar("gender", StandardBasicTypes.STRING).addScalar("retired", StandardBasicTypes.BOOLEAN)
 		        
 		        .setString("userName", userName).setResultTransformer(new AliasToBeanResultTransformer(UserDTO.class))
 		        .list();

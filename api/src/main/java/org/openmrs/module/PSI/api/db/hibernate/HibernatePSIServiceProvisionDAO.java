@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.runtime.directive.Foreach;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.User;
@@ -109,9 +110,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		lists = sessionFactory
 		        .getCurrentSession()
 		        .createQuery(
-		            "from PSIServiceProvision where timestamp > :timestamp and is_complete = :complete order by timestamp asc ")
-		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(200)
-		        
+		            "from PSIServiceProvision where timestamp > :timestamp and psiMoneyReceiptId is not null and is_complete = :complete order by timestamp asc ")
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(3000)
 		        .list();
 		return lists;
 		
@@ -301,8 +301,21 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		int creator = 0;
 		if (!"".equalsIgnoreCase(dataCollector)) {
 			User findUser = Context.getService(UserService.class).getUserByUsername(dataCollector);
-			creator = findUser.getId();
-			newPatienDataCollectorCondition = " pa.creator = :creator   and ";
+			if (findUser != null) {
+				creator = findUser.getId();
+				newPatienDataCollectorCondition = " pa.creator = :creator   and ";
+			}
+			else {
+				Query queryforRetired = sessionFactory.getCurrentSession().createQuery(
+					    "from User u where u.retired = '1' and (u.username = ? or u.systemId = ?)");
+				queryforRetired.setString(0, dataCollector);
+				queryforRetired.setString(1, dataCollector);
+					List<User> users = queryforRetired.list();
+					User retiredUser = users.get(0);
+					creator = retiredUser.getId();
+					newPatienDataCollectorCondition = " pa.creator = :creator   and ";
+			}
+
 		}
 		
 		
@@ -354,8 +367,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		lists = sessionFactory
 		        .getCurrentSession()
 		        .createQuery(
-		            "from PSIServiceProvision where  (isSendToDHIS = :isSendToDHIS0 OR isSendToDHIS= :isSendToDHIS3) and is_complete = :complete  order by spid asc")
-		        .setInteger("isSendToDHIS0", PSIConstants.DEFAULTERRORSTATUS)
+		            "from PSIServiceProvision where isSendToDHIS= :isSendToDHIS3 and psiMoneyReceiptId is not null and is_complete = :complete  order by spid asc")
 		        .setInteger("isSendToDHIS3", PSIConstants.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
 		        .setMaxResults(500).list();
 		

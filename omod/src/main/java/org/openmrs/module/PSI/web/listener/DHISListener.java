@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
+import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
@@ -43,9 +44,11 @@ public class DHISListener {
 	
 	 //private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
-    //private final String DHIS2BASEURL = "http://10.100.11.2:5271";
+	//private final String DHIS2BASEURL = "http://192.168.19.162:8080";
+	
+    private final String DHIS2BASEURL = "http://10.100.11.2:5271";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -72,26 +75,26 @@ public class DHISListener {
 		
 		if (status) {
 			try {
-				sendFailedPatient();
+				// sendFailedPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				sendPatient();
+				//sendPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				sendMoneyReceipt();
+				 sendMoneyReceipt();
 			}
 			catch (Exception e) {
 				
 			}
 			
 			try {
-				sendFailedMoneyReceipt();
+				//sendFailedMoneyReceipt();
 			}
 			catch (Exception e) {
 				
@@ -139,6 +142,12 @@ public class DHISListener {
 						psidhisException.setTimestamp(1l);
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
 						Context.clearSession();
+					}
+					else {
+							Context.openSession();
+							psidhisException.setStatus(PSIConstants.FAILEDSTATUS);
+							Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+							Context.clearSession();
 					}
 					
 				}
@@ -234,7 +243,7 @@ public class DHISListener {
 						getPsidhisException.setJson(patientJson.toString());
 						getPsidhisException.setMarkId(eventReceordDTO.getId());
 						getPsidhisException.setUrl(eventReceordDTO.getUrl());
-						getPsidhisException.setStatus(PSIConstants.SUCCESSSTATUS);
+						getPsidhisException.setStatus(PSIConstants.CONNECTIONTIMEOUTSTATUS);
 						getPsidhisException.setResponse(response.toString());
 						getPsidhisException.setDateCreated(new Date());
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
@@ -288,7 +297,7 @@ public class DHISListener {
 		
 		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
 		        .findAllByTimestamp(timestamp);
-		if (psiServiceProvisions.size() != 0 && psiServiceProvisions != null) {
+		if (psiServiceProvisions.size() != 0) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
 				JSONObject eventResponse = new JSONObject();
 				JSONObject getResponse = new JSONObject();
@@ -298,9 +307,8 @@ public class DHISListener {
 				String URL = "";
 				int statusCode = 0;
 				String orgUnit = "";
+				if (psiServiceProvision.getIsSendToDHIS() != 1) {
 				
-				String dhisIDString = psiServiceProvision.getDhisId();
-				if(StringUtils.isBlank(dhisIDString)) {
 				try {
 					UserDTO userDTO = Context.getService(PSIClinicUserService.class).findOrgUnitFromOpenMRS(patientUuid);
 					orgUnit = userDTO.getOrgUnit();
@@ -328,7 +336,7 @@ public class DHISListener {
 							if (importSummaries.length() != 0) {
 								JSONObject importSummary = importSummaries.getJSONObject(0);
 								String referenceId = importSummary.getString("reference");
-								//Context.openSession();
+								Context.openSession();
 								psiServiceProvision.setDhisId(referenceId);
 								psiServiceProvision.setIsSendToDHIS(1);
 								psiServiceProvision.setField1(getResponse + "");
@@ -338,52 +346,55 @@ public class DHISListener {
 								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 								getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 								Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
-								//Context.clearSession();
+								Context.clearSession();
 							}
+						}else {
+							getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
+							psiServiceProvision.setField1(getResponse + "");
+							psiServiceProvision.setField2(moneyReceiptJson + "");
+							psiServiceProvision.setField3(statusCode);
+							psiServiceProvision.setError("status not 200");
+							psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
+							Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+							getlastTimeStamp.setVoidReason("status not 200");
+							Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 						}
 						
 					} else {
 						
-						//Context.openSession();
+						Context.openSession();
 						getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 						getlastTimeStamp.setVoidReason("else cindtion");
-						//psiServiceProvision.setField1("not found");
+						psiServiceProvision.setField1("not found");
 						psiServiceProvision.setField1(getResponse + "");
 						psiServiceProvision.setField2(moneyReceiptJson + "");
 						psiServiceProvision.setField3(statusCode);
 						psiServiceProvision.setError(":" + URL);
-						psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
+						psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
-						//Context.clearSession();
+						Context.clearSession();
 					}
 				}
 				catch (Exception e) {
 					e.printStackTrace();
-					//Context.openSession();
+					Context.openSession();
 					getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 					psiServiceProvision.setField1(getResponse + "");
 					psiServiceProvision.setField2(moneyReceiptJson + "");
 					psiServiceProvision.setField3(statusCode);
-					psiServiceProvision.setError(e + ":" + URL);
-					psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
+					psiServiceProvision.setError(e.getMessage());
+					psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					getlastTimeStamp.setVoidReason(e.toString());
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
-					//Context.clearSession();
+					Context.clearSession();
 				}
 				
 				}
-				
-//				else {
-//					getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
-//					psiServiceProvision.setField1("Duplicate for send money receipt");
-//					psiServiceProvision.setField2(moneyReceiptJson + "");
-//					psiServiceProvision.setField3(statusCode);
-//					psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
-//					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-//					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
-//				}
+				else {
+					
+				}
 			}
 			
 		}
@@ -402,8 +413,7 @@ public class DHISListener {
 				String URL = "";
 				int statusCode = 0;
 				String orgUnit = "";
-				String dhisIDString = psiServiceProvision.getDhisId();
-				if(StringUtils.isBlank(dhisIDString)) {
+				if (psiServiceProvision.getIsSendToDHIS() != 1) {
 				try {
 					UserDTO userDTO = Context.getService(PSIClinicUserService.class).findOrgUnitFromOpenMRS(patientUuid);
 					orgUnit = userDTO.getOrgUnit();
@@ -430,7 +440,7 @@ public class DHISListener {
 							if (importSummaries.length() != 0) {
 								JSONObject importSummary = importSummaries.getJSONObject(0);
 								String referenceId = importSummary.getString("reference");
-								//Context.openSession();
+								Context.openSession();
 								psiServiceProvision.setField2(moneyReceiptJson + "");
 								psiServiceProvision.setDhisId(referenceId);
 								psiServiceProvision.setField1(getResponse + "");
@@ -439,12 +449,12 @@ public class DHISListener {
 								psiServiceProvision.setError(":" + URL);
 								psiServiceProvision.setIsSendToDHIS(PSIConstants.SUCCESSSTATUS);
 								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-								//Context.clearSession();
+								Context.clearSession();
 							}
 						}
 						
 					} else {
-						//Context.openSession();
+						Context.openSession();
 						psiServiceProvision.setField1("not found");
 						psiServiceProvision.setField1(getResponse + "");
 						psiServiceProvision.setField2(moneyReceiptJson + "");
@@ -452,16 +462,16 @@ public class DHISListener {
 						psiServiceProvision.setError(":" + URL);
 						psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-						//Context.clearSession();
+						Context.clearSession();
 					}
 				}
 				catch (Exception e) {
-					//Context.openSession();
+					Context.openSession();
 					e.printStackTrace();
 					psiServiceProvision.setField1(getResponse + "");
 					psiServiceProvision.setField2(moneyReceiptJson + "");
 					psiServiceProvision.setField3(statusCode);
-					psiServiceProvision.setError(e + ":" + URL);
+					psiServiceProvision.setError(e.getMessage());
 					if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
 					        .equalsIgnoreCase(e.toString())
 					        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
@@ -471,18 +481,12 @@ public class DHISListener {
 						psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
 					}
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-					//Context.clearSession();
+					Context.clearSession();
 				}
-				
 				}
-//				else {
-//					psiServiceProvision.setField1("Duplicate for send fail money receipt");
-//					psiServiceProvision.setField2(moneyReceiptJson + "");
-//					psiServiceProvision.setField3(statusCode);
-//					psiServiceProvision.setError(":" + URL);
-//					psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
-//					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-//				}
+				else {
+					
+				}
 			}
 			
 		}

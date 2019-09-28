@@ -165,6 +165,26 @@ input[type="text"], input[type="password"] {
 						</div>
 						</td>
 					</tr>
+					<c:if test="${!user.retired}">
+					<tr>
+	            		<td>Disable Account</td>
+	            		<td>  <input type="radio" name="disableAccount" id="yesDisable" value="yes"> Yes
+  							  <input type="radio" name="disableAccount" id="noDisable" value="no"> No
+  						</td>
+	            	</tr>
+	            	</c:if>
+	            	<c:if test="${user.retired}">
+					<tr>
+						<td>Enable Account</td>
+						<td><input type="radio" name="enableAccount" id="enableAccount"
+							value="yes"> Yes </td>
+					</tr>
+					</c:if>
+
+					<tr>
+	            		<td><span id="deactivatereasonLabel" class="required">Reason *</span></td>
+	            		<td><input type="text" name="deactivatereasonName" id="deactivatereason" class="form-control margin-top" autocomplete="off"></td>
+	            	</tr>	
 					
             	</table>
           	</div>

@@ -60,6 +60,12 @@ public class PSIClinicUserServiceImpl extends BaseOpenmrsService implements PSIC
 	}
 	
 	@Override
+	public List<UserDTO> findAllactiveAndInactiveUserByCode(String code) {
+		// TODO Auto-generated method stub
+		return dao.findAllactiveAndInactiveUserByCode(code);
+	}
+
+	@Override
 	public PSIClinicUser findByUserNameAndClinicCode(String username, int clinicId) {
 		// TODO Auto-generated method stub
 		return dao.findByUserNameAndClinicCode(username, clinicId);

@@ -58,7 +58,7 @@ public class HibernatePSIDHISMarkerDAO implements PSIDHISMarkerDAO {
 		List<Object[]> data = null;
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		
-		String sql = "SELECT id,object FROM openmrs.event_records where title= :title and id > :id  order by id asc limit 500";
+		String sql = "SELECT id,object FROM openmrs.event_records where title= :title and id > :id  order by id asc limit 5000";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		
 		data = query.setString("title", "Patient").setInteger("id", id).list();
