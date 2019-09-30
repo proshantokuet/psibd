@@ -103,20 +103,6 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<PSIServiceProvision> findAllByTimestamp(long timestamp) {
-		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
-		lists = sessionFactory
-		        .getCurrentSession()
-		        .createQuery(
-		            "from PSIServiceProvision where timestamp > :timestamp and psiMoneyReceiptId is not null and is_complete = :complete order by timestamp asc ")
-		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(3000)
-		        .list();
-		return lists;
-		
-	}
-	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<PSIReport> servicePointWiseReport(String startDate, String endDate, String code) {
@@ -242,8 +228,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 		DashboardDTO dashboardDTO = new DashboardDTO();
 		String servedPatientSql = "SELECT count(distinct(patient_uuid)) as count FROM openmrs.psi_money_receipt where "
-		        + servedPatienClinicCondition + servedPatienDataCollectorCondition + " is_complete = 1 and DATE(money_receipt_date) between '"
-		        + start + "' and '" + end + "'";
+		        + servedPatienClinicCondition + servedPatienDataCollectorCondition
+		        + " is_complete = 1 and DATE(money_receipt_date) between '" + start + "' and '" + end + "'";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(servedPatientSql);
 		
 		List<BigInteger> servedPatientData = new ArrayList<BigInteger>();
@@ -304,31 +290,33 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			if (findUser != null) {
 				creator = findUser.getId();
 				newPatienDataCollectorCondition = " pa.creator = :creator   and ";
-			}
-			else {
+			} else {
 				Query queryforRetired = sessionFactory.getCurrentSession().createQuery(
-					    "from User u where u.retired = '1' and (u.username = ? or u.systemId = ?)");
+				    "from User u where u.retired = '1' and (u.username = ? or u.systemId = ?)");
 				queryforRetired.setString(0, dataCollector);
 				queryforRetired.setString(1, dataCollector);
-					List<User> users = queryforRetired.list();
-					User retiredUser = users.get(0);
-					creator = retiredUser.getId();
-					newPatienDataCollectorCondition = " pa.creator = :creator   and ";
+				List<User> users = queryforRetired.list();
+				User retiredUser = users.get(0);
+				creator = retiredUser.getId();
+				newPatienDataCollectorCondition = " pa.creator = :creator   and ";
 			}
-
+			
 		}
 		
-		
 		String newPatientSql = " select count(*) from ( select distinct(pa.person_id) personId from person_attribute pa where "
-				+ " pa.person_attribute_type_id = " + PSIConstants.attributeTypeRegDate+ " and  "
-				+  newPatienDataCollectorCondition				
-				+ " DATE(pa.value) between '"
-				+ start
-				+ "' and '" + end + "' "
-				+ " ) as a  "
-				+ " join  ( SELECT distinct (PAT.person_id) personId "
-				+ " FROM person_attribute as PAT " + newPatienClinicCondition + " ) as b  "
-				+ "  on a.personId = b.personId ";
+		        + " pa.person_attribute_type_id = "
+		        + PSIConstants.attributeTypeRegDate
+		        + " and  "
+		        + newPatienDataCollectorCondition
+		        + " DATE(pa.value) between '"
+		        + start
+		        + "' and '"
+		        + end
+		        + "' "
+		        + " ) as a  "
+		        + " join  ( SELECT distinct (PAT.person_id) personId "
+		        + " FROM person_attribute as PAT "
+		        + newPatienClinicCondition + " ) as b  " + "  on a.personId = b.personId ";
 		SQLQuery newPatientQuery = sessionFactory.getCurrentSession().createSQLQuery(newPatientSql);
 		List<BigInteger> newPatientData = new ArrayList<BigInteger>();
 		if (!"0".equalsIgnoreCase(code)) {
@@ -362,14 +350,27 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	public List<PSIServiceProvision> findAllByTimestamp(long timestamp) {
+		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
+		lists = sessionFactory
+		        .getCurrentSession()
+		        .createQuery(
+		            "from PSIServiceProvision where timestamp > :timestamp and  is_complete = :complete  order by timestamp asc ")
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(3000).list();
+		return lists;
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<PSIServiceProvision> findAllResend() {
 		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
 		lists = sessionFactory
 		        .getCurrentSession()
 		        .createQuery(
-		            "from PSIServiceProvision where isSendToDHIS= :isSendToDHIS3 and psiMoneyReceiptId is not null and is_complete = :complete  order by spid asc")
+		            "from PSIServiceProvision where is_send_to_dhis= :isSendToDHIS3 and is_complete = :complete  order by spid asc")
 		        .setInteger("isSendToDHIS3", PSIConstants.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
-		        .setMaxResults(500).list();
+		        .setMaxResults(2000).list();
 		
 		return lists;
 	}
@@ -384,18 +385,19 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 		return lists;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void deleteByPatientUuidAndMoneyReceiptIdNull(String patientUuid) {
 		
 		List<PSIServiceProvision> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceProvision where psi_money_receipt_id is null and patient_uuid = :id").setString("id", patientUuid).list();
+		        .createQuery("from PSIServiceProvision where psi_money_receipt_id is null and patient_uuid = :id")
+		        .setString("id", patientUuid).list();
 		if (lists.size() != 0) {
 			for (PSIServiceProvision serviceProvision : lists) {
 				int spid = serviceProvision.getSpid();
-			    delete(spid);
-			} 
+				delete(spid);
+			}
 		}
 	}
 }

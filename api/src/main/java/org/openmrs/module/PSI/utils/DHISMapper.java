@@ -71,6 +71,7 @@ public class DHISMapper {
 		ServiceProvision.put("netPayableAmount", "Ey8wpnMTGl3");
 		ServiceProvision.put("session", "FzFCFM4Zr43"); // newly added
 		ServiceProvision.put("others", "otXoI3cMuJU"); // newly added
+		ServiceProvision.put("serviceUuid", "sy8PbgNLffQ");
 	}
 	
 	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();
