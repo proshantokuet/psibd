@@ -538,7 +538,7 @@ public class DHISListener {
 					Context.clearSession();
 					
 					updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
-					    eventURL, PSIConstants.DEFAULTSTATUSSERVICEPROVISION);
+					    eventURL, PSIConstants.SUCCESSSTATUS);
 				}
 			}
 			
@@ -730,7 +730,7 @@ public class DHISListener {
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					Context.clearSession();*/
 					updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
-					    eventURL, PSIConstants.DEFAULTSTATUSSERVICEPROVISION);
+					    eventURL, PSIConstants.SUCCESSSTATUS);
 				}
 			}
 			
