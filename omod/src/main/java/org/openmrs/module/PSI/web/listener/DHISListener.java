@@ -361,13 +361,13 @@ public class DHISListener {
 		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
 		        .findAllByTimestamp(timestamp);
 		Context.openSession();
-		/*PSIDHISException psidhisException1 = new PSIDHISException();
+		PSIDHISException psidhisException1 = new PSIDHISException();
 		psidhisException1.setResponse("");
 		psidhisException1.setError(psiServiceProvisions.size() + "");
 		psidhisException1.setType("fff");
 		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException1);
 		
-		Context.clearSession();*/
+		Context.clearSession();
 		if (psiServiceProvisions.size() != 0) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
 				JSONObject eventResponse = new JSONObject();
@@ -391,8 +391,10 @@ public class DHISListener {
 				
 				try {
 					getEventResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", eventURL);
-					getEevnts = getEventResponse.getJSONArray("events");
-					/*Context.openSession();
+					if (getEventResponse.has("events")) {
+						getEevnts = getEventResponse.getJSONArray("events");
+					}
+					Context.openSession();
 					PSIDHISException psidhisException = new PSIDHISException();
 					psidhisException.setResponse(getEventResponse + "");
 					psidhisException.setError(getEevnts + "");
@@ -400,7 +402,7 @@ public class DHISListener {
 					psidhisException.setJson(eventURL);
 					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
 					
-					Context.clearSession();*/
+					Context.clearSession();
 					
 				}
 				catch (Exception e) {
@@ -536,7 +538,7 @@ public class DHISListener {
 					Context.clearSession();
 					
 					updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
-					    eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
+					    eventURL, PSIConstants.DEFAULTSTATUSSERVICEPROVISION);
 				}
 			}
 			
@@ -579,7 +581,9 @@ public class DHISListener {
 				
 				try {
 					getEventResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", eventURL);
-					getEevnts = getEventResponse.getJSONArray("events");
+					if (getEventResponse.has("events")) {
+						getEevnts = getEventResponse.getJSONArray("events");
+					}
 					/*Context.openSession();
 					PSIDHISException psidhisException = new PSIDHISException();
 					psidhisException.setResponse(getEventResponse + "");
@@ -726,7 +730,7 @@ public class DHISListener {
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 					Context.clearSession();*/
 					updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
-					    eventURL, PSIConstants.FAILEDSTATUS);
+					    eventURL, PSIConstants.DEFAULTSTATUSSERVICEPROVISION);
 				}
 			}
 			
