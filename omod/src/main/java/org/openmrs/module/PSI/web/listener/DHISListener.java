@@ -89,14 +89,14 @@ public class DHISListener {
 				
 			}
 			try {
-				//sendMoneyReceipt();
+				sendMoneyReceipt();
 			}
 			catch (Exception e) {
 				
 			}
 			
 			try {
-				sendFailedMoneyReceipt();
+				//sendFailedMoneyReceipt();
 			}
 			catch (Exception e) {
 				
@@ -140,43 +140,67 @@ public class DHISListener {
 					
 					String status = response.getString("status");
 					if (!status.equalsIgnoreCase("ERROR")) {
-						Context.openSession();
+						/*Context.openSession();
 						psidhisException.setStatus(PSIConstants.SUCCESSSTATUS);
 						psidhisException.setTimestamp(1l);
 						psidhisException.setJson(patientJson.toString());
 						//psidhisException.setError(responseofResponse.toString());
 						psidhisException.setResponse(response.toString());
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
-						Context.clearSession();
+						Context.clearSession();*/
+						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.SUCCESSSTATUS, response
+						        + "", "");
 					} else {
-						Context.openSession();
+						/*Context.openSession();
 						psidhisException.setJson(patientJson.toString());
 						psidhisException.setResponse(response.toString());
 						//psidhisException.setError(responseofResponse.toString());
 						psidhisException.setTimestamp(2l);
 						psidhisException.setStatus(PSIConstants.FAILEDSTATUS);
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
-						Context.clearSession();
+						Context.clearSession();*/
+						
+						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.FAILEDSTATUS, response
+						        + "", "");
 					}
 					
 				}
 				catch (Exception e) {
-					Context.openSession();
+					//Context.openSession();
+					int status = 0;
 					if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
 					        .equalsIgnoreCase(e.toString())
 					        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
 					                .equalsIgnoreCase(e.toString())) {
 						psidhisException.setStatus(PSIConstants.CONNECTIONTIMEOUTSTATUS);
+						status = PSIConstants.CONNECTIONTIMEOUTSTATUS;
 					} else {
 						psidhisException.setStatus(PSIConstants.FAILEDSTATUS);
+						status = PSIConstants.FAILEDSTATUS;
 					}
 					
-					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
-					Context.clearSession();
+					/*Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+					Context.clearSession();*/
+					
+					updateExceptionForFailed(psidhisException, patientJson + "", status, response + "", e.toString());
 				}
 			}
 			
 		}
+	}
+	
+	private void updateExceptionForFailed(PSIDHISException getPsidhisException, String patientJson, int status,
+	                                      String response, String error) {
+		Context.openSession();
+		
+		getPsidhisException.setError(error);
+		getPsidhisException.setJson(patientJson.toString());
+		getPsidhisException.setStatus(status);
+		getPsidhisException.setResponse(response.toString());
+		getPsidhisException.setDateCreated(new Date());
+		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
+		
+		Context.clearSession();
 	}
 	
 	public void sendPatient() {
@@ -238,7 +262,7 @@ public class DHISListener {
 							PSIDHISException newPsidhisException = new PSIDHISException();
 							getPsidhisException = newPsidhisException;
 						}
-						getPsidhisException.setError("");
+						/*getPsidhisException.setError("");
 						getPsidhisException.setJson(patientJson.toString());
 						getPsidhisException.setMarkId(eventReceordDTO.getId());
 						getPsidhisException.setUrl(eventReceordDTO.getUrl());
@@ -246,12 +270,15 @@ public class DHISListener {
 						getPsidhisException.setResponse(response.toString());
 						getPsidhisException.setDateCreated(new Date());
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
+						*/
+						updateException(getPsidhisException, patientJson + "", eventReceordDTO, PSIConstants.SUCCESSSTATUS,
+						    response + "", "");
 					} else {
 						if (getPsidhisException == null) {
 							PSIDHISException newPsidhisException = new PSIDHISException();
 							getPsidhisException = newPsidhisException;
 						}
-						getPsidhisException.setError("");
+						/*getPsidhisException.setError("");
 						getPsidhisException.setJson(patientJson.toString());
 						getPsidhisException.setMarkId(eventReceordDTO.getId());
 						getPsidhisException.setUrl(eventReceordDTO.getUrl());
@@ -259,6 +286,9 @@ public class DHISListener {
 						getPsidhisException.setResponse(response.toString());
 						getPsidhisException.setDateCreated(new Date());
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
+						*/
+						updateException(getPsidhisException, patientJson + "", eventReceordDTO,
+						    PSIConstants.CONNECTIONTIMEOUTSTATUS, response + "", "");
 					}
 					
 					Context.clearSession();
@@ -272,7 +302,7 @@ public class DHISListener {
 						PSIDHISException newPsidhisException = new PSIDHISException();
 						getPsidhisException = newPsidhisException;
 					}
-					getPsidhisException.setError(e.toString());
+					/*getPsidhisException.setError(e.toString());
 					getPsidhisException.setJson(patientJson.toString());
 					getPsidhisException.setMarkId(eventReceordDTO.getId());
 					getPsidhisException.setUrl(eventReceordDTO.getUrl());
@@ -280,12 +310,31 @@ public class DHISListener {
 					getPsidhisException.setResponse(response.toString());
 					getPsidhisException.setDateCreated(new Date());
 					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
-					
+					*/
+					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					Context.clearSession();
+					updateException(getPsidhisException, patientJson + "", eventReceordDTO,
+					    PSIConstants.CONNECTIONTIMEOUTSTATUS, response + "", e.toString());
 				}
 			}
 			
 		}
+	}
+	
+	private void updateException(PSIDHISException getPsidhisException, String patientJson, EventReceordDTO eventReceordDTO,
+	                             int status, String response, String error) {
+		Context.openSession();
+		
+		getPsidhisException.setError(error);
+		getPsidhisException.setJson(patientJson.toString());
+		getPsidhisException.setMarkId(eventReceordDTO.getId());
+		getPsidhisException.setUrl(eventReceordDTO.getUrl());
+		getPsidhisException.setStatus(status);
+		getPsidhisException.setResponse(response.toString());
+		getPsidhisException.setDateCreated(new Date());
+		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
+		
+		Context.clearSession();
 	}
 	
 	private void sendMoneyReceipt() {
@@ -389,43 +438,52 @@ public class DHISListener {
 									JSONObject importSummary = importSummaries.getJSONObject(0);
 									String referenceId = importSummary.getString("reference");
 									Context.openSession();
-									psiServiceProvision.setDhisId(referenceId);
+									/*psiServiceProvision.setDhisId(referenceId);
 									psiServiceProvision.setIsSendToDHIS(1);
 									psiServiceProvision.setField1(getResponse + "");
 									psiServiceProvision.setField2(moneyReceiptJson + "");
 									psiServiceProvision.setField3(statusCode);
 									psiServiceProvision.setError(URL);
-									getlastTimeStamp.setVoidReason(httpStatus);
 									Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+									*/
+									getlastTimeStamp.setVoidReason(httpStatus);
 									getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 									Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 									Context.clearSession();
+									
+									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
+									    getResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
 								} else {
 									
 									Context.openSession();
-									psiServiceProvision.setDhisId("");
+									/*psiServiceProvision.setDhisId("");
 									psiServiceProvision.setIsSendToDHIS(3);
 									psiServiceProvision.setField1(getResponse + "");
 									psiServiceProvision.setField2(moneyReceiptJson + "");
 									psiServiceProvision.setField3(statusCode);
 									psiServiceProvision.setError(URL);
 									getlastTimeStamp.setVoidReason(httpStatus);
-									Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+									Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);*/
 									getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 									Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 									Context.clearSession();
+									
+									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+									    statusCode, eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 								}
 							} else {
 								getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
-								psiServiceProvision.setField1(getResponse + "");
+								/*psiServiceProvision.setField1(getResponse + "");
 								psiServiceProvision.setField2(moneyReceiptJson + "");
 								psiServiceProvision.setField3(statusCode);
 								psiServiceProvision.setError(URL);
 								getlastTimeStamp.setVoidReason(httpStatus);
 								psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
-								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);*/
 								getlastTimeStamp.setVoidReason(httpStatus);
 								Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+								    statusCode, eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 							}
 							
 						} else {
@@ -433,44 +491,52 @@ public class DHISListener {
 							Context.openSession();
 							getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 							getlastTimeStamp.setVoidReason("else cindtion");
-							psiServiceProvision.setField1("not found");
+							/*psiServiceProvision.setField1("not found");
 							psiServiceProvision.setField1(getResponse + "");
 							psiServiceProvision.setField2(moneyReceiptJson + "");
 							psiServiceProvision.setField3(statusCode);
 							psiServiceProvision.setError(":" + URL);
 							psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
-							Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+							Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);*/
 							Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 							Context.clearSession();
+							
+							updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+							    statusCode, eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 						}
 					}
 					catch (Exception e) {
-						e.printStackTrace();
+						//e.printStackTrace();
 						Context.openSession();
 						getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
-						psiServiceProvision.setField1(getResponse + "");
+						/*psiServiceProvision.setField1(getResponse + "");
 						psiServiceProvision.setField2(moneyReceiptJson + "");
 						psiServiceProvision.setField3(statusCode);
 						psiServiceProvision.setError(e.getMessage());
 						psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
-						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);*/
 						getlastTimeStamp.setVoidReason(e.toString());
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 						Context.clearSession();
+						updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
+						    eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 					}
 					
 				} else {
 					Context.openSession();
 					getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
-					psiServiceProvision.setField1(getResponse + "");
+					/*psiServiceProvision.setField1(getResponse + "");
 					psiServiceProvision.setField2(moneyReceiptJson + "");
 					psiServiceProvision.setField3(statusCode);
 					psiServiceProvision.setError("found is_send_to_dhis 1");
 					psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
-					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);*/
 					//getlastTimeStamp.setVoidReason(e.toString());
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 					Context.clearSession();
+					
+					updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
+					    eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 				}
 			}
 			
@@ -481,9 +547,7 @@ public class DHISListener {
 		String serviceUunid = "";
 		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
 		        .findAllResend();
-		Context.openSession();
-		
-		Context.openSession();
+		String errorStatus = "";
 		PSIDHISException psidhisException = new PSIDHISException();
 		psidhisException.setResponse("");
 		psidhisException.setError("");
@@ -558,7 +622,7 @@ public class DHISListener {
 								if (importSummaries.length() != 0) {
 									JSONObject importSummary = importSummaries.getJSONObject(0);
 									String referenceId = importSummary.getString("reference");
-									Context.openSession();
+									/*Context.openSession();
 									psiServiceProvision.setField2(moneyReceiptJson + "");
 									psiServiceProvision.setDhisId(referenceId);
 									psiServiceProvision.setField1(getResponse + "");
@@ -567,10 +631,13 @@ public class DHISListener {
 									psiServiceProvision.setError(":" + URL);
 									psiServiceProvision.setIsSendToDHIS(PSIConstants.SUCCESSSTATUS);
 									Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-									Context.clearSession();
+									Context.clearSession();*/
+									
+									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
+									    getResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
 								} else {
 									
-									Context.openSession();
+									/*Context.openSession();
 									psiServiceProvision.setDhisId("");
 									psiServiceProvision.setIsSendToDHIS(3);
 									psiServiceProvision.setField1(getResponse + "");
@@ -580,11 +647,13 @@ public class DHISListener {
 									
 									Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 									
-									Context.clearSession();
+									Context.clearSession();*/
+									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+									    statusCode, eventURL, PSIConstants.FAILEDSTATUS);
 								}
 							} else {
 								
-								Context.openSession();
+								/*Context.openSession();
 								psiServiceProvision.setDhisId("");
 								psiServiceProvision.setIsSendToDHIS(3);
 								psiServiceProvision.setField1(getResponse + "");
@@ -593,12 +662,14 @@ public class DHISListener {
 								psiServiceProvision.setError(URL);
 								
 								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-								
+								*/
 								Context.clearSession();
+								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+								    statusCode, eventURL, PSIConstants.FAILEDSTATUS);
 							}
 							
 						} else {
-							Context.openSession();
+							/*Context.openSession();
 							psiServiceProvision.setField1("not found");
 							psiServiceProvision.setField1(getResponse + "");
 							psiServiceProvision.setField2(moneyReceiptJson + "");
@@ -606,13 +677,26 @@ public class DHISListener {
 							psiServiceProvision.setError(":" + URL);
 							psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
 							Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-							Context.clearSession();
+							Context.clearSession();*/
+							updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+							    statusCode, eventURL, PSIConstants.FAILEDSTATUS);
 						}
 					}
 					catch (Exception e) {
 						Context.openSession();
-						e.printStackTrace();
-						psiServiceProvision.setField1(getResponse + "");
+						//e.printStackTrace();
+						int status = 0;
+						if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
+						        .equalsIgnoreCase(e.toString())
+						        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
+						                .equalsIgnoreCase(e.toString())) {
+							//psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
+							status = PSIConstants.CONNECTIONTIMEOUTSTATUS;
+						} else {
+							psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
+							status = PSIConstants.FAILEDSTATUS;
+						}
+						/*psiServiceProvision.setField1(getResponse + "");
 						psiServiceProvision.setField2(moneyReceiptJson + "");
 						psiServiceProvision.setField3(statusCode);
 						psiServiceProvision.setError(e.getMessage());
@@ -620,15 +704,19 @@ public class DHISListener {
 						        .equalsIgnoreCase(e.toString())
 						        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
 						                .equalsIgnoreCase(e.toString())) {
-							psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
+							//psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
+							errorStatus = PSIConstants.CONNECTIONTIMEOUTSTATUS;
 						} else {
 							psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
 						}
 						Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-						Context.clearSession();
+						Context.clearSession();*/
+						
+						updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
+						    eventURL, status);
 					}
 				} else {
-					Context.openSession();
+					/*Context.openSession();
 					psiServiceProvision.setField1("not found");
 					psiServiceProvision.setField1(getResponse + "");
 					psiServiceProvision.setField2(moneyReceiptJson + "");
@@ -636,13 +724,29 @@ public class DHISListener {
 					psiServiceProvision.setError(":" + URL);
 					psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
 					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-					Context.clearSession();
+					Context.clearSession();*/
+					updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
+					    eventURL, PSIConstants.FAILEDSTATUS);
 				}
 			}
 			
 		} else {
 			
 		}
+		
+	}
+	
+	private void updateServiceProvision(PSIServiceProvision psiServiceProvision, String moneyReceiptJson,
+	                                    String referenceId, String getResponse, int statusCode, String URL, int status) {
+		psiServiceProvision.setField2(moneyReceiptJson);
+		psiServiceProvision.setDhisId(referenceId);
+		psiServiceProvision.setField1(getResponse + "");
+		psiServiceProvision.setField2(moneyReceiptJson + "");
+		psiServiceProvision.setField3(statusCode);
+		psiServiceProvision.setError(":" + URL);
+		psiServiceProvision.setIsSendToDHIS(status);
+		Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+		Context.clearSession();
 		
 	}
 	
