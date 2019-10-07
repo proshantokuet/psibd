@@ -30,6 +30,16 @@ public class ClinicServiceDTO {
 	
 	private String gender;
 	
+	private boolean voided;
+	
+	public boolean isVoided() {
+		return voided;
+	}
+
+	public void setVoided(boolean voided) {
+		this.voided = voided;
+	}
+
 	public int getSid() {
 		return sid;
 	}

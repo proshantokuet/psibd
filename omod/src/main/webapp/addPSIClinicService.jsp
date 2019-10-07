@@ -44,7 +44,8 @@
 					              <form:option value="Non ESD Services"/>
 					              <form:option value="Other Health"/>
 					              <form:option value="Pharmacy Service"/>
-					              <form:option value="Referral Cases"/>					             
+					              <form:option value="Referral Cases"/>
+					              <form:option value="Consultancy"/>					             
 					         </form:select>	
                    	</div>
              	</div>

@@ -72,7 +72,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			}
 			
 			if (moneyReceipt.has("contact")) {
-				psiMoneyReceipt.setUic(moneyReceipt.getString("contact"));
+				psiMoneyReceipt.setContact(moneyReceipt.getString("contact"));
 			}
 			
 			if (moneyReceipt.has("dob")) {

@@ -47,6 +47,7 @@
 					              <form:option value="Other Health"/>
 					              <form:option value="Pharmacy Service"/>
 					              <form:option value="Referral Cases"/>	
+					              <form:option value="Consultancy"/>	
 					         </form:select>	
                    	</div>
              	</div>
@@ -122,7 +123,28 @@
 						<form:input path="daysFrom"  class="input-size" min="0"  placeholder="Day's"/>
                   	</div> 
               	</div>
-          	</div>
+              	<c:if test="${!pSIServiceManagement.voided}">
+				<div class="col-md-6">
+					<div class="form-inline form-group">
+						<label>Disable Service</label>
+						<div>
+							<input type="radio" name="disableService" id="yesDisable" value="yes"> Yes
+						</div>
+						<div style ="margin-left: 10px">
+							<input type="radio" name="disableService" id="noDisable" value="no"> No
+						</div>
+					</div>
+				</div>
+				</c:if>
+				<c:if test="${pSIServiceManagement.voided}">
+				<div class="col-md-6">
+					<div class="form-inline form-group">
+					<label>Enable Service</label>
+						<input type="radio" name="enableService" id="enableService" value="yes"> Yes </td>
+					</div>
+				</div>
+				</c:if>
+			</div>
           	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Back</a>
       	</div>
    	</div>

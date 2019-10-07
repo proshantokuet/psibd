@@ -17,6 +17,18 @@ $JQuery("#serviceForm").submit(function(event) {
 			var yearFrom = $JQuery('input[name=yearFrom]').val();
 			var monthFrom = $JQuery('input[name=monthFrom]').val();
 			var daysFrom = $JQuery('input[name=daysFrom]').val();
+			var voided = null;
+			var disableConfirmation = $JQuery('input[name=disableService]:checked').val();
+			var enableConfirmation = $JQuery('input[name=enableService]:checked').val();
+			if (disableConfirmation == "yes") {
+				voided = true;
+			}
+			if (disableConfirmation == "no") {
+				voided = false;
+			}
+			if (enableConfirmation == "yes") {
+				voided = false;
+			}
 			
 			var gender = document.getElementById("gender");
 			var genderValue = gender.options[gender.selectedIndex].value;
@@ -35,7 +47,8 @@ $JQuery("#serviceForm").submit(function(event) {
 			            'yearFrom': yearFrom,
 			            'monthFrom': monthFrom,
 			            'gender': genderValue,
-			            'daysFrom': daysFrom
+			            'daysFrom': daysFrom,
+			            'voided': voided
 			           
 			        };			
 			
