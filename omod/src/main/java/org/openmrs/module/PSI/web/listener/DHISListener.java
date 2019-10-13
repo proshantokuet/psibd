@@ -89,7 +89,7 @@ public class DHISListener {
 				
 			}
 			try {
-				sendMoneyReceipt();
+				//sendMoneyReceipt();
 			}
 			catch (Exception e) {
 				
