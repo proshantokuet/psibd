@@ -133,5 +133,9 @@ public class AuhcServiceCategoryController {
 		}
 		return null;
 	}
+	@RequestMapping(value = "/module/PSI/deleteServiceCategory.form", method = RequestMethod.POST)
+	public ModelAndView deleteServiceCategory(){
+		return null;
+	}
 	
 }
