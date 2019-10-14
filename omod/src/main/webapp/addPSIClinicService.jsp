@@ -44,10 +44,12 @@
 					              <form:option value="Non ESD Services"/>
 					              <form:option value="Other Health"/>
 					              <form:option value="Pharmacy Service"/>
+
 					              <form:option value="Referral Cases"/>	 -->
 					               <c:forEach items="${services}" var="service"> 
 					              	 <form:option value="${service.categoryName}" label="${service.categoryName}"/>					              
 					              </c:forEach>				             
+
 					         </form:select>	
                    	</div>
              	</div>
