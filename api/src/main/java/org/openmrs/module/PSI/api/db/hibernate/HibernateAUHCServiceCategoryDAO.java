@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.AUHCServiceCategory;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.db.AUHCServiceCategoryDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class HibernateAUHCServiceCategoryDAO implements AUHCServiceCategoryDAO {
 	
@@ -48,6 +49,18 @@ public class HibernateAUHCServiceCategoryDAO implements AUHCServiceCategoryDAO {
 		if(serviceCategory.size() == 0) return null;
 		return serviceCategory.get(0);
 	}
+
+	@Override
+	public void deleteCategory(int id) {
+		// TODO Auto-generated method stub
+//		sessionFactory.getCurrentSession()
+//		 .createQuery().setInteger("sctid",id).list();
+		
+	}
+
+
+
+
 
 	
 }

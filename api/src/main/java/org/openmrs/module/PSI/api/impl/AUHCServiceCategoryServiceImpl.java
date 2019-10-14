@@ -40,6 +40,12 @@ public AUHCServiceCategory findBySctId(int sctid) {
 	// TODO Auto-generated method stub
 	return dao.findBySctId(sctid);
 }
+
+@Override
+public void delete(int id) {
+	// TODO Auto-generated method stub
+	dao.deleteCategory(id);
+}
 	
 	
 

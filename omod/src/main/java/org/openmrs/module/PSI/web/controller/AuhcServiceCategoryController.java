@@ -134,8 +134,17 @@ public class AuhcServiceCategoryController {
 		return null;
 	}
 	@RequestMapping(value = "/module/PSI/deleteServiceCategory.form", method = RequestMethod.POST)
-	public ModelAndView deleteServiceCategory(){
-		return null;
+	public ModelAndView deleteServiceCategory(
+							HttpServletRequest request,
+							HttpSession session,ModelMap model,
+							@RequestParam(value="sctid",required=true) int sctid){
+		model.addAttribute("hasDashboardPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		
+		
+		return new ModelAndView("redirect:/module/PSI/servicecategoryList.form");
 	}
 	
 }

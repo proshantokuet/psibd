@@ -11,7 +11,7 @@ public interface AUHCServiceCategoryDAO {
 	
 //	public List<AUHCServiceCategory> findByMotherUuid(String motherUuid);
 //	
-//	public void delete(int id);
+	public void deleteCategory(int id);
 	public List<AUHCServiceCategory> getAll();
 //	public void delete(int id);
 
