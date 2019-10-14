@@ -38,7 +38,7 @@
                   	Service Category: 
                   			<form:select path="category" class="form-control selcls" required="required">
                   				 <form:option value=""/>
-                  				   <form:option value="Child Health"/>					              
+                  				<!--    <form:option value="Child Health"/>					              
 					              <form:option value="Family Planning"/>
 					              <form:option value="Lab Services"/>
 					              <form:option value="Maternal Health"/>
@@ -46,7 +46,10 @@
 					              <form:option value="Non ESD Services"/>
 					              <form:option value="Other Health"/>
 					              <form:option value="Pharmacy Service"/>
-					              <form:option value="Referral Cases"/>	
+					              <form:option value="Referral Cases"/> -->
+					              <c:forEach items="${services}" var="service"> 
+					              	 <form:option value="${service.categoryName}" label="${service.categoryName}"/>					              
+					              </c:forEach>	
 					         </form:select>	
                    	</div>
              	</div>

@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="template/localHeader.jsp"%>
-<openmrs:require privilege="Clinic User List" otherwise="/login.htm" />
+<openmrs:require privilege="Service Category List" otherwise="/login.htm" />
 <style>
 table.dataTable tbody th, table.dataTable tbody td {
      padding: 0px 0px; 

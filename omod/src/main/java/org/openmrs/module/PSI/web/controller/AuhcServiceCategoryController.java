@@ -14,6 +14,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.AUHCServiceCategory;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.AUHCServiceCategoryService;
+import org.openmrs.module.PSI.utils.PSIConstants;
+import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -39,6 +41,11 @@ public class AuhcServiceCategoryController {
 	
 	@RequestMapping(value = "/module/PSI/addServiceCategory.form", method = RequestMethod.GET)
 	public void addServiceCategory(HttpServletRequest request, HttpSession session, Model model){
+		model.addAttribute("hasDashboardPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+			model.addAttribute("hasClinicPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		
 		model.addAttribute("serviceCategory", new AUHCServiceCategory());
 		//Context.getService(AUHCServiceCategoryService.class).saveOrUpdate(pSIClinicUser);
 		
@@ -47,6 +54,11 @@ public class AuhcServiceCategoryController {
 	@RequestMapping(value = "/module/PSI/addServiceCategory.form", method = RequestMethod.POST)
 	public  ResponseEntity<String> addNewServiceCategory(@RequestBody String jsonStr, ModelMap model) throws Exception{
 //		
+		model.addAttribute("hasDashboardPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+			model.addAttribute("hasClinicPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		
 		AUHCServiceCategory serviceCategory = new AUHCServiceCategory();
 		JSONObject categoryInfo = new JSONObject(jsonStr);
 		try{
@@ -72,6 +84,11 @@ public class AuhcServiceCategoryController {
 	}
 	@RequestMapping(value = "/module/PSI/servicecategoryList.form", method = RequestMethod.GET)
 	public void seviceCategoryList(HttpServletRequest request, HttpSession session, Model model) {
+		model.addAttribute("hasDashboardPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+			model.addAttribute("hasClinicPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		
 		model.addAttribute("serviceCategories",Context.getService(AUHCServiceCategoryService.class).getAll());
 	}
 
@@ -79,6 +96,11 @@ public class AuhcServiceCategoryController {
 	public void editServiceCategory(HttpServletRequest request, HttpSession session, Model model, @RequestParam(value="sctid",required=true) int sctid) 
 	{
 //		Context.openSession();
+		model.addAttribute("hasDashboardPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+			model.addAttribute("hasClinicPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		
 		AUHCServiceCategory serviceCategory = Context.getService(AUHCServiceCategoryService.class).findBySctId(sctid);
 		
 		serviceCategory.setSctid(sctid);
@@ -92,6 +114,11 @@ public class AuhcServiceCategoryController {
 									AUHCServiceCategory serviceCategory,
 						HttpSession session,ModelMap model){
 		if(serviceCategory != null){
+			model.addAttribute("hasDashboardPermission",
+				    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+				model.addAttribute("hasClinicPermission",
+				    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+			
 			AUHCServiceCategory auhcServiceCategory = new AUHCServiceCategory();
 			auhcServiceCategory =  Context.getService(AUHCServiceCategoryService.class).
 					findBySctId(serviceCategory.getSctid());
@@ -102,7 +129,7 @@ public class AuhcServiceCategoryController {
 			 auhcServiceCategory.setUuid(UUID.randomUUID().toString());
 			 auhcServiceCategory = Context.getService(AUHCServiceCategoryService.class).saveOrUpdate(auhcServiceCategory);			
 			
-			return new ModelAndView("redirect:module/PSI/servicecategorylist.form");
+			return new ModelAndView("redirect:/module/PSI/servicecategoryList.form");
 		}
 		return null;
 	}

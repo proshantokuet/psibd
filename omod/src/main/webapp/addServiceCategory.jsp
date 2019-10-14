@@ -5,9 +5,10 @@
     <!-- default header name is X-CSRF-TOKEN -->
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <%@ include file="template/localHeader.jsp"%>
-<openmrs:require privilege="Add Clinic Service" otherwise="/login.htm" />
+<openmrs:require privilege="Add Service Category" otherwise="/login.htm" />
 
 <c:url var="saveUrl" value="/module/PSI/addServiceCategory.form" />
+<c:url var="cancelUrl" value="/module/PSI/servicecategoryList.form" />
 <!--  <c:url var="cancelUrl" value="/module/PSI/PSIClinicServiceList.form?id=${id}" />-->
 
 
@@ -40,7 +41,7 @@
               
           	</div>
           	<button type="submit" class="btnSubmit">Submit</button> 
-          	<!-- <a href="${cancelUrl}">Back</a>  --> 
+            <a href="${cancelUrl}">Back</a> 
       	</div>
    	</div>
 </div>       
