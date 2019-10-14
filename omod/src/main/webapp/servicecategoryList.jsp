@@ -44,7 +44,8 @@ table.dataTable tbody th, table.dataTable tbody td {
 	        	<td>${cat.sctid }</td>
 	        	<td>${cat.categoryName }</td>
 	        	<td><a class="btn btn-primary" href="<c:url value="/module/PSI/editServiceCategory.form?sctid=${ cat.sctid }"/>"> Edit</a>
-	        		<a class="btn btn-danger" href="<c:url value="/module/PSI/editServiceCategory.form?sctid=${ cat.sctid }"/>"> Edit</a></td>
+	        	<!--  -->	<a class="btn btn-danger" href="<c:url value="/module/PSI/editServiceCategory.form?sctid=${ cat.sctid }"/>"> Edit</a>
+	        		</td>
 	        </tr>
 	       </c:forEach>
 	        
