@@ -5,6 +5,9 @@ import java.io.Serializable;
 import org.openmrs.BaseOpenmrsData;
 
 public class AUHCClinicType extends BaseOpenmrsData implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private String typeName;
+	private int ctid;
 
 	public String getTypeName() {
 		return typeName;
@@ -23,10 +26,7 @@ public class AUHCClinicType extends BaseOpenmrsData implements Serializable {
 	}
 
 	
-	private static final long serialVersionUID = 1L;
-	private String typeName;
-	private int ctid;
-
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
