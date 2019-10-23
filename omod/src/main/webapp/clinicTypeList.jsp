@@ -42,9 +42,9 @@ table.dataTable tbody th, table.dataTable tbody td {
 	        </tr> --%>
 	        <tr>
 	        	<td>${clinic_type.ctid }</td>
-	        	<td>${clinic_type.typeName }</td>
+	        	<td>${clinic_type.clinicTypeName }</td>
 	        	<td>
-	        		<%-- <a class="btn btn-primary" href="<c:url value="/module/PSI/editServiceCategory.form?sctid=${ cat.sctid }"/>"> Edit</a> --%>
+	        		 <a class="btn btn-primary" href="<c:url value="/module/PSI/editClinicType.form?ctid=${ clinic_type.ctid }"/>"> Edit</a> 
 	        	</td>
 	        </tr>
 	       </c:forEach>

@@ -578,5 +578,10 @@
 			<column name="uuid" type="varchar(255)" />
 		</createTable>
 	</changeSet>
+	<changeSet id="auhc_clinic_type-1.0.1" author="jysan">
+        <sql>
+            ALTER TABLE auhc_clinic_type CHANGE type_name clinic_type_name varchar(255); 
+        </sql>
+    </changeSet>
 	
 </databaseChangeLog>

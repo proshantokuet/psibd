@@ -6,15 +6,15 @@ import org.openmrs.BaseOpenmrsData;
 
 public class AUHCClinicType extends BaseOpenmrsData implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String typeName;
+	private String clinicTypeName;
 	private int ctid;
 
-	public String getTypeName() {
-		return typeName;
+	public String getClinicTypeName() {
+		return clinicTypeName;
 	}
 
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
+	public void setClinicTypeName(String _clinicTypeName) {
+		this.clinicTypeName = _clinicTypeName;
 	}
 
 	public int getCtid() {
@@ -41,7 +41,7 @@ public class AUHCClinicType extends BaseOpenmrsData implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "AUHCClinicType [typeName=" + typeName + ", ctid="
+		return "AUHCClinicType [typeName=" + clinicTypeName + ", ctid="
 				+ ctid + "]";
 	}
 

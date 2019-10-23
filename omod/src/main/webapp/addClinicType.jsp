@@ -25,8 +25,8 @@
               	<div class="col-md-6">
               		
               		<div class="form-group">
-                  	Type Name
-                  		<form:input style="height: 39px;" path="typeName" id="typeName" class="form-control" required="required" min="0"/>
+                  	Clinic Type Name
+                  		<form:input style="height: 39px;" path="clinicTypeName" id="clinicTypeName" class="form-control" required="required" min="0"/>
                    	 	
                   	</div>      		
                   	
@@ -56,7 +56,7 @@ $JQuery('#addClinicTypeForm').submit(function(event)
 	// var name = document.getElementById('categoryName');
 	var formData;
 	formData = {
-		'typeName' : $JQuery('#typeName').val()
+		'clinicTypeName' : $JQuery('#clinicTypeName').val()
 	};
 	console.table(formData);
 	$JQuery.ajax({
@@ -77,6 +77,8 @@ $JQuery('#addClinicTypeForm').submit(function(event)
 			}
 		},
 		error: function(data){
+			window.location.replace("/openmrs/module/PSI/clinicTypeList.form");
+		        	
 			$JQuery('#loading').hide();
 		}
 	});

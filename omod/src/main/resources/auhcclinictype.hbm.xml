@@ -5,7 +5,7 @@
         <id column="ctid" name="ctid" type="int">
             <generator class="native"/>
         </id>
-        <property name="typeName" column="type_name" type="java.lang.String"/>
+        <property name="clinicTypeName" column="clinic_type_name" type="java.lang.String"/>
 	    
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
 		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>

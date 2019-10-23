@@ -6,20 +6,20 @@ import org.apache.commons.logging.LogFactory;
 
 import org.openmrs.module.PSI.AUHCClinicType;
 import org.openmrs.module.PSI.api.AUHCClinicTypeService;
-import org.openmrs.module.PSI.api.db.AUHCClinicTypeDao;
+import org.openmrs.module.PSI.api.db.AUHCClinicTypeDAO;
 
 public class AUHCClinicTypeServiceImpl extends BaseOpenmrsService  implements AUHCClinicTypeService{
 
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	private AUHCClinicTypeDao dao;
+	private AUHCClinicTypeDAO dao;
 	
 	
-	public AUHCClinicTypeDao getDao(){
+	public AUHCClinicTypeDAO getDao(){
 		return this.dao;
 	}
 	
-	public void setDao(AUHCClinicTypeDao dao){
+	public void setDao(AUHCClinicTypeDAO dao){
 		this.dao = dao;
 	}
 	@Override

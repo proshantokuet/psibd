@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.openmrs.module.PSI.AUHCClinicType;
 
-public interface AUHCClinicTypeDao {
+public interface AUHCClinicTypeDAO {
 	public AUHCClinicType saveOrUpdate(AUHCClinicType clinicType);
 	
 	public AUHCClinicType findByCtId(int ctid);

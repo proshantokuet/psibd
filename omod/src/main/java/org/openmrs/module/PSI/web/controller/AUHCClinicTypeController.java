@@ -17,6 +17,9 @@ import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.AUHCClinicType;
 import org.openmrs.module.PSI.api.AUHCClinicTypeService;
+import org.openmrs.module.PSI.api.PSIClinicChildService;
+import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.api.impl.AUHCClinicTypeServiceImpl;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
@@ -47,6 +50,7 @@ public class AUHCClinicTypeController {
 		model.addAttribute("hasClinicPermission",
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		
+		model.addAttribute("clinics",Context.getService(PSIClinicManagementService.class).getAllClinic());
 		model.addAttribute("clinicType", new AUHCClinicType());
 	}
 	
@@ -60,12 +64,13 @@ public class AUHCClinicTypeController {
 		AUHCClinicType clinicType = new AUHCClinicType();
 		JSONObject clinicTypeInfo = new JSONObject(jsonStr);
 		try{
-			
-		}catch(Exception e){
-			if(clinicTypeInfo.has("typeName")){
-				clinicType.setTypeName(clinicTypeInfo.getString("typeName"));
+			if(clinicTypeInfo.has("clinicTypeName")){
+				clinicType.setClinicTypeName(clinicTypeInfo.getString("clinicTypeName"));
 			}
+		}catch(Exception e){
+			
 		}
+		
 		clinicType.setVoided(false);
 		clinicType.setCreator(Context.getAuthenticatedUser());
 		clinicType.setDateCreated(new Date());
@@ -75,8 +80,39 @@ public class AUHCClinicTypeController {
 		Context.getService(AUHCClinicTypeService.class).saveOrUpdate(clinicType);
 		Context.closeSession();
 		return new ResponseEntity<>(new Gson().toJson(""), HttpStatus.OK);
-}
-
+	}
+	
+	@RequestMapping(value = "/module/PSI/editClinicType.form", method = RequestMethod.GET)
+	public void editClinicType(HttpServletRequest request, HttpSession session, Model model,
+			@RequestParam(value="ctid",required=true) int ctid){
+		model.addAttribute("hasDashboardPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		
+		AUHCClinicType clinicType = Context.getService(AUHCClinicTypeService.class).findByCtId(ctid);
+//		model.addAttribute("clinics",Context.getService(PSIClinicManagementService.class).getAllClinic());
+		model.addAttribute("clinicType", clinicType);
+	}
+	
+	@RequestMapping(value = "/module/PSI/editClinicType.form", method = RequestMethod.POST)
+	public ModelAndView updateClinicType(@ModelAttribute("clinicType") 
+					AUHCClinicType clinicType,
+		HttpSession session,ModelMap model){
+		if(clinicType != null){
+			AUHCClinicType saveClnicType = Context.getService(AUHCClinicTypeService.class).
+					findByCtId(clinicType.getCtid());
+			//Save or Update code
+			saveClnicType.setClinicTypeName(clinicType.getClinicTypeName());
+			saveClnicType.setDateChanged(new Date());
+			saveClnicType.setChangedBy(Context.getAuthenticatedUser());
+			saveClnicType = Context.getService(AUHCClinicTypeService.class).
+					saveOrUpdate(saveClnicType);
+			
+			return new ModelAndView("redirect:/module/PSI/clinicTypeList.form");
+		}
+		return null;
+	}
 	
 	@RequestMapping(value = "/module/PSI/clinicTypeList.form", method = RequestMethod.GET)
 	public void clinicTypeList(HttpServletRequest request, HttpSession session, Model model) {
@@ -86,5 +122,6 @@ public class AUHCClinicTypeController {
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		
 	model.addAttribute("clinicTypeList",Context.getService(AUHCClinicTypeService.class).getAll());
+//	model.addAttribute("clinicTypeList",null);
 	}
 }
