@@ -554,12 +554,12 @@
 		</addColumn>
 	 </changeSet>
 	 
-	 <changeSet id="auhc_clinic_type-1.0.0" author="jysan">
-		<createTable tableName="auhc_clinic_type">
-			<column name="ctid" type="int(11)" autoIncrement="true">
+	 <changeSet id="auhc_service_category-1.0.0" author="jysan">
+		<createTable tableName="auhc_service_category">
+			<column name="sctid" type="int(11)" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="type_name" type="varchar(255)" />
+			<column name="category_name" type="varchar(255)" />
 			
 			<column name="date_created" type="datetime">
 				<constraints nullable="false" />
@@ -578,10 +578,35 @@
 			<column name="uuid" type="varchar(255)" />
 		</createTable>
 	</changeSet>
+	 
+	 <changeSet id="auhc_clinic_type-1.0.0" author="jysan">
+		<createTable tableName="auhc_clinic_type">
+			<column name="ctid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="type_name" type="varchar(255)" />
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
 	<changeSet id="auhc_clinic_type-1.0.1" author="jysan">
         <sql>
             ALTER TABLE auhc_clinic_type CHANGE type_name clinic_type_name varchar(255); 
         </sql>
     </changeSet>
+	
 	
 </databaseChangeLog>

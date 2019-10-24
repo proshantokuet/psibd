@@ -27,6 +27,15 @@
 				code="PSI.psiclinic" /></a>
 	</li>
 	</c:if>
+	
+	
+	<li
+		<c:if test='<%= request.getRequestURI().contains("/servicecategoryList") %>'>class="active"</c:if>>
+		<a
+		href="${pageContext.request.contextPath}/module/PSI/servicecategoryList.form"><spring:message
+				code="PSI.serviceCategory" /></a>
+	</li>
+	
 	<li
         <c:if test='<%= request.getRequestURI().contains("/clinicTypeList") %>'>class="active"</c:if>>
         <a

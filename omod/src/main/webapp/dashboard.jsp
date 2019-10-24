@@ -169,7 +169,7 @@
               	</c:if>
               	<div class="col-md-3">
                		<div class="form-group">
-                  	<label for="Service Code">Provider</label><br />
+                  	<label for="Service Code">Data Collector</label><br />
 						<select id="provider" required="true" style="width: 160px" >
 						  <option value=""></option>
 						  <c:forEach var="user" items="${ psiClinicUsers }">
