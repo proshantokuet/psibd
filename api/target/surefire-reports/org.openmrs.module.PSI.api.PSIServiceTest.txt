@@ -1,8 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: org.openmrs.module.PSI.api.PSIServiceTest
 -------------------------------------------------------------------------------
-<<<<<<< HEAD
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 52.703 sec
-=======
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 22.15 sec
->>>>>>> issue#5
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.969 sec

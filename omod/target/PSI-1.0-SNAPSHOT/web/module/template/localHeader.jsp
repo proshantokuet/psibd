@@ -27,14 +27,6 @@
 				code="PSI.psiclinic" /></a>
 	</li>
 	</c:if>
-<<<<<<< HEAD
-	<li
-        <c:if test='<%= request.getRequestURI().contains("/clinicTypeList") %>'>class="active"</c:if>>
-        <a
-        href="${pageContext.request.contextPath}/module/PSI/clinicTypeList.form"><spring:message
-                code="PSI.clinicType" /></a>
-    </li>
-=======
 	
 	
 	<li
@@ -44,7 +36,12 @@
 				code="PSI.serviceCategory" /></a>
 	</li>
 	
->>>>>>> issue#5
+	<li
+        <c:if test='<%= request.getRequestURI().contains("/clinicTypeList") %>'>class="active"</c:if>>
+        <a
+        href="${pageContext.request.contextPath}/module/PSI/clinicTypeList.form"><spring:message
+                code="PSI.clinicType" /></a>
+    </li>
 	<%-- <li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicServiceList") %>'>class="active"</c:if>>
 		<a

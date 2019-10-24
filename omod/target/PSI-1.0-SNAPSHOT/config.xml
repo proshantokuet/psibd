@@ -42,11 +42,8 @@
 		psiuniqueidgenerator.hbm.xml
 		psiclinicchild.hbm.xml
 		psiclinicinwardreferral.hbm.xml
-<<<<<<< HEAD
-		auhcclinictype.hbm.xml
-=======
 		auhcservicecategory.hbm.xml
->>>>>>> issue#5
+		auhcclinictype.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
