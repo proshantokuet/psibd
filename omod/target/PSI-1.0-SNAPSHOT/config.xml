@@ -43,6 +43,7 @@
 		psiclinicchild.hbm.xml
 		psiclinicinwardreferral.hbm.xml
 		auhcservicecategory.hbm.xml
+		auhcclinictype.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
