@@ -23,6 +23,7 @@
 	            <th>Service Category</th>
 	            <th>Service Provider</th>
 	            <th>Unit Cost(BDT)</th>
+	            <th>Status</th>
 	            <th>Action</th>
 	        </tr>
 	    </thead>
@@ -36,6 +37,12 @@
 	            <td>${ service.category }</td>
 	            <td>${ service.provider }</td>
 	            <td>${ service.unitCost }</td>
+	            <c:if test="${service.voided}">
+	            <td >Inactive</td>
+	            </c:if>
+	            <c:if test="${!service.voided}">
+	            <td >Active</td>
+	            </c:if>
 	            <td>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicService.form?id=${ service.sid }"/>"> Edit</a>
 	            <%-- <a href="<c:url value="/module/PSI/deletePSIClinicService.form?id=${ service.sid }"/>"> Delete</a> --%> 

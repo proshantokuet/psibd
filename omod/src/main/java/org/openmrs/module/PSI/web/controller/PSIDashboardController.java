@@ -61,7 +61,7 @@ public class PSIDashboardController {
 		
 		if (psiClinicUser != null && !isAdmin) {
 			
-			List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUserByCode(clinicCode);
+			List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findAllactiveAndInactiveUserByCode(clinicCode);
 			model.addAttribute("psiClinicUsers", psiClinicUsers);
 			
 			model.addAttribute("showClinic", 0);
@@ -144,7 +144,7 @@ public class PSIDashboardController {
 	@RequestMapping(value = "/module/PSI/providerByClinic", method = RequestMethod.GET)
 	public void providerByClinic(HttpServletRequest request, HttpSession session, Model model,
 	                             @RequestParam(required = true) String code) {
-		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findUserByCode(code);
+		List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findAllactiveAndInactiveUserByCode(code);
 		model.addAttribute("psiClinicUsers", psiClinicUsers);
 		
 	}

@@ -1,7 +1,5 @@
 package org.openmrs.module.PSI.web.controller.rest;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +50,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					//psiMoneyReceipt.setMid(moneyReceiptId);
 				}else{
 					psiMoneyReceipt = new PSIMoneyReceipt();
+					psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
 				}
 			}
 			if (moneyReceipt.has("patientName")) {
@@ -73,7 +72,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			}
 			
 			if (moneyReceipt.has("contact")) {
-				psiMoneyReceipt.setUic(moneyReceipt.getString("contact"));
+				psiMoneyReceipt.setContact(moneyReceipt.getString("contact"));
 			}
 			
 			if (moneyReceipt.has("dob")) {
@@ -173,7 +172,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
-			psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
+			
 			psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
 			
 			/*List<PSIServiceProvision> getProvisions = Context.getService(PSIServiceProvisionService.class)
@@ -191,6 +190,8 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					if (!service.getString("spid").equalsIgnoreCase("")) {
 						psiServiceProvision = Context.getService(PSIServiceProvisionService.class).findById(Integer.parseInt(service.getString("spid")));
 						//psiServiceProvision.setSpid(Integer.parseInt(service.getString("spid")));
+					}else{
+						psiServiceProvision.setUuid(UUID.randomUUID().toString());
 					}
 				}
 				if (service.has("item")) {
@@ -241,7 +242,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
 				psiServiceProvision.setDateCreated(new Date());
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
-				psiServiceProvision.setUuid(UUID.randomUUID().toString());
+				
 				psiServiceProvision.setTimestamp(System.currentTimeMillis());
 				//psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
 				

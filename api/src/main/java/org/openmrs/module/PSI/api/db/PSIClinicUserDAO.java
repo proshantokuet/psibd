@@ -21,6 +21,8 @@ public interface PSIClinicUserDAO {
 	
 	public List<UserDTO> findUserByCode(String code);
 	
+	public List<UserDTO> findAllactiveAndInactiveUserByCode(String code);
+	
 	public List<UserDTO> findUsersNotInClinic(int clinicId);
 	
 	public UserDTO findOrgUnitFromOpenMRS(String uuid);

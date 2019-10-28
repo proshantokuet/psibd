@@ -60,8 +60,8 @@ public class PSIUniqueIdGeneratorRestController extends MainResourceController {
 		int day = cal.get(Calendar.DATE);
 		int month = cal.get(Calendar.MONTH) + 1;
 		int year = cal.get(Calendar.YEAR);
-		String dayS = day > 10 ? "" + day : "0" + day;
-		String monthS = month > 10 ? "" + month : "0" + month;
+		String dayS = day >= 10 ? "" + day : "0" + day;
+		String monthS = month >= 10 ? "" + month : "0" + month;
 		String healtId = "" + year + monthS + dayS + code.substring(0, 3) + serquenceNumber;
 		sequence.put("sequenceId", healtId);
 		return new ResponseEntity<>(sequence.toString(), HttpStatus.OK);

@@ -1,5 +1,7 @@
 package org.openmrs.module.PSI.dto;
 
+import liquibase.database.structure.type.TinyIntType;
+
 public class UserDTO {
 	
 	private int id;
@@ -38,6 +40,38 @@ public class UserDTO {
 	
 	private String password;
 	
+	private String deactivateReason;
+	
+	private boolean retired; 
+	
+	private String retireStatus;
+	
+	public String getRetireStatus() {
+		return retireStatus;
+	}
+
+	public void setRetireStatus(String retireStatus) {
+		this.retireStatus = retireStatus;
+	}
+
+	
+	
+	public boolean isRetired() {
+		return retired;
+	}
+
+	public void setRetired(boolean retired) {
+		this.retired = retired;
+	}
+
+	public String getDeactivateReason() {
+		return deactivateReason;
+	}
+
+	public void setDeactivateReason(String deactivateReason) {
+		this.deactivateReason = deactivateReason;
+	}
+
 	public String getPassword() {
 		return password;
 	}

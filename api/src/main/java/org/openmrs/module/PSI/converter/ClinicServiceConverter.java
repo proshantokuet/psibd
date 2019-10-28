@@ -40,6 +40,7 @@ public class ClinicServiceConverter {
 		psiServiceManagement.setCreator(Context.getAuthenticatedUser());
 		psiServiceManagement.setUuid(UUID.randomUUID().toString());
 		psiServiceManagement.setDateCreated(new Date());
+		psiServiceManagement.setVoided(clinicServiceDTO.isVoided());
 		return psiServiceManagement;
 		
 	}

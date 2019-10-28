@@ -77,6 +77,23 @@ $JQuery("#editUserForm").submit(function(event) {
 	var userName = $JQuery('input[name=userName]').val();
 	var password = $JQuery('input[name=password]').val();			
 	var gender = getGender();
+	var deactivateReason = "";
+	var isRetired = null;
+	var reason = $JQuery('input[name=deactivatereasonName]').val();
+	if (reason !=null && reason != "") {
+		 deactivateReason = reason;
+	}
+	var disableConfirmation = $JQuery('input[name=disableAccount]:checked').val();
+	var enableConfirmation = $JQuery('input[name=enableAccount]:checked').val();
+	if (disableConfirmation == "yes") {
+		 isRetired = "1";
+	}
+	if (disableConfirmation == "no") {
+		 isRetired = "0";
+	}
+	if (enableConfirmation == "yes") {
+		 isRetired = "0";
+	}
 	var personId = $JQuery('input[name=personId]').val();	
 	var roles = getRoles();
 	
@@ -92,7 +109,9 @@ $JQuery("#editUserForm").submit(function(event) {
 	            'password': password,
 	            'gender': gender,
 	            'roles': roles,
-	            'personId': personId
+	            'personId': personId,
+	            'deactivateReason': deactivateReason,
+	            'retireStatus':isRetired
 	           
 	       };			
 	
@@ -172,6 +191,20 @@ function Validate() {
 	$JQuery("#mesage").hide();
     $JQuery("#mesage").html("");
 	
+	var disableReason= $JQuery('input[name=disableAccount]:checked').val();
+	if(disableReason == "yes") {
+		var reason = document.getElementById("deactivatereason").value;
+		if (reason == null || reason == "") {
+	    	$JQuery("#mesage").html("Please fill up the reason before disable");
+	    	$JQuery("#mesage").show();
+	    	$JQuery('html, body').animate({ scrollTop: 0 }, 'slow');
+	    	return false;
+		}
+	}
+	
+	$JQuery("#mesage").hide();
+    $JQuery("#mesage").html("");
+	
 	var password = document.getElementById("password").value;
     var confirmPassword = document.getElementById("reTypePassword").value;
     if (password != confirmPassword) {
@@ -209,3 +242,16 @@ function Validate() {
 	$JQuery("#mesage").hide();
     return true;
 }
+
+$JQuery(document).ready(function () {
+	$JQuery("#deactivatereasonLabel").hide();
+	$JQuery("#deactivatereason").hide();
+	$JQuery("#yesDisable").click(function () {
+		$JQuery("#deactivatereasonLabel").show();
+		$JQuery("#deactivatereason").show();
+    });
+	$JQuery("#noDisable").click(function () {
+		$JQuery("#deactivatereasonLabel").hide();
+		$JQuery("#deactivatereason").hide();
+    });
+});

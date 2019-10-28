@@ -43,7 +43,7 @@ public class DHISDataConverter {
 						attribute.put("value", patientAttribute.getString("display"));
 					} else if (DHISMapper.dateMapper.containsKey(attributeTypeName)) {
 						registeredDate = patientAttribute.getString("value").substring(0, 10);
-						attribute.put("value", patientAttribute.getString("value").substring(0, 10));
+						attribute.put("value", registeredDate);
 					} else {
 						attribute.put("value", patientAttribute.getString("value"));
 					}
@@ -101,16 +101,16 @@ public class DHISDataConverter {
 				}
 			}
 		}
-/*		if (person.has("age")) {
-			if (!person.isNull("age")) {
-				if (DHISMapper.registrationMapper.containsKey("age")) {
-					JSONObject age = new JSONObject();
-					age.put("attribute", DHISMapper.registrationMapper.get("age"));
-					age.put("value", Integer.parseInt(person.getString("age")));
-					attributes.put(age);
-				}
-			}
-		}*/
+		/*		if (person.has("age")) {
+					if (!person.isNull("age")) {
+						if (DHISMapper.registrationMapper.containsKey("age")) {
+							JSONObject age = new JSONObject();
+							age.put("attribute", DHISMapper.registrationMapper.get("age"));
+							age.put("value", Integer.parseInt(person.getString("age")));
+							attributes.put(age);
+						}
+					}
+				}*/
 		if (person.has("gender")) {
 			if (!person.isNull("gender")) {
 				if (DHISMapper.registrationMapper.containsKey("gender")) {
@@ -121,7 +121,7 @@ public class DHISDataConverter {
 					} else if (genderOptiion.equalsIgnoreCase("F")) {
 						genderName = "Female";
 					} else {
-						genderName = "Third Gender";
+						genderName = "Other";
 					}
 					JSONObject gender = new JSONObject();
 					gender.put("attribute", DHISMapper.registrationMapper.get("gender"));
@@ -164,27 +164,27 @@ public class DHISDataConverter {
 			}
 		}
 		
-//		if (person.has("Gov_Card_Type")) {
-//			if (!person.isNull("Gov_Card_Type")) {
-//				if (DHISMapper.registrationMapper.containsKey("Gov_Card_Type")) {
-//					JSONObject govCardType = new JSONObject();
-//					govCardType.put("attribute", DHISMapper.registrationMapper.get("Gov_Card_Type"));
-//					govCardType.put("value", person.getString("Gov_Card_Type"));
-//					attributes.put(govCardType);
-//				}
-//			}
-//		}
+		//		if (person.has("Gov_Card_Type")) {
+		//			if (!person.isNull("Gov_Card_Type")) {
+		//				if (DHISMapper.registrationMapper.containsKey("Gov_Card_Type")) {
+		//					JSONObject govCardType = new JSONObject();
+		//					govCardType.put("attribute", DHISMapper.registrationMapper.get("Gov_Card_Type"));
+		//					govCardType.put("value", person.getString("Gov_Card_Type"));
+		//					attributes.put(govCardType);
+		//				}
+		//			}
+		//		}
 		
-//		if (person.has("PreferredCallingTime")) {
-//			if (!person.isNull("PreferredCallingTime")) {
-//				if (DHISMapper.registrationMapper.containsKey("PreferredCallingTime")) {
-//					JSONObject preferredCallingTime = new JSONObject();
-//					preferredCallingTime.put("attribute", DHISMapper.registrationMapper.get("PreferredCallingTime"));
-//					preferredCallingTime.put("value", person.getString("PreferredCallingTime"));
-//					attributes.put(preferredCallingTime);
-//				}
-//			}
-//		}
+		//		if (person.has("PreferredCallingTime")) {
+		//			if (!person.isNull("PreferredCallingTime")) {
+		//				if (DHISMapper.registrationMapper.containsKey("PreferredCallingTime")) {
+		//					JSONObject preferredCallingTime = new JSONObject();
+		//					preferredCallingTime.put("attribute", DHISMapper.registrationMapper.get("PreferredCallingTime"));
+		//					preferredCallingTime.put("value", person.getString("PreferredCallingTime"));
+		//					attributes.put(preferredCallingTime);
+		//				}
+		//			}
+		//		}
 		
 		if (person.has("preferredAddress")) {
 			if (!person.isNull("preferredAddress")) {
@@ -260,7 +260,7 @@ public class DHISDataConverter {
 	public static JSONObject toConvertMoneyReceipt(PSIServiceProvision psiServiceProvision, String trackedEntityInstanceId)
 	    throws JSONException {
 		JSONObject event = new JSONObject();
-		PSIMoneyReceipt psiMoneyReceipt =  psiServiceProvision.getPsiMoneyReceiptId();
+		PSIMoneyReceipt psiMoneyReceipt = psiServiceProvision.getPsiMoneyReceiptId();
 		String orgUit = psiMoneyReceipt.getOrgUnit();
 		String getClinicName = psiMoneyReceipt.getClinicName();
 		String getClinicCOde = psiMoneyReceipt.getClinicCode();
@@ -295,17 +295,17 @@ public class DHISDataConverter {
 		
 		JSONObject clinicId = new JSONObject();
 		clinicId.put("dataElement", DHISMapper.ServiceProvision.get("clinicId"));
-		clinicId.put("value",getClinicCOde);
+		clinicId.put("value", getClinicCOde);
 		dataValues.put(clinicId);
 		
 		JSONObject servicePoint = new JSONObject();
 		servicePoint.put("dataElement", DHISMapper.ServiceProvision.get("servicePoint"));
-		servicePoint.put("value",getServicePoint);
+		servicePoint.put("value", getServicePoint);
 		dataValues.put(servicePoint);
 		
 		JSONObject saletilteClinicId = new JSONObject();
 		saletilteClinicId.put("dataElement", DHISMapper.ServiceProvision.get("saletilteClinicId"));
-		saletilteClinicId.put("value",getSateliteClinicId);
+		saletilteClinicId.put("value", getSateliteClinicId);
 		dataValues.put(saletilteClinicId);
 		
 		JSONObject serviceDate = new JSONObject();
@@ -401,6 +401,12 @@ public class DHISDataConverter {
 		dataCollector.put("dataElement", DHISMapper.ServiceProvision.get("dataCollector"));
 		dataCollector.put("value", getDataCollector);
 		dataValues.put(dataCollector);
+		
+		String serviceUuid = psiServiceProvision.getUuid();
+		JSONObject serviceUuId = new JSONObject();
+		serviceUuId.put("dataElement", DHISMapper.ServiceProvision.get("serviceUuid"));
+		serviceUuId.put("value", serviceUuid);
+		dataValues.put(serviceUuId);
 		
 		/*JSONObject provider = new JSONObject();
 		provider.put("dataElement", "sNpMqQaWrUV");

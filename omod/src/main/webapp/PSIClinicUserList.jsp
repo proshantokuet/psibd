@@ -16,14 +16,15 @@ table.dataTable tbody th, table.dataTable tbody td {
     	<div class="note">
         	<p>User List of ${ name }</p>
        	</div>					
-	<table id="table_id" class="display">
+	<table id="table_id" class="display cell-border compact">
 	    <thead>
 	        <tr>
 	        	<th>Name</th> 
 	            <th>User Name</th> 
 	            <th>Email</th> 
 	            <th>Mobile</th>
-	            <th>Roles</th>  
+	            <th>Roles</th> 
+	            <th>Status</th> 
 	            <th>Action</th>           
 	        </tr>
 	    </thead>
@@ -35,7 +36,13 @@ table.dataTable tbody th, table.dataTable tbody td {
 	            <td>${ user.email }</td>
 	            <td>${ user.mobile }</td>
 	            <td>${ user.role }</td>
-	            <td><a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicUser.form?id=${ user.cuid }"/>"> Edit</a> </td>
+	           	<c:if test="${user.retired}">
+	            <td >Inactive</td>
+	            </c:if>
+	            <c:if test="${!user.retired}">
+	            <td >Active</td>
+	            </c:if>
+	            <td ><a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicUser.form?id=${ user.cuid }"/>"> Edit</a> </td>
 	        </tr>
 	       </c:forEach>
 	        

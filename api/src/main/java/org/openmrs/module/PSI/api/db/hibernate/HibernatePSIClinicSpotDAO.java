@@ -65,7 +65,7 @@ public class HibernatePSIClinicSpotDAO implements PSIClinicSpotDAO {
 	@Override
 	public List<PSIClinicSpot> findByClinicId(int id) {
 		List<PSIClinicSpot> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIClinicSpot where  psiClinicManagement = :clinicId ").setInteger("clinicId", id).list();
+		        .createQuery("from PSIClinicSpot where  psiClinicManagement = :clinicId order by code ASC").setInteger("clinicId", id).list();
 		return lists;
 	}
 	

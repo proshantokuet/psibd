@@ -40,6 +40,10 @@
 		psidhismarker.hbm.xml
 		psidhisexception.hbm.xml
 		psiuniqueidgenerator.hbm.xml
+		psiclinicchild.hbm.xml
+		psiclinicinwardreferral.hbm.xml
+		auhcservicecategory.hbm.xml
+		auhcclinictype.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
