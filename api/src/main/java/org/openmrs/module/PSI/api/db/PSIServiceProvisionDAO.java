@@ -40,4 +40,8 @@ public interface PSIServiceProvisionDAO {
 	public List<PSIServiceProvision> findAllByMoneyReceiptId(int moneyReceiptId);
 	
 	public void deleteByPatientUuidAndMoneyReceiptIdNull(String patientUuid);
+	
+	public int getTotalDiscount(String startDate,String endDate);
+	
+	public int getTotalServiceContact(String startDate,String endDate);
 }

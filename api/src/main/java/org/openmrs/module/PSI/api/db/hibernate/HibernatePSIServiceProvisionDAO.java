@@ -400,4 +400,35 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			}
 		}
 	}
+
+	@Override
+	public int getTotalDiscount(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		String hql = "SELECT SUM(discount) FROM PSIServiceProvision" +
+					" WHERE money_receipt_date >= "+startDate+" and money_receipt_date <="+endDate+"";
+		 try{ 
+			 int ret = (Integer)sessionFactory.getCurrentSession().createQuery(hql).list().get(0);
+		 
+		 }catch (Exception e){
+			 return 0;
+		 }
+		 
+		 return 0;
+//		 return 1;
+//		return 0;
+	}
+
+	@Override
+	public int getTotalServiceContact(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		String hql = "SELECT count(*) FROM openmrs.psi_service_provision"+
+				" WHERE money_receipt_date >="+ startDate+" and money_receipt_date <="+endDate+"";
+		 try{ 
+			 int ret = (Integer)sessionFactory.getCurrentSession().createQuery(hql).list().get(0);
+		 
+		 }catch (Exception e){
+			 return 0;
+		 }
+		return 0;
+	}
 }

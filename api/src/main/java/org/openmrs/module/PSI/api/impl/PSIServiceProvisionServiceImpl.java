@@ -117,5 +117,17 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		dao.deleteByPatientUuidAndMoneyReceiptIdNull(patientUuid);
 		
 	}
+
+	@Override
+	public int getTotalDiscount(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getTotalDiscount(startDate, endDate);
+	}
+
+	@Override
+	public int getTotalServiceContract(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getTotalDiscount(startDate, endDate);
+	}
 	
 }

@@ -49,6 +49,11 @@ public class PSIDashboardController {
 		}
 		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, today,
 		    clinicCode, "");
+//		dashboardDTO.setTotalDiscount(1);
+		int val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(today, today);
+		model.addAttribute("dashbaord_discount_value",val);
+		int totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(today, today);
+		model.addAttribute("dashboard_service_cotact_value",totalServiceContact);
 		model.addAttribute("dashboard", dashboardDTO);
 		
 		List<PSIReport> providerWiseReports = Context.getService(PSIServiceProvisionService.class)
