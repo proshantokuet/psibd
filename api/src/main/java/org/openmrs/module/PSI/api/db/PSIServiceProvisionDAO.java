@@ -6,6 +6,8 @@ import java.util.List;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
+import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 
 public interface PSIServiceProvisionDAO {
 	
@@ -44,4 +46,6 @@ public interface PSIServiceProvisionDAO {
 	public int getTotalDiscount(String startDate,String endDate);
 	
 	public int getTotalServiceContact(String startDate,String endDate);
+	
+	public List<PSIReportSlipTracking> getSlipTrackingReport(SearchFilterSlipTracking filter);
 }

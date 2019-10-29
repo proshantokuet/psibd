@@ -7,6 +7,8 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
+import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -47,5 +49,8 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	public int getTotalDiscount(String startDate,String endDate);
 	
 	public int getTotalServiceContract(String startDate,String endDate);
+	
+	public List<PSIReportSlipTracking> getSlipTrackingReport
+			(SearchFilterSlipTracking filter);
 	
 }

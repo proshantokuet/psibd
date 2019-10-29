@@ -9,6 +9,8 @@ import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
+import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 
 public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implements PSIServiceProvisionService {
 	
@@ -128,6 +130,13 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	public int getTotalServiceContract(String startDate, String endDate) {
 		// TODO Auto-generated method stub
 		return dao.getTotalDiscount(startDate, endDate);
+	}
+
+	@Override
+	public List<PSIReportSlipTracking> getSlipTrackingReport(
+			SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getSlipTrackingReport(filter);
 	}
 	
 }

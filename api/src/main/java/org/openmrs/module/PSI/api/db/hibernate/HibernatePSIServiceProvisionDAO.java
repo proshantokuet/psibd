@@ -19,6 +19,8 @@ import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
+import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.openmrs.module.PSI.utils.PSIConstants;
 
 public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
@@ -431,4 +433,46 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 }
 		return 0;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIReportSlipTracking> getSlipTrackingReport(
+			SearchFilterSlipTracking filter) {
+		List<PSIReportSlipTracking> slipTrackingList = new ArrayList<PSIReportSlipTracking>();
+		// TODO Auto-generated method stub
+		List<Object[]> resultSet = new ArrayList<Object[]>();
+		String hql = "select p.spid,m.slip_no,p.money_receipt_date,m.patient_name,"+
+				"m.contact,m.wealth,m.service_point,p.total_amount,p.discount,p.net_payable"
+				+"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
+				"on p.patient_uuid = m.patient_uuid";
+		
+		String wh = "";
+		if(filter.getStartDate() != null && filter.getEndDate() != null){
+			
+		}
+//				"where p.money_receipt_date >= '2019-01-01' AND p.money_receipt_date <= '2019-08-08'";
+		resultSet = sessionFactory.getCurrentSession().createQuery(hql).list();
+		int sl = 0;
+		for(Iterator it = resultSet.iterator(); it.hasNext();){
+			PSIReportSlipTracking slipTracking = new PSIReportSlipTracking();
+			Object[] objects = (Object[]) it.next();
+			
+			slipTracking.setsL(++sl);
+			slipTracking.setSlipNo(objects[1].toString());
+			slipTracking.setSlipDate(objects[2].toString());
+			slipTracking.setPatientName(objects[3].toString());
+			slipTracking.setPhone(objects[4].toString());
+			slipTracking.setWealthClassification(objects[5].toString());
+			slipTracking.setServicePoint(objects[6].toString());
+			slipTracking.setTotalAmount(Integer.parseInt(objects[7].toString()));
+			slipTracking.setDiscount(Integer.parseInt(objects[8].toString()));
+			slipTracking.setNetPayable(Integer.parseInt(objects[9].toString()));
+			
+			slipTrackingList.add(slipTracking);
+		}
+		
+		return slipTrackingList;
+	}
+	
+	
 }
