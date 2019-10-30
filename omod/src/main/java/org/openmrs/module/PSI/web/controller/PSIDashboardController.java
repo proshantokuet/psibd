@@ -153,4 +153,26 @@ public class PSIDashboardController {
 		model.addAttribute("psiClinicUsers", psiClinicUsers);
 		
 	}
+	
+	@RequestMapping(value = "/module/PSI/slipTracking", method = RequestMethod.GET)
+	public void slipTrackingWise(HttpServletRequest request, HttpSession session, Model model,
+	                                      @RequestParam(required = true) String startDate,
+	                                      @RequestParam(required = true) String endDate,
+	                                      @RequestParam String dataCollector,
+	                                      @RequestParam String wlthPoor,
+	                                      @RequestParam String wlthPop,
+	                                      @RequestParam String wlthAbleToPay,
+	                                      @RequestParam String spSatelite,
+	                                      @RequestParam String spStatic,
+	                                      @RequestParam String spCsp){
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		
+		if(isAdmin){
+			
+		}else {
+			
+		}
+		
+	}
 }

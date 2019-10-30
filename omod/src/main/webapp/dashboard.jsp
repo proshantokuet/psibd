@@ -249,113 +249,127 @@
 	</div>
   </div>
   <div id="tabs-3">
-  
-	<form:form id="SlipTracking">
-		<div class="form-content">
-			<div class="row">
-				<div class="col-md-4">
-                	<div class="form-group">                							
-						<label for="startDateSlip"> From</label><br />
-						<input class="dt" id="startDateSlip"  name="startDateSlip" type="text"  required="true"/>
-                  	</div>
-                  	
-             	</div>
-              	<div class="col-md-4">
-               		<div class="form-group">
-                  	<label for="endDateSlip">To</label><br />
-						<input class="dt" id="endDateSlip" name="endDateSlip" type="text"  required="true"/>                  			
-					</div>
-                  	
-              	</div>
-              	<div class="col-md-4">
-               		<div class="form-group">
-                  	<label for="collector">Select Data Collector</label><br />
-						<select id="collector" name="collector" required="true" style="width: 160px" >
-						  <option value=""></option>
-						  <c:forEach var="user" items="${ psiClinicUsers }">
-							  <option value="${user.username }">${user.userRole }</option>							  
-						  </c:forEach>
-						</select>                 			
-					</div>
-              	</div>
-              	<div class="col-md-4">
-              		<div class="form-group">
-              			Wealth Classification<br />
-              			  <input type="checkbox" id="wlth_poor" name="poor" value="Poor">Poor<br>
-  						  <input type="checkbox" id="wlth_pop" name="pop" value="Pop">Pop<br>
-  						  <input type="checkbox" id="wlth_pay" name="able_to_pay" value="able_to_pay"> Able to pay<br><br>
-              		</div>
-              	</div>
-              	<div class="col-md-4">
-              		<div class="form-group">
-              			Service Point<br />
-              			  <input type="checkbox" id="sp_satelite" name="satelite" value="satelite">Satelite<br>
-  						  <input type="checkbox" id="sp_static" name="static" value="static">Static<br>
-  						  <input type="checkbox" id="sp_csv" name="csp" value="csp">CSP<br><br>
-              		</div>
-              	</div>
-              	<div class="col-md-2">
-               		<div class="form-group">
-               	<!-- 	<label for="Service Code"></label><br /> -->
-                  	<button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>                  			
-					</div>
-                  	
-              	</div>
-			</div>
-		</div>
-	</form:form>
-  	<div class="form-content" id="slipTracking">	</div> 
-  	<div id="slipTrackers">
-  		<div class="form-content">
-  			<div class="row">
-			 <div class="col-md-3">
-                <div class="form-group">                							
-						<label> ${dashboard.servedPatient } </label>  &nbsp;&nbsp; Patients Served						
-                 </div>
-                  	
-             </div>
-             <div class="col-md-3">
-               	<div class="form-group">
-                  	<label for="Service Code">${dashboard.earned }</label>
-						&nbsp;&nbsp; Revenue Earned                  			
-				</div>
-                  	
-              </div>
-  			 <div class="col-md-3">
-  			 	<div class="form-group">                							
-						<label> ${ dashbaord_discount_value } </label>  &nbsp;&nbsp; Total Discount						
-                 </div>
-  			 </div>
-  			 <div class="col-md-3">
-  			 	<div class="form-group">                							
-						<label> ${ dashboard_service_cotact_value } </label>  &nbsp;&nbsp; Total Service Contact						
-                 </div>
-  			 </div>
-  			</div>
-  		
-  		</div>
-  	</div>
-    <table id="slip_tracking" class="display">
-    	<thead>
-    		<tr>
-    			<th>SL</th>
-    			<th>Slip No.</th>
-    			<th>Date</th>
-    			<th>Patient Name</th>
-    			<th>Phone</th>
-    			<th>Wealth Class</th>
-    			<th>Service Point</th>
-    			<th>Total Amount</th>
-    			<th>Discount</th>
-    			<th>Payable Amount</th>
-    			<th>Action</th>
-    		</tr>
-    	</thead>
-    	<tbody>
-    		
-    	</tbody>
-    </table>
+
+    <form:form id="slipTracking_">
+
+        <div class="form-content">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="startDateSlip"> From</label>
+                        <br />
+                        <input class="dt" id="startDateSlip" name="startDateSlip" type="text" required="true" />
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="endDateSlip">To</label>
+                        <br />
+                        <input class="dt" id="endDateSlip" name="endDateSlip" type="text" required="true" />
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="collector">Select Data Collector</label>
+                        <br />
+                        <select id="collector" name="collector" style="width: 160px">
+                            <option value=""></option>
+                            <c:forEach var="user" items="${ psiClinicUsers }">
+                                <option value="${user.username }">${user.userRole }</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Wealth Classification
+                        <br />
+                        <input type="checkbox" id="wlth_poor" name="wlthPoor" value="Poor">Poor
+                        <br>
+                        <input type="checkbox" id="wlth_pop" name="wlthPop" value="Pop">Pop
+                        <br>
+                        <input type="checkbox" id="wlth_pay" name="wlthAbleToPay" value="able_to_pay"> Able to pay
+                        <br>
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Service Point
+                        <br />
+                        <input type="checkbox" id="sp_satelite" name="spSatelite" value="satelite">Satelite
+                        <br>
+                        <input type="checkbox" id="sp_static" name="spStatic" value="static">Static
+                        <br>
+                        <input type="checkbox" id="sp_csp" name="spCsp" value="csp">CSP
+                        <br>
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <!-- 	<label for="Service Code"></label><br /> -->
+                        <button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form:form>
+    <div class="form-content" id="slipTracking"> </div>
+     <div id="slipTrackers">
+	    <div class="form-content">
+	        <div class="row">
+	            <div class="col-md-3">
+	                <div class="form-group">
+	                    <label> ${dashboard.servedPatient } </label> &nbsp;&nbsp; Patients Served
+	                </div>
+	
+	            </div>
+	            <div class="col-md-3">
+	                <div class="form-group">
+	                    <label for="Service Code">${dashboard.earned }</label>
+	                    &nbsp;&nbsp; Revenue Earned
+	                </div>
+	
+	            </div>
+	            <div class="col-md-3">
+	                <div class="form-group">
+	                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
+	                </div>
+	            </div>
+	            <div class="col-md-3">
+	                <div class="form-group">
+	                    <label> ${ dashboard_service_cotact_value } </label> &nbsp;&nbsp; Total Service Contact
+	                </div>
+	            </div>
+	        </div>
+	
+	    </div>
     </div>
+    <table id="slip_tracking" class="display">
+        <thead>
+            <tr>
+                <th>SL</th>
+                <th>Slip No.</th>
+                <th>Date</th>
+                <th>Patient Name</th>
+                <th>Phone</th>
+                <th>Wealth Class</th>
+                <th>Service Point</th>
+                <th>Total Amount</th>
+                <th>Discount</th>
+                <th>Payable Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
  </div>
 
  
@@ -594,6 +608,36 @@ $JQuery("#slip_tracking").DataTable({
 	             }			         
 	         ]
 });
+$JQuery("#slipTracking_").submit(function(event){
+	event.preventDefault();
+	/*  alert("hits"); */
+	var startDateSlip = $("#startDateSlip").val();
+	var endDateSlip = $("#endDateSlip").val();
+	var dataCollector = $("#collector").val();
+	var wlthPoor = $("#wlth_poor").val();
+	var wlthPop = $("#wlth_pop").val();
+	var wlthPay = $("#wlth_pay").val();
+	var spSatelite = $("#sp_satelite").val();
+	var spStatic = $("#sp_static").val();
+	var spCsp = $("#sp_csp").val();
+	var url = "/openmrs/module//PSI/slipTracking?startDate="+startDateSlip+"&endDate="+endDateSlip;
+	$.JQuery.ajax({
+		 	type : "GET",
+		   contentType : "application/json",
+		   url : url,	 
+		   dataType : 'html',
+		   timeout : 100000,
+		   beforeSend: function() {	    
+		   		
+		   },
+		   success:function(data){
+			  
+		   }
+		  
+	});
+	
+	
+}); 
 </script>
  
 

@@ -447,7 +447,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				"on p.patient_uuid = m.patient_uuid";
 		
 		String wh = "";
-		if(filter.getStartDate() != null && filter.getEndDate() != null){
+		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
 			
 		}
 //				"where p.money_receipt_date >= '2019-01-01' AND p.money_receipt_date <= '2019-08-08'";
