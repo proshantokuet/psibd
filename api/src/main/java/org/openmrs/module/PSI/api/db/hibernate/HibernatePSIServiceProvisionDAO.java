@@ -12,6 +12,7 @@ import org.apache.velocity.runtime.directive.Foreach;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
@@ -441,37 +442,43 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		List<PSIReportSlipTracking> slipTrackingList = new ArrayList<PSIReportSlipTracking>();
 		// TODO Auto-generated method stub
 		List<Object[]> resultSet = new ArrayList<Object[]>();
-		String hql = "select p.spid,m.slip_no,p.money_receipt_date,m.patient_name,"+
-				"m.contact,m.wealth,m.service_point,p.total_amount,p.discount,p.net_payable"
-				+"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
-				"on p.patient_uuid = m.patient_uuid";
+		//p.total_amount,,p.net_payable
+//		String hql = "select p.spid,m.slip_no,p.money_receipt_date,m.patient_name,"+
+//				"m.contact,m.wealth,m.service_point,p.discount"
+//		 String hql=" from PSIServiceProvision p join p.PSIMoneyReceipt m  " 
+//		 		+ "on  "+
+//				" p.patientUuid = m.patientUuid"
+//		;
+//		String hql = " from PSIServiceProvision p join p.PSIMoneyReceipt";
 		
 		String wh = "";
 		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
-			
-		}
-//				"where p.money_receipt_date >= '2019-01-01' AND p.money_receipt_date <= '2019-08-08'";
-		resultSet = sessionFactory.getCurrentSession().createQuery(hql).list();
-		int sl = 0;
-		for(Iterator it = resultSet.iterator(); it.hasNext();){
-			PSIReportSlipTracking slipTracking = new PSIReportSlipTracking();
-			Object[] objects = (Object[]) it.next();
-			
-			slipTracking.setsL(++sl);
-			slipTracking.setSlipNo(objects[1].toString());
-			slipTracking.setSlipDate(objects[2].toString());
-			slipTracking.setPatientName(objects[3].toString());
-			slipTracking.setPhone(objects[4].toString());
-			slipTracking.setWealthClassification(objects[5].toString());
-			slipTracking.setServicePoint(objects[6].toString());
-			slipTracking.setTotalAmount(Integer.parseInt(objects[7].toString()));
-			slipTracking.setDiscount(Integer.parseInt(objects[8].toString()));
-			slipTracking.setNetPayable(Integer.parseInt(objects[9].toString()));
-			
-			slipTrackingList.add(slipTracking);
+			wh += " where p.money_receipt_date >=" + filter.getStartDateSlip() + " AND "
+					+"p.money_receipt_date <=" + filter.getEndDateSlip();
 		}
 		
-		return slipTrackingList;
+		String sql = "select p.spid as sL,m.slip_no as slipNo,p.money_receipt_date as slipDate," +
+				"m.patient_name as patientName,"
+					+"m.contact as phone,m.wealth as wealthClassification,m.service_point as servicePoint," +
+					"p.total_amount as totalAmount,p.discount as discount,p.net_payable as netPayable"+
+					" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
+					" on p.patient_uuid = m.patient_uuid";
+		sql += wh;
+		List<PSIReportSlipTracking> testList = sessionFactory.getCurrentSession().createSQLQuery(sql).
+					addScalar("sL",StandardBasicTypes.INTEGER).
+					addScalar("slipNo",StandardBasicTypes.STRING).
+					addScalar("slipDate",StandardBasicTypes.STRING).
+					addScalar("patientName",StandardBasicTypes.STRING).
+					addScalar("phone",StandardBasicTypes.STRING).
+					addScalar("wealthClassification",StandardBasicTypes.STRING).
+					addScalar("servicePoint",StandardBasicTypes.STRING).
+					addScalar("totalAmount",StandardBasicTypes.INTEGER).
+					addScalar("discount",StandardBasicTypes.INTEGER).
+					addScalar("netPayable",StandardBasicTypes.INTEGER).
+				list();
+
+		
+		return testList;
 	}
 	
 	

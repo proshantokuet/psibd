@@ -19,6 +19,8 @@ import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
+import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
@@ -63,6 +65,13 @@ public class PSIDashboardController {
 		List<PSIReport> servicePointWiseReports = Context.getService(PSIServiceProvisionService.class)
 		        .servicePointWiseReport(today, today, clinicCode);
 		model.addAttribute("servicePointWiseReports", servicePointWiseReports);
+		SearchFilterSlipTracking filter = new SearchFilterSlipTracking();
+		filter.setStartDateSlip(today);
+		filter.setEndDateSlip(today);
+		List<PSIReportSlipTracking> trackingList = Context.getService(PSIServiceProvisionService.class)
+							.getSlipTrackingReport(filter);
+		model.addAttribute("slipTrackingWiseReports",trackingList);
+		
 		
 		if (psiClinicUser != null && !isAdmin) {
 			
@@ -168,8 +177,12 @@ public class PSIDashboardController {
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
 		
+		SearchFilterSlipTracking filter = new SearchFilterSlipTracking();
+		filter.setStartDateSlip(startDate);
+		filter.setEndDateSlip(endDate);
 		if(isAdmin){
-			
+			List<PSIReportSlipTracking> slipTrackingList = Context.getService
+						(PSIServiceProvisionService.class).getSlipTrackingReport(filter);
 		}else {
 			
 		}
