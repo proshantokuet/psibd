@@ -1,5 +1,7 @@
 package org.openmrs.module.PSI.dto;
 
+import java.util.Date;
+
 public class PSIReportSlipTracking {
 	private int sL;
 	private String slipNo;
@@ -8,20 +10,11 @@ public class PSIReportSlipTracking {
 	private String phone;
 	private String wealthClassification;
 	private String servicePoint;
-	private int totalAmount;
-	private int discount;
-	private int netPayable;
+	private Long totalAmount;
+	private Double discount;
+	private Double netPayable;
 	private String slipLink;
 	
-	public PSIReportSlipTracking() {
-		// TODO Auto-generated constructor stub
-	}
-	public int getsL() {
-		return sL;
-	}
-	public void setsL(int sL) {
-		this.sL = sL;
-	}
 	public String getSlipNo() {
 		return slipNo;
 	}
@@ -58,30 +51,39 @@ public class PSIReportSlipTracking {
 	public void setServicePoint(String servicePoint) {
 		this.servicePoint = servicePoint;
 	}
-	public int getTotalAmount() {
+	public Long getTotalAmount() {
 		return totalAmount;
 	}
-	public void setTotalAmount(int totalAmount) {
+	public void setTotalAmount(Long totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-	public int getDiscount() {
+	public Double getDiscount() {
 		return discount;
 	}
-	public void setDiscount(int discount) {
+	public void setDiscount(Double discount) {
 		this.discount = discount;
 	}
-	public int getNetPayable() {
+	public Double getNetPayable() {
 		return netPayable;
 	}
-	public void setNetPayable(int netPayable) {
+	public void setNetPayable(Double netPayable) {
 		this.netPayable = netPayable;
 	}
 	public String getSlipLink() {
 		return slipLink;
 	}
-
 	public void setSlipLink(String slipLink) {
 		this.slipLink = slipLink;
+	}
+	public void setsL(int sL) {
+		this.sL = sL;
+	}
+
+	public PSIReportSlipTracking() {
+		// TODO Auto-generated constructor stub
+	}
+	public int getsL() {
+		return sL;
 	}
 	@Override
 	public String toString() {

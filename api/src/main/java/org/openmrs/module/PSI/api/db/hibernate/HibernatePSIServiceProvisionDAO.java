@@ -405,34 +405,35 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	}
 
 	@Override
-	public int getTotalDiscount(String startDate, String endDate) {
+	public String getTotalDiscount(String startDate, String endDate) {
 		// TODO Auto-generated method stub
-		String hql = "SELECT SUM(discount) FROM PSIServiceProvision" +
-					" WHERE money_receipt_date >= "+startDate+" and money_receipt_date <="+endDate+"";
+		String hql = "SELECT SUM(discount) FROM PSIServiceProvision " +
+					" WHERE moneyReceiptDate BETWEEN '"+startDate+"' AND '"+endDate+"'";
+		Double ret;
 		 try{ 
-			 int ret = (Integer)sessionFactory.getCurrentSession().createQuery(hql).list().get(0);
-		 
+			  ret = (Double)sessionFactory.getCurrentSession().createQuery(hql).
+					 list().get(0);
+			 return  ret != null ? String.valueOf(ret) : "0";
 		 }catch (Exception e){
-			 return 0;
+			 return "0";
+//			 return e.toString();
 		 }
 		 
-		 return 0;
-//		 return 1;
-//		return 0;
+
 	}
 
 	@Override
-	public int getTotalServiceContact(String startDate, String endDate) {
+	public String getTotalServiceContact(String startDate, String endDate) {
 		// TODO Auto-generated method stub
-		String hql = "SELECT count(*) FROM openmrs.psi_service_provision"+
-				" WHERE money_receipt_date >="+ startDate+" and money_receipt_date <="+endDate+"";
+		String hql = "SELECT count(*) FROM PSIServiceProvision"+
+				" WHERE moneyReceiptDate BETWEEN '"+startDate+"' AND '"+endDate+"'";
 		 try{ 
-			 int ret = (Integer)sessionFactory.getCurrentSession().createQuery(hql).list().get(0);
-		 
+			 Long ret = (Long)sessionFactory.getCurrentSession().createQuery(hql).list().get(0);
+			 return  ret != null ? String.valueOf(ret) : "0";
 		 }catch (Exception e){
-			 return 0;
+			 return "0";
 		 }
-		return 0;
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -442,21 +443,66 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		List<PSIReportSlipTracking> slipTrackingList = new ArrayList<PSIReportSlipTracking>();
 		// TODO Auto-generated method stub
 		List<Object[]> resultSet = new ArrayList<Object[]>();
-		//p.total_amount,,p.net_payable
-//		String hql = "select p.spid,m.slip_no,p.money_receipt_date,m.patient_name,"+
-//				"m.contact,m.wealth,m.service_point,p.discount"
-//		 String hql=" from PSIServiceProvision p join p.PSIMoneyReceipt m  " 
-//		 		+ "on  "+
-//				" p.patientUuid = m.patientUuid"
-//		;
-//		String hql = " from PSIServiceProvision p join p.PSIMoneyReceipt";
+
 		
 		String wh = "";
 		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
-			wh += " where p.money_receipt_date >=" + filter.getStartDateSlip() + " AND "
-					+"p.money_receipt_date <=" + filter.getEndDateSlip();
+			wh += " where p.money_receipt_date >= '" + filter.getStartDateSlip() + "' AND "
+					+"p.money_receipt_date <='" + filter.getEndDateSlip()+"'";
 		}
 		
+//		Boolean spFlag = false;
+//		if(filter.getSpCsp() != null){
+//			wh += " AND m.service_point = CSP";
+//			spFlag = true;
+//		}
+//		if(filter.getSpSatelite() != null) {
+//			if(spFlag == false){
+//				wh += "AND m.servicepoint = Satelite";
+//				spFlag = true;
+//			}
+//			else {
+//				wh += " OR m.service_point = Satelite";
+//			}
+//		}
+//		if(filter.getSpStatic() != null){
+//			if(spFlag == false){
+//				wh += "AND m.servicepoint = Static";
+//				spFlag = true;
+//			}
+//			else{
+//				wh += " OR m.service_point = Static";
+//			}
+//		}
+//		
+//		Boolean wlthFlag = false;
+//		if(filter.getWlthAbleToPay() != null){
+//			wh += " AND m.wealth = Able to Pay";
+//			wlthFlag = true;
+//		}
+//		if(filter.getWlthPoor() != null){
+//			if(wlthFlag == false){
+//				wh += " AND m.wealth = Poor";
+//				wlthFlag = true;
+//			}
+//			else {
+//				wh += " OR m.wealth = Poor";
+//			}
+//		}
+//		if(filter.getWlthPop() != null){
+//			if(wlthFlag == false){
+//				wh += " AND m.wealth = PoP";
+//				wlthFlag = true;
+//			}
+//			else {
+//				wh += " OR m.wealth = PoP";
+//			}
+//		}
+//
+//		if(filter.getCollector() != null){
+//			wh += " AND ";
+//		}
+	
 		String sql = "select p.spid as sL,m.slip_no as slipNo,p.money_receipt_date as slipDate," +
 				"m.patient_name as patientName,"
 					+"m.contact as phone,m.wealth as wealthClassification,m.service_point as servicePoint," +
@@ -464,22 +510,46 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
 					" on p.patient_uuid = m.patient_uuid";
 		sql += wh;
-		List<PSIReportSlipTracking> testList = sessionFactory.getCurrentSession().createSQLQuery(sql).
-					addScalar("sL",StandardBasicTypes.INTEGER).
-					addScalar("slipNo",StandardBasicTypes.STRING).
-					addScalar("slipDate",StandardBasicTypes.STRING).
-					addScalar("patientName",StandardBasicTypes.STRING).
-					addScalar("phone",StandardBasicTypes.STRING).
-					addScalar("wealthClassification",StandardBasicTypes.STRING).
-					addScalar("servicePoint",StandardBasicTypes.STRING).
-					addScalar("totalAmount",StandardBasicTypes.INTEGER).
-					addScalar("discount",StandardBasicTypes.INTEGER).
-					addScalar("netPayable",StandardBasicTypes.INTEGER).
-				list();
-
+		List<PSIReportSlipTracking> psiList = null;
+//		try{
+//			List<PSIReportSlipTracking> psiList = sessionFactory.getCurrentSession().createSQLQuery(sql).
+//					addScalar("sL",StandardBasicTypes.INTEGER).
+//					addScalar("slipNo",StandardBasicTypes.STRING).
+//					addScalar("slipDate",StandardBasicTypes.DATE).
+//					addScalar("patientName",StandardBasicTypes.STRING).
+//					addScalar("phone",StandardBasicTypes.STRING).
+//					addScalar("wealthClassification",StandardBasicTypes.STRING).
+//					addScalar("servicePoint",StandardBasicTypes.STRING).
+//					addScalar("totalAmount",StandardBasicTypes.INTEGER).
+//					addScalar("discount",StandardBasicTypes.DOUBLE).
+//					addScalar("netPayable",StandardBasicTypes.DOUBLE).
+//				list();
+//			return psiList;
+//		}catch(Exception e){
+//			return null;
+//		}
+		resultSet = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
+		for (Iterator iterator = resultSet.iterator(); iterator.hasNext();) {
+			PSIReportSlipTracking slip = new PSIReportSlipTracking();
+			Object[] objects = (Object[]) iterator.next();
+//			slip.setsL(Integer.parseInt(objects[0].toString()));
+//			slip.setSlipNo(objects[1].toString());
+//			slip.setSlipDate(objects[2].toString());
+			slip.setPatientName(objects[3].toString());
+//			slip.setWealthClassification(objects[4].toString());
+//			slip.setServicePoint(objects[5].toString());
+//			slip.setTotalAmount(Long.parseLong(objects[6].toString()));
+//			slip.setDiscount(Double.parseDouble(objects[7].toString()));
+//			slip.setNetPayable(Double.parseDouble(objects[8].toString()));
+//			slip.setSlipLink("");
+			psiList.add(slip);
+		}
 		
-		return testList;
+		
+		return psiList;
 	}
+	
+
 	
 	
 }

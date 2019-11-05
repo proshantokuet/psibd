@@ -287,11 +287,11 @@
                     <div class="form-group">
                         Wealth Classification
                         <br />
-                        <input type="checkbox" id="wlth_poor" name="wlthPoor" value="Poor">Poor
+                        <input type="checkbox" id="wlth_poor" name="wlthPoor" value="">Poor
                         <br>
-                        <input type="checkbox" id="wlth_pop" name="wlthPop" value="Pop">Pop
+                        <input type="checkbox" id="wlth_pop" name="wlthPop" value="">Pop
                         <br>
-                        <input type="checkbox" id="wlth_pay" name="wlthAbleToPay" value="able_to_pay"> Able to pay
+                        <input type="checkbox" id="wlth_pay" name="wlthAbleToPay" value=""> Able to pay
                         <br>
                         <br>
                     </div>
@@ -300,11 +300,11 @@
                     <div class="form-group">
                         Service Point
                         <br />
-                        <input type="checkbox" id="sp_satelite" name="spSatelite" value="satelite">Satelite
+                        <input type="checkbox" id="sp_satelite" name="spSatelite" value="">Satelite
                         <br>
-                        <input type="checkbox" id="sp_static" name="spStatic" value="static">Static
+                        <input type="checkbox" id="sp_static" name="spStatic" value="">Static
                         <br>
-                        <input type="checkbox" id="sp_csp" name="spCsp" value="csp">CSP
+                        <input type="checkbox" id="sp_csp" name="spCsp" value="">CSP
                         <br>
                         <br>
                     </div>
@@ -353,21 +353,37 @@
     <table id="slip_tracking" class="display">
         <thead>
             <tr>
-                <th>SL</th>
-                <th>Slip No.</th>
-                <th>Date</th>
-                <th>Patient Name</th>
-                <th>Phone</th>
+                <!-- <th>SL</th> -->
+                <!-- <th>Slip No.</th> -->
+                <!-- <th>Date</th> -->
+                 <th>Patient Name</th>
+                <!--<th>Phone</th>
                 <th>Wealth Class</th>
                 <th>Service Point</th>
                 <th>Total Amount</th>
                 <th>Discount</th>
                 <th>Payable Amount</th>
-                <th>Action</th>
+                <th>Action</th> -->
             </tr>
         </thead>
         <tbody>
-
+        	<c:if test="${not empty slipReport }">
+				<c:forEach var="report" items="${ slipReport }">
+			        <tr>
+			           <%-- <td>${ report.slipNo }</td>	             --%>
+			        	<%-- <td>${ report.slipDate }</td> --%>
+			        	 <td>${ report.patientName }</td>
+			            <%--<td>${ report.phone }</td>
+			            <td>${ report.wealthClassification }</td>
+			            <td>${ report.servicePoint }</td>
+			            <td>${ report.totalAmount }</td>
+			            <td>${ report.discount }</td>
+			            <td>${ report.netPayable }</td>
+			            <td>${ report.slipLink }</td> --%>
+			            
+			        </tr>
+		       </c:forEach>
+		    </c:if>
         </tbody>
     </table>
  </div>
@@ -453,7 +469,7 @@ $JQuery.ajax({
 	   },
 	   error : function(e) {
 	    console.log("ERROR: ", e);
-	    display(e);
+	    /* display(e); */
 	   },
 	   done : function(e) {	    
 	    console.log("DONE");
@@ -507,7 +523,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 		   },
 		   error : function(e) {
 		    console.log("ERROR: ", e);
-		    display(e);
+		  /*   display(e); */
 		   },
 		   done : function(e) {	    
 		    console.log("DONE");
@@ -539,7 +555,7 @@ $JQuery("#clinics").change(function(event) {
 			   },
 			   error : function(e) {
 			    console.log("ERROR: ", e);
-			    display(e);
+			    /* display(e); */
 			   },
 			   done : function(e) {	    
 			    console.log("DONE");
@@ -611,17 +627,22 @@ $JQuery("#slip_tracking").DataTable({
 $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
 	/*  alert("hits"); */
-	var startDateSlip = $("#startDateSlip").val();
-	var endDateSlip = $("#endDateSlip").val();
-	var dataCollector = $("#collector").val();
-	var wlthPoor = $("#wlth_poor").val();
-	var wlthPop = $("#wlth_pop").val();
-	var wlthPay = $("#wlth_pay").val();
-	var spSatelite = $("#sp_satelite").val();
-	var spStatic = $("#sp_static").val();
-	var spCsp = $("#sp_csp").val();
-	var url = "/openmrs/module//PSI/slipTracking?startDate="+startDateSlip+"&endDate="+endDateSlip;
-	$.JQuery.ajax({
+	var startDateSlip = $JQuery("#startDateSlip").val();
+	var endDateSlip = $JQuery("#endDateSlip").val();
+	console.log(startDateSlip);
+	console.log(endDateSlip);
+	var dataCollector = $JQuery("#collector").val();
+	var wlthPoor = $JQuery("#wlth_poor").val();
+	var wlthPop = $JQuery("#wlth_pop").val();
+	var wlthPay = $JQuery("#wlth_pay").val();
+	var spSatelite = $JQuery("#sp_satelite").val();
+	var spStatic = $JQuery("#sp_static").val();
+	var spCsp = $JQuery("#sp_csp").val();
+	var url = "/openmrs/module/PSI/slipTracking.form?startDate="+startDateSlip+"&endDate="+endDateSlip;
+	url += "&dataCollector="+dataCollector+"&wlthPoor="+wlthPoor+"&wlthPop="+wlthPop+"&wlthAbleToPay="+wlthPay;
+	url += "&spSatelite="+spSatelite+"&spStatic="+spStatic+"&spCsp="+spCsp;
+
+	$JQuery.ajax({
 		 	type : "GET",
 		   contentType : "application/json",
 		   url : url,	 
@@ -631,7 +652,25 @@ $JQuery("#slipTracking_").submit(function(event){
 		   		
 		   },
 		   success:function(data){
-			  
+			  /* alert("Success"); */
+			  /* console.log(data); */
+			 /*  $JQuery("#slipTrackers").html(""); */
+			  $JQuery("#slipTrackers").html("");
+			  $JQuery("#slipTrackers").html(data);
+			  $JQuery("#slip_tracking").html("");
+			  $JQuery("#slip_tracking").DataTable({
+					bFilter: false,
+				    bInfo: false,
+					   dom: 'Bfrtip',
+					   destroy: true,
+					   buttons: [
+					             {
+					                 extend: 'excelHtml5',
+					                 title: "Slip wise Report_"+ new Date(),
+					                 text: 'Export as .xlxs'
+					             }			         
+					         ]
+				});		
 		   }
 		  
 	});

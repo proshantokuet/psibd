@@ -43,9 +43,11 @@ public interface PSIServiceProvisionDAO {
 	
 	public void deleteByPatientUuidAndMoneyReceiptIdNull(String patientUuid);
 	
-	public int getTotalDiscount(String startDate,String endDate);
+	public String getTotalDiscount(String startDate,String endDate);
 	
-	public int getTotalServiceContact(String startDate,String endDate);
+	public String getTotalServiceContact(String startDate,String endDate);
 	
 	public List<PSIReportSlipTracking> getSlipTrackingReport(SearchFilterSlipTracking filter);
+	
+	
 }

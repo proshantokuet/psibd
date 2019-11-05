@@ -42,13 +42,13 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
 	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	//private final String DHIS2BASEURL = "http://192.168.19.162:8080";
 	
-	private final String DHIS2BASEURL = "http://10.100.11.2:5271";
+//	private final String DHIS2BASEURL = "http://10.100.11.2:5271";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -64,44 +64,44 @@ public class DHISListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
-		JSONObject getResponse = null;
-		boolean status = true;
-		try {
-			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
-			
-		}
-		catch (Exception e) {
-			
-			status = false;
-		}
-		
-		if (status) {
-			try {
-				//sendFailedPatient();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				//sendPatient();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				//sendMoneyReceipt();
-			}
-			catch (Exception e) {
-				
-			}
-			
-			try {
-				//sendFailedMoneyReceipt();
-			}
-			catch (Exception e) {
-				
-			}
-		}
+//		JSONObject getResponse = null;
+//		boolean status = true;
+//		try {
+//			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
+//			
+//		}
+//		catch (Exception e) {
+//			
+//			status = false;
+//		}
+//		
+//		if (status) {
+//			try {
+//				//sendFailedPatient();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			try {
+//				//sendPatient();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			try {
+//				//sendMoneyReceipt();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			
+//			try {
+//				//sendFailedMoneyReceipt();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//		}
 	}
 	
 	public void sendFailedPatient() {

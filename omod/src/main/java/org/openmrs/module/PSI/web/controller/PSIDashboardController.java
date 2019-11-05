@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -52,9 +53,9 @@ public class PSIDashboardController {
 		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, today,
 		    clinicCode, "");
 //		dashboardDTO.setTotalDiscount(1);
-		int val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(today, today);
+		String val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(today, today);
 		model.addAttribute("dashbaord_discount_value",val);
-		int totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(today, today);
+		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalServiceContract(today, today);
 		model.addAttribute("dashboard_service_cotact_value",totalServiceContact);
 		model.addAttribute("dashboard", dashboardDTO);
 		
@@ -167,25 +168,52 @@ public class PSIDashboardController {
 	public void slipTrackingWise(HttpServletRequest request, HttpSession session, Model model,
 	                                      @RequestParam(required = true) String startDate,
 	                                      @RequestParam(required = true) String endDate,
-	                                      @RequestParam String dataCollector,
+	                                      @RequestParam	String dataCollector,
 	                                      @RequestParam String wlthPoor,
 	                                      @RequestParam String wlthPop,
 	                                      @RequestParam String wlthAbleToPay,
 	                                      @RequestParam String spSatelite,
 	                                      @RequestParam String spStatic,
 	                                      @RequestParam String spCsp){
+		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+			    Context.getAuthenticatedUser().getUsername());
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		String clinicCode = "0";
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		if (isAdmin) {
+			clinicCode = "0";
+		} else {
+			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+		}
 		
 		SearchFilterSlipTracking filter = new SearchFilterSlipTracking();
 		filter.setStartDateSlip(startDate);
 		filter.setEndDateSlip(endDate);
+		List<PSIReportSlipTracking> slipTrackingList = null;
+		
+		
+		
+		Date date = Calendar.getInstance().getTime();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String today = dateFormat.format(date);
+		String val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(startDate, endDate);
+		model.addAttribute("dashbaord_discount_value",val);
+//		model.addAttribute("dashbaord_discount_value",Context.getService(PSIServiceProvisionService.class).);
+		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalServiceContract(startDate, endDate);
+		model.addAttribute("dashboard_service_cotact_value",totalServiceContact);
+			
+		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
+			    clinicCode, dataCollector);
 		if(isAdmin){
-			List<PSIReportSlipTracking> slipTrackingList = Context.getService
+			 slipTrackingList = Context.getService
 						(PSIServiceProvisionService.class).getSlipTrackingReport(filter);
 		}else {
 			
 		}
+//		slipTrackingList = null;
+
+		model.addAttribute("dashboard", dashboardDTO);
+		model.addAttribute("slipReport",slipTrackingList);
 		
 	}
 }

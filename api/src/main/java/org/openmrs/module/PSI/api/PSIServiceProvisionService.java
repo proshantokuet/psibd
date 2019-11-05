@@ -46,9 +46,9 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public void deleteByPatientUuidAndMoneyReceiptIdNull(String patientUuid);
 	
-	public int getTotalDiscount(String startDate,String endDate);
+	public String getTotalDiscount(String startDate,String endDate);
 	
-	public int getTotalServiceContract(String startDate,String endDate);
+	public String getTotalServiceContract(String startDate,String endDate);
 	
 	public List<PSIReportSlipTracking> getSlipTrackingReport
 			(SearchFilterSlipTracking filter);

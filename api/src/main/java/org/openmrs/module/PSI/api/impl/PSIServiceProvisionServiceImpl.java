@@ -121,15 +121,15 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	}
 
 	@Override
-	public int getTotalDiscount(String startDate, String endDate) {
+	public String getTotalDiscount(String startDate, String endDate) {
 		// TODO Auto-generated method stub
 		return dao.getTotalDiscount(startDate, endDate);
 	}
 
 	@Override
-	public int getTotalServiceContract(String startDate, String endDate) {
+	public String getTotalServiceContract(String startDate, String endDate) {
 		// TODO Auto-generated method stub
-		return dao.getTotalDiscount(startDate, endDate);
+		return dao.getTotalServiceContact(startDate, endDate);
 	}
 
 	@Override
