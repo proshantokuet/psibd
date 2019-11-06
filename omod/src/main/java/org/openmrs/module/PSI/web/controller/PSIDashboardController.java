@@ -69,9 +69,10 @@ public class PSIDashboardController {
 		SearchFilterSlipTracking filter = new SearchFilterSlipTracking();
 		filter.setStartDateSlip(today);
 		filter.setEndDateSlip(today);
-		List<PSIReportSlipTracking> trackingList = Context.getService(PSIServiceProvisionService.class)
-							.getSlipTrackingReport(filter);
-		model.addAttribute("slipTrackingWiseReports",trackingList);
+//		List<PSIReportSlipTracking> trackingList = Context.getService(PSIServiceProvisionService.class)
+//							.getSlipTrackingReport(filter);
+//		List<Object[]> slipList = Context.getService(PSIServiceProvisionService.class).getSlip(filter);
+		model.addAttribute("slipReport",null);
 		
 		
 		if (psiClinicUser != null && !isAdmin) {
@@ -204,9 +205,12 @@ public class PSIDashboardController {
 			
 		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
 			    clinicCode, dataCollector);
+		List<Object[]> slipList = null;
+//		List<Object[]> slipList = Context.getService(PSIServiceProvisionService.class).getSlip(filter);
 		if(isAdmin){
 			 slipTrackingList = Context.getService
 						(PSIServiceProvisionService.class).getSlipTrackingReport(filter);
+//		 slipList = Context.getService(PSIServiceProvisionService.class).getSlip(filter);
 		}else {
 			
 		}

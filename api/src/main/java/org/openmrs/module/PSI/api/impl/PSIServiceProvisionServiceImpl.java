@@ -138,5 +138,11 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		// TODO Auto-generated method stub
 		return dao.getSlipTrackingReport(filter);
 	}
+
+	@Override
+	public List<Object[]> getSlip(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getSlip(filter);
+	}
 	
 }

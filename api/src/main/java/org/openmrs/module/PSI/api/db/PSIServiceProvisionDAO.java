@@ -49,5 +49,7 @@ public interface PSIServiceProvisionDAO {
 	
 	public List<PSIReportSlipTracking> getSlipTrackingReport(SearchFilterSlipTracking filter);
 	
+	public List<Object[]> getSlip(SearchFilterSlipTracking filter);
+	
 	
 }

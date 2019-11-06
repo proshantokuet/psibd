@@ -447,8 +447,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 		String wh = "";
 		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
-			wh += " where p.money_receipt_date >= '" + filter.getStartDateSlip() + "' AND "
-					+"p.money_receipt_date <='" + filter.getEndDateSlip()+"'";
+			wh += " where p.money_receipt_date between '" + filter.getStartDateSlip() + "' and '"
+					+ filter.getEndDateSlip()+"'";
 		}
 		
 //		Boolean spFlag = false;
@@ -508,9 +508,10 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					+"m.contact as phone,m.wealth as wealthClassification,m.service_point as servicePoint," +
 					"p.total_amount as totalAmount,p.discount as discount,p.net_payable as netPayable"+
 					" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
-					" on p.patient_uuid = m.patient_uuid";
+					" on p.patient_uuid = m.patient_uuid ";
 		sql += wh;
-		List<PSIReportSlipTracking> psiList = null;
+		sql += " LIMIT 10";
+		List<PSIReportSlipTracking> psiList = new ArrayList<PSIReportSlipTracking>();
 //		try{
 //			List<PSIReportSlipTracking> psiList = sessionFactory.getCurrentSession().createSQLQuery(sql).
 //					addScalar("sL",StandardBasicTypes.INTEGER).
@@ -528,25 +529,40 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 //		}catch(Exception e){
 //			return null;
 //		}
-		resultSet = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
+	try{	resultSet = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
 		for (Iterator iterator = resultSet.iterator(); iterator.hasNext();) {
 			PSIReportSlipTracking slip = new PSIReportSlipTracking();
 			Object[] objects = (Object[]) iterator.next();
-//			slip.setsL(Integer.parseInt(objects[0].toString()));
-//			slip.setSlipNo(objects[1].toString());
-//			slip.setSlipDate(objects[2].toString());
+			slip.setsL(Integer.parseInt(objects[0].toString()));
+			slip.setSlipNo(objects[1].toString());
+			slip.setSlipDate(objects[2].toString());
 			slip.setPatientName(objects[3].toString());
-//			slip.setWealthClassification(objects[4].toString());
-//			slip.setServicePoint(objects[5].toString());
-//			slip.setTotalAmount(Long.parseLong(objects[6].toString()));
-//			slip.setDiscount(Double.parseDouble(objects[7].toString()));
-//			slip.setNetPayable(Double.parseDouble(objects[8].toString()));
-//			slip.setSlipLink("");
+			slip.setWealthClassification(objects[4].toString());
+			slip.setServicePoint(objects[5].toString());
+			slip.setTotalAmount(Long.parseLong(objects[6].toString()));
+			slip.setDiscount(Double.parseDouble(objects[7].toString()));
+			slip.setNetPayable(Double.parseDouble(objects[8].toString()));
+			slip.setSlipLink("");
 			psiList.add(slip);
 		}
-		
+	}
+	catch(Exception e){
+		return null;
+	}
 		
 		return psiList;
+	}
+	
+	public List<Object[]> getSlip(	SearchFilterSlipTracking filter){
+		List<Object[]> ret = new ArrayList<Object[]>();
+		String sql = "select p.spid as sL,m.slip_no as slipNo,p.money_receipt_date as slipDate," +
+				"m.patient_name as patientName,"
+					+"m.contact as phone,m.wealth as wealthClassification,m.service_point as servicePoint," +
+					"p.total_amount as totalAmount,p.discount as discount,p.net_payable as netPayable"+
+					" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
+					" on p.patient_uuid = m.patient_uuid";
+		ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
+		return ret;
 	}
 	
 

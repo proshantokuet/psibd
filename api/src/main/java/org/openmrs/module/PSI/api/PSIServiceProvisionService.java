@@ -53,4 +53,6 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	public List<PSIReportSlipTracking> getSlipTrackingReport
 			(SearchFilterSlipTracking filter);
 	
+	public List<Object[]> getSlip(SearchFilterSlipTracking filter);
+	
 }

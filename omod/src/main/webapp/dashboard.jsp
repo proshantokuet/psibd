@@ -351,36 +351,37 @@
 	    </div>
     </div>
     <table id="slip_tracking" class="display">
-        <thead>
+         <thead>
             <tr>
-                <!-- <th>SL</th> -->
-                <!-- <th>Slip No.</th> -->
-                <!-- <th>Date</th> -->
+                 <th>SL</th> 
+                 <th>Slip No.</th>
+                 <th>Date</th>
                  <th>Patient Name</th>
-                <!--<th>Phone</th>
+                <th>Phone</th>
                 <th>Wealth Class</th>
                 <th>Service Point</th>
                 <th>Total Amount</th>
                 <th>Discount</th>
                 <th>Payable Amount</th>
-                <th>Action</th> -->
+                <th>Action</th> 
             </tr>
         </thead>
         <tbody>
         	<c:if test="${not empty slipReport }">
 				<c:forEach var="report" items="${ slipReport }">
 			        <tr>
-			           <%-- <td>${ report.slipNo }</td>	             --%>
-			        	<%-- <td>${ report.slipDate }</td> --%>
+			          <%--    <td>${ report.slipNo }</td>	             
+			        	 <td>${ report.slipDate }</td> 
 			        	 <td>${ report.patientName }</td>
-			            <%--<td>${ report.phone }</td>
+			            <td>${ report.phone }</td>
 			            <td>${ report.wealthClassification }</td>
 			            <td>${ report.servicePoint }</td>
 			            <td>${ report.totalAmount }</td>
 			            <td>${ report.discount }</td>
 			            <td>${ report.netPayable }</td>
-			            <td>${ report.slipLink }</td> --%>
-			            
+			            <td>${ report.slipLink }</td>  --%>
+			             
+			           
 			        </tr>
 		       </c:forEach>
 		    </c:if>
@@ -670,7 +671,8 @@ $JQuery("#slipTracking_").submit(function(event){
 					                 text: 'Export as .xlxs'
 					             }			         
 					         ]
-				});		
+				});	
+			  console.log(data);
 		   }
 		  
 	});
