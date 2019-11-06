@@ -12,7 +12,7 @@ public interface PSIClinicSpotDAO {
 	
 	public PSIClinicSpot findById(int id);
 	
-	public PSIClinicSpot findDuplicateSpot(int id, String code);
+	public List<PSIClinicSpot> findDuplicateSpot(int id, String code, int clinicCode);
 	
 	public List<PSIClinicSpot> findByClinicId(int id);
 	

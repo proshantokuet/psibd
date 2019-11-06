@@ -124,11 +124,18 @@ public class PSIClinicRestController extends MainResourceController {
 	    throws Exception {
 		
 		String msg = "";
-		PSIClinicSpot psiClinicSpot = new PSIClinicSpot();
-		psiClinicSpot.setDateCreated(new Date());
+		PSIClinicSpot psiClinicSpot = null;
+		if (psiClinicSpotDTO.getCsid() != 0) {
+			int ccsid = 0;
+			ccsid= psiClinicSpotDTO.getCsid();
+			psiClinicSpot = Context.getService(PSIClinicSpotService.class).findById(ccsid);
+		}
+		else {
+			psiClinicSpot = new PSIClinicSpot();
+			psiClinicSpot.setUuid(UUID.randomUUID().toString());
+			psiClinicSpot.setDateCreated(new Date());
+		}
 		psiClinicSpot.setCreator(Context.getAuthenticatedUser());
-		psiClinicSpot.setUuid(UUID.randomUUID().toString());
-		
 		psiClinicSpot.setName(psiClinicSpotDTO.getName());
 		psiClinicSpot.setCode(psiClinicSpotDTO.getCode());
 		psiClinicSpot.setAddress(psiClinicSpotDTO.getAddress());
@@ -137,14 +144,12 @@ public class PSIClinicRestController extends MainResourceController {
 		PSIClinicManagement psiClinicManagementId = Context.getService(PSIClinicManagementService.class).findById(
 		    psiClinicSpotDTO.getPsiClinicManagementId());
 		psiClinicSpot.setPsiClinicManagement(psiClinicManagementId);
-		psiClinicSpot.setCcsid(psiClinicSpotDTO.getCsid());
-		PSIClinicSpot getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(
-		    psiClinicSpot.getCcsid(), psiClinicSpot.getCode());
+		List<PSIClinicSpot> getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(
+		    psiClinicSpot.getCcsid(), psiClinicSpot.getCode(),psiClinicSpotDTO.getPsiClinicManagementId());
 		
-		if (getClinicByClinicId != null) {
+		if (getClinicByClinicId.size() > 1) {
 			msg = "This clinic Spot code is already taken";
 		} else {
-			
 			try {
 				Context.openSession();
 				Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
