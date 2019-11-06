@@ -2,6 +2,7 @@ package org.openmrs.module.PSI.web.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -190,8 +191,15 @@ public class PSIDashboardController {
 		SearchFilterSlipTracking filter = new SearchFilterSlipTracking();
 		filter.setStartDateSlip(startDate);
 		filter.setEndDateSlip(endDate);
-		List<PSIReportSlipTracking> slipTrackingList = null;
-		
+		filter.setCollector(dataCollector);
+		filter.setWlthPoor(wlthPoor);
+		filter.setWlthPop(wlthPop);
+		filter.setWlthAbleToPay(wlthAbleToPay);
+		filter.setSpSatelite(spSatelite);
+		filter.setSpStatic(spStatic);
+		filter.setSpCsp(spCsp);
+		List<PSIReportSlipTracking> slipTrackingList = new ArrayList<PSIReportSlipTracking>();
+	
 		
 		
 		Date date = Calendar.getInstance().getTime();
@@ -205,15 +213,15 @@ public class PSIDashboardController {
 			
 		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
 			    clinicCode, dataCollector);
-		List<Object[]> slipList = null;
+//		List<Object[]> slipList = null;
 //		List<Object[]> slipList = Context.getService(PSIServiceProvisionService.class).getSlip(filter);
-		if(isAdmin){
+//		if(isAdmin){
 			 slipTrackingList = Context.getService
 						(PSIServiceProvisionService.class).getSlipTrackingReport(filter);
 //		 slipList = Context.getService(PSIServiceProvisionService.class).getSlip(filter);
-		}else {
+//		}else {
 			
-		}
+//		}
 //		slipTrackingList = null;
 
 		model.addAttribute("dashboard", dashboardDTO);

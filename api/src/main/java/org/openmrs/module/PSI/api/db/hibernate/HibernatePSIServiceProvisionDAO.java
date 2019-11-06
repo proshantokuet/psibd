@@ -12,6 +12,7 @@ import org.apache.velocity.runtime.directive.Foreach;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
@@ -19,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.DashboardDTO;
+import org.openmrs.module.PSI.dto.PSILocationTag;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
@@ -451,104 +453,89 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					+ filter.getEndDateSlip()+"'";
 		}
 		
-//		Boolean spFlag = false;
-//		if(filter.getSpCsp() != null){
-//			wh += " AND m.service_point = CSP";
-//			spFlag = true;
-//		}
-//		if(filter.getSpSatelite() != null) {
-//			if(spFlag == false){
-//				wh += "AND m.servicepoint = Satelite";
-//				spFlag = true;
-//			}
-//			else {
-//				wh += " OR m.service_point = Satelite";
-//			}
-//		}
-//		if(filter.getSpStatic() != null){
-//			if(spFlag == false){
-//				wh += "AND m.servicepoint = Static";
-//				spFlag = true;
-//			}
-//			else{
-//				wh += " OR m.service_point = Static";
-//			}
-//		}
-//		
-//		Boolean wlthFlag = false;
-//		if(filter.getWlthAbleToPay() != null){
-//			wh += " AND m.wealth = Able to Pay";
-//			wlthFlag = true;
-//		}
-//		if(filter.getWlthPoor() != null){
-//			if(wlthFlag == false){
-//				wh += " AND m.wealth = Poor";
-//				wlthFlag = true;
-//			}
-//			else {
-//				wh += " OR m.wealth = Poor";
-//			}
-//		}
-//		if(filter.getWlthPop() != null){
-//			if(wlthFlag == false){
-//				wh += " AND m.wealth = PoP";
-//				wlthFlag = true;
-//			}
-//			else {
-//				wh += " OR m.wealth = PoP";
-//			}
-//		}
-//
-//		if(filter.getCollector() != null){
-//			wh += " AND ";
+		Boolean spFlag = false;
+		if(filter.getSpCsp() == "true"){
+			wh += " and ( m.service_point = 'CSP'";
+			spFlag = true;
+		}
+		if(filter.getSpSatelite() == "true") {
+			if(spFlag == false){
+				wh += " and ( m.service_point = 'Satelite'";
+				spFlag = true;
+			}
+			else {
+				wh += " or m.service_point = 'Satelite'";
+			}
+		}
+		if(filter.getSpStatic() == "true"){
+			if(spFlag == false){
+				wh += " and ( m.service_point = 'Static'";
+				spFlag = true;
+			}
+			else{
+				wh += " or m.service_point = 'Static'";
+			}
+		}
+		if(spFlag == true)
+			wh += " ) ";
+		Boolean wlthFlag = false;
+		if(filter.getWlthAbleToPay() == "true"){
+			wh += " and ( m.wealth = 'Able to Pay'";
+			wlthFlag = true;
+		}
+		if(filter.getWlthPoor() == "true"){
+			if(wlthFlag == false){
+				wh += " or ( m.wealth = 'Poor'";
+				wlthFlag = true;
+			}
+			else {
+				wh += " or m.wealth = 'Poor'";
+			}
+		}
+		if(filter.getWlthPop() == "true"){
+			if(wlthFlag == false){
+				wh += " and ( m.wealth = 'PoP'";
+				wlthFlag = true;
+			}
+			else {
+				wh += " or m.wealth = 'PoP'";
+			}
+		}
+	if(wlthFlag == true)
+		wh += " ) ";
+
+//		if(filter.getCollector() != null || filter.getCollector() != ""){
+//			wh += " AND m.data_collector = " + filter.getCollector()+" ";
 //		}
 	
-		String sql = "select p.spid as sL,m.slip_no as slipNo,p.money_receipt_date as slipDate," +
-				"m.patient_name as patientName,"
-					+"m.contact as phone,m.wealth as wealthClassification,m.service_point as servicePoint," +
-					"p.total_amount as totalAmount,p.discount as discount,p.net_payable as netPayable"+
+		String sql = "select p.spid as sl,m.slip_no as slip_no,p.money_receipt_date as slip_date," +
+				"m.patient_name as patient_name,"
+					+"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point," +
+					"p.total_amount as total_amount,p.discount as discount,p.net_payable as net_payable"+
 					" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
 					" on p.patient_uuid = m.patient_uuid ";
 		sql += wh;
-		sql += " LIMIT 10";
+//		sql += " LIMIT 10";
 		List<PSIReportSlipTracking> psiList = new ArrayList<PSIReportSlipTracking>();
-//		try{
-//			List<PSIReportSlipTracking> psiList = sessionFactory.getCurrentSession().createSQLQuery(sql).
-//					addScalar("sL",StandardBasicTypes.INTEGER).
-//					addScalar("slipNo",StandardBasicTypes.STRING).
-//					addScalar("slipDate",StandardBasicTypes.DATE).
-//					addScalar("patientName",StandardBasicTypes.STRING).
-//					addScalar("phone",StandardBasicTypes.STRING).
-//					addScalar("wealthClassification",StandardBasicTypes.STRING).
-//					addScalar("servicePoint",StandardBasicTypes.STRING).
-//					addScalar("totalAmount",StandardBasicTypes.INTEGER).
-//					addScalar("discount",StandardBasicTypes.DOUBLE).
-//					addScalar("netPayable",StandardBasicTypes.DOUBLE).
-//				list();
-//			return psiList;
-//		}catch(Exception e){
+		try{
+			 psiList = sessionFactory.getCurrentSession().createSQLQuery(sql).
+					addScalar("sl",StandardBasicTypes.LONG).
+					addScalar("slip_no",StandardBasicTypes.STRING).
+					addScalar("slip_date",StandardBasicTypes.STRING).
+					addScalar("patient_name",StandardBasicTypes.STRING).
+					addScalar("phone",StandardBasicTypes.STRING).
+					addScalar("wealth_classification",StandardBasicTypes.STRING).
+					addScalar("service_point",StandardBasicTypes.STRING).
+					addScalar("total_amount",StandardBasicTypes.LONG).
+					addScalar("discount",StandardBasicTypes.DOUBLE).
+					addScalar("net_payable",StandardBasicTypes.DOUBLE).
+					setResultTransformer(new AliasToBeanResultTransformer(PSIReportSlipTracking.class)).
+				list();
+			return psiList;
+		}catch(Exception e){
 //			return null;
-//		}
-	try{	resultSet = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
-		for (Iterator iterator = resultSet.iterator(); iterator.hasNext();) {
-			PSIReportSlipTracking slip = new PSIReportSlipTracking();
-			Object[] objects = (Object[]) iterator.next();
-			slip.setsL(Integer.parseInt(objects[0].toString()));
-			slip.setSlipNo(objects[1].toString());
-			slip.setSlipDate(objects[2].toString());
-			slip.setPatientName(objects[3].toString());
-			slip.setWealthClassification(objects[4].toString());
-			slip.setServicePoint(objects[5].toString());
-			slip.setTotalAmount(Long.parseLong(objects[6].toString()));
-			slip.setDiscount(Double.parseDouble(objects[7].toString()));
-			slip.setNetPayable(Double.parseDouble(objects[8].toString()));
-			slip.setSlipLink("");
-			psiList.add(slip);
 		}
-	}
-	catch(Exception e){
-		return null;
-	}
+	
 		
 		return psiList;
 	}

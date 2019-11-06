@@ -380,8 +380,19 @@
 			            <td>${ report.discount }</td>
 			            <td>${ report.netPayable }</td>
 			            <td>${ report.slipLink }</td>  --%>
+	        	 	    <td>#</td>
+	                    <td>${ report.slip_no }</td>	             
+		            	 <td>${ report.slip_date }</td> 
+			        	 <td>${ report.patient_name }</td>
+			            <td>${ report.phone }</td>
+			            <td>${ report.wealth_classification }</td>
+			            <td>${ report.service_point }</td>
+			            <td>${ report.total_amount }</td>
+			            <td>${ report.discount }</td>
+			            <td>${ report.net_payable }</td>
+			            <td>${ report.slip_link }</td>  
 			             
-			           
+			        
 			        </tr>
 		       </c:forEach>
 		    </c:if>
@@ -628,17 +639,18 @@ $JQuery("#slip_tracking").DataTable({
 $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
 	/*  alert("hits"); */
+	var checkStrVal = ["false","true"];
 	var startDateSlip = $JQuery("#startDateSlip").val();
 	var endDateSlip = $JQuery("#endDateSlip").val();
 	console.log(startDateSlip);
 	console.log(endDateSlip);
 	var dataCollector = $JQuery("#collector").val();
-	var wlthPoor = $JQuery("#wlth_poor").val();
-	var wlthPop = $JQuery("#wlth_pop").val();
-	var wlthPay = $JQuery("#wlth_pay").val();
-	var spSatelite = $JQuery("#sp_satelite").val();
-	var spStatic = $JQuery("#sp_static").val();
-	var spCsp = $JQuery("#sp_csp").val();
+	var wlthPoor = $JQuery("#wlth_poor").is(":checked") == true ? "true" : "false";
+	var wlthPop = $JQuery("#wlth_pop").is(":checked") == true ? "true" : "false";
+	var wlthPay = $JQuery("#wlth_pay").is(":checked") == true ? "true" : "false";
+	var spSatelite = $JQuery("#sp_satelite").is(":checked") == true ? "true" : "false";
+	var spStatic = $JQuery("#sp_static").is(":checked") == true ? "true" : "false";
+	var spCsp = $JQuery("#sp_csp").is(":checked") == true ? "true" : "false";
 	var url = "/openmrs/module/PSI/slipTracking.form?startDate="+startDateSlip+"&endDate="+endDateSlip;
 	url += "&dataCollector="+dataCollector+"&wlthPoor="+wlthPoor+"&wlthPop="+wlthPop+"&wlthAbleToPay="+wlthPay;
 	url += "&spSatelite="+spSatelite+"&spStatic="+spStatic+"&spCsp="+spCsp;
@@ -657,8 +669,9 @@ $JQuery("#slipTracking_").submit(function(event){
 			  /* console.log(data); */
 			 /*  $JQuery("#slipTrackers").html(""); */
 			  $JQuery("#slipTrackers").html("");
-			  $JQuery("#slipTrackers").html(data);
 			  $JQuery("#slip_tracking").html("");
+			 $JQuery("#slipTrackers").html(data);
+			 
 			  $JQuery("#slip_tracking").DataTable({
 					bFilter: false,
 				    bInfo: false,

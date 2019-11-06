@@ -3,35 +3,42 @@ package org.openmrs.module.PSI.dto;
 import java.util.Date;
 
 public class PSIReportSlipTracking {
-	private int sL;
-	private String slipNo;
-	private String slipDate;
-	private String patientName;
+	private Long sl;
+	private String slip_no;
+	private String slip_date;
+	private String patient_name;
 	private String phone;
-	private String wealthClassification;
-	private String servicePoint;
-	private Long totalAmount;
+	private String wealth_classification;
+	private String service_point;
+	private Long total_amount;
 	private Double discount;
-	private Double netPayable;
-	private String slipLink;
+	private Double net_payable;
+	private String slip_link;
 	
-	public String getSlipNo() {
-		return slipNo;
+	
+	public long getSl() {
+		return sl;
 	}
-	public void setSlipNo(String slipNo) {
-		this.slipNo = slipNo;
+	public void setSl(Long sl) {
+		this.sl = sl;
 	}
-	public String getSlipDate() {
-		return slipDate;
+	public String getSlip_no() {
+		return slip_no;
 	}
-	public void setSlipDate(String slipDate) {
-		this.slipDate = slipDate;
+	public void setSlip_no(String slip_no) {
+		this.slip_no = slip_no;
 	}
-	public String getPatientName() {
-		return patientName;
+	public String getSlip_date() {
+		return slip_date;
 	}
-	public void setPatientName(String patientName) {
-		this.patientName = patientName;
+	public void setSlip_date(String slip_date) {
+		this.slip_date = slip_date;
+	}
+	public String getPatient_name() {
+		return patient_name;
+	}
+	public void setPatient_name(String patient_name) {
+		this.patient_name = patient_name;
 	}
 	public String getPhone() {
 		return phone;
@@ -39,23 +46,23 @@ public class PSIReportSlipTracking {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public String getWealthClassification() {
-		return wealthClassification;
+	public String getWealth_classification() {
+		return wealth_classification;
 	}
-	public void setWealthClassification(String wealthClassification) {
-		this.wealthClassification = wealthClassification;
+	public void setWealth_classification(String wealth_classification) {
+		this.wealth_classification = wealth_classification;
 	}
-	public String getServicePoint() {
-		return servicePoint;
+	public String getService_point() {
+		return service_point;
 	}
-	public void setServicePoint(String servicePoint) {
-		this.servicePoint = servicePoint;
+	public void setService_point(String service_point) {
+		this.service_point = service_point;
 	}
-	public Long getTotalAmount() {
-		return totalAmount;
+	public Long getTotal_amount() {
+		return total_amount;
 	}
-	public void setTotalAmount(Long totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setTotal_amount(Long total_amount) {
+		this.total_amount = total_amount;
 	}
 	public Double getDiscount() {
 		return discount;
@@ -63,37 +70,32 @@ public class PSIReportSlipTracking {
 	public void setDiscount(Double discount) {
 		this.discount = discount;
 	}
-	public Double getNetPayable() {
-		return netPayable;
+	public Double getNet_payable() {
+		return net_payable;
 	}
-	public void setNetPayable(Double netPayable) {
-		this.netPayable = netPayable;
+	public void setNet_payable(Double net_payable) {
+		this.net_payable = net_payable;
 	}
-	public String getSlipLink() {
-		return slipLink;
+	public String getSlip_link() {
+		return slip_link;
 	}
-	public void setSlipLink(String slipLink) {
-		this.slipLink = slipLink;
-	}
-	public void setsL(int sL) {
-		this.sL = sL;
-	}
-
-	public PSIReportSlipTracking() {
-		// TODO Auto-generated constructor stub
-	}
-	public int getsL() {
-		return sL;
+	public void setSlip_link(String slip_link) {
+		this.slip_link = slip_link;
 	}
 	@Override
 	public String toString() {
-		return "PSIReportSlipTracking [sL=" + sL + ", slipNo=" + slipNo
-				+ ", slipDate=" + slipDate + ", patientName=" + patientName
-				+ ", phone=" + phone + ", wealthClassification="
-				+ wealthClassification + ", servicePoint=" + servicePoint
-				+ ", totalAmount=" + totalAmount + ", discount=" + discount
-				+ ", netPayable=" + netPayable + ", slipLink=" + slipLink + "]";
+		return "PSIReportSlipTracking [sl=" + sl + ", slip_no=" + slip_no
+				+ ", slip_date=" + slip_date + ", patient_name=" + patient_name
+				+ ", phone=" + phone + ", wealth_classification="
+				+ wealth_classification + ", service_point=" + service_point
+				+ ", total_amount=" + total_amount + ", discount=" + discount
+				+ ", net_payable=" + net_payable + ", slip_link=" + slip_link
+				+ "]";
 	}
+	
+	
+	
+	
 
 
 }

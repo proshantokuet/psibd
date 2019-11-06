@@ -47,20 +47,22 @@
             </tr>
         </thead>
         <tbody>
+        <% int sl = 0; %>
         	<c:if test="${not empty slipReport }">
 				<c:forEach var="report" items="${ slipReport }">
 			        <tr>
-			        	<td>#</td>
-			              <td>${ report.slipNo }</td>	             
-			        	 <td>${ report.slipDate }</td> 
-			        	 <td>${ report.patientName }</td>
+			        	
+			        	<td><%=++sl%></td>
+			              <td>${ report.slip_no }</td>	             
+			        	 <td>${ report.slip_date }</td> 
+			        	 <td>${ report.patient_name }</td>
 			            <td>${ report.phone }</td>
-			            <td>${ report.wealthClassification }</td>
-			            <td>${ report.servicePoint }</td>
-			            <td>${ report.totalAmount }</td>
+			            <td>${ report.wealth_classification }</td>
+			            <td>${ report.service_point }</td>
+			            <td>${ report.total_amount }</td>
 			            <td>${ report.discount }</td>
-			            <td>${ report.netPayable }</td>
-			            <td>${ report.slipLink }</td>  
+			            <td>${ report.net_payable }</td>
+			            <td>${ report.slip_link }</td>  
 			             
 			               <%-- <c:forEach var="report_t" item=${report }>
 			             	<td>${report_t }</td>
