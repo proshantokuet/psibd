@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 
 public interface PSIServiceProvisionDAO {
@@ -50,6 +52,8 @@ public interface PSIServiceProvisionDAO {
 	public List<PSIReportSlipTracking> getSlipTrackingReport(SearchFilterSlipTracking filter);
 	
 	public List<Object[]> getSlip(SearchFilterSlipTracking filter);
+	
+	public List<AUHCDraftTrackingReport> getDraftTrackingReport(SearchFilterDraftTracking filter);
 	
 	
 }

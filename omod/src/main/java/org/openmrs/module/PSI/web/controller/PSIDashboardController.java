@@ -228,4 +228,9 @@ public class PSIDashboardController {
 		model.addAttribute("slipReport",slipTrackingList);
 		
 	}
+	
+	@RequestMapping(value = "/module/PSI/draftTracking", method = RequestMethod.GET)
+	public void draftTrackingWise(HttpServletRequest request, HttpSession session, Model model){
+		
+	}
 }

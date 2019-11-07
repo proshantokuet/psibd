@@ -318,7 +318,12 @@
                 </div>
             </div>
         </div>
+        
     </form:form>
+    <div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
+							
     <div class="form-content" id="slipTracking"> </div>
      <div id="slipTrackers">
 	    <div class="form-content">
@@ -623,7 +628,7 @@ $JQuery('#serviceProviderDefault').DataTable({
 	}
 });  */
 $JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report for Today");
-$JQuery("#slip_tracking").DataTable({
+ $JQuery("#slip_tracking").DataTable({
 	bFilter: false,
     bInfo: false,
 	   dom: 'Bfrtip',
@@ -635,9 +640,10 @@ $JQuery("#slip_tracking").DataTable({
 	                 text: 'Export as .xlxs'
 	             }			         
 	         ]
-});
+}); 
 $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
+	$JQuery("#loading").show();
 	/*  alert("hits"); */
 	var checkStrVal = ["false","true"];
 	var startDateSlip = $JQuery("#startDateSlip").val();
@@ -648,7 +654,7 @@ $JQuery("#slipTracking_").submit(function(event){
 	var wlthPoor = $JQuery("#wlth_poor").is(":checked") == true ? "Poor" : "";
 	var wlthPop = $JQuery("#wlth_pop").is(":checked") == true ? "PoP" : "";
 	var wlthPay = $JQuery("#wlth_pay").is(":checked") == true ? "Able to Pay" : "";
-	var spSatelite = $JQuery("#sp_satelite").is(":checked") == true ? "Satelite" : "";
+	var spSatelite = $JQuery("#sp_satelite").is(":checked") == true ? "Satellite" : "";
 	var spStatic = $JQuery("#sp_static").is(":checked") == true ? "Static" : "";
 	var spCsp = $JQuery("#sp_csp").is(":checked") == true ? "CSP" : "";
 	var url = "/openmrs/module/PSI/slipTracking.form?startDate="+startDateSlip+"&endDate="+endDateSlip;
@@ -670,6 +676,7 @@ $JQuery("#slipTracking_").submit(function(event){
 			 /*  $JQuery("#slipTrackers").html(""); */
 			  $JQuery("#slipTrackers").html("");
 			  $JQuery("#slip_tracking").html("");
+			  $JQuery("#slip_tracking_wrapper").html("");
 			 $JQuery("#slipTrackers").html(data);
 			 
 			  $JQuery("#slip_tracking").DataTable({
@@ -685,13 +692,19 @@ $JQuery("#slipTracking_").submit(function(event){
 					             }			         
 					         ]
 				});	
-			  console.log(data);
+			  /* console.log(data); */
+			  $JQuery("#slipTracking").html("Slip Tracking wise Report For "+startDateSlip+" To "+endDateSlip);
+			  $JQuery("#loading").hide();
+		   },
+		   error: function(data){
+			   $JQuery("#loading").hide();
 		   }
 		  
 	});
 	
 	
-}); 
+});
+
 </script>
  
 

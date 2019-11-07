@@ -19,10 +19,12 @@ import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
+import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSILocationTag;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.openmrs.module.PSI.utils.PSIConstants;
 
@@ -409,7 +411,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@Override
 	public String getTotalDiscount(String startDate, String endDate) {
 		// TODO Auto-generated method stub
-		String hql = "SELECT SUM(discount) FROM PSIServiceProvision " +
+		String hql = "SELECT ROUND(SUM(discount),2) FROM PSIServiceProvision " +
 					" WHERE moneyReceiptDate BETWEEN '"+startDate+"' AND '"+endDate+"'";
 		Double ret;
 		 try{ 
@@ -449,8 +451,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 		String wh = "";
 		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
-			wh += " where p.money_receipt_date between '" + filter.getStartDateSlip() + "' and '"
-					+ filter.getEndDateSlip()+"'";
+			wh += " where Date(p.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
+					+ filter.getEndDateSlip()+"' ";
 		}
 		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
 					(filter.getWlthPop() != "");
@@ -463,19 +465,25 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or m.wealth = '"+ filter.getWlthPop()+
 					"' ) ";
 		}
+
 		if(spFlag == true){
 			wh += " and ( m.service_point = '" + filter.getSpCsp()+
 					"' or m.service_point = '" + filter.getSpSatelite()+
 					"' or m.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
-		String sql = "select p.spid as sl,m.slip_no as slip_no,p.money_receipt_date as slip_date," +
-				"m.patient_name as patient_name,"
-					+"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point," +
-					"p.total_amount as total_amount,p.discount as discount,p.net_payable as net_payable"+
-					" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
-					" on p.patient_uuid = m.patient_uuid ";
-		sql += wh;
+
+		if (!"".equalsIgnoreCase(filter.getCollector())){
+			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
+		}
+		String sql = "select p.spid as sl,m.slip_no as slip_no,p.money_receipt_date as slip_date, "+
+				"m.patient_name as patient_name, "+
+				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
+				"sum(p.total_amount) as total_amount,sum(ROUND(p.discount,2)) as discount,sum(p.net_payable) as net_payable "+
+				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				"on p.psi_money_receipt_id = m.mid "+
+				wh+
+				" group by p.psi_money_receipt_id ";
 		
 //		sql += " LIMIT 10";
 		List<PSIReportSlipTracking> psiList = new ArrayList<PSIReportSlipTracking>();
@@ -512,6 +520,67 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					" on p.patient_uuid = m.patient_uuid";
 		ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
 		return ret;
+	}
+
+	@Override
+	public List<AUHCDraftTrackingReport> getDraftTrackingReport(
+			SearchFilterDraftTracking filter) {
+		// TODO Auto-generated method stub
+		String wh = "";
+		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
+			wh += " and Date(p.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
+					+ filter.getEndDateSlip()+"' ";
+		}
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+					(filter.getWlthPop() != "");
+		
+		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+				(filter.getSpStatic() != "");
+		if(wealthFlag == true) {
+			wh += "and ( m.wealth = '" + filter.getWlthAbleToPay() + 
+					"' or m.wealth = '"+filter.getWlthPoor()+
+					"' or m.wealth = '"+ filter.getWlthPop()+
+					"' ) ";
+		}
+
+		if(spFlag == true){
+			wh += " and ( m.service_point = '" + filter.getSpCsp()+
+					"' or m.service_point = '" + filter.getSpSatelite()+
+					"' or m.service_point = '"+ filter.getSpStatic()+
+					"' ) ";
+		}
+		if (!"".equalsIgnoreCase(filter.getCollector())){
+			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
+		}
+		String sql = "select p.spid as sl,m.slip_no as slip_no,p.money_receipt_date as slip_date, "+
+				"m.patient_name as patient_name, "+
+				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
+				"p.total_amount as total_amount,ROUND(p.discount,2) as discount,p.net_payable as net_payable "+
+				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				"on p.psi_money_receipt_id = m.mid "+
+				"where m.is_complete = 0 ";
+		
+		sql += wh;
+		List<AUHCDraftTrackingReport> draftList = new ArrayList<AUHCDraftTrackingReport>();
+		try{
+			draftList = sessionFactory.getCurrentSession().createSQLQuery(sql).
+				addScalar("sl",StandardBasicTypes.LONG).
+				addScalar("slip_no",StandardBasicTypes.STRING).
+				addScalar("slip_date",StandardBasicTypes.STRING).
+				addScalar("patient_name",StandardBasicTypes.STRING).
+				addScalar("phone",StandardBasicTypes.STRING).
+				addScalar("wealth_classification",StandardBasicTypes.STRING).
+				addScalar("service_point",StandardBasicTypes.STRING).
+				addScalar("total_amount",StandardBasicTypes.LONG).
+				addScalar("discount",StandardBasicTypes.DOUBLE).
+				addScalar("net_payable",StandardBasicTypes.DOUBLE).
+				setResultTransformer(new AliasToBeanResultTransformer(AUHCDraftTrackingReport.class)).
+				list();
+		
+		}catch(Exception e){
+			return null;
+		}
+		return draftList;
 	}
 	
 
