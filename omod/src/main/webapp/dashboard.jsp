@@ -645,12 +645,12 @@ $JQuery("#slipTracking_").submit(function(event){
 	console.log(startDateSlip);
 	console.log(endDateSlip);
 	var dataCollector = $JQuery("#collector").val();
-	var wlthPoor = $JQuery("#wlth_poor").is(":checked") == true ? "true" : "false";
-	var wlthPop = $JQuery("#wlth_pop").is(":checked") == true ? "true" : "false";
-	var wlthPay = $JQuery("#wlth_pay").is(":checked") == true ? "true" : "false";
-	var spSatelite = $JQuery("#sp_satelite").is(":checked") == true ? "true" : "false";
-	var spStatic = $JQuery("#sp_static").is(":checked") == true ? "true" : "false";
-	var spCsp = $JQuery("#sp_csp").is(":checked") == true ? "true" : "false";
+	var wlthPoor = $JQuery("#wlth_poor").is(":checked") == true ? "Poor" : "";
+	var wlthPop = $JQuery("#wlth_pop").is(":checked") == true ? "PoP" : "";
+	var wlthPay = $JQuery("#wlth_pay").is(":checked") == true ? "Able to Pay" : "";
+	var spSatelite = $JQuery("#sp_satelite").is(":checked") == true ? "Satelite" : "";
+	var spStatic = $JQuery("#sp_static").is(":checked") == true ? "Static" : "";
+	var spCsp = $JQuery("#sp_csp").is(":checked") == true ? "CSP" : "";
 	var url = "/openmrs/module/PSI/slipTracking.form?startDate="+startDateSlip+"&endDate="+endDateSlip;
 	url += "&dataCollector="+dataCollector+"&wlthPoor="+wlthPoor+"&wlthPop="+wlthPop+"&wlthAbleToPay="+wlthPay;
 	url += "&spSatelite="+spSatelite+"&spStatic="+spStatic+"&spCsp="+spCsp;

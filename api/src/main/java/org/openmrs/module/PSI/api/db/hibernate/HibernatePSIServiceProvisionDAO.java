@@ -452,62 +452,23 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			wh += " where p.money_receipt_date between '" + filter.getStartDateSlip() + "' and '"
 					+ filter.getEndDateSlip()+"'";
 		}
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+					(filter.getWlthPop() != "");
 		
-		Boolean spFlag = false;
-		if(filter.getSpCsp() == "true"){
-			wh += " and ( m.service_point = 'CSP'";
-			spFlag = true;
+		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+				(filter.getSpStatic() != "");
+		if(wealthFlag == true) {
+			wh += "and ( m.wealth = '" + filter.getWlthAbleToPay() + 
+					"' or m.wealth = '"+filter.getWlthPoor()+
+					"' or m.wealth = '"+ filter.getWlthPop()+
+					"' ) ";
 		}
-		if(filter.getSpSatelite() == "true") {
-			if(spFlag == false){
-				wh += " and ( m.service_point = 'Satelite'";
-				spFlag = true;
-			}
-			else {
-				wh += " or m.service_point = 'Satelite'";
-			}
+		if(spFlag == true){
+			wh += " and ( m.service_point = '" + filter.getSpCsp()+
+					"' or m.service_point = '" + filter.getSpSatelite()+
+					"' or m.service_point = '"+ filter.getSpStatic()+
+					"' ) ";
 		}
-		if(filter.getSpStatic() == "true"){
-			if(spFlag == false){
-				wh += " and ( m.service_point = 'Static'";
-				spFlag = true;
-			}
-			else{
-				wh += " or m.service_point = 'Static'";
-			}
-		}
-		if(spFlag == true)
-			wh += " ) ";
-		Boolean wlthFlag = false;
-		if(filter.getWlthAbleToPay() == "true"){
-			wh += " and ( m.wealth = 'Able to Pay'";
-			wlthFlag = true;
-		}
-		if(filter.getWlthPoor() == "true"){
-			if(wlthFlag == false){
-				wh += " or ( m.wealth = 'Poor'";
-				wlthFlag = true;
-			}
-			else {
-				wh += " or m.wealth = 'Poor'";
-			}
-		}
-		if(filter.getWlthPop() == "true"){
-			if(wlthFlag == false){
-				wh += " and ( m.wealth = 'PoP'";
-				wlthFlag = true;
-			}
-			else {
-				wh += " or m.wealth = 'PoP'";
-			}
-		}
-	if(wlthFlag == true)
-		wh += " ) ";
-
-//		if(filter.getCollector() != null || filter.getCollector() != ""){
-//			wh += " AND m.data_collector = " + filter.getCollector()+" ";
-//		}
-	
 		String sql = "select p.spid as sl,m.slip_no as slip_no,p.money_receipt_date as slip_date," +
 				"m.patient_name as patient_name,"
 					+"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point," +
@@ -515,6 +476,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
 					" on p.patient_uuid = m.patient_uuid ";
 		sql += wh;
+		
 //		sql += " LIMIT 10";
 		List<PSIReportSlipTracking> psiList = new ArrayList<PSIReportSlipTracking>();
 		try{
