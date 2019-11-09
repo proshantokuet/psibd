@@ -49,7 +49,7 @@ public class PSIClinicSpotServiceImpl extends BaseOpenmrsService implements PSIC
 	}
 	
 	@Override
-	public List<PSIClinicSpot> findDuplicateSpot(int id, String code, int clinicCode) {
+	public PSIClinicSpot findDuplicateSpot(int id, String code, int clinicCode) {
 		// TODO Auto-generated method stub
 		return dao.findDuplicateSpot(id, code, clinicCode);
 	}

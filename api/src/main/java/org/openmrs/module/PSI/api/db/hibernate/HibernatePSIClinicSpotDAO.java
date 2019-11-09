@@ -84,15 +84,15 @@ public class HibernatePSIClinicSpotDAO implements PSIClinicSpotDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List <PSIClinicSpot> findDuplicateSpot(int id, String code, int clinicCode) {
+	public PSIClinicSpot findDuplicateSpot(int id, String code, int clinicCode) {
 		// TODO Auto-generated method stub
 		List<PSIClinicSpot> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIClinicSpot where code = :code and psi_clinic_management_id = :clinicCode").setString("code", code)
 		        .setInteger("clinicCode", clinicCode).list();
 		if (lists.size() != 0) {
-			return lists;
+			return lists.get(0);
 		} else {
-			return lists;
+			return null;
 		}
 	}
 	
