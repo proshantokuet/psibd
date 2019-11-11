@@ -55,5 +55,9 @@ public interface PSIServiceProvisionDAO {
 	
 	public List<AUHCDraftTrackingReport> getDraftTrackingReport(SearchFilterDraftTracking filter);
 	
+	public String getNoOfDraft(String startDate,String endDate);
+	
+	public String getTotalPayableDraft(String startDate,String endDate);
+	
 	
 }

@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,5 +56,11 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 			(SearchFilterSlipTracking filter);
 	
 	public List<Object[]> getSlip(SearchFilterSlipTracking filter);
+	
+	public String getNoOfDraft(String startDate, String endDate);
+	
+	public String getTotalPayableDraft(String startDate, String endDate);
+	
+	public List<AUHCDraftTrackingReport> getDraft(SearchFilterDraftTracking filter);
 	
 }

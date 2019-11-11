@@ -7,9 +7,11 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
+import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 
 public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implements PSIServiceProvisionService {
@@ -143,6 +145,25 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	public List<Object[]> getSlip(SearchFilterSlipTracking filter) {
 		// TODO Auto-generated method stub
 		return dao.getSlip(filter);
+	}
+
+	@Override
+	public String getNoOfDraft(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getNoOfDraft(startDate, endDate);
+	}
+
+	@Override
+	public String getTotalPayableDraft(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getTotalPayableDraft(startDate, endDate);
+	}
+
+	@Override
+	public List<AUHCDraftTrackingReport> getDraft(
+			SearchFilterDraftTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getDraftTrackingReport(filter);
 	}
 	
 }

@@ -13,7 +13,7 @@ $JQuery('#addServiceCategoryForm').submit(function(event)
 	formData = {
 		'categoryName' : $JQuery('#categoryName').val()
 	};
-	console.table(formData);
+//	console.table(formData);
 	$JQuery.ajax({
 		contentType: "application/json",
 		type: "POST",

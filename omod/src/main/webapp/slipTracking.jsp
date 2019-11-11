@@ -1,6 +1,6 @@
 
 <%@ include file="/WEB-INF/template/include.jsp"%>
-
+<div class="form-content" id="slipTracking"> </div>
   <div class="form-content">
       <div class="row">
           <div class="col-md-3">
@@ -43,7 +43,7 @@
                 <th>Total Amount</th>
                 <th>Discount</th>
                 <th>Payable Amount</th>
-                <th>Action</th> 
+                <!-- <th>Action</th>  -->
             </tr>
         </thead>
         <tbody>
@@ -62,7 +62,7 @@
 			            <td>${ report.total_amount }</td>
 			            <td>${ report.discount }</td>
 			            <td>${ report.net_payable }</td>
-			            <td>${ report.slip_link }</td>  
+			           <%--  <td>${ report.slip_link }</td> --%>  
 			             
 			               <%-- <c:forEach var="report_t" item=${report }>
 			             	<td>${report_t }</td>

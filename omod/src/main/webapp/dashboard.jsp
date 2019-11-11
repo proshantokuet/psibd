@@ -32,6 +32,7 @@
     <li><a href="#tabs-1">Service Point Wise Revenue Report</a></li>
     <li><a href="#tabs-2">Service Provider Wise Revenue Report</a></li>
     <li><a href="#tabs-3">Slip Tracking Report</a></li> 
+    <li><a href="#tabs-4">Draft Tracking Report</a></li>
   </ul>
   <div id="tabs-1">
   
@@ -324,8 +325,9 @@
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
 							
-    <div class="form-content" id="slipTracking"> </div>
+    
      <div id="slipTrackers">
+     	<div class="form-content" id="slipTracking"> </div>
 	    <div class="form-content">
 	        <div class="row">
 	            <div class="col-md-3">
@@ -354,8 +356,7 @@
 	        </div>
 	
 	    </div>
-    </div>
-    <table id="slip_tracking" class="display">
+	    <table id="slip_tracking" class="display">
          <thead>
             <tr>
                  <th>SL</th> 
@@ -368,23 +369,13 @@
                 <th>Total Amount</th>
                 <th>Discount</th>
                 <th>Payable Amount</th>
-                <th>Action</th> 
+              <!--   <th>Action</th> --> 
             </tr>
         </thead>
         <tbody>
         	<c:if test="${not empty slipReport }">
 				<c:forEach var="report" items="${ slipReport }">
 			        <tr>
-			          <%--    <td>${ report.slipNo }</td>	             
-			        	 <td>${ report.slipDate }</td> 
-			        	 <td>${ report.patientName }</td>
-			            <td>${ report.phone }</td>
-			            <td>${ report.wealthClassification }</td>
-			            <td>${ report.servicePoint }</td>
-			            <td>${ report.totalAmount }</td>
-			            <td>${ report.discount }</td>
-			            <td>${ report.netPayable }</td>
-			            <td>${ report.slipLink }</td>  --%>
 	        	 	    <td>#</td>
 	                    <td>${ report.slip_no }</td>	             
 		            	 <td>${ report.slip_date }</td> 
@@ -395,7 +386,7 @@
 			            <td>${ report.total_amount }</td>
 			            <td>${ report.discount }</td>
 			            <td>${ report.net_payable }</td>
-			            <td>${ report.slip_link }</td>  
+			     <%--        <td>${ report.slip_link }</td> --%>  
 			             
 			        
 			        </tr>
@@ -403,8 +394,154 @@
 		    </c:if>
         </tbody>
     </table>
+    </div>
+    
  </div>
+ <div id="tabs-4">
+ 	<form:form id="draftTracking_">
+ 		  <div class="form-content">
 
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="startDateDraft"> From</label>
+                        <br />
+                        <input class="dt" id="startDateDraft" name="startDateDraft" type="text" required="true" />
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="endDateDraft">To</label>
+                        <br />
+                        <input class="dt" id="endDateDraft" name="endDateDraft" type="text" required="true" />
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="collector_draft">Select Data Collector</label>
+                        <br />
+                        <select id="collector_draft" name="collector_draft" style="width: 160px">
+                            <option value=""></option>
+                            <c:forEach var="user" items="${ psiClinicUsers }">
+                                <option value="${user.username }">${user.userRole }</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Wealth Classification
+                        <br />
+                        <input type="checkbox" id="wlth_poor_draft" name="wlthPoorDraft" value="">Poor
+                        <br>
+                        <input type="checkbox" id="wlth_pop_draft" name="wlthPopDraft" value="">Pop
+                        <br>
+                        <input type="checkbox" id="wlth_pay_draft" name="wlthAbleToPayDraft" value=""> Able to pay
+                        <br>
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Service Point
+                        <br />
+                        <input type="checkbox" id="sp_satelite_draft" name="spSateliteDraft" value="">Satelite
+                        <br>
+                        <input type="checkbox" id="sp_static_draft" name="spStaticDraft" value="">Static
+                        <br>
+                        <input type="checkbox" id="sp_csp_draft" name="spCspDraft" value="">CSP
+                        <br>
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <!-- 	<label for="Service Code"></label><br /> -->
+                        <button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+ 	</form:form>
+ 	<div id="loading_draft" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
+	
+	<div id="draftTrackers">
+		<div class="form-content" id="draftTracking"> </div>
+		<div class="form-content">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+	                    <label> ${ no_slip_draft} </label> &nbsp;&nbsp; No of Slips in Draft
+	                </div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+	                    <label> ${ total_payable_draft} </label> &nbsp;&nbsp; Total Payable in Draft
+	                </div>
+				</div>
+			</div>
+		</div>
+		<table id="draft_tracking" class="display">
+			<thead>
+		           <tr>
+		                <th>SL</th> 
+		                <th>Slip No.</th>
+		                <th>Date</th>
+		                <th>Patient Name</th>
+		               <th>Phone</th>
+		               <th>Wealth Class</th>
+		               <th>Service Point</th>
+		               <th>Total Amount</th>
+		               <th>Discount</th>
+		               <th>Payable Amount</th>
+		               <!--  <th>Action</th> -->
+		           </tr>
+		       </thead>
+		       <tbody>
+		         <% int sl_d = 0; %>
+		       	<c:if test="${not empty draftReport }">
+					<c:forEach var="report" items="${ draftReport }">
+				        <tr>
+				        	
+				        	<td><%=++sl_d%></td>
+				              <td>${ report.slip_no }</td>	             
+				        	 <td>${ report.slip_date }</td> 
+				        	 <td>${ report.patient_name }</td>
+				            <td>${ report.phone }</td>
+				            <td>${ report.wealth_classification }</td>
+				            <td>${ report.service_point }</td>
+				            <td>${ report.total_amount }</td>
+				            <td>${ report.discount }</td>
+				            <td>${ report.net_payable }</td>
+				        <%--      <td>${ report.slip_link }</td> --%>  
+				        </tr>
+			       </c:forEach>
+			    </c:if>
+		       </tbody>
+	</table>
+	</div>
+
+	
+ </div>
+ <div id="tabs-5">
+ 	<form:form id="compServiceReporting_">
+ 	</form:form>
+ 	<div id="loading_comp" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
+	<div id="compServiceReports">
+		<div class="form-content" id="compServiceReporting"></div>
+		<div class="form-content">
+		</div>
+		<table id="comp_service_reporting" class="display">
+		</table>
+	</div>
+ </div>
  
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
@@ -600,6 +737,8 @@ $JQuery('#servicePointDefault').DataTable({
 });
 $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for Today");
 $JQuery("#slipTracking").html("Slip Tracking wise Report For Today");
+$JQuery("#draftTracking").html("Draft Tracking wise Report For Today");
+$JQuery("#compServiceReporting").html("Comprenhesive Service Reporting For Today");
 $JQuery('#serviceProviderDefault').DataTable({
 	   bFilter: false,
        bInfo: false,
@@ -640,7 +779,20 @@ $JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report fo
 	                 text: 'Export as .xlxs'
 	             }			         
 	         ]
-}); 
+});
+ $JQuery("#draft_tracking").DataTable({
+		bFilter: false,
+	    bInfo: false,
+		   dom: 'Bfrtip',
+		   destroy: true,
+		   buttons: [
+		             {
+		                 extend: 'excelHtml5',
+		                 title: "Draft wise Report_"+ new Date(),
+		                 text: 'Export as .xlxs'
+		             }			         
+		         ]
+	});
 $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
 	$JQuery("#loading").show();
@@ -662,7 +814,7 @@ $JQuery("#slipTracking_").submit(function(event){
 	url += "&spSatelite="+spSatelite+"&spStatic="+spStatic+"&spCsp="+spCsp;
 
 	$JQuery.ajax({
-		 	type : "GET",
+		   type : "GET",
 		   contentType : "application/json",
 		   url : url,	 
 		   dataType : 'html',
@@ -674,9 +826,9 @@ $JQuery("#slipTracking_").submit(function(event){
 			  /* alert("Success"); */
 			  /* console.log(data); */
 			 /*  $JQuery("#slipTrackers").html(""); */
-			  $JQuery("#slipTrackers").html("");
-			  $JQuery("#slip_tracking").html("");
-			  $JQuery("#slip_tracking_wrapper").html("");
+			/*   $JQuery("#slipTrackers").html(""); */
+			  /* $JQuery("#slip_tracking").html(""); */
+		/* 	  $JQuery("#slip_tracking_wrapper").html(""); */
 			 $JQuery("#slipTrackers").html(data);
 			 
 			  $JQuery("#slip_tracking").DataTable({
@@ -693,7 +845,7 @@ $JQuery("#slipTracking_").submit(function(event){
 					         ]
 				});	
 			  /* console.log(data); */
-			  $JQuery("#slipTracking").html("Slip Tracking wise Report For "+startDateSlip+" To "+endDateSlip);
+			  $JQuery("#slipTracking").html("Slip Tracking wise Report From "+startDateSlip+" To "+endDateSlip);
 			  $JQuery("#loading").hide();
 		   },
 		   error: function(data){
@@ -703,6 +855,66 @@ $JQuery("#slipTracking_").submit(function(event){
 	});
 	
 	
+});
+
+$JQuery("#draftTracking_").submit(function(event){
+	event.preventDefault();
+	$JQuery("#loading_draft").show();
+	var startDateDraft = $JQuery("#startDateDraft").val();
+	var endDateDraft = $JQuery("#endDateDraft").val();
+	console.log(startDateSlip);
+	console.log(endDateSlip);
+	var dataCollectorDraft = $JQuery("#collector_draft").val();
+	var wlthPoorDraft = $JQuery("#wlth_poor_draft").is(":checked") == true ? "Poor" : "";
+	var wlthPopDraft = $JQuery("#wlth_pop_draft").is(":checked") == true ? "PoP" : "";
+	var wlthPayDraft = $JQuery("#wlth_pay_draft").is(":checked") == true ? "Able to Pay" : "";
+	var spSateliteDraft = $JQuery("#sp_satelite_draft").is(":checked") == true ? "Satellite" : "";
+	var spStaticDraft = $JQuery("#sp_static_draft").is(":checked") == true ? "Static" : "";
+	var spCspDraft = $JQuery("#sp_csp_draft").is(":checked") == true ? "CSP" : "";
+	var url = "/openmrs/module/PSI/draftTracking.form?startDate="+startDateDraft+"&endDate="+endDateDraft;
+	url += "&dataCollector="+dataCollectorDraft+"&wlthPoor="+wlthPoorDraft+"&wlthPop="+wlthPopDraft+"&wlthAbleToPay="+wlthPayDraft;
+	url += "&spSatelite="+spSateliteDraft+"&spStatic="+spStaticDraft+"&spCsp="+spCspDraft;
+	$JQuery.ajax({
+		type : "GET",
+		   contentType : "application/json",
+		   url : url,	 
+		   dataType : 'html',
+		   timeout : 100000,
+		   beforeSend: function() {	    
+		   		
+		   },
+		   success:function(data){
+			  /*  	$JQuery("#draftTrackers").html("");
+				  $JQuery("#draft_tracking").html("");
+				  $JQuery("#draft_tracking_wrapper").html(""); */
+				 $JQuery("#draftTrackers").html(data);
+				 
+				  $JQuery("#draft_tracking").DataTable({
+						bFilter: false,
+					    bInfo: false,
+						   dom: 'Bfrtip',
+						   destroy: true,
+						   buttons: [
+						             {
+						                 extend: 'excelHtml5',
+						                 title: "Draft wise Report_"+ new Date(),
+						                 text: 'Export as .xlxs'
+						             }			         
+						         ]
+					});	
+				  /* console.log(data); */
+				  $JQuery("#draftTracking").html("Draft Tracking wise Report From "+startDateDraft+" To "+endDateDraft);
+				  $JQuery("#loading_draft").hide();   
+		   },
+		   error:function(){
+			   $JQuery("#loading_draft").hide();
+		   }
+	});
+	
+});
+
+$JQuery("#compServiceReporting_").submit(function(event){
+	event.preventDefault();
 });
 
 </script>

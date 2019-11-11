@@ -521,7 +521,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
 		return ret;
 	}
-
+	
+	
 	@Override
 	public List<AUHCDraftTrackingReport> getDraftTrackingReport(
 			SearchFilterDraftTracking filter) {
@@ -581,6 +582,45 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			return null;
 		}
 		return draftList;
+	}
+
+	@Override
+	public String getNoOfDraft(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		String sql = " select count(*) "+
+				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				"on p.psi_money_receipt_id = m.mid "+
+				"where p.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"'"+
+				" and m.is_complete = 0 ";
+		String ret = "0";
+		try{
+		 ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
+				get(0).toString();
+		}
+		catch(Exception e){
+			return "0";
+		}
+		return ret;
+	}
+
+	@Override
+	public String getTotalPayableDraft(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		String sql = "select sum(p.net_payable) "+
+				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				"	on p.psi_money_receipt_id = m.mid " +
+				"  where p.money_receipt_date BETWEEN '"+startDate+"' AND  '"+endDate+"' "+
+				" and m.is_complete = 0";
+		String ret = "0";
+		try{
+			 ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
+				get(0).toString();
+		}
+		catch(Exception e){
+			return "0";
+		}
+		
+		return ret;
 	}
 	
 

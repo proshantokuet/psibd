@@ -19,9 +19,11 @@ import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
+import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
@@ -76,6 +78,8 @@ public class PSIDashboardController {
 		model.addAttribute("slipReport",null);
 		
 		
+		
+		
 		if (psiClinicUser != null && !isAdmin) {
 			
 			List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findAllactiveAndInactiveUserByCode(clinicCode);
@@ -95,6 +99,10 @@ public class PSIDashboardController {
 		model.addAttribute("hasDashboardPermission", Utils.hasPrivilige(privileges, PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission", Utils.hasPrivilige(privileges, PSIConstants.ClinicList));
 		
+		model.addAttribute("no_slip_draft",Context.getService(PSIServiceProvisionService.class)
+				.getNoOfDraft(today, today));
+		model.addAttribute("total_payable_draft",Context.getService(PSIServiceProvisionService.class)
+				.getTotalPayableDraft(today, today));
 	}
 	
 	@RequestMapping(value = "/module/PSI/ServicePointWise", method = RequestMethod.GET)
@@ -230,7 +238,49 @@ public class PSIDashboardController {
 	}
 	
 	@RequestMapping(value = "/module/PSI/draftTracking", method = RequestMethod.GET)
-	public void draftTrackingWise(HttpServletRequest request, HttpSession session, Model model){
+	public void draftTrackingWise(HttpServletRequest request, HttpSession session, Model model,
+			@RequestParam(required = true) String startDate,
+            @RequestParam(required = true) String endDate,
+            @RequestParam	String dataCollector,
+            @RequestParam String wlthPoor,
+            @RequestParam String wlthPop,
+            @RequestParam String wlthAbleToPay,
+            @RequestParam String spSatelite,
+            @RequestParam String spStatic,
+            @RequestParam String spCsp){
+		
+		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+			    Context.getAuthenticatedUser().getUsername());
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		String clinicCode = "0";
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		if (isAdmin) {
+			clinicCode = "0";
+		} else {
+			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+		}
+		SearchFilterDraftTracking filter = new SearchFilterDraftTracking();
+		filter.setStartDateSlip(startDate);
+		filter.setEndDateSlip(endDate);
+		filter.setCollector(dataCollector);
+		filter.setWlthPoor(wlthPoor);
+		filter.setWlthPop(wlthPop);
+		filter.setWlthAbleToPay(wlthAbleToPay);
+		filter.setSpSatelite(spSatelite);
+		filter.setSpStatic(spStatic);
+		filter.setSpCsp(spCsp);
+		
+		model.addAttribute("no_slip_draft",Context.getService(PSIServiceProvisionService.class)
+				.getNoOfDraft(startDate, endDate));
+		model.addAttribute("total_payable_draft",Context.getService(PSIServiceProvisionService.class)
+				.getTotalPayableDraft(startDate, endDate));
+		List<AUHCDraftTrackingReport> draftList = new ArrayList<AUHCDraftTrackingReport>();
+		draftList = Context.getService(PSIServiceProvisionService.class).getDraft(filter);
+		model.addAttribute("draftReport",draftList);
+	}
+	
+	@RequestMapping(value="/module/PSI/compServiceReporting",method=RequestMethod.GET)
+	public void compServiceReporting(HttpServletRequest request, HttpSession session, Model model){
 		
 	}
 }
