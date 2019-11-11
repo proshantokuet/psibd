@@ -14,8 +14,10 @@ import javax.servlet.http.HttpSession;
 
 import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.AUHCServiceCategory;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicUser;
+import org.openmrs.module.PSI.api.AUHCServiceCategoryService;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
@@ -103,6 +105,13 @@ public class PSIDashboardController {
 				.getNoOfDraft(today, today));
 		model.addAttribute("total_payable_draft",Context.getService(PSIServiceProvisionService.class)
 				.getTotalPayableDraft(today, today));
+		
+		model.addAttribute("service_category",
+				Context.getService(AUHCServiceCategoryService.class).getAll());
+		
+		model.addAttribute("dashboard_new_reg",0);
+		model.addAttribute("dashboard_old_clients",0);
+		model.addAttribute("dashboard_new_clients",0);
 	}
 	
 	@RequestMapping(value = "/module/PSI/ServicePointWise", method = RequestMethod.GET)
@@ -281,6 +290,8 @@ public class PSIDashboardController {
 	
 	@RequestMapping(value="/module/PSI/compServiceReporting",method=RequestMethod.GET)
 	public void compServiceReporting(HttpServletRequest request, HttpSession session, Model model){
-		
+//		List<AUHCServiceCategory> serviceCategory = Context.getService(AUHCServiceCategoryService.class).getAll();
+		model.addAttribute("service_category",
+				Context.getService(AUHCServiceCategoryService.class).getAll());
 	}
 }

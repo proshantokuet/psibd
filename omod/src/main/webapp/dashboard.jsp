@@ -33,6 +33,7 @@
     <li><a href="#tabs-2">Service Provider Wise Revenue Report</a></li>
     <li><a href="#tabs-3">Slip Tracking Report</a></li> 
     <li><a href="#tabs-4">Draft Tracking Report</a></li>
+    <li><a href="#tabs-5">Comprehensive Service Report</a></li>
   </ul>
   <div id="tabs-1">
   
@@ -530,6 +531,51 @@
  </div>
  <div id="tabs-5">
  	<form:form id="compServiceReporting_">
+ 		<div class="form-content">
+ 			<div class="row">
+ 				<div class="col-md-4">
+ 					<div class="form-group">
+ 						 <label for="startDateComp"> From</label>
+                        <br />
+                        <input class="dt" id="startDateComp" name="startDateComp" type="text" required="true" />
+ 					</div>
+ 				</div>
+ 				<div class="col-md-4">
+ 					<div class="form-group">
+ 						 <label for="endDateComp"> To</label>
+                        <br />
+                        <input class="dt" id="endDateComp" name="endDateComp" type="text" required="true" />
+ 					</div>
+ 				</div>
+ 			</div>
+ 			<div class="row">
+ 				<div class="col-md-4">
+ 					<div class="form-group">
+ 						<label for="service_category">Service Category</label><br/>
+ 						<select id="service_category" name="service_category" style="width: 160px">
+ 							<option value=""></option>
+ 							  <c:forEach items="${service_category}" var="service"> 
+					              	 <form:option value="${service.categoryName}" label="${service.categoryName}"/>					              
+					              </c:forEach>
+ 						</select>
+ 					</div>
+ 				</div>
+ 				<div class="col-md-4">
+ 					<div class="form-group">
+ 						<label for="search_comp">Search</label><br/>
+ 						<input id="search_comp" name="search_comp" type="text">
+ 					</div>
+ 				</div>
+				 <div class="col-md-4">
+                   <div class="form-group">
+                       <!-- 	<label for="Service Code"></label><br /> -->
+                       <button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>
+                   </div>
+
+               </div>
+			
+               </div>
+ 			</div>
  	</form:form>
  	<div id="loading_comp" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
@@ -537,6 +583,46 @@
 	<div id="compServiceReports">
 		<div class="form-content" id="compServiceReporting"></div>
 		<div class="form-content">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_new_reg } </label> &nbsp;&nbsp; New Registration
+              		</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_old_clients } </label> &nbsp;&nbsp; Old Clients
+              		</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_new_clients } </label> &nbsp;&nbsp; New Clients
+              		</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_service_cotact_value } </label> &nbsp;&nbsp; Old Client
+              		</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+	                    <label> ${dashboard.servedPatient } </label> &nbsp;&nbsp; Patients Served
+	                </div>
+				</div>
+				 <div class="col-md-3">
+	                <div class="form-group">
+	                    <label for="Service Code">${dashboard.earned }</label>
+	                    &nbsp;&nbsp; Revenue Earned
+	                </div>
+	            </div>
+	             <div class="col-md-3">
+	                <div class="form-group">
+	                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
+	                </div>
+	            </div>
+			</div>
 		</div>
 		<table id="comp_service_reporting" class="display">
 		</table>
