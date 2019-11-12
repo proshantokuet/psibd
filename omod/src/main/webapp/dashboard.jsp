@@ -580,52 +580,100 @@
  	<div id="loading_comp" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
-	<div id="compServiceReports">
+	
+	<div id="compServiceReports" >
 		<div class="form-content" id="compServiceReporting"></div>
 		<div class="form-content">
-			<div class="row">
-				<div class="col-md-3">
-					<div class="form-group">
-                  		<label> ${dashboard_new_reg } </label> &nbsp;&nbsp; New Registration
-              		</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-                  		<label> ${dashboard_old_clients } </label> &nbsp;&nbsp; Old Clients
-              		</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-                  		<label> ${dashboard_new_clients } </label> &nbsp;&nbsp; New Clients
-              		</div>
-				</div>
-				<div class="col-md-3">
-					<div class="form-group">
-                  		<label> ${dashboard_service_cotact_value } </label> &nbsp;&nbsp; Old Client
-              		</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-3">
-					<div class="form-group">
-	                    <label> ${dashboard.servedPatient } </label> &nbsp;&nbsp; Patients Served
-	                </div>
-				</div>
-				 <div class="col-md-3">
-	                <div class="form-group">
-	                    <label for="Service Code">${dashboard.earned }</label>
-	                    &nbsp;&nbsp; Revenue Earned
-	                </div>
-	            </div>
-	             <div class="col-md-3">
-	                <div class="form-group">
-	                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
-	                </div>
-	            </div>
-			</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+		                  		<label> ${dashboard_new_reg } </label> &nbsp;&nbsp; New Registration
+		              		</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+		                  		<label> ${dashboard_old_clients } </label> &nbsp;&nbsp; Old Clients
+		              		</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+		                  		<label> ${dashboard_new_clients } </label> &nbsp;&nbsp; New Clients
+		              		</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+		                  		<label> ${dashboard_service_cotact_value } </label> &nbsp;&nbsp; 
+		                  		Total Service Contact
+		              		</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+			                    <label> ${dashboard.servedPatient } </label> &nbsp;&nbsp; Patients Served
+			                </div>
+						</div>
+						 <div class="col-md-3">
+			                <div class="form-group">
+			                    <label for="Service Code">${dashboard.earned }</label>
+			                    &nbsp;&nbsp; Revenue Earned
+			                </div>
+			            </div>
+			             <div class="col-md-3">
+			                <div class="form-group">
+			                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
+			                </div>
+			            </div>
+					</div>
 		</div>
-		<table id="comp_service_reporting" class="display">
-		</table>
+		<div style="height:100%;overflow:auto;">
+			<table id="comp_service_reporting" class="display">
+						<thead>
+							<tr>
+								<th rowspan="2">Sl</th>
+								<th rowspan="2">Service Code</th>
+								<th rowspan="2">Service Name</th>
+								<th colspan="4">Service Contact</th>
+								<th colspan="4">Revenue</th>
+								<th colspan="4">Discount</th>
+							</tr>
+							<tr>
+								<% for(int i = 0; i < 3; i++) {%>
+							 	<th>Static</th>
+							 	<th>CSP</th>
+							 	<th>Satellite</th>
+							 	<th>Total</th>
+							 	<% } %>
+							</tr>
+						</thead>
+						<tbody>
+						 <% int sl_c = 0; %>
+					       	<c:if test="${not empty compReport }">
+								<c:forEach var="report" items="${ compReport }">
+							        <tr>
+							        	
+							        	 <td><%=++sl_c%></td>
+							             <td>${ report.service_code }</td>	             
+							        	 <td>${ report.service_name }</td> 
+							        	 <td>${ report.service_contact_static }</td>
+							             <td>${ report.service_contact_csp }</td>
+							             <td>${ report.service_contact_satellite }</td>
+							             <td>${ report.service_contact_total }</td>
+							             <td>${ report.revenue_static }</td>
+							             <td>${ report.revenue_csp }</td>
+							             <td>${ report.revenue_satellite }</td>
+							             <td>${ report.revnue_total }</td>
+							             <td>${ report.discount_static }</td>
+							             <td>${ report.discount_csp }</td>
+							             <td>${ report.discount_satellite }</td>
+							             <td>${ report.discount_total }</td>
+							             
+							        </tr>
+						       </c:forEach>
+						    </c:if>
+						</tbody>
+			</table>
+		</div>
 	</div>
  </div>
  
@@ -821,6 +869,19 @@ $JQuery('#servicePointDefault').DataTable({
 	             }			         
 	         ]
 });
+$JQuery("#comp_service_reporting").DataTable({
+	   bFilter: false,
+       bInfo: false,
+	   dom: 'Bfrtip',
+	   destroy: true,
+	   buttons: [
+	             {
+	                 extend: 'excelHtml5',
+	                 title: "Service Point Wise Revenue Report_"+ new Date(),
+	                 text: 'Export as .xlxs'
+	             }			         
+	         ]
+});
 $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for Today");
 $JQuery("#slipTracking").html("Slip Tracking wise Report For Today");
 $JQuery("#draftTracking").html("Draft Tracking wise Report For Today");
@@ -948,8 +1009,7 @@ $JQuery("#draftTracking_").submit(function(event){
 	$JQuery("#loading_draft").show();
 	var startDateDraft = $JQuery("#startDateDraft").val();
 	var endDateDraft = $JQuery("#endDateDraft").val();
-	console.log(startDateSlip);
-	console.log(endDateSlip);
+	
 	var dataCollectorDraft = $JQuery("#collector_draft").val();
 	var wlthPoorDraft = $JQuery("#wlth_poor_draft").is(":checked") == true ? "Poor" : "";
 	var wlthPopDraft = $JQuery("#wlth_pop_draft").is(":checked") == true ? "PoP" : "";
@@ -1001,6 +1061,8 @@ $JQuery("#draftTracking_").submit(function(event){
 
 $JQuery("#compServiceReporting_").submit(function(event){
 	event.preventDefault();
+	$JQuery("#loading_comp").show();
+	/* var startDateComp = $JQuery("#") */ 
 });
 
 </script>
@@ -1023,5 +1085,16 @@ $JQuery("#compServiceReporting_").submit(function(event){
     font-weight: bold;
     background: #4aad9b;
     color: #0e5c52;
+}
+#comp_service_reporting > thead > tr > th{
+  border: 1px solid black;
+}
+
+table {
+	overflow-y:scroll;
+	overflow-x:auto;
+}
+thead {
+	width:100%;
 }
 </style>
