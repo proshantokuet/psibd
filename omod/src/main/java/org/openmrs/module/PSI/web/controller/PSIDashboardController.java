@@ -295,7 +295,9 @@ public class PSIDashboardController {
 	@RequestMapping(value="/module/PSI/compServiceReporting",method=RequestMethod.GET)
 	public void compServiceReporting(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(required = true) String startDate,
-            @RequestParam(required = true) String endDate){
+            @RequestParam(required = true) String endDate,
+            @RequestParam String serviceCategory,
+            @RequestParam String searchString){
 //		List<AUHCServiceCategory> serviceCategory = Context.getService(AUHCServiceCategoryService.class).getAll();
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 			    Context.getAuthenticatedUser().getUsername());

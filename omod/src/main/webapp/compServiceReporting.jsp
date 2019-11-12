@@ -43,7 +43,9 @@
 	            </div>
 			</div>
 </div>
-<div style="height:100%;overflow:auto;">
+<div style="overflow:auto;">
+<br/>
+
 	<table id="comp_service_reporting" class="display">
 				<thead>
 					<tr>

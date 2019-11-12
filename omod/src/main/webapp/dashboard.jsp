@@ -626,7 +626,9 @@
 			            </div>
 					</div>
 		</div>
-		<div style="height:100%;overflow:auto;">
+		<div style="overflow:auto;">
+			<br/>
+			
 			<table id="comp_service_reporting" class="display">
 						<thead>
 							<tr>
@@ -1063,6 +1065,32 @@ $JQuery("#compServiceReporting_").submit(function(event){
 	event.preventDefault();
 	$JQuery("#loading_comp").show();
 	/* var startDateComp = $JQuery("#") */ 
+	var startDate = $JQuery("#startDateComp").val();
+	var endDate = $JQuery("#endDateComp").val();
+	var serviceCategory = $JQuery("#service_category").val();
+	var searchString = $JQuery("#search_comp").val();
+	
+	var url = "/openmrs/module/PSI/compServiceReporting.form?startDate="+startDate;
+	url += "&endDate="+endDate;
+	url += "&serviceCategory="+serviceCategory;
+	url += "&searchString="+searchString;
+	
+	 $JQuery.ajax({
+		type:"GET",
+		contentType : "application/json",
+	    url : url,	 
+	    dataType : 'html',
+	    timeout : 100000,
+	    beforeSend: function() {	    
+	    		
+	    },
+	    success:function(data){
+	    	$JQuery("#loading_comp").hide();
+	    },
+	    error:function(data){  	
+	    	$JQuery("#loading_comp").hide();
+	    }
+	}); 
 });
 
 </script>
@@ -1090,11 +1118,5 @@ $JQuery("#compServiceReporting_").submit(function(event){
   border: 1px solid black;
 }
 
-table {
-	overflow-y:scroll;
-	overflow-x:auto;
-}
-thead {
-	width:100%;
-}
+
 </style>
