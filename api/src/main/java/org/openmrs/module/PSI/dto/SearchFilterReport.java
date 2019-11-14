@@ -4,8 +4,15 @@ public class SearchFilterReport {
 	private String start_date;
 	private String end_date;
 	private String service_category;
+	private String search_string;
 	
 	
+	public String getSearch_string() {
+		return search_string;
+	}
+	public void setSearch_string(String search_string) {
+		this.search_string = search_string;
+	}
 	public String getStart_date() {
 		return start_date;
 	}

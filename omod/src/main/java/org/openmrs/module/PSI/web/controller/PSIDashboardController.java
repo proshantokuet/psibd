@@ -27,6 +27,7 @@ import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
+import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
@@ -312,9 +313,16 @@ public class PSIDashboardController {
 		model.addAttribute("service_category",
 				Context.getService(AUHCServiceCategoryService.class).getAll());
 		
-		model.addAttribute("dashboard_new_reg",0);
-		model.addAttribute("dashboard_old_clients",0);
-		model.addAttribute("dashboard_new_clients",0);
+		model.addAttribute("dashboard_new_reg",
+				Context.getService(PSIServiceProvisionService.class).
+				getDashboardNewReg(startDate, endDate));
+		model.addAttribute("dashboard_old_clients",
+				Context.getService(PSIServiceProvisionService.class)
+				.getDashboardOldClients(startDate, endDate));
+		model.addAttribute("dashboard_new_clients",
+				Context.getService(PSIServiceProvisionService.class)
+				.getDashboardNewClients(startDate, endDate));
+		
 		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
 			    clinicCode, "");
 		model.addAttribute("dashboard",dashboardDTO);
@@ -325,7 +333,14 @@ public class PSIDashboardController {
 		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalServiceContract(startDate, endDate);
 		model.addAttribute("dashboard_service_cotact_value",totalServiceContact);
 		
-		List<AUHCComprehensiveReport> report = new ArrayList<AUHCComprehensiveReport>();
+		SearchFilterReport filter = new SearchFilterReport();
+		filter.setStart_date(startDate);
+		filter.setEnd_date(endDate);
+		filter.setService_category(serviceCategory);
+		filter.setSearch_string(searchString);
+		
+		List<AUHCComprehensiveReport> report =  Context.getService(
+				PSIServiceProvisionService.class).getComprehensiveReport(filter);
 		model.addAttribute("compReport",report);
 		
 	}

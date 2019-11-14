@@ -4,11 +4,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
+import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 
 public interface PSIServiceProvisionDAO {
@@ -59,5 +61,11 @@ public interface PSIServiceProvisionDAO {
 	
 	public String getTotalPayableDraft(String startDate,String endDate);
 	
+	public String getDashboardNewReg(String startDate,String endDate);
 	
+	public String getDashboardOldClients(String startDate,String endDate);
+	
+	public String getDashboardNewClients(String startDate,String endDate);
+	
+	public List<AUHCComprehensiveReport> getComprehensiveReport(SearchFilterReport filter);	
 }

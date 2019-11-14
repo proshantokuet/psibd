@@ -994,7 +994,9 @@ $JQuery("#slipTracking_").submit(function(event){
 					         ]
 				});	
 			  /* console.log(data); */
+			  
 			  $JQuery("#slipTracking").html("Slip Tracking wise Report From "+startDateSlip+" To "+endDateSlip);
+			  
 			  $JQuery("#loading").hide();
 		   },
 		   error: function(data){
@@ -1085,6 +1087,22 @@ $JQuery("#compServiceReporting_").submit(function(event){
 	    		
 	    },
 	    success:function(data){
+	    	
+	    	$JQuery("#compServiceReports").html(data);
+	    	$JQuery("#comp_service_reporting").DataTable({
+	    		   bFilter: false,
+	    	       bInfo: false,
+	    		   dom: 'Bfrtip',
+	    		   destroy: true,
+	    		   buttons: [
+	    		             {
+	    		                 extend: 'excelHtml5',
+	    		                 title: "Service Point Wise Revenue Report_"+ new Date(),
+	    		                 text: 'Export as .xlxs'
+	    		             }			         
+	    		         ]
+	    	});
+	    	$JQuery("#compServiceReporting").html("Comprenhesive Service Reporting From "+startDate+" "+endDate);
 	    	$JQuery("#loading_comp").hide();
 	    },
 	    error:function(data){  	

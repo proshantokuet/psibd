@@ -7,11 +7,13 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
+import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
+import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 
 public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implements PSIServiceProvisionService {
@@ -164,6 +166,30 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 			SearchFilterDraftTracking filter) {
 		// TODO Auto-generated method stub
 		return dao.getDraftTrackingReport(filter);
+	}
+
+	@Override
+	public String getDashboardNewReg(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardNewReg(startDate, endDate);
+	}
+
+	@Override
+	public String getDashboardOldClients(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardOldClients(startDate, endDate);
+	}
+
+	@Override
+	public String getDashboardNewClients(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardNewClients(startDate, endDate);
+	}
+
+	@Override
+	public List<AUHCComprehensiveReport> getComprehensiveReport(SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getComprehensiveReport(filter);
 	}
 	
 }

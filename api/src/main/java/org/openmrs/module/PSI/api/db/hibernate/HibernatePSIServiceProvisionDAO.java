@@ -19,12 +19,14 @@ import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
+import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSILocationTag;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
+import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.openmrs.module.PSI.utils.PSIConstants;
 
@@ -621,6 +623,64 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}
 		
 		return ret;
+	}
+
+	@Override
+	public String getDashboardNewReg(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return "0";
+	}
+
+	@Override
+	public String getDashboardOldClients(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		String sql = "SELECT Count(*) "+
+					" FROM   (SELECT pmr.patient_uuid "+ 
+					" FROM   psi_money_receipt pmr "+ 
+					" JOIN (SELECT patient_uuid, "+ 
+                     "  Count(patient_uuid) AS total "+ 
+                     " FROM   psi_money_receipt "+
+                     " WHERE  money_receipt_date BETWEEN "+
+                        "'"+startDate+"' AND '"+endDate+"' "+ 
+                     " GROUP  BY patient_uuid) AS newclient "+ 
+                 " ON pmr.patient_uuid = newclient.patient_uuid "+ 
+                 " WHERE  pmr.money_receipt_date < '"+startDate+"' "+ 
+                 " GROUP  BY pmr.patient_uuid) AS tbl ";
+		try{
+			String ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
+					get(0).toString();
+			return ret;
+		}catch(Exception e){
+			return "0";
+		}
+		
+	}
+
+	@Override
+	public String getDashboardNewClients(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		String sql = "SELECT Count(*) "+
+					" FROM "+
+					" (SELECT patient_uuid "+
+					" FROM   psi_money_receipt p "+ 
+                    " WHERE  p.money_receipt_date BETWEEN "+ 
+                    "'"+startDate+"' AND '"+endDate+"' GROUP BY p.patient_uuid) as p_tbl";
+		try{
+			String res = sessionFactory.getCurrentSession().createSQLQuery(sql).list().get(0).toString();
+			Long ret =(Long.parseLong(res) -  Long.parseLong(getDashboardOldClients(startDate,endDate)));
+			return ret.toString();
+//			return res;
+		}
+		catch(Exception e){
+			return "0";
+		}
+	}
+
+	@Override
+	public List<AUHCComprehensiveReport> getComprehensiveReport(SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		String sql = "";
+		return null;
 	}
 	
 
