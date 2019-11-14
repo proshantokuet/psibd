@@ -24,4 +24,6 @@ public interface PSIServiceManagementDAO {
 	
 	public void delete(int id);
 	
+	public List<String> getCategoryList(Integer clinicId);
+	
 }

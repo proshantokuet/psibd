@@ -5,8 +5,15 @@ public class SearchFilterReport {
 	private String end_date;
 	private String service_category;
 	private String search_string;
+	private String gender;
 	
 	
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 	public String getSearch_string() {
 		return search_string;
 	}

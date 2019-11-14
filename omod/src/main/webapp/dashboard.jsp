@@ -33,7 +33,8 @@
     <li><a href="#tabs-2">Service Provider Wise Revenue Report</a></li>
     <li><a href="#tabs-3">Slip Tracking Report</a></li> 
     <li><a href="#tabs-4">Draft Tracking Report</a></li>
-    <li><a href="#tabs-5">Comprehensive Service Report</a></li>
+    <!-- <li><a href="#tabs-5">Comprehensive Service Report</a></li> -->
+    <li><a href="#tabs-5">Registration Report</a>
   </ul>
   <div id="tabs-1">
   
@@ -50,11 +51,12 @@
               	<div class="col-md-3">
                		<div class="form-group">
                   	<label for="Service Code">To</label><br />
-						<input id="endDate" name="endDate" type="text"  required="true"/>                  			
+						<input id="endDate" name="endDate" type="text"  required="true"/>
+						<input id="clnicCode" type="hidden" value="${ }">                   			
 					</div>
                   	
               	</div>
-              	<c:if test="${showClinic eq 1}">
+              <%-- 	 <c:if test="${showClinic eq 1}">
 	              	<div class="col-md-3">
 	               		<div class="form-group">
 	                  		<label for="Service Code">Clinic</label> <br />
@@ -66,11 +68,23 @@
 							</select>                			
 						</div>                  	
 	              	</div>
-              	</c:if>
+              	</c:if> --%>
+              	<c:if test="${showServiceCategory ed 1 }">
+              		<div class="col-md-3">
+              			<div class="form-group">
+              				<label>Service Category</label><br/>
+              				<select name="service_category" id="service_category" class="form-control selcls">
+              					<c:forEach items="${serviceCategory}" var="scat">
+              						<option value="${scat}">${scat}</option>
+              					</c:forEach>
+              				</select>
+              			</div>
+              		</div>
+              	</c:if> 
               	<div class="col-md-3">
                		<div class="form-group">
                		<label for="Service Code"></label><br />
-                  	<button style="width: 120px ;margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>                  			
+                  		<button style="width: 120px ;margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>                  			
 					</div>
                   	
               	</div>
@@ -530,6 +544,112 @@
 	
  </div>
  <div id="tabs-5">
+ 	<form:form id="regReport">
+ 		<div class="form-content">
+ 			<div class="row">
+ 				<div class="col-md-3">
+ 					<div class="form-group">
+ 						 <label for="startDateReg"> From</label>
+                        <br />
+                        <input class="dt" id="startDateReg" name="startDateReg" type="text" required="true" />
+ 					</div>
+ 				</div>
+ 				<div class="col-md-3">
+ 					<div class="form-group">
+ 						 <label for="endDateReg"> To</label>
+                        <br />
+                        <input class="dt" id="endDateReg" name="endDateReg" type="text" required="true" />
+ 					</div>
+ 				</div>
+ 				<div class="col-md-3">
+ 					<div class="form-group">
+                        Gender
+                        <br />
+                        <input type="checkbox" id="male" name="male" value="">Male
+                        <br>
+                        <input type="checkbox" id="female" name="female" value="">Female
+                        <br>
+                        <input type="checkbox" id="others" name="others" value=""> Others
+                    </div>
+ 				</div>
+ 				<div class="col-md-3">
+ 					<div class="form-group">
+ 						<label for="search_reg">Search</label><br/>
+ 						<input id="search_reg" name="search_reg" type="text">
+ 					</div>
+ 				</div>
+ 			</div>
+ 			<div class="row">
+ 				<div class="col-md-4">
+                   <div class="form-group">
+                     
+                       <button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>
+                   </div>
+
+               </div>
+ 			</div>
+ 		</div>
+ 	</form:form>
+ 	<div id="loading_reg" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
+	<div id="regReports">
+		<div class="form-content" id="regReportTile"></div>
+		<div class="form-content">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+                  		<label> ${dashboard.newPatient } </label> &nbsp;&nbsp; New Registration
+              		</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+                  		<label> ${dashboard_old_clients } </label> &nbsp;&nbsp; Old Clients
+              		</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+                  		<label> ${dashboard_new_clients } </label> &nbsp;&nbsp; New Clients
+              		</div>
+				</div>
+			</div>
+		</div>
+		<table id="reg_report" class="display">
+			<thead>
+				<tr>
+					<th>SL</th>
+					<th>Patient Name</th>
+					<th>UIC</th>
+					<th>Health Id</th>
+					<th>Mobile No</th>
+					<th>Gender</th>
+					<th>Registration Date</th>
+					<th>Age</th>
+					<th>Union/Municipality/CC</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<%int sl_r = 0;%>
+				<c:forEach var="report" items="${regReport }">
+					<tr>
+						<td><%=++sl_r%></td>
+						<td>${report.patient_name }</td>
+						<td>${report.uic }</td>
+						<td>${report.health_id }</td>
+						<td>${report.mobile_no }</td>
+						<td>${report.gender }</td>
+						<td>${report.register_date }</td>
+						<td>${report.age }</td>
+						<td>${report.cc }</td>
+						<td></td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
+ </div>
+  <%-- <div id="tabs-5">
  	<form:form id="compServiceReporting_">
  		<div class="form-content">
  			<div class="row">
@@ -587,7 +707,7 @@
 					<div class="row">
 						<div class="col-md-3">
 							<div class="form-group">
-		                  		<label> ${dashboard_new_reg } </label> &nbsp;&nbsp; New Registration
+		                  		<label> ${${dashboard.newPatient } } </label> &nbsp;&nbsp; New Registration
 		              		</div>
 						</div>
 						<div class="col-md-3">
@@ -677,8 +797,11 @@
 			</table>
 		</div>
 	</div>
- </div>
+ </div> --%>
  
+</div>
+
+  
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jszip.min.js"></script>
@@ -770,18 +893,19 @@ $JQuery.ajax({
 
 $JQuery("#ServicePointWise").submit(function(event) {	
 	
-	var clinic = document.getElementById("clinic");
+/* 	var clinic = document.getElementById("clinic");
 	var clinicCode = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 	}else {
 		clinicCode = -1;
 	}
-	
+ */	
+ 	var category = $JQuery("#service_category").val();
 	var startDate = $JQuery('input[name=startDate]').val();
 	var endDate = $JQuery('input[name=endDate]').val();
 	
-	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&clinic_code="+clinicCode;
+	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&serviceCategory="+category;
 	var title = "Service Point Wise Revenue Report_"+startDate+"_"+endDate;
 	event.preventDefault();	
 	
@@ -871,7 +995,7 @@ $JQuery('#servicePointDefault').DataTable({
 	             }			         
 	         ]
 });
-$JQuery("#comp_service_reporting").DataTable({
+/* $JQuery("#comp_service_reporting").DataTable({
 	   bFilter: false,
        bInfo: false,
 	   dom: 'Bfrtip',
@@ -883,7 +1007,7 @@ $JQuery("#comp_service_reporting").DataTable({
 	                 text: 'Export as .xlxs'
 	             }			         
 	         ]
-});
+}); */
 $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for Today");
 $JQuery("#slipTracking").html("Slip Tracking wise Report For Today");
 $JQuery("#draftTracking").html("Draft Tracking wise Report For Today");
@@ -942,6 +1066,19 @@ $JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report fo
 		             }			         
 		         ]
 	});
+$JQuery("#reg_report").DataTable({
+	bFilter: false,
+    bInfo: false,
+	   dom: 'Bfrtip',
+	   destroy: true,
+	   buttons: [
+	             {
+	                 extend: 'excelHtml5',
+	                 title: "Draft wise Report_"+ new Date(),
+	                 text: 'Export as .xlxs'
+	             }			         
+	         ]
+}); 
 $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
 	$JQuery("#loading").show();
@@ -1040,8 +1177,10 @@ $JQuery("#draftTracking_").submit(function(event){
 				 $JQuery("#draftTrackers").html(data);
 				 
 				  $JQuery("#draft_tracking").DataTable({
+					 /*  "searching": true, */
 						bFilter: false,
 					    bInfo: false,
+					    
 						   dom: 'Bfrtip',
 						   destroy: true,
 						   buttons: [

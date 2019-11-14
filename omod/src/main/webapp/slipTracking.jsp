@@ -5,13 +5,13 @@
       <div class="row">
           <div class="col-md-3">
               <div class="form-group">
-                  <label> ${dashboard.servedPatient } </label> &nbsp;&nbsp; Patients Served
+                  <label> ${dashboard_patients_served } </label> &nbsp;&nbsp; Patients Served
               </div>
 
           </div>
           <div class="col-md-3">
               <div class="form-group">
-                  <label for="Service Code">${dashboard.earned }</label>
+                  <label for="Service Code">${dashboard_revenue }</label>
                   &nbsp;&nbsp; Revenue Earned
               </div>
 

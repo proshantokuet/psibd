@@ -134,4 +134,16 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 		return clinics;
 		
 	}
+
+	@Override
+	public List<String> getCategoryList(Integer clinicId) {
+		// TODO Auto-generated method stub
+		List<String> categoryList = new ArrayList<String>();
+		String sql = "SELECT DISTINCT(category) "+
+				" FROM psi_service_management "+
+				" where psi_clinic_management_id = "+clinicId;
+		categoryList = sessionFactory
+		        .getCurrentSession().createSQLQuery(sql).list();
+		return categoryList;
+	}
 }

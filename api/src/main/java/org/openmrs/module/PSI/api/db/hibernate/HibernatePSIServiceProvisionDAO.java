@@ -21,6 +21,7 @@ import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
+import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSILocationTag;
 import org.openmrs.module.PSI.dto.PSIReport;
@@ -628,6 +629,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@Override
 	public String getDashboardNewReg(String startDate, String endDate) {
 		// TODO Auto-generated method stub
+		String sql = "";
 		return "0";
 	}
 
@@ -682,6 +684,214 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String sql = "";
 		return null;
 	}
+
+	@Override
+	public List<AUHCRegistrationReport> getRegistrationReport(
+			SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		String sql = "select code, item, category, sum(Static) as Static, sum(Satellite) as Satellite,"+  
+					"sum(CSP) as CSP , sum(Static)+sum(Satellite)+sum(CSP) as total,sum(CountStatic) countStatic,"+
+					"sum(CountSatellite) as CountAtSatellite,"+
+					"sum(CountCSP) as CountAtCSP,"+
+					"sum(DiscountStatic) as DiscountAtStatic,"+
+					"sum(DiscountSatellite) as DiscountAtSatellite,"+
+					"sum(DiscountCSP) as DiscountAtCSP "+
+					" from ( "+
+					" select code,item , category,service_point, sum(net_payable) as ttt, "+
+					" count(*), "+
+					" CASE WHEN service_point = 'Static' THEN sum(net_payable) ELSE 0 END Static, "+
+					" CASE WHEN service_point = 'Static' THEN sum(discount) ELSE 0 END DiscountStatic, "+
+                    " CASE WHEN service_point = 'Static' THEN count(*) ELSE 0 END CountStatic, "+
+                    " CASE WHEN service_point = 'Satellite' THEN sum(net_payable) ELSE 0 END Satellite, "+
+                    " CASE WHEN service_point = 'Satellite' THEN sum(discount) ELSE 0 END DiscountSatellite,"+
+                    " CASE WHEN service_point = 'Satellite' THEN count(*) ELSE 0 END CountSatellite, "+
+                    " CASE WHEN service_point = 'CSP' THEN sum(net_payable)  ELSE 0 END CSP ,"+
+                    " CASE WHEN service_point = 'CSP' THEN sum(discount)  ELSE 0 END DiscountCSP ,"+
+                    " CASE WHEN service_point = 'CSP' THEN count(*)  ELSE 0 END CountCSP "+
+                    " from openmrs.psi_service_provision as sp  left join "+  
+                    " openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid "+  
+                    " where sp.is_complete = 1 and DATE(sp.money_receipt_date) "+
+                    " between '"+filter.getStart_date()+"' and '"+filter.getEnd_date()+"' "+
+                    " group by code ,item,service_point,category order  by code) as Report "+         
+         			" group by code, item";
+       
+         		
+		List<AUHCRegistrationReport> ret = new ArrayList<AUHCRegistrationReport>();
+		return ret;
+	}
+
+	@Override
+	public String getTotalPayableDraft(SearchFilterDraftTracking filter) {
+		// TODO Auto-generated method stub
+			try{
+				List<AUHCDraftTrackingReport> drafts =  getDraftTrackingReport(filter);
+				Double ret = 0.0;
+				for(int i = 0; i < drafts.size();i++)
+					ret += drafts.get(i).getNet_payable();
+				return ret.toString();
+			}catch(Exception e){
+				return "0";
+			}
+	}
+
+	@Override
+	public String getTotalDiscount(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		String wh = "";
+		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
+			wh += " and Date(p.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
+					+ filter.getEndDateSlip()+"' ";
+		}
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+					(filter.getWlthPop() != "");
+		
+		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+				(filter.getSpStatic() != "");
+		if(wealthFlag == true) {
+			wh += "and ( m.wealth = '" + filter.getWlthAbleToPay() + 
+					"' or m.wealth = '"+filter.getWlthPoor()+
+					"' or m.wealth = '"+ filter.getWlthPop()+
+					"' ) ";
+		}
+
+		if(spFlag == true){
+			wh += " and ( m.service_point = '" + filter.getSpCsp()+
+					"' or m.service_point = '" + filter.getSpSatelite()+
+					"' or m.service_point = '"+ filter.getSpStatic()+
+					"' ) ";
+		}
+		if (!"".equalsIgnoreCase(filter.getCollector())){
+			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
+		}
+		String sql = " select sum(ROUND(p.discount,2)) "+
+				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				"on p.psi_money_receipt_id = m.mid";
+		
+		sql += wh;
+//		sql += " group by p.psi_money_receipt_id ";
+		
+		String ret = "0";
+		try{
+			ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
+					get(0).toString();
+			return ret;
+		}catch(Exception e){
+			return "0";
+		}
+		
+	}
+
+	@Override
+	public String getTotalServiceContact(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		String hql = "SELECT count(*) FROM PSIServiceProvision"+
+				" WHERE moneyReceiptDate BETWEEN '"+filter.getStartDateSlip()+"' AND '"
+					+filter.getEndDateSlip()+"'";
+		if(filter.getCollector() != "") {
+			hql += " AND provider='"+filter.getCollector()+"' ";
+		}
+		
+		 try{ 
+			 Long ret = (Long)sessionFactory.getCurrentSession().createQuery(hql).list().get(0);
+			 return ret.toString();
+		 }catch (Exception e){
+			 return "0";
+		 }
+	}
+
+	@Override
+	public String getPatientsServed(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		String wh = "";
+		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
+			wh += " and Date(p.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
+					+ filter.getEndDateSlip()+"' ";
+		}
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+					(filter.getWlthPop() != "");
+		
+		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+				(filter.getSpStatic() != "");
+		if(wealthFlag == true) {
+			wh += "and ( m.wealth = '" + filter.getWlthAbleToPay() + 
+					"' or m.wealth = '"+filter.getWlthPoor()+
+					"' or m.wealth = '"+ filter.getWlthPop()+
+					"' ) ";
+		}
+
+		if(spFlag == true){
+			wh += " and ( m.service_point = '" + filter.getSpCsp()+
+					"' or m.service_point = '" + filter.getSpSatelite()+
+					"' or m.service_point = '"+ filter.getSpStatic()+
+					"' ) ";
+		}
+		if (!"".equalsIgnoreCase(filter.getCollector())){
+			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
+		}
+		String sql = " select count(distinct(p.patient_uuid)) "+
+				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				"on p.psi_money_receipt_id = m.mid";
+		
+		sql += wh;
+//		sql += " group by p.psi_money_receipt_id ";
+		
+		String ret = "0";
+		try{
+			ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
+					get(0).toString();
+			return ret;
+		}catch(Exception e){
+			return "0";
+		}
+	}
+
+	@Override
+	public String getRevenueEarned(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		String wh = "";
+		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
+			wh += " and Date(p.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
+					+ filter.getEndDateSlip()+"' ";
+		}
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+					(filter.getWlthPop() != "");
+		
+		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+				(filter.getSpStatic() != "");
+		if(wealthFlag == true) {
+			wh += "and ( m.wealth = '" + filter.getWlthAbleToPay() + 
+					"' or m.wealth = '"+filter.getWlthPoor()+
+					"' or m.wealth = '"+ filter.getWlthPop()+
+					"' ) ";
+		}
+
+		if(spFlag == true){
+			wh += " and ( m.service_point = '" + filter.getSpCsp()+
+					"' or m.service_point = '" + filter.getSpSatelite()+
+					"' or m.service_point = '"+ filter.getSpStatic()+
+					"' ) ";
+		}
+		if (!"".equalsIgnoreCase(filter.getCollector())){
+			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
+		}
+		String sql = " select sum(p.net_payable) "+
+				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				"on p.psi_money_receipt_id = m.mid";
+		
+		sql += wh;
+//		sql += " group by p.psi_money_receipt_id ";
+		
+		String ret = "0";
+		try{
+			ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
+					get(0).toString();
+			return ret;
+		}catch(Exception e){
+			return "0";
+		}
+	}
+	
+	
 	
 
 	

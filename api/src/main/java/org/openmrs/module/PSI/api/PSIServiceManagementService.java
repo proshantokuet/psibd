@@ -27,4 +27,6 @@ public interface PSIServiceManagementService extends OpenmrsService {
 	
 	public void delete(int id);
 	
+	public List<String> getCategoryList(Integer clinicId);
+	
 }

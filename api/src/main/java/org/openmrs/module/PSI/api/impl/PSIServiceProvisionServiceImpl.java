@@ -9,6 +9,7 @@ import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
+import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
@@ -191,5 +192,43 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		// TODO Auto-generated method stub
 		return dao.getComprehensiveReport(filter);
 	}
+
+	@Override
+	public List<AUHCRegistrationReport> getRegistrationReport(
+			SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getRegistrationReport(filter);
+	}
+
+	@Override
+	public String getTotalPayableDraft(SearchFilterDraftTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getTotalPayableDraft(filter);
+	}
+
+	@Override
+	public String getTotalDiscount(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getTotalDiscount(filter);
+	}
+
+	@Override
+	public String getTotalServiceContact(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getTotalServiceContact(filter);
+	}
+
+	@Override
+	public String getPatientsServed(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getPatientsServed(filter);
+	}
+
+	@Override
+	public String getRevenueEarned(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getRevenueEarned(filter);
+	}
+	
 	
 }

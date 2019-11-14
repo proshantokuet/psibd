@@ -7,6 +7,7 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
+import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
@@ -52,7 +53,11 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public String getTotalDiscount(String startDate,String endDate);
 	
+	public String getTotalDiscount(SearchFilterSlipTracking filter);
+	
 	public String getTotalServiceContract(String startDate,String endDate);
+	
+	public String getTotalServiceContact(SearchFilterSlipTracking filter);
 	
 	public List<PSIReportSlipTracking> getSlipTrackingReport
 			(SearchFilterSlipTracking filter);
@@ -62,6 +67,8 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	public String getNoOfDraft(String startDate, String endDate);
 	
 	public String getTotalPayableDraft(String startDate, String endDate);
+	
+	public String getTotalPayableDraft(SearchFilterDraftTracking filter);
 	
 	public List<AUHCDraftTrackingReport> getDraft(SearchFilterDraftTracking filter);
 	
@@ -73,4 +80,10 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public List<AUHCComprehensiveReport> getComprehensiveReport(SearchFilterReport filter);
 	
+	public List<AUHCRegistrationReport> getRegistrationReport(SearchFilterReport filter);
+	
+	public String getPatientsServed(SearchFilterSlipTracking filter);
+	
+	public String getRevenueEarned(SearchFilterSlipTracking filter);
+		
 }
