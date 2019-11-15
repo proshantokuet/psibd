@@ -135,13 +135,15 @@ public class PSIDashboardController {
 				.getRegistrationReport(regFilter);
 		
 		model.addAttribute("regReport", registrationReport);
+		model.addAttribute("clinic",clinicCode);
 	}
 	
 	@RequestMapping(value = "/module/PSI/ServicePointWise", method = RequestMethod.GET)
 	public void ServicePointWiseReport(HttpServletRequest request, HttpSession session, Model model,
 	                                   @RequestParam(required = true) String startDate,
 	                                   @RequestParam(required = true) String endDate,
-	                                   @RequestParam(required = true) String clinic_code) {
+	                                   @RequestParam(required = true) String clinic_code,
+	                                   @RequestParam String serviceCategory) {
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
 		String ClinicCode = "";

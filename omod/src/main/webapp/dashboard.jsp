@@ -35,6 +35,7 @@
     <li><a href="#tabs-4">Draft Tracking Report</a></li>
     <!-- <li><a href="#tabs-5">Comprehensive Service Report</a></li> -->
     <li><a href="#tabs-5">Registration Report</a>
+    <li><a href="#tabs-6">Visit Report</a>
   </ul>
   <div id="tabs-1">
   
@@ -52,7 +53,7 @@
                		<div class="form-group">
                   	<label for="Service Code">To</label><br />
 						<input id="endDate" name="endDate" type="text"  required="true"/>
-						<input id="clnicCode" type="hidden" value="${ }">                   			
+						<input id="clnic" type="hidden" value="${clinic}">                   			
 					</div>
                   	
               	</div>
@@ -69,7 +70,7 @@
 						</div>                  	
 	              	</div>
               	</c:if> --%>
-              	<c:if test="${showServiceCategory ed 1 }">
+              	<c:if test="${showServiceCategory eq 1 }">
               		<div class="col-md-3">
               			<div class="form-group">
               				<label>Service Category</label><br/>
@@ -113,7 +114,8 @@
               </div>
               <div class="col-md-4">
                	<div class="form-group">
-                  	<label for="Service Code">${dashboard.newPatient }</label>  &nbsp;&nbsp; New Registration                 			
+                  	<label for="Service Code">${dashboard.newPatient }</label>
+                  	  &nbsp;&nbsp; New Registration                 			
 				</div>                  	
               </div>              	
        </div>          	
@@ -614,39 +616,42 @@
 				</div>
 			</div>
 		</div>
-		<table id="reg_report" class="display">
-			<thead>
-				<tr>
-					<th>SL</th>
-					<th>Patient Name</th>
-					<th>UIC</th>
-					<th>Health Id</th>
-					<th>Mobile No</th>
-					<th>Gender</th>
-					<th>Registration Date</th>
-					<th>Age</th>
-					<th>Union/Municipality/CC</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
-				<%int sl_r = 0;%>
-				<c:forEach var="report" items="${regReport }">
+		<div style="overflow:auto;">
+			<br/>
+			<table id="reg_report" class="display">
+				<thead>
 					<tr>
-						<td><%=++sl_r%></td>
-						<td>${report.patient_name }</td>
-						<td>${report.uic }</td>
-						<td>${report.health_id }</td>
-						<td>${report.mobile_no }</td>
-						<td>${report.gender }</td>
-						<td>${report.register_date }</td>
-						<td>${report.age }</td>
-						<td>${report.cc }</td>
-						<td></td>
+						<th>SL</th>
+						<th>Patient Name</th>
+						<th>UIC</th>
+						<th>Health Id</th>
+						<th>Mobile No</th>
+						<th>Gender</th>
+						<th>Registration Date</th>
+						<th>Age</th>
+						<th>Union/Municipality/CC</th>
+						<th>Action</th>
 					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<%int sl_r = 0;%>
+					<c:forEach var="report" items="${regReport }">
+						<tr>
+							<td><%=++sl_r%></td>
+							<td>${report.patient_name }</td>
+							<td>${report.uic }</td>
+							<td>${report.health_id }</td>
+							<td>${report.mobile_no }</td>
+							<td>${report.gender }</td>
+							<td>${report.register_date }</td>
+							<td>${report.age }</td>
+							<td>${report.cc }</td>
+							<td></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
 	</div>
  </div>
   <%-- <div id="tabs-5">
@@ -798,7 +803,118 @@
 		</div>
 	</div>
  </div> --%>
- 
+ <div id="tabs-6">
+ 	<form:form id="visitReport">
+ 		<div class="form-content">
+ 			<div class="row">
+ 				<div class="col-md-3">
+ 					<div class="form-group">
+ 						 <label for="startDateVisit"> From</label>
+                        <br />
+                        <input class="dt" id="startDateVisit" name="startDateVisit" type="text" required="true" />
+ 					</div>
+ 				</div>
+ 				<div class="col-md-3"> 					
+					<div class="form-group">
+						 <label for="endDateVisit"> To</label>
+                      <br />
+                      <input class="dt" id="endDateVisit" name="endDateVisit" type="text" required="true" />
+					</div> 					
+ 				</div>
+ 				<div class="col-md-3">
+ 					
+ 					<div class="form-group">
+ 						<label for="search_visit">Search</label><br/>
+ 						<input id="search_visit" name="search_visit" type="text">
+ 					</div>
+ 				
+ 				</div>
+ 				<div class="col-md-3">
+                   <div class="form-group">
+                     
+                       <button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>
+                   </div>
+
+               </div>
+ 			</div>
+ 			
+ 		</div>
+ 	</form:form>
+ 	<div id="loading_visit" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
+	<div id="visitReports">
+		<div class="form-content" id="visitReportTitle"></div>
+		<div class="form-content">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label for="Service Code">${dashboard.newPatient }</label>
+                  	  	&nbsp;&nbsp; New Registration
+                  	</div>  
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_old_clients } </label> &nbsp;&nbsp; 
+                  		Old Clients
+              		</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_new_clients } </label> &nbsp;&nbsp; New Clients
+              		</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+	                    <label> ${ dashboard_service_cotact_value } </label> &nbsp;&nbsp; Total Service Contact
+	                </div>
+				</div>
+			</div>
+			<div class="row">
+			
+ 				<div class="col-md-3">
+                	<div class="form-group">                							
+						<label> ${dashboard.servedPatient } </label>  &nbsp;&nbsp; Patients Served						
+                   </div>
+                  	
+             	</div>
+             	<div class="col-md-3">
+               	<div class="form-group">
+                  	<label for="Service Code">${dashboard.earned }</label>
+						&nbsp;&nbsp; Revenue Earned                  			
+				</div>
+                  	
+              </div>
+              <div class="col-md-3">
+	                <div class="form-group">
+	                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
+	                </div>
+	            </div>
+             	
+ 			
+			</div>
+		</div>
+		<div style="overflow:auto;">
+			<br/>
+			<table id="visit_report" class="display">
+				<thead>
+					<tr>
+						<th>SL</th>
+						<th>Name</th>
+						<th>HID</th>
+						<th>Mobile Number</th>
+						<th>Age</th>
+						<th>Registration Date</th>
+						<th>Last Visit Date</th>
+						<th>Visit Count</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+ </div>
 </div>
 
   
@@ -893,19 +1009,20 @@ $JQuery.ajax({
 
 $JQuery("#ServicePointWise").submit(function(event) {	
 	
-/* 	var clinic = document.getElementById("clinic");
+ 	var clinic = document.getElementById("clinic");
 	var clinicCode = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 	}else {
 		clinicCode = -1;
 	}
- */	
+	
+ 	
  	var category = $JQuery("#service_category").val();
 	var startDate = $JQuery('input[name=startDate]').val();
 	var endDate = $JQuery('input[name=endDate]').val();
 	
-	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&serviceCategory="+category;
+	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&clinic_code="+clinic_code+"&serviceCategory="+category;
 	var title = "Service Point Wise Revenue Report_"+startDate+"_"+endDate;
 	event.preventDefault();	
 	
@@ -995,6 +1112,19 @@ $JQuery('#servicePointDefault').DataTable({
 	             }			         
 	         ]
 });
+ $JQuery("#visit_report").DataTable({
+	   bFilter: false,
+       bInfo: false,
+	   dom: 'Bfrtip',
+	   destroy: true,
+	   buttons: [
+	             {
+	                 extend: 'excelHtml5',
+	                 title: "Visit Report_"+ new Date(),
+	                 text: 'Export as .xlxs'
+	             }			         
+	         ]
+}); 
 /* $JQuery("#comp_service_reporting").DataTable({
 	   bFilter: false,
        bInfo: false,
@@ -1012,6 +1142,7 @@ $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for T
 $JQuery("#slipTracking").html("Slip Tracking wise Report For Today");
 $JQuery("#draftTracking").html("Draft Tracking wise Report For Today");
 $JQuery("#compServiceReporting").html("Comprenhesive Service Reporting For Today");
+$JQuery("#visitReportTitle").html("Visit Report For Today");
 $JQuery('#serviceProviderDefault').DataTable({
 	   bFilter: false,
        bInfo: false,
