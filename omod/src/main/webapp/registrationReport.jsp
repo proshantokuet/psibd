@@ -19,6 +19,8 @@
 				</div>
 			</div>
 		</div>
+	<div style="overflow:auto;">
+	<br/>
 		<table id="reg_report" class="display">
 			<thead>
 				<tr>
@@ -52,3 +54,4 @@
 				</c:forEach>
 			</tbody>
 		</table>
+	</div>

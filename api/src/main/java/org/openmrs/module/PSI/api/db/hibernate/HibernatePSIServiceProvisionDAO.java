@@ -22,6 +22,7 @@ import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
+import org.openmrs.module.PSI.dto.AUHCVisitReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSILocationTag;
 import org.openmrs.module.PSI.dto.PSIReport;
@@ -889,6 +890,98 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}catch(Exception e){
 			return "0";
 		}
+	}
+
+	@Override
+	public List<AUHCRegistrationReport> getRegistrationReport(String startDate,
+			String endDate, String gender) {
+		// TODO Auto-generated method stub
+		
+		String sql = "SELECT m.patient_name as patient_name, m.uic as uic," +
+				"pi.patient_identifier_id as health_id, m.contact as mobile_no," +
+				" m.gender as gender,"+
+			" DATE_FORMAT(m.patient_registered_date, '"+"%d.%m.%Y"+"') as register_date, "+
+			" TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()) as age, "+
+			" pa.address3 as cc"+
+			" FROM openmrs.psi_money_receipt  m "+ 
+			" JOIN openmrs.person p "+
+			" ON m.patient_uuid = p.uuid "+
+			" JOIN openmrs.patient_identifier pi "+
+			" ON p.person_id = pi.patient_id "+
+			" JOIN openmrs.person_address pa "+
+			" ON pa.person_id = p.person_id "+
+			" WHERE m.patient_registered_date BETWEEN '"+startDate+"' AND '"+endDate+"' ";
+		
+		if(gender.equals("F") || gender.equals("M")) sql += " AND m.gender='"+gender+"'";
+		else if(gender.equals("O"))
+			sql += " AND (m.gender!='M' AND m.gender !='F')";
+		else if(gender.contains("M") && gender.contains("O"))
+			sql += " AND m.gender != 'F' ";
+		else if(gender.contains("F") && gender.contains("O"))
+			sql += " AND m.gender != 'M' ";
+		
+		List<AUHCRegistrationReport> report = new ArrayList<AUHCRegistrationReport>();
+		try{
+			report = sessionFactory.getCurrentSession().createSQLQuery(sql).
+					addScalar("patient_name",StandardBasicTypes.STRING).
+					addScalar("uic",StandardBasicTypes.STRING).
+					addScalar("health_id",StandardBasicTypes.STRING).
+					addScalar("mobile_no",StandardBasicTypes.STRING).
+					addScalar("gender",StandardBasicTypes.STRING).
+					addScalar("register_date",StandardBasicTypes.STRING).
+					addScalar("age",StandardBasicTypes.LONG).
+					addScalar("cc",StandardBasicTypes.STRING).
+					setResultTransformer(new AliasToBeanResultTransformer(AUHCRegistrationReport.class)).
+					list();
+			return report;
+		}catch(Exception e){
+
+		}
+		return null;
+	}
+
+	@Override
+	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		List<AUHCVisitReport> report = new ArrayList<AUHCVisitReport>();
+		String sql = " SELECT m.patient_name as patient_name,pi.patient_identifier_id as hid, " +
+				" m.contact as mobile_number, m.gender as gender, " +
+				" TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()) as age, " +
+				" DATE_FORMAT(m.patient_registered_date, '%d.%m.%Y') as reg_date, " +
+				" MAX(DATE_FORMAT(m.money_receipt_date, '%d.%m.%Y')) as last_visit_date, " +
+				" COUNT(m.patient_uuid) as visit_count" +
+				" FROM openmrs.psi_money_receipt  m " +
+				" JOIN openmrs.person p " +
+				" ON m.patient_uuid = p.uuid " +
+				" JOIN openmrs.patient_identifier pi " +
+				" ON p.person_id = pi.patient_id  " +
+				"JOIN openmrs.person_address pa " +
+				"ON pa.person_id = p.person_id " +
+				"WHERE m.patient_registered_date BETWEEN '"+startDate+"' AND '"+endDate+"'" +
+				"GROUP BY m.patient_uuid;";
+		try{
+			report = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql).
+					addScalar("patient_name",StandardBasicTypes.STRING).
+					addScalar("hid",StandardBasicTypes.STRING).
+					addScalar("mobile_number",StandardBasicTypes.STRING).
+					addScalar("gender",StandardBasicTypes.STRING).
+					addScalar("age",StandardBasicTypes.LONG).
+					addScalar("reg_date",StandardBasicTypes.STRING).
+					addScalar("last_visit_date",StandardBasicTypes.STRING).
+					addScalar("visit_count",StandardBasicTypes.LONG).
+					setResultTransformer(new AliasToBeanResultTransformer(AUHCVisitReport.class)).
+					list();
+			
+//			AUHCVisitReport r = new AUHCVisitReport();
+//			r.setPatient_name(sql);
+//			report.add(r);
+			return report;
+		}catch(Exception e){
+//			return new ArrayList<AUHCVisitReport>();
+		}
+		return null;
+		
 	}
 	
 	

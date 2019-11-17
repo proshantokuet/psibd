@@ -7,6 +7,7 @@ import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
+import org.openmrs.module.PSI.dto.AUHCVisitReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
@@ -81,4 +82,9 @@ public interface PSIServiceProvisionDAO {
 	public String getPatientsServed(SearchFilterSlipTracking filter);
 	
 	public String getRevenueEarned(SearchFilterSlipTracking filter);
+	
+	public List<AUHCRegistrationReport> getRegistrationReport
+		(String startDate,String endDate,String gender);
+	
+	public List<AUHCVisitReport> getVisitReport(String startDate,String endDate);
 }

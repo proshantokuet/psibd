@@ -8,7 +8,7 @@ public class AUHCRegistrationReport {
 	private String mobile_no;
 	private String gender;
 	private String register_date;
-	private Double age;
+	private Long age;
 	private String cc;
 	
 	public Long getSl() {
@@ -53,10 +53,10 @@ public class AUHCRegistrationReport {
 	public void setRegister_date(String register_date) {
 		this.register_date = register_date;
 	}
-	public Double getAge() {
+	public Long getAge() {
 		return age;
 	}
-	public void setAge(Double age) {
+	public void setAge(Long age) {
 		this.age = age;
 	}
 	public String getCc() {

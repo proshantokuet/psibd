@@ -29,7 +29,7 @@
      
 <div id="tabs">
   <ul>
-    <li><a href="#tabs-1">Service Point Wise Revenue Report</a></li>
+    <li><a href="#tabs-1">Comprehensive Service Report</a></li>
     <li><a href="#tabs-2">Service Provider Wise Revenue Report</a></li>
     <li><a href="#tabs-3">Slip Tracking Report</a></li> 
     <li><a href="#tabs-4">Draft Tracking Report</a></li>
@@ -53,11 +53,11 @@
                		<div class="form-group">
                   	<label for="Service Code">To</label><br />
 						<input id="endDate" name="endDate" type="text"  required="true"/>
-						<input id="clnic" type="hidden" value="${clinic}">                   			
+						<%-- <input id="clnic" type="hidden" value="${clinic}">    --%>                			
 					</div>
                   	
               	</div>
-              <%-- 	 <c:if test="${showClinic eq 1}">
+              	 <c:if test="${showClinic eq 1}">
 	              	<div class="col-md-3">
 	               		<div class="form-group">
 	                  		<label for="Service Code">Clinic</label> <br />
@@ -69,7 +69,7 @@
 							</select>                			
 						</div>                  	
 	              	</div>
-              	</c:if> --%>
+              	</c:if> 
               	<c:if test="${showServiceCategory eq 1 }">
               		<div class="col-md-3">
               			<div class="form-group">
@@ -574,12 +574,7 @@
                         <input type="checkbox" id="others" name="others" value=""> Others
                     </div>
  				</div>
- 				<div class="col-md-3">
- 					<div class="form-group">
- 						<label for="search_reg">Search</label><br/>
- 						<input id="search_reg" name="search_reg" type="text">
- 					</div>
- 				</div>
+ 				
  			</div>
  			<div class="row">
  				<div class="col-md-4">
@@ -821,14 +816,14 @@
                       <input class="dt" id="endDateVisit" name="endDateVisit" type="text" required="true" />
 					</div> 					
  				</div>
- 				<div class="col-md-3">
+ 			<!-- 	<div class="col-md-3">
  					
  					<div class="form-group">
  						<label for="search_visit">Search</label><br/>
  						<input id="search_visit" name="search_visit" type="text">
  					</div>
  				
- 				</div>
+ 				</div> -->
  				<div class="col-md-3">
                    <div class="form-group">
                      
@@ -899,10 +894,12 @@
 			<table id="visit_report" class="display">
 				<thead>
 					<tr>
+						
 						<th>SL</th>
 						<th>Name</th>
 						<th>HID</th>
 						<th>Mobile Number</th>
+						<th>Gender</th>
 						<th>Age</th>
 						<th>Registration Date</th>
 						<th>Last Visit Date</th>
@@ -910,6 +907,20 @@
 					</tr>
 				</thead>
 				<tbody>
+					<%int sl_v = 0;%>
+					<c:forEach var="report" items="${visitReport }">
+						<tr>
+							<td><%=sl_v++%></td>
+							<td>${report.patient_name}</td>
+							<td>${report.hid }</td>
+							<td>${report.mobile_number }</td>
+							<td>${report.gender }</td>
+							<td>${report.age }</td>
+							<td>${report.reg_date }</td>
+							<td>${report.last_visit_date}</td>
+							<td>${report.visit_count }</td>
+						</tr>
+					</c:forEach>
 				</tbody>
 			</table>
 		</div>
@@ -983,6 +994,7 @@ $JQuery.ajax({
 		   $JQuery('#serviceProvider').DataTable({
 			   bFilter: false,
 		       bInfo: false,
+		       "searching": true,
 			   dom: 'Bfrtip',
 			   destroy: true,
 			   buttons: [
@@ -1008,7 +1020,7 @@ $JQuery.ajax({
 });
 
 $JQuery("#ServicePointWise").submit(function(event) {	
-	
+	alert("checked"); 
  	var clinic = document.getElementById("clinic");
 	var clinicCode = "";
 	if(clinic !== null){		
@@ -1018,11 +1030,11 @@ $JQuery("#ServicePointWise").submit(function(event) {
 	}
 	
  	
- 	var category = $JQuery("#service_category").val();
+ 	/* var category = $JQuery("#service_category").val(); */
 	var startDate = $JQuery('input[name=startDate]').val();
 	var endDate = $JQuery('input[name=endDate]').val();
 	
-	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&clinic_code="+clinic_code+"&serviceCategory="+category;
+	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&clinic_code="+clinic_code;
 	var title = "Service Point Wise Revenue Report_"+startDate+"_"+endDate;
 	event.preventDefault();	
 	
@@ -1040,6 +1052,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 			   $JQuery('#servicePoint').DataTable({
 				   bFilter: false,
 			       bInfo: false,
+			       "searching": true,
 				   dom: 'Bfrtip',
 				   destroy: true,
 				   buttons: [
@@ -1102,6 +1115,7 @@ $JQuery("#clinics").change(function(event) {
 $JQuery('#servicePointDefault').DataTable({
 	   bFilter: false,
        bInfo: false,
+       "searching": true,
 	   dom: 'Bfrtip',
 	   destroy: true,
 	   buttons: [
@@ -1114,6 +1128,7 @@ $JQuery('#servicePointDefault').DataTable({
 });
  $JQuery("#visit_report").DataTable({
 	   bFilter: false,
+	   "searching": true,
        bInfo: false,
 	   dom: 'Bfrtip',
 	   destroy: true,
@@ -1146,6 +1161,7 @@ $JQuery("#visitReportTitle").html("Visit Report For Today");
 $JQuery('#serviceProviderDefault').DataTable({
 	   bFilter: false,
        bInfo: false,
+       "searching": true,
 	   dom: 'Bfrtip',
 	   destroy: true,
 	   buttons: [
@@ -1174,6 +1190,7 @@ $JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report fo
  $JQuery("#slip_tracking").DataTable({
 	bFilter: false,
     bInfo: false,
+    "searching": true,
 	   dom: 'Bfrtip',
 	   destroy: true,
 	   buttons: [
@@ -1187,6 +1204,7 @@ $JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report fo
  $JQuery("#draft_tracking").DataTable({
 		bFilter: false,
 	    bInfo: false,
+	    "searching": true,
 		   dom: 'Bfrtip',
 		   destroy: true,
 		   buttons: [
@@ -1200,6 +1218,7 @@ $JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report fo
 $JQuery("#reg_report").DataTable({
 	bFilter: false,
     bInfo: false,
+    "searching": true,
 	   dom: 'Bfrtip',
 	   destroy: true,
 	   buttons: [
@@ -1251,6 +1270,7 @@ $JQuery("#slipTracking_").submit(function(event){
 			  $JQuery("#slip_tracking").DataTable({
 					bFilter: false,
 				    bInfo: false,
+				    "searching": true,
 					   dom: 'Bfrtip',
 					   destroy: true,
 					   buttons: [
@@ -1308,7 +1328,7 @@ $JQuery("#draftTracking_").submit(function(event){
 				 $JQuery("#draftTrackers").html(data);
 				 
 				  $JQuery("#draft_tracking").DataTable({
-					 /*  "searching": true, */
+					  "searching": true,
 						bFilter: false,
 					    bInfo: false,
 					    
@@ -1333,10 +1353,10 @@ $JQuery("#draftTracking_").submit(function(event){
 	
 });
 
-$JQuery("#compServiceReporting_").submit(function(event){
+/* $JQuery("#compServiceReporting_").submit(function(event){
 	event.preventDefault();
 	$JQuery("#loading_comp").show();
-	/* var startDateComp = $JQuery("#") */ 
+
 	var startDate = $JQuery("#startDateComp").val();
 	var endDate = $JQuery("#endDateComp").val();
 	var serviceCategory = $JQuery("#service_category").val();
@@ -1379,7 +1399,101 @@ $JQuery("#compServiceReporting_").submit(function(event){
 	    	$JQuery("#loading_comp").hide();
 	    }
 	}); 
+}); */
+
+$JQuery("#regReport").on("submit",function(event){
+	event.preventDefault();
+	$JQuery("#loading_reg").show();
+	var st_date = $JQuery("#startDateReg").val();
+	var ed_date = $JQuery("#endDateReg").val();
+	var gender = "";
+	$JQuery("#male").is(":checked") == true ? gender += "M" : gender += "";
+	$JQuery("#female").is(":checked") == true ? gender += "F" : gender += "";
+	$JQuery("#others").is(":checked") == true ? gender += "O" : gender += "";
+	
+	var url =  "/openmrs/module/PSI/registrationReport.form?startDate="+st_date;
+	url += "&endDate="+ed_date;
+	url += "&gender="+gender;
+	
+	$JQuery.ajax({
+		type:"GET",
+		contentType : "application/json",
+	    url : url,	 
+	    dataType : 'html',
+	    timeout : 100000,
+	    beforeSend: function() {	    
+	    		
+	    },
+	    success:function(data){
+	    	$JQuery("#regReports").html(data);
+	    	$JQuery("#reg_report").DataTable({
+	    		bFilter: false,
+	    	    bInfo: false,
+	    	    "searching": true,
+	    		   dom: 'Bfrtip',
+	    		   destroy: true,
+	    		   buttons: [
+	    		             {
+	    		                 extend: 'excelHtml5',
+	    		                 title: "Draft wise Report_"+ new Date(),
+	    		                 text: 'Export as .xlxs'
+	    		             }			         
+	    		         ]
+	    	});
+	    	$JQuery("#regReportTile").html("Registration Report From "+st_date+" To "+ed_date);
+	    	$JQuery("#loading_reg").hide();
+	    },
+	    error:function(data){
+	    	$JQuery("#loading_reg").hide();
+	    }
+	    
+	});
 });
+
+$JQuery("#visitReport").on("submit",function(event){
+	event.preventDefault();
+	$JQuery("#loading_visit").show();
+	var startDate = $JQuery("#startDateVisit").val();
+	var endDate = $JQuery("#endDateVisit").val();
+	
+	var url = "/openmrs/module/PSI/visitReport.form?startDate="+startDate;
+	url += "&endDate="+endDate;
+	
+	$JQuery.ajax({
+		type:"GET",
+		contentType : "application/json",
+	    url : url,	 
+	    dataType : 'html',
+	    timeout : 100000,
+	    beforeSend: function() {	    
+	    		
+	    },
+	    success:function(data){
+	    	console.log(data);
+	    	$JQuery("#visitReports").html(data);
+	    	 $JQuery("#visit_report").DataTable({
+	    		   bFilter: false,
+	    		   "searching": true,
+	    	       bInfo: false,
+	    		   dom: 'Bfrtip',
+	    		   destroy: true,
+	    		   buttons: [
+	    		             {
+	    		                 extend: 'excelHtml5',
+	    		                 title: "Visit Report_"+ new Date(),
+	    		                 text: 'Export as .xlxs'
+	    		             }			         
+	    		         ]
+	    	}); 
+	    	$JQuery("#visitReportTitle").html("Visit Report From "+startDate+" To "+endDate);
+	    	$JQuery("#loading_visit").hide();    
+	    },
+	    error: function(data){
+	    	$JQuery("#loading_visit").hide();
+	    }
+	});
+});
+
 
 </script>
  
@@ -1405,6 +1519,9 @@ $JQuery("#compServiceReporting_").submit(function(event){
 #comp_service_reporting > thead > tr > th{
   border: 1px solid black;
 }
-
+.dataTables_wrapper .dataTables_filter {
+    float: left;
+    text-align: right;
+}
 
 </style>

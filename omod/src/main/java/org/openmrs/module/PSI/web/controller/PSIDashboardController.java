@@ -25,6 +25,7 @@ import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
+import org.openmrs.module.PSI.dto.AUHCVisitReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
@@ -136,14 +137,16 @@ public class PSIDashboardController {
 		
 		model.addAttribute("regReport", registrationReport);
 		model.addAttribute("clinic",clinicCode);
+		model.addAttribute("visitReport",
+				Context.getService(PSIServiceProvisionService.class).
+				getVisitReport(today, today));
 	}
 	
 	@RequestMapping(value = "/module/PSI/ServicePointWise", method = RequestMethod.GET)
 	public void ServicePointWiseReport(HttpServletRequest request, HttpSession session, Model model,
 	                                   @RequestParam(required = true) String startDate,
 	                                   @RequestParam(required = true) String endDate,
-	                                   @RequestParam(required = true) String clinic_code,
-	                                   @RequestParam String serviceCategory) {
+	                                   @RequestParam(required = true) String clinic_code) {
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
 		String ClinicCode = "";
@@ -378,8 +381,7 @@ public class PSIDashboardController {
 	public void registrationReport(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(required = true) String startDate,
             @RequestParam(required = true) String endDate,
-            @RequestParam String gender,
-            @RequestParam String searchString){
+            @RequestParam String gender){
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 			    Context.getAuthenticatedUser().getUsername());
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
@@ -404,13 +406,52 @@ public class PSIDashboardController {
 		model.addAttribute("dashboard",dashboardDTO);
 		
 		
-		SearchFilterReport regFilter = new SearchFilterReport();
-		regFilter.setStart_date(startDate);
-		regFilter.setEnd_date(endDate);
+		
 		List<AUHCRegistrationReport> registrationReport =
 				Context.getService(PSIServiceProvisionService.class)
-				.getRegistrationReport(regFilter);
+				.getRegistrationReport(startDate,endDate,gender);
 		
 		model.addAttribute("regReport", registrationReport);
+	}
+	
+	@RequestMapping(value="/module/PSI/visitReport",method=RequestMethod.GET)
+	public void visitReport(HttpServletRequest request, HttpSession session, Model model,
+			@RequestParam(required=true) String startDate,
+			@RequestParam(required=true) String endDate){
+		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+			    Context.getAuthenticatedUser().getUsername());
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		String clinicCode = "0";
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		if (isAdmin) {
+			clinicCode = "0";
+		} else {
+			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+		}
+		model.addAttribute("service_category",
+				Context.getService(AUHCServiceCategoryService.class).getAll());
+		
+		model.addAttribute("dashboard_new_reg",
+				Context.getService(PSIServiceProvisionService.class).
+				getDashboardNewReg(startDate, endDate));
+		model.addAttribute("dashboard_old_clients",
+				Context.getService(PSIServiceProvisionService.class)
+				.getDashboardOldClients(startDate, endDate));
+		model.addAttribute("dashboard_new_clients",
+				Context.getService(PSIServiceProvisionService.class)
+				.getDashboardNewClients(startDate, endDate));
+		
+		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
+			    clinicCode, "");
+		model.addAttribute("dashboard",dashboardDTO);
+		
+		String val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(startDate, endDate);
+		model.addAttribute("dashbaord_discount_value",val);
+//		model.addAttribute("dashbaord_discount_value",Context.getService(PSIServiceProvisionService.class).);
+		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalServiceContract(startDate, endDate);
+		model.addAttribute("dashboard_service_cotact_value",totalServiceContact);
+		
+		model.addAttribute("visitReport",Context.getService(PSIServiceProvisionService.class)
+				.getVisitReport(startDate, endDate));
 	}
 }

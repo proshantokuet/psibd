@@ -10,6 +10,7 @@ import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
+import org.openmrs.module.PSI.dto.AUHCVisitReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
@@ -228,6 +229,19 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	public String getRevenueEarned(SearchFilterSlipTracking filter) {
 		// TODO Auto-generated method stub
 		return dao.getRevenueEarned(filter);
+	}
+
+	@Override
+	public List<AUHCRegistrationReport> getRegistrationReport(String startDate,
+			String endDate, String gender) {
+		// TODO Auto-generated method stub
+		return dao.getRegistrationReport(startDate,endDate,gender);
+	}
+
+	@Override
+	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getVisitReport(startDate, endDate);
 	}
 	
 	
