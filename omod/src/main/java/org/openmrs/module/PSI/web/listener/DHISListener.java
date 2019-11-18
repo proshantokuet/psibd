@@ -77,26 +77,26 @@ public class DHISListener {
 //		
 //		if (status) {
 //			try {
-//				//sendFailedPatient();
+//				sendFailedPatient();
 //			}
 //			catch (Exception e) {
 //				
 //			}
 //			try {
-//				//sendPatient();
+//				sendPatient();
 //			}
 //			catch (Exception e) {
 //				
 //			}
 //			try {
-//				//sendMoneyReceipt();
+//				sendMoneyReceipt();
 //			}
 //			catch (Exception e) {
 //				
 //			}
 //			
 //			try {
-//				//sendFailedMoneyReceipt();
+//				sendFailedMoneyReceipt();
 //			}
 //			catch (Exception e) {
 //				

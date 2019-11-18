@@ -560,12 +560,13 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String sql = "select p.spid as sl,m.slip_no as slip_no,p.money_receipt_date as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
-				"p.total_amount as total_amount,ROUND(p.discount,2) as discount,p.net_payable as net_payable "+
+				"sum(p.total_amount) as total_amount,sum(ROUND(p.discount,2)) as discount,sum(p.net_payable) as net_payable "+
 				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				"on p.psi_money_receipt_id = m.mid "+
 				"where m.is_complete = 0 ";
 		
 		sql += wh;
+		sql += "group by p.psi_money_receipt_id";
 		List<AUHCDraftTrackingReport> draftList = new ArrayList<AUHCDraftTrackingReport>();
 		try{
 			draftList = sessionFactory.getCurrentSession().createSQLQuery(sql).
@@ -682,7 +683,118 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@Override
 	public List<AUHCComprehensiveReport> getComprehensiveReport(SearchFilterReport filter) {
 		// TODO Auto-generated method stub
-		String sql = "";
+		String wh = "";
+		if(filter.getService_category() != "")
+			wh += "AND category = '"+filter.getService_category()+"'";
+		String sql = "SELECT code as service_code," +
+				" item as service_name," +
+				" category as category," +
+				" Sum(static)                             AS revenue_static," +
+				" Sum(satellite)                          AS revenue_satellite," +
+				" Sum(csp)                                AS revenue_csp," +
+				" Sum(static) + Sum(satellite) + Sum(csp) AS revenue_total," +
+				" Sum(countstatic)                        AS service_contact_static," +
+				" Sum(countsatellite)                     AS service_contact_satellite," +
+				" Sum(countcsp)                           AS service_contact_csp," +
+				" Sum(countstatic)+ Sum(countsatellite)+Sum(countcsp) AS service_total," +
+				" Sum(discountstatic)                     AS discount_static," +
+				" Sum(discountsatellite)                  AS discount_satellite," +
+				" Sum(discountcsp)                        AS discount_csp," +
+				" Sum(discountstatic) + Sum(discountsatellite) + Sum(discountcsp) AS discount_total" +
+				" FROM   (SELECT code," +
+				" item," +
+				" category," +
+				" service_point," +
+				" Sum(net_payable) AS ttt," +
+				" Count(*)," +
+				" CASE" +
+				" WHEN service_point = 'Static' THEN Sum(net_payable)" +
+				" ELSE 0 " +
+				" END              Static, " +
+				" CASE" +
+				" WHEN service_point = 'Static' THEN Sum(discount)" +
+				" ELSE 0" +
+				" END              DiscountStatic," +
+				" CASE" +
+				" WHEN service_point = 'Static' THEN Count(*)" +
+				" ELSE 0" +
+				" END              CountStatic," +
+				" CASE" +
+				" WHEN service_point = 'Satellite' THEN Sum(net_payable)" +
+				" ELSE 0" +
+				" END              Satellite," +
+				" CASE " +
+				" WHEN service_point = 'Satellite' THEN Sum(discount)" +
+				" ELSE 0 " +
+				" END              DiscountSatellite," +
+				" CASE " +
+				" WHEN service_point = 'Satellite' THEN Count(*)" +
+				" ELSE 0" +
+				" END              CountSatellite," +
+				" CASE " +
+				" WHEN service_point = 'CSP' THEN Sum(net_payable)" +
+				" ELSE 0 " +
+				" END              CSP," +
+				" CASE" +
+				" WHEN service_point = 'CSP' THEN Sum(discount) " +
+				" ELSE 0 " +
+				" END              DiscountCSP, " +
+				" CASE " +
+				" WHEN service_point = 'CSP' THEN Count(*) " +
+				" ELSE 0 " +
+				" END              CountCSP" +
+				" FROM   openmrs.psi_service_provision AS sp" +
+				" LEFT JOIN openmrs.psi_money_receipt AS mr" +
+				"                      ON sp.psi_money_receipt_id = mr.mid" +
+				" WHERE  sp.is_complete = 1" +
+				" AND Date(sp.money_receipt_date) BETWEEN" +
+				"'"+filter.getStart_date()+"' AND '"+filter.getEnd_date()+"'"+
+               wh+
+        " GROUP  BY code," +
+        	" item,      service_point, category" +
+        	" ORDER  BY code) AS Report" +
+        	" GROUP  BY code, item";
+		
+		List<AUHCComprehensiveReport> report = new ArrayList<AUHCComprehensiveReport>();
+		try{
+			report = sessionFactory.getCurrentSession().createSQLQuery(sql).
+					addScalar("service_code",StandardBasicTypes.STRING).
+					addScalar("service_name",StandardBasicTypes.STRING).
+					addScalar("category",StandardBasicTypes.STRING).
+					addScalar("revenue_static",StandardBasicTypes.DOUBLE).
+					addScalar("revenue_satellite",StandardBasicTypes.DOUBLE).
+					addScalar("revenue_csp",StandardBasicTypes.DOUBLE).
+					addScalar("revenue_total",StandardBasicTypes.DOUBLE).
+					addScalar("service_contact_static",StandardBasicTypes.FLOAT).
+					addScalar("service_contact_satellite",StandardBasicTypes.FLOAT).
+					addScalar("service_contact_csp",StandardBasicTypes.FLOAT).
+					addScalar("service_total",StandardBasicTypes.FLOAT).
+					addScalar("discount_static",StandardBasicTypes.DOUBLE).
+					addScalar("discount_satellite",StandardBasicTypes.DOUBLE).
+					addScalar("discount_csp",StandardBasicTypes.DOUBLE).
+					addScalar("discount_total",StandardBasicTypes.DOUBLE).
+					setResultTransformer(new AliasToBeanResultTransformer(AUHCComprehensiveReport.class)).
+					list();
+			
+			double total_revenue = 0.0;
+			double total_discount = 0.0;
+			
+			float total_service_contact = 0;
+			
+			for(int i = 0; i < report.size();i++){
+				total_revenue += report.get(i).getRevenue_total();
+				total_discount += 1;
+				
+				total_service_contact += report.get(i).getService_total();
+			}
+			report.get(0).setTotal_revenue(total_revenue);
+			report.get(0).setTotal_discount(total_discount);
+			report.get(0).setTotal_service_contact(total_service_contact);
+			
+			return report;
+		}catch(Exception e){
+			
+		}
 		return null;
 	}
 

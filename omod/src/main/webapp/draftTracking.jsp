@@ -14,8 +14,9 @@
 		</div>
 	</div>
 </div>
-
-<table id="draft_tracking" class="display">
+<div style="overflow:auto;">
+<br/>
+	<table id="draft_tracking" class="display">
 		<thead>
             <tr>
                  <th>SL</th> 
@@ -53,3 +54,4 @@
 		    </c:if>
         </tbody>
 	</table>
+</div>

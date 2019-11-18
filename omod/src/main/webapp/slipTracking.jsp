@@ -29,7 +29,8 @@
       </div>
 
   </div>
-
+<div style="overflow:auto;">
+<br/>
 <table id="slip_tracking" class="display">
         <thead>
             <tr>
@@ -72,4 +73,4 @@
 		    </c:if>
         </tbody>
 </table>
-    
+</div>    

@@ -57,7 +57,7 @@
 					</div>
                   	
               	</div>
-              	 <c:if test="${showClinic eq 1}">
+              	 <%-- <c:if test="${showClinic eq 1}">
 	              	<div class="col-md-3">
 	               		<div class="form-group">
 	                  		<label for="Service Code">Clinic</label> <br />
@@ -81,7 +81,20 @@
               				</select>
               			</div>
               		</div>
-              	</c:if> 
+              	</c:if>  --%>
+              	<div class="col-md-3">
+              		<div class="form-group">
+                  		Service Category: 
+                  			<select class="form-control selcls" id="cat">
+                  				<option value="" selected>Select Category</option>
+                  				<option value=""/>  
+					               <c:forEach items="${services}" var="service"> 
+					              	 <option value="${service.categoryName}" label="${service.categoryName}"/>					              
+					              </c:forEach>				             
+
+					         </select>	
+                   	</div>
+              	</div>
               	<div class="col-md-3">
                		<div class="form-group">
                		<label for="Service Code"></label><br />
@@ -98,58 +111,106 @@
     <div id="servicePoints">
     	<div class="form-content" id="servicePointWiseReport">	</div> 
     	<div class="form-content">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">                							
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label for="Service Code">${dashboard.newPatient }</label>
+                  	  	&nbsp;&nbsp; New Registration
+                  	</div>  
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_old_clients } </label> &nbsp;&nbsp; 
+                  		Old Clients
+              		</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_new_clients } </label> &nbsp;&nbsp; New Clients
+              		</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+	                    <label> ${ dashboard_service_cotact_value } </label> &nbsp;&nbsp; Total Service Contact
+	                </div>
+				</div>
+			</div>
+			<div class="row">
+			
+ 				<div class="col-md-3">
+                	<div class="form-group">                							
 						<label> ${dashboard.servedPatient } </label>  &nbsp;&nbsp; Patients Served						
-                 </div>
+                   </div>
                   	
-             </div>
-              <div class="col-md-4">
+             	</div>
+             	<div class="col-md-3">
                	<div class="form-group">
                   	<label for="Service Code">${dashboard.earned }</label>
 						&nbsp;&nbsp; Revenue Earned                  			
 				</div>
                   	
               </div>
-              <div class="col-md-4">
-               	<div class="form-group">
-                  	<label for="Service Code">${dashboard.newPatient }</label>
-                  	  &nbsp;&nbsp; New Registration                 			
-				</div>                  	
-              </div>              	
-       </div>          	
+              <div class="col-md-3">
+	                <div class="form-group">
+	                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
+	                </div>
+	            </div>
+             	
+ 			
+			</div>
+		</div>
+
+	<div id="loading_comp_" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
-	
-	 
-	 <table id="servicePointDefault" class="display">
-	 	<thead>
-		        <tr>
-		            <th>Category</th>
-		            <th>Code</th>
-		            <th>Item</th>
-		            <th>Static</th>
-		            <th>Satellite</th>
-		            <th>CSP</th>
-		            <th>Total</th>
-		        </tr>
-		    </thead>
-		    <tbody>
-		    	<c:forEach var="report" items="${ servicePointWiseReports }">
-		        <tr>
-		            <td>${ report.category }</td>
-		        	<td>${ report.code }</td>
-		            <td>${ report.item }</td>
-		            <td>${ report.clinic }</td>
-		            <td>${ report.satelite }</td>
-		            <td>${ report.csp }</td>
-		            <td>${ report.total }</td>
-		        </tr>
-		       </c:forEach>
-		        
-		    </tbody>
-	
-	</table>
+ 	<div style="overflow:auto;">
+		<br/>
+		 <table id="servicePoint" class="display" border="1">
+			 	<thead>
+					<tr>
+						<th rowspan="2">Sl</th>
+						<th rowspan="2">Service Code</th>
+						<th rowspan="2">Service Name</th>
+						<th colspan="4">Service Contact</th>
+						<th colspan="4">Revenue</th>
+						<th colspan="4">Discount</th>
+					</tr>
+					<tr>
+						<% for(int i = 0; i < 3; i++) {%>
+					 	<th>Static</th>
+					 	<th>CSP</th>
+					 	<th>Satellite</th>
+					 	<th>Total</th>
+					 	<% } %>
+					</tr>
+				</thead>
+			    <tbody>
+			    	<% int slc = 0; %>
+			    	 <c:forEach var="report" items="${ compReports }">
+			        <tr>
+			        	<td><%=++slc%></td>
+			            <td>${ report.service_code }</td>
+			        	<td>${ report.service_name }</td>
+			            <td>${ report.service_contact_static }</td>
+			            <td>${ report.service_contact_satellite }</td>
+			            <td>${ report.service_contact_csp }</td>
+			            <td>${ report.service_total }</td>
+			            <td>${ report.revenue_static }</td>
+			            <td>${ report.revenue_satellite }</td>
+			            <td>${ report.revenue_csp }</td>
+			            <td>${ report.revenue_total }</td>
+			            <td>${ report.discount_static }</td>
+			            <td>${ report.discount_satellite }</td>
+			            <td>${ report.discount_csp }</td>
+			            <td>${ report.discount_total }</td>
+			            
+			        </tr>
+			       </c:forEach>
+			        
+			    </tbody>
+		
+		</table>
+	</div>
 	    
 	
   </div>
@@ -216,27 +277,54 @@
      
     <div class="form-content" id="serviceProviderReports"></div>
 	<div class="form-content">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">                							
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label for="Service Code">${dashboard.newPatient }</label>
+                  	  	&nbsp;&nbsp; New Registration
+                  	</div>  
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_old_clients } </label> &nbsp;&nbsp; 
+                  		Old Clients
+              		</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                  		<label> ${dashboard_new_clients } </label> &nbsp;&nbsp; New Clients
+              		</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+	                    <label> ${ dashboard_service_cotact_value } </label> &nbsp;&nbsp; Total Service Contact
+	                </div>
+				</div>
+			</div>
+			<div class="row">
+			
+ 				<div class="col-md-3">
+                	<div class="form-group">                							
 						<label> ${dashboard.servedPatient } </label>  &nbsp;&nbsp; Patients Served						
-                 </div>
+                   </div>
                   	
-             </div>
-              <div class="col-md-4">
+             	</div>
+             	<div class="col-md-3">
                	<div class="form-group">
                   	<label for="Service Code">${dashboard.earned }</label>
 						&nbsp;&nbsp; Revenue Earned                  			
 				</div>
                   	
               </div>
-              <div class="col-md-4">
-               	<div class="form-group">
-                  	<label for="Service Code">${dashboard.newPatient }</label>  &nbsp;&nbsp; New Registration                 			
-				</div>                  	
-              </div>              	
-       </div>          	
-	</div>  
+              <div class="col-md-3">
+	                <div class="form-group">
+	                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
+	                </div>
+	            </div>
+             	
+ 			
+			</div>
+		</div>
  
  
  
@@ -373,44 +461,47 @@
 	        </div>
 	
 	    </div>
-	    <table id="slip_tracking" class="display">
-         <thead>
-            <tr>
-                 <th>SL</th> 
-                 <th>Slip No.</th>
-                 <th>Date</th>
-                 <th>Patient Name</th>
-                <th>Phone</th>
-                <th>Wealth Class</th>
-                <th>Service Point</th>
-                <th>Total Amount</th>
-                <th>Discount</th>
-                <th>Payable Amount</th>
-              <!--   <th>Action</th> --> 
-            </tr>
-        </thead>
-        <tbody>
-        	<c:if test="${not empty slipReport }">
-				<c:forEach var="report" items="${ slipReport }">
-			        <tr>
-	        	 	    <td>#</td>
-	                    <td>${ report.slip_no }</td>	             
-		            	 <td>${ report.slip_date }</td> 
-			        	 <td>${ report.patient_name }</td>
-			            <td>${ report.phone }</td>
-			            <td>${ report.wealth_classification }</td>
-			            <td>${ report.service_point }</td>
-			            <td>${ report.total_amount }</td>
-			            <td>${ report.discount }</td>
-			            <td>${ report.net_payable }</td>
-			     <%--        <td>${ report.slip_link }</td> --%>  
-			             
-			        
-			        </tr>
-		       </c:forEach>
-		    </c:if>
-        </tbody>
-    </table>
+	    <div style="overflow:auto;">
+		<br/>
+		    <table id="slip_tracking" class="display">
+	         <thead>
+	            <tr>
+	                 <th>SL</th> 
+	                 <th>Slip No.</th>
+	                 <th>Date</th>
+	                 <th>Patient Name</th>
+	                <th>Phone</th>
+	                <th>Wealth Class</th>
+	                <th>Service Point</th>
+	                <th>Total Amount</th>
+	                <th>Discount</th>
+	                <th>Payable Amount</th>
+	              <!--   <th>Action</th> --> 
+	            </tr>
+	        </thead>
+	        <tbody>
+	        	<c:if test="${not empty slipReport }">
+					<c:forEach var="report" items="${ slipReport }">
+				        <tr>
+		        	 	    <td>#</td>
+		                    <td>${ report.slip_no }</td>	             
+			            	 <td>${ report.slip_date }</td> 
+				        	 <td>${ report.patient_name }</td>
+				            <td>${ report.phone }</td>
+				            <td>${ report.wealth_classification }</td>
+				            <td>${ report.service_point }</td>
+				            <td>${ report.total_amount }</td>
+				            <td>${ report.discount }</td>
+				            <td>${ report.net_payable }</td>
+				     <%--        <td>${ report.slip_link }</td> --%>  
+				             
+				        
+				        </tr>
+			       </c:forEach>
+			    </c:if>
+	        </tbody>
+	    </table>
+    </div>
     </div>
     
  </div>
@@ -503,6 +594,8 @@
 				</div>
 			</div>
 		</div>
+		<div style="overflow:auto;">
+		<br/>
 		<table id="draft_tracking" class="display">
 			<thead>
 		           <tr>
@@ -541,6 +634,7 @@
 			    </c:if>
 		       </tbody>
 	</table>
+	</div>
 	</div>
 
 	
@@ -1020,7 +1114,7 @@ $JQuery.ajax({
 });
 
 $JQuery("#ServicePointWise").submit(function(event) {	
-	alert("checked"); 
+	/* alert("checked"); 
  	var clinic = document.getElementById("clinic");
 	var clinicCode = "";
 	if(clinic !== null){		
@@ -1028,16 +1122,16 @@ $JQuery("#ServicePointWise").submit(function(event) {
 	}else {
 		clinicCode = -1;
 	}
-	
+	 */
  	
  	/* var category = $JQuery("#service_category").val(); */
 	var startDate = $JQuery('input[name=startDate]').val();
 	var endDate = $JQuery('input[name=endDate]').val();
-	
-	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&clinic_code="+clinic_code;
-	var title = "Service Point Wise Revenue Report_"+startDate+"_"+endDate;
+	var category = $JQuery("#cat").val();
+	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&category="+category;
+	var title = "Comprehensive Report_"+startDate+"_"+endDate;
 	event.preventDefault();	
-	
+	$JQuery("#loading_comp_").show();
 	$JQuery.ajax({
 		   type : "GET",
 		   contentType : "application/json",
@@ -1049,7 +1143,8 @@ $JQuery("#ServicePointWise").submit(function(event) {
 		   },
 		   success : function(data) {	   
 			   $JQuery("#servicePoints").html(data);			  
-			   $JQuery('#servicePoint').DataTable({
+			    $JQuery("#servicePoint").DataTable({
+			    	
 				   bFilter: false,
 			       bInfo: false,
 			       "searching": true,
@@ -1062,11 +1157,13 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				                 text: 'Export as .xlxs'
 				             }			         
 				         ]
-			   });
-			   $JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for "+startDate + " to " + endDate);
+			   }); 
+			   $JQuery("#servicePointWiseReport").html("Comprehensive Report for "+startDate + " to " + endDate);
+			   $JQuery("#loading_comp_").hide();
 		   },
 		   error : function(e) {
 		    console.log("ERROR: ", e);
+		    $JQuery("#loading_comp_").hide();
 		  /*   display(e); */
 		   },
 		   done : function(e) {	    
@@ -1112,7 +1209,7 @@ $JQuery("#clinics").change(function(event) {
 	
 	
 	
-$JQuery('#servicePointDefault').DataTable({
+$JQuery('#servicePoint').DataTable({
 	   bFilter: false,
        bInfo: false,
        "searching": true,
@@ -1153,11 +1250,12 @@ $JQuery('#servicePointDefault').DataTable({
 	             }			         
 	         ]
 }); */
-$JQuery("#servicePointWiseReport").html("Service Point Wise Revenue Report for Today");
+$JQuery("#servicePointWiseReport").html("Comprehensive Report for Today");
 $JQuery("#slipTracking").html("Slip Tracking wise Report For Today");
 $JQuery("#draftTracking").html("Draft Tracking wise Report For Today");
 $JQuery("#compServiceReporting").html("Comprenhesive Service Reporting For Today");
 $JQuery("#visitReportTitle").html("Visit Report For Today");
+$JQuery("#regReportTile").html("Registration Report For Today");
 $JQuery('#serviceProviderDefault').DataTable({
 	   bFilter: false,
        bInfo: false,
@@ -1516,7 +1614,7 @@ $JQuery("#visitReport").on("submit",function(event){
     background: #4aad9b;
     color: #0e5c52;
 }
-#comp_service_reporting > thead > tr > th{
+#serviceP > thead > tr > th{
   border: 1px solid black;
 }
 .dataTables_wrapper .dataTables_filter {

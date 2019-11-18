@@ -65,6 +65,7 @@ public interface PSIServiceProvisionDAO {
 	
 	public String getNoOfDraft(String startDate,String endDate);
 	
+	
 	public String getTotalPayableDraft(String startDate,String endDate);
 	
 	public String getTotalPayableDraft(SearchFilterDraftTracking filter);
@@ -87,4 +88,6 @@ public interface PSIServiceProvisionDAO {
 		(String startDate,String endDate,String gender);
 	
 	public List<AUHCVisitReport> getVisitReport(String startDate,String endDate);
+	
+	
 }
