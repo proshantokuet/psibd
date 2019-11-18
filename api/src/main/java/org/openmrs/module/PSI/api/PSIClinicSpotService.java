@@ -15,7 +15,7 @@ public interface PSIClinicSpotService extends OpenmrsService {
 	
 	public PSIClinicSpot findById(int id);
 	
-	public PSIClinicSpot findDuplicateSpot(int id, String code);
+	public PSIClinicSpot findDuplicateSpot(int id, String code, int clinicCode);
 	
 	public List<PSIClinicSpot> findByClinicId(int id);
 	
