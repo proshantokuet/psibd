@@ -1176,7 +1176,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 	}
 	 
  	
- 	/* var category = $JQuery("#service_category").val(); */
+
 	var startDate = $JQuery('input[name=startDate]').val();
 	var endDate = $JQuery('input[name=endDate]').val();
 	var category = $JQuery("#cat").val();

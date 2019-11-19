@@ -53,7 +53,9 @@
  			
 			</div>
 		</div>
-
+<div id="loading_comp_" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
 <div style="overflow:auto;">
 		<br/>
  	<table id="servicePoint" class="display" border="1">

@@ -748,6 +748,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" LEFT JOIN openmrs.psi_money_receipt AS mr" +
 				"                      ON sp.psi_money_receipt_id = mr.mid" +
 				" WHERE  sp.is_complete = 1" +
+				" AND mr.clinic_code='"+filter.getClinic_code()+"' "+
 				" AND Date(sp.money_receipt_date) BETWEEN" +
 				"'"+filter.getStart_date()+"' AND '"+filter.getEnd_date()+"'"+
                wh+
@@ -792,11 +793,20 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			report.get(0).setTotal_discount(total_discount);
 			report.get(0).setTotal_service_contact(total_service_contact);
 			
+//			AUHCComprehensiveReport rep = new AUHCComprehensiveReport();
+//			rep.setService_name(sql);
+//			report.add(rep);
+		
 			return report;
 		}catch(Exception e){
+			AUHCComprehensiveReport rep = new AUHCComprehensiveReport();
+			rep.setService_code(e.toString());
+			rep.setService_name(sql);
 			
+			report.add(rep);
+			return report;
 		}
-		return null;
+	
 	}
 
 	@Override

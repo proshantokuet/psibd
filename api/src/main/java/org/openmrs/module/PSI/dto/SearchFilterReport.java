@@ -41,8 +41,9 @@ public class SearchFilterReport {
 	public String getClinic_code() {
 		return clinic_code;
 	}
-	public void setClinic_code(String clinic_code) {
-		this.clinic_code = clinic_code;
+	
+	public void setClinic_code(String clinicCode) {
+		this.clinic_code = clinicCode;
 	}
 	
 	
