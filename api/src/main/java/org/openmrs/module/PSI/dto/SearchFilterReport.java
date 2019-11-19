@@ -6,7 +6,7 @@ public class SearchFilterReport {
 	private String service_category;
 	private String search_string;
 	private String gender;
-	
+	private String clinic_code;
 	
 	public String getGender() {
 		return gender;
@@ -38,4 +38,13 @@ public class SearchFilterReport {
 	public void setService_category(String service_category) {
 		this.service_category = service_category;
 	}
+	public String getClinic_code() {
+		return clinic_code;
+	}
+	public void setClinic_code(String clinic_code) {
+		this.clinic_code = clinic_code;
+	}
+	
+	
+	
 }

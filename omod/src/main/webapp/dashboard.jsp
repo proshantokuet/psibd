@@ -57,11 +57,11 @@
 					</div>
                   	
               	</div>
-              	 <%-- <c:if test="${showClinic eq 1}">
+              	  <c:if test="${showClinic eq 1}">
 	              	<div class="col-md-3">
 	               		<div class="form-group">
 	                  		<label for="Service Code">Clinic</label> <br />
-	                  		<select name="clinic" id="clinic" class="form-control selcls">
+	                  		<select name="clinic" id="clinic_comp" class="form-control selcls">
 	                  			<option value="0">Please Select</option>
 								<c:forEach items="${clinics}" var="clinic">	                  				 
 									<option value="${clinic.clinicId}">${clinic.name}</option>						             
@@ -70,7 +70,7 @@
 						</div>                  	
 	              	</div>
               	</c:if> 
-              	<c:if test="${showServiceCategory eq 1 }">
+              	<%--<c:if test="${showServiceCategory eq 1 }">
               		<div class="col-md-3">
               			<div class="form-group">
               				<label>Service Category</label><br/>
@@ -250,7 +250,7 @@
               	<div class="col-md-3">
                		<div class="form-group">
                   	<label for="Service Code">Data Collector</label><br />
-						<select id="provider" required="true" style="width: 160px" >
+						<select id="provider" required="true"  class="form-control selcls">
 						  <option value=""></option>
 						  <c:forEach var="user" items="${ psiClinicUsers }">
 							  <option value="${user.username }">${user.userRole }</option>							  
@@ -361,7 +361,7 @@
         <div class="form-content">
 
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="startDateSlip"> From</label>
                         <br />
@@ -369,7 +369,7 @@
                     </div>
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="endDateSlip">To</label>
                         <br />
@@ -377,11 +377,24 @@
                     </div>
 
                 </div>
-                <div class="col-md-4">
+                <c:if test="${showClinic eq 1}">
+	              	<div class="col-md-3">
+	               		<div class="form-group">
+	                  		<label for="Service Code">Clinic</label> <br />
+	                  		<select name="clinic" id="clinic_slip" class="form-control selcls">
+	                  			<option value="0">Please Select</option>
+								<c:forEach items="${clinics}" var="clinic">	                  				 
+									<option value="${clinic.clinicId}">${clinic.name}</option>						             
+								</c:forEach>
+							</select>                			
+						</div>                  	
+	              	</div>
+              	</c:if>
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="collector">Select Data Collector</label>
                         <br />
-                        <select id="collector" name="collector" style="width: 160px">
+                        <select id="collector" name="collector" class="form-control selcls">
                             <option value=""></option>
                             <c:forEach var="user" items="${ psiClinicUsers }">
                                 <option value="${user.username }">${user.userRole }</option>
@@ -389,6 +402,7 @@
                         </select>
                     </div>
                 </div>
+                
                 <div class="col-md-4">
                     <div class="form-group">
                         Wealth Classification
@@ -510,7 +524,7 @@
  		  <div class="form-content">
 
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="startDateDraft"> From</label>
                         <br />
@@ -518,7 +532,7 @@
                     </div>
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="endDateDraft">To</label>
                         <br />
@@ -526,11 +540,24 @@
                     </div>
 
                 </div>
-                <div class="col-md-4">
+                <c:if test="${showClinic eq 1}">
+	              	<div class="col-md-3">
+	               		<div class="form-group">
+	                  		<label for="Service Code">Clinic</label> <br />
+	                  		<select name="clinic" id="clinic_draft" class="form-control selcls">
+	                  			<option value="0">Please Select</option>
+								<c:forEach items="${clinics}" var="clinic">	                  				 
+									<option value="${clinic.clinicId}">${clinic.name}</option>						             
+								</c:forEach>
+							</select>                			
+						</div>                  	
+	              	</div>
+              	</c:if>
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label for="collector_draft">Select Data Collector</label>
+                        <label for="collector_draft"> Data Collector</label>
                         <br />
-                        <select id="collector_draft" name="collector_draft" style="width: 160px">
+                        <select id="collector_draft" name="collector_draft" class="form-control selcls">
                             <option value=""></option>
                             <c:forEach var="user" items="${ psiClinicUsers }">
                                 <option value="${user.username }">${user.userRole }</option>
@@ -668,7 +695,19 @@
                         <input type="checkbox" id="others" name="others" value=""> Others
                     </div>
  				</div>
- 				
+ 				<c:if test="${showClinic eq 1}">
+	              	<div class="col-md-3">
+	               		<div class="form-group">
+	                  		<label for="Service Code">Clinic</label> <br />
+	                  		<select name="clinic" id="clinic_reg" class="form-control selcls">
+	                  			<option value="0">Please Select</option>
+								<c:forEach items="${clinics}" var="clinic">	                  				 
+									<option value="${clinic.clinicId}">${clinic.name}</option>						             
+								</c:forEach>
+							</select>                			
+						</div>                  	
+	              	</div>
+              	</c:if>
  			</div>
  			<div class="row">
  				<div class="col-md-4">
@@ -918,6 +957,19 @@
  					</div>
  				
  				</div> -->
+ 				<c:if test="${showClinic eq 1}">
+	              	<div class="col-md-3">
+	               		<div class="form-group">
+	                  		<label for="Service Code">Clinic</label> <br />
+	                  		<select name="clinic" id="clinic_visit" class="form-control selcls">
+	                  			<option value="0">Please Select</option>
+								<c:forEach items="${clinics}" var="clinic">	                  				 
+									<option value="${clinic.clinicId}">${clinic.name}</option>						             
+								</c:forEach>
+							</select>                			
+						</div>                  	
+	              	</div>
+              	</c:if>
  				<div class="col-md-3">
                    <div class="form-group">
                      
@@ -1063,7 +1115,7 @@ var startDate = $JQuery('input[name=from]').val();
 var endDate = $JQuery('input[name=to]').val();
 var reportTitle = "Service Provider Wise Revenue Report for "+$JQuery("#provider option:selected").html()+ " (" +startDate +" to "+ endDate+")" ;
 
-var title = "Service Provider Wise Revenue Report_"+startDate+"_"+endDate;
+var title = "Service Provider Wise Revenue Report From "+startDate+" To "+endDate;
 var clinic = document.getElementById("clinics");
 var clinicCode = "";
 if(clinic !== null){		
@@ -1114,22 +1166,23 @@ $JQuery.ajax({
 });
 
 $JQuery("#ServicePointWise").submit(function(event) {	
-	/* alert("checked"); 
- 	var clinic = document.getElementById("clinic");
+	/* alert("checked"); */
+ 	var clinic = document.getElementById("clinic_comp");
 	var clinicCode = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 	}else {
 		clinicCode = -1;
 	}
-	 */
+	 
  	
  	/* var category = $JQuery("#service_category").val(); */
 	var startDate = $JQuery('input[name=startDate]').val();
 	var endDate = $JQuery('input[name=endDate]').val();
 	var category = $JQuery("#cat").val();
 	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&category="+category;
-	var title = "Comprehensive Report_"+startDate+"_"+endDate;
+	url += "&code="+clinicCode;
+	var title = "Comprehensive Report From "+startDate + " To " + endDate;
 	event.preventDefault();	
 	$JQuery("#loading_comp_").show();
 	$JQuery.ajax({
@@ -1158,7 +1211,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				             }			         
 				         ]
 			   }); 
-			   $JQuery("#servicePointWiseReport").html("Comprehensive Report for "+startDate + " to " + endDate);
+			   $JQuery("#servicePointWiseReport").html("Comprehensive Report From "+startDate + " To " + endDate);
 			   $JQuery("#loading_comp_").hide();
 		   },
 		   error : function(e) {
@@ -1207,6 +1260,73 @@ $JQuery("#clinics").change(function(event) {
 
 	});	
 	
+$JQuery("#clinic_slip").change(function(event) { 
+	var clinicForProvider = document.getElementById("clinic_slip");
+	var clinicForProviderValue = clinicForProvider.options[clinicForProvider.selectedIndex].value;	
+	var url = "/openmrs/module/PSI/providerByClinic.form?code="+clinicForProviderValue;
+
+	if(clinicForProviderValue ==""){
+		 $JQuery("#collector").html("");	 			
+		
+	} else {
+		event.preventDefault();
+		$JQuery.ajax({
+			   type : "GET",
+			   contentType : "application/json",
+			   url : url,	 
+			   dataType : 'html',		   
+			   beforeSend: function() {    
+			   
+			   },
+			   success : function(data) {		   
+				   $JQuery("#collector").html(data);			  
+			   },
+			   error : function(e) {
+			    console.log("ERROR: ", e);
+			    /* display(e); */
+			   },
+			   done : function(e) {	    
+			    console.log("DONE");
+			    //enableSearchButton(true);
+			   }
+			}); 
+	 	}
+
+	});
+$JQuery("#clinic_draft").change(function(event) { 
+	var clinicForProvider = document.getElementById("clinic_slip");
+	var clinicForProviderValue = clinicForProvider.options[clinicForProvider.selectedIndex].value;	
+	var url = "/openmrs/module/PSI/providerByClinic.form?code="+clinicForProviderValue;
+
+	if(clinicForProviderValue ==""){
+		 $JQuery("#collector_draft").html("");	 			
+		
+	} else {
+		event.preventDefault();
+		$JQuery.ajax({
+			   type : "GET",
+			   contentType : "application/json",
+			   url : url,	 
+			   dataType : 'html',		   
+			   beforeSend: function() {    
+			   
+			   },
+			   success : function(data) {		   
+				   $JQuery("#collector_draft").html(data);			  
+			   },
+			   error : function(e) {
+			    console.log("ERROR: ", e);
+			    /* display(e); */
+			   },
+			   done : function(e) {	    
+			    console.log("DONE");
+			    //enableSearchButton(true);
+			   }
+			}); 
+	 	}
+
+	});
+	
 	
 	
 $JQuery('#servicePoint').DataTable({
@@ -1218,7 +1338,7 @@ $JQuery('#servicePoint').DataTable({
 	   buttons: [
 	             {
 	                 extend: 'excelHtml5',
-	                 title: "Service Point Wise Revenue Report_"+ new Date(),
+	                 title: "Comprehensive Revenue Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
 	             }			         
 	         ]
@@ -1320,11 +1440,11 @@ $JQuery("#reg_report").DataTable({
 	   dom: 'Bfrtip',
 	   destroy: true,
 	   buttons: [
-	             {
+	              {
 	                 extend: 'excelHtml5',
-	                 title: "Draft wise Report_"+ new Date(),
+	                 title: "Registration wise Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }			         
+	             }
 	         ]
 }); 
 $JQuery("#slipTracking_").submit(function(event){
@@ -1374,7 +1494,7 @@ $JQuery("#slipTracking_").submit(function(event){
 					   buttons: [
 					             {
 					                 extend: 'excelHtml5',
-					                 title: "Slip wise Report_"+ new Date(),
+					                 title: "Slip wise Report From "+startDateSlip+" To "+endDateSlip ,
 					                 text: 'Export as .xlxs'
 					             }			         
 					         ]
@@ -1435,7 +1555,7 @@ $JQuery("#draftTracking_").submit(function(event){
 						   buttons: [
 						             {
 						                 extend: 'excelHtml5',
-						                 title: "Draft wise Report_"+ new Date(),
+						                 title: "Draft wise Report From "+startDateDraft+" To "+endDateDraft,
 						                 text: 'Export as .xlxs'
 						             }			         
 						         ]
@@ -1531,11 +1651,12 @@ $JQuery("#regReport").on("submit",function(event){
 	    		   dom: 'Bfrtip',
 	    		   destroy: true,
 	    		   buttons: [
-	    		             {
+	    		              {
 	    		                 extend: 'excelHtml5',
-	    		                 title: "Draft wise Report_"+ new Date(),
-	    		                 text: 'Export as .xlxs'
-	    		             }			         
+	    		                 title: "Registration Report From "+st_date+" To "+ed_date,
+	    		                 text: 'Export as .xlxs',
+	    		               
+	    		             }
 	    		         ]
 	    	});
 	    	$JQuery("#regReportTile").html("Registration Report From "+st_date+" To "+ed_date);
@@ -1578,7 +1699,7 @@ $JQuery("#visitReport").on("submit",function(event){
 	    		   buttons: [
 	    		             {
 	    		                 extend: 'excelHtml5',
-	    		                 title: "Visit Report_"+ new Date(),
+	    		                 title: "Visit Report From "+startDate+" To "+endDate,
 	    		                 text: 'Export as .xlxs'
 	    		             }			         
 	    		         ]

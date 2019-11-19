@@ -314,7 +314,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			
 		}
 		
-		String newPatientSql = " select count(*) from ( select distinct(pa.person_id) personId from person_attribute pa where "
+		String newPatientSql = " select count(*) from (" +
+				" select distinct(pa.person_id) personId from person_attribute pa where "
 		        + " pa.person_attribute_type_id = "
 		        + PSIConstants.attributeTypeRegDate
 		        + " and  "
@@ -1009,28 +1010,75 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			String endDate, String gender) {
 		// TODO Auto-generated method stub
 		
-		String sql = "SELECT m.patient_name as patient_name, m.uic as uic," +
-				"pi.patient_identifier_id as health_id, m.contact as mobile_no," +
-				" m.gender as gender,"+
-			" DATE_FORMAT(m.patient_registered_date, '"+"%d.%m.%Y"+"') as register_date, "+
-			" TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()) as age, "+
-			" pa.address3 as cc"+
-			" FROM openmrs.psi_money_receipt  m "+ 
-			" JOIN openmrs.person p "+
-			" ON m.patient_uuid = p.uuid "+
-			" JOIN openmrs.patient_identifier pi "+
-			" ON p.person_id = pi.patient_id "+
-			" JOIN openmrs.person_address pa "+
-			" ON pa.person_id = p.person_id "+
-			" WHERE m.patient_registered_date BETWEEN '"+startDate+"' AND '"+endDate+"' ";
+		String sql = ""
+				+ "SELECT "
+				+ "	   CONCAT(pname.given_name,\" \",pname.family_name) AS patient_name, "
+				+ "         temp4.UIC as uic, "
+				+ "       pi.identifier         AS health_id, "
+				+ "        temp1.phoneno         AS mobile_no, "
+				+ "       p.gender              AS gender, "
+				+ "       temp5.registeredDate  AS register_date, "
+				+ "        IFNULL(TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()),0) AS age, "
+				+ "        paddress.address3 as cc "
+				+ "       FROM   person_name pname "
+				+ "	   left JOIN patient_identifier pi "
+				+ "              ON pname.person_id = pi.patient_id "
+				+ "        JOIN person p "
+				+ "              ON p.person_id = pi.patient_id "
+				+ " "
+				+ "        JOIN (SELECT pat.person_attribute_type_id, "
+				+ "                         pat.value AS phoneNo, "
+				+ "                         pat.person_id "
+				+ "                  FROM   person_attribute pat "
+				+ "                  WHERE  pat.person_attribute_type_id = 42) AS temp1 "
+				+ "              ON pi.patient_id = temp1.person_id "
+				+ "        JOIN (SELECT pa.person_attribute_type_id, "
+				+ "                         pa.value AS UIC, "
+				+ "                         pa.person_id "
+				+ "                  FROM   person_attribute pa "
+				+ "                  WHERE  pa.person_attribute_type_id = 34) AS temp4 "
+				+ "              ON pi.patient_id = temp4.person_id "
+				+ "        JOIN (SELECT person_attribute_temp5.person_attribute_type_id, "
+				+ "                         person_attribute_temp5.value AS registeredDate , "
+				+ "                         person_attribute_temp5.person_id "
+				+ "                  FROM   person_attribute person_attribute_temp5 "
+				+ "                  WHERE  person_attribute_temp5.person_attribute_type_id = 40) AS temp5 "
+				+ "              ON pi.patient_id = temp5.person_id "
+				+ "        JOIN (SELECT person_attribute_temp6.person_attribute_type_id, "
+				+ "                         person_attribute_temp6.value AS clinicCode , "
+				+ "                         person_attribute_temp6.person_id "
+				+ "                  FROM   person_attribute person_attribute_temp6 "
+				+ "                  WHERE  person_attribute_temp6.person_attribute_type_id = 32) AS temp6 "
+				+ "              ON pi.patient_id = temp6.person_id "
+				+ "        left JOIN person_address paddress "
+				+ "              ON paddress.person_id = pi.patient_id "
+				+ "              where temp5.registeredDate BETWEEN '"+startDate+"' and " +
+						"	'"+endDate+"' and "
+				+ "              pname.preferred = 1 ";
+				
 		
-		if(gender.equals("F") || gender.equals("M")) sql += " AND m.gender='"+gender+"'";
-		else if(gender.equals("O"))
-			sql += " AND (m.gender!='M' AND m.gender !='F')";
-		else if(gender.contains("M") && gender.contains("O"))
-			sql += " AND m.gender != 'F' ";
-		else if(gender.contains("F") && gender.contains("O"))
-			sql += " AND m.gender != 'M' ";
+//		if(gender == "F") sql += " and p.gender='F' ";
+//		else if(gender == "M") sql += " and p.gender='M' ";
+//		else if(gender.equals("O"))
+//			sql += " and (p.gender!='M' and p.gender !='F')";
+//		else if(gender.contains("M") && gender.contains("O"))
+//			sql += " and p.gender != 'F' ";
+//		else if(gender.contains("F") && gender.contains("O"))
+//			sql += " and p.gender != 'M' ";
+		
+		if(gender.equals("F")) sql += " and p.gender = 'F' ";
+		else if(gender.equals("M")) sql += " and p.gender = 'M' ";
+		else if(gender.equals("O")) sql += " and p.gender = 'O' ";
+		else if(gender.length() == 2){
+			if(gender.equals("MO"))
+				sql += " and p.gender != 'F' ";
+			else if(gender.equals("FO"))
+				sql += "and p.gender != 'M' ";
+			else if(gender.equals("MF")){
+				
+			}
+		}
+		sql +=  " GROUP by p.uuid";
 		
 		List<AUHCRegistrationReport> report = new ArrayList<AUHCRegistrationReport>();
 		try{
@@ -1069,8 +1117,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" ON p.person_id = pi.patient_id  " +
 				"JOIN openmrs.person_address pa " +
 				"ON pa.person_id = p.person_id " +
-				"WHERE m.patient_registered_date BETWEEN '"+startDate+"' AND '"+endDate+"'" +
-				"GROUP BY m.patient_uuid;";
+				"WHERE m.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"'" +
+				"GROUP BY m.patient_uuid";
 		try{
 			report = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql).
