@@ -43,12 +43,12 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 				"               pat.value AS mobileNo, \n" +
 				"               pat.person_id as pat_person_id \n" +
 				"        FROM   person_attribute pat \n" +
-				"        WHERE  pat.person_attribute_type_id = 81) AS temp1 \n" +
+				"        WHERE  pat.person_attribute_type_id = 42) AS temp1 \n" +
 				"       JOIN (SELECT pa.person_attribute_type_id as pa_id, \n" +
 				"                    pa.value AS UIC, \n" +
 				"                    pa.person_id as pa_person_id \n" +
 				"             FROM   person_attribute pa \n" +
-				"             WHERE  pa.person_attribute_type_id = 63) AS temp2 \n" +
+				"             WHERE  pa.person_attribute_type_id = 34) AS temp2 \n" +
 				"         ON temp1.pat_person_id = temp2.pa_person_id \n" +
 				"WHERE  temp1.mobileno = '"+ mobileNo +"' \n" +
 				"       AND temp2.uic = '"+patientUic+"';";

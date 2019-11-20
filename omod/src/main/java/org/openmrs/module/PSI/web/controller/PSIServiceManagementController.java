@@ -17,8 +17,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.AUHCServiceCategory;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIServiceManagement;
+import org.openmrs.module.PSI.api.AUHCServiceCategoryService;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.utils.PSIConstants;
@@ -42,6 +44,8 @@ public class PSIServiceManagementController {
 	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model,
 	                         @RequestParam(required = false) int id) {
 		List<PSIClinicManagement> psiClinicManagements = Context.getService(PSIClinicManagementService.class).getAllClinic();
+		List<AUHCServiceCategory> serviceCategory = Context.getService(AUHCServiceCategoryService.class).getAll();
+		model.addAttribute("services",serviceCategory);
 		model.addAttribute("clinics", psiClinicManagements);
 		model.addAttribute("user", Context.getAuthenticatedUser());
 		model.addAttribute("pSIServiceManagement", new PSIServiceManagement());
@@ -71,6 +75,9 @@ public class PSIServiceManagementController {
 	@RequestMapping(value = "/module/PSI/editPSIClinicService", method = RequestMethod.GET)
 	public void editPSIClinic(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
 		List<PSIClinicManagement> psiClinicManagements = Context.getService(PSIClinicManagementService.class).getAllClinic();
+		List<AUHCServiceCategory> serviceCategory = Context.getService(AUHCServiceCategoryService.class).getAll();
+		model.addAttribute("services",serviceCategory);
+
 		model.addAttribute("clinics", psiClinicManagements);
 		model.addAttribute("pSIServiceManagement", Context.getService(PSIServiceManagementService.class).findById(id));
 		

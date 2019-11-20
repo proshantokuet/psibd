@@ -20,9 +20,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.AUHCClinicType;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicSpot;
 import org.openmrs.module.PSI.PSIServiceManagement;
+import org.openmrs.module.PSI.api.AUHCClinicTypeService;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicSpotService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
@@ -65,6 +67,8 @@ public class PSIClinicManageController {
 		}
 		
 		session.setAttribute("users", usernamesArray.toString());*/
+		List<AUHCClinicType> clinicTypeList = Context.getService(AUHCClinicTypeService.class).getAll();
+		model.addAttribute("clinicTypes",clinicTypeList);
 		List<PSILocation> locations = Context.getService(PSIClinicManagementService.class).findLocationByTag(
 		    PSIConstants.TagName);
 		model.addAttribute("locations", locations);
@@ -73,6 +77,8 @@ public class PSIClinicManageController {
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		
+		
 	}
 	
 	@RequestMapping(value = "/module/PSI/PSIClinicList", method = RequestMethod.GET)
