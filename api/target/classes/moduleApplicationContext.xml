@@ -391,20 +391,20 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
-				<value>org.openmrs.module.PSI.api.AUHCServiceCategoryService</value>
+				<value>org.openmrs.module.PSI.api.PSIUniquePatientService</value>
 				<bean
 					class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager">
 						<ref bean="transactionManager" />
 					</property>
 					<property name="target">
-						<bean class="org.openmrs.module.PSI.api.impl.AUHCServiceCategoryServiceImpl">
+						<bean class="org.openmrs.module.PSI.api.impl.PSIUniquePatientServiceImpl">
 							<property name="dao">
-								<bean class="org.openmrs.module.PSI.api.db.hibernate.HibernateAUHCServiceCategoryDAO">
+								<bean class="org.openmrs.module.PSI.api.db.hibernate.HibernatePSIUniquePatientDAO">
 									<property name="sessionFactory">
 										<ref bean="sessionFactory" />
 									</property>
@@ -422,7 +422,39 @@
 			</list>
 		</property>
 	</bean>
+	
 	<bean parent="serviceContext">
+		<property name="moduleService">
+			<list>
+				<value>org.openmrs.module.PSI.api.AUHCServiceCategoryService</value>
+                <bean
+                    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+                    <property name="transactionManager">
+                        <ref bean="transactionManager" />
+                    </property>
+                    <property name="target">
+                        <bean class="org.openmrs.module.PSI.api.impl.AUHCServiceCategoryServiceImpl">
+							<property name="dao">
+								<bean class="org.openmrs.module.PSI.api.db.hibernate.HibernateAUHCServiceCategoryDAO">
+                                    <property name="sessionFactory">
+                                        <ref bean="sessionFactory" />
+                                    </property>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="preInterceptors">
+                        <ref bean="serviceInterceptors" />
+                    </property>
+                    <property name="transactionAttributeSource">
+                        <ref bean="transactionAttributeSource" />
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+<bean parent="serviceContext">
         <property name="moduleService">
             <list>
                 <value>org.openmrs.module.PSI.api.AUHCClinicTypeService</value>
@@ -451,6 +483,5 @@
                 </bean>
             </list>
         </property>
-    </bean>
-	
+ </bean>
 </beans>
