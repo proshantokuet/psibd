@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PSIMoneyReceiptRestController extends MainResourceController {
 	
 	public static DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
+	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
 	@RequestMapping(value = "/add-or-update", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<String> addMoneyReceipt(@RequestBody String jsonStr) throws Exception {
@@ -98,7 +99,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			}
 			
 			if (moneyReceipt.has("moneyReceiptDate")) {
-				psiMoneyReceipt.setMoneyReceiptDate(yyyyMMdd.parse(moneyReceipt.getString("moneyReceiptDate")));
+				psiMoneyReceipt.setMoneyReceiptDate(dateFormatTwentyFourHour.parse(moneyReceipt.getString("moneyReceiptDate")));
 			}
 			
 			if (moneyReceipt.has("reference")) {
@@ -230,7 +231,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				}
 				
 				if (moneyReceipt.has("moneyReceiptDate")) {
-					psiServiceProvision.setMoneyReceiptDate(yyyyMMdd.parse(moneyReceipt.getString("moneyReceiptDate")));
+					psiServiceProvision.setMoneyReceiptDate(dateFormatTwentyFourHour.parse(moneyReceipt.getString("moneyReceiptDate")));
 				}
 				if (moneyReceipt.has("patientUuid")) {
 					psiServiceProvision.setPatientUuid(moneyReceipt.getString("patientUuid"));
@@ -308,5 +309,16 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(psiMoneyReceiptAndServicesObject.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/check-existing-money-receipt/{slipNo}/{date}/{clinicCode}", method = RequestMethod.GET)
+	public ResponseEntity<String> getAllByPatient(@PathVariable String slipNo,@PathVariable String date,@PathVariable String clinicCode) throws Exception {
+		try {
+			 Boolean isMoneyReceiptAvailable = Context.getService(PSIMoneyReceiptService.class).checkExistingMoneyReceipt(slipNo, date, clinicCode);
+			 return new ResponseEntity<String>(isMoneyReceiptAvailable.toString(), HttpStatus.OK);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+		}
 	}
 }
