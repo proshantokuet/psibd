@@ -1154,9 +1154,14 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	}
 
 	@Override
-	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate) {
+	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate,String code) {
 		// TODO Auto-generated method stub
 		List<AUHCVisitReport> report = new ArrayList<AUHCVisitReport>();
+		String wh = "";
+		if(code.equals("0")){
+			
+		}
+		else wh += " AND m.clinic_code = '"+code+"' ";
 		String sql = " SELECT m.patient_name as patient_name,pi.patient_identifier_id as hid, " +
 				" m.contact as mobile_number, m.gender as gender, " +
 				" TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()) as age, " +
@@ -1168,10 +1173,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" ON m.patient_uuid = p.uuid " +
 				" JOIN openmrs.patient_identifier pi " +
 				" ON p.person_id = pi.patient_id  " +
-				"JOIN openmrs.person_address pa " +
-				"ON pa.person_id = p.person_id " +
-				"WHERE m.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"'" +
-				"GROUP BY m.patient_uuid";
+				" JOIN openmrs.person_address pa " +
+				" ON pa.person_id = p.person_id " +
+				" WHERE m.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"'" +
+					wh +
+				" GROUP BY m.patient_uuid";
 		try{
 			report = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql).
@@ -1244,10 +1250,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
-			 Long res = Long.parseLong(ret) - Long.parseLong(oldClientCount(startDate,endDate,code));
+			 Long res = Long.parseLong(ret) 
+					 - Long.parseLong(oldClientCount(startDate,endDate,code));
 			 return res.toString();
 		 }catch(Exception e){
-			 return "0";
+			 return e.toString();
 		 }
 		 
 		
@@ -1558,6 +1565,35 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				 filter.getData_collector()));	
 		//Total Discount - End
 		return dashboardCard;
+	}
+
+	@Override
+	public String totalServiceContact(String startDate, String endDate,
+			String code) {
+		
+			String ret = "";
+			String wh = "";
+			if(code.equals("0")){
+				
+			}
+			else {
+				wh += " AND mr.clinic_code = '"+code+"' ";
+			}
+			String sql = ""
+					+ "SELECT COUNT(*) "
+					+ "FROM openmrs.psi_service_provision p "
+					+ "LEFT JOIN openmrs.psi_money_receipt mr "
+					+ "ON p.psi_money_receipt_id = mr.mid "
+					+ "WHERE p.money_receipt_date BETWEEN "
+					+ "'"+startDate+"' AND '"+endDate+"' "
+					+ wh;
+			try{
+				ret = sessionFactory.getCurrentSession()
+						.createSQLQuery(sql).list().get(0).toString();
+			 return ret;
+			}catch(Exception e){
+				return "0";
+			}
 	}
 
 	

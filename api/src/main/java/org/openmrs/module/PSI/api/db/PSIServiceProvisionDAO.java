@@ -90,7 +90,7 @@ public interface PSIServiceProvisionDAO {
 	public List<AUHCRegistrationReport> getRegistrationReport
 		(String startDate,String endDate,String gender,String code);
 	
-	public List<AUHCVisitReport> getVisitReport(String startDate,String endDate);
+	public List<AUHCVisitReport> getVisitReport(String startDate,String endDate,String code);
 	
 	public AUHCDashboardCard getComprehensiveDashboardCard(List<AUHCComprehensiveReport> report,
 			SearchFilterReport filter);
@@ -114,4 +114,8 @@ public interface PSIServiceProvisionDAO {
 	public String discountOnProvider(String startDate,String endDate,String code,String collector);
 	
 	public String totalServiceContact(SearchFilterSlipTracking filter);
+	
+	public String totalServiceContact(String startDate,String endDate, String code);
+	
+	
 }

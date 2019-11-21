@@ -142,7 +142,7 @@ public class PSIDashboardController {
 		model.addAttribute("clinic",clinicCode);
 		model.addAttribute("visitReport",
 				Context.getService(PSIServiceProvisionService.class).
-				getVisitReport(today, today));
+				getVisitReport(today, today,clinicCode));
 		
 		
 		SearchFilterDraftTracking filterdraft = new SearchFilterDraftTracking();
@@ -573,7 +573,7 @@ public class PSIDashboardController {
 		String clinicCode = "0";
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
 		if (isAdmin) {
-			clinicCode = "0";
+			clinicCode = code != "-1" ? code : "0";
 		} else {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 		}
@@ -582,23 +582,23 @@ public class PSIDashboardController {
 		
 		model.addAttribute("dashboard_new_reg",
 				Context.getService(PSIServiceProvisionService.class).
-				getDashboardNewReg(startDate, endDate));
+				newRegistration(startDate, endDate,code));
 		model.addAttribute("dashboard_old_clients",
 				Context.getService(PSIServiceProvisionService.class)
-				.getDashboardOldClients(startDate, endDate));
+				.oldClientCount(startDate, endDate, clinicCode));
 		model.addAttribute("dashboard_new_clients",
 				Context.getService(PSIServiceProvisionService.class)
-				.getDashboardNewClients(startDate, endDate));
+				.newClientCount(startDate, endDate, clinicCode));
 		
 		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
 			    clinicCode, "");
 		model.addAttribute("dashboard",dashboardDTO);
 		List<AUHCVisitReport> visitReport = Context.getService(PSIServiceProvisionService.class)
-				.getVisitReport(startDate, endDate);
+				.getVisitReport(startDate, endDate,clinicCode);
 		String val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(startDate, endDate);
 		model.addAttribute("dashbaord_discount_value",val);
 //		model.addAttribute("dashbaord_discount_value",Context.getService(PSIServiceProvisionService.class).);
-		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalServiceContract(startDate, endDate);
+		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).totalServiceContact(startDate, endDate,clinicCode);
 		model.addAttribute("dashboard_service_cotact_value",totalServiceContact);
 		
 		model.addAttribute("visitReport",visitReport);

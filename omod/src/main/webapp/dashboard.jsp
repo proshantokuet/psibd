@@ -1017,7 +1017,7 @@
 			
  				<div class="col-md-3">
                 	<div class="form-group">                							
-						<label> ${dashboard.servedPatient } </label>  &nbsp;&nbsp; Patients Served						
+						<label> ${dashboard.servedPatient  } </label>  &nbsp;&nbsp; Patients Served						
                    </div>
                   	
              	</div>
@@ -1081,7 +1081,9 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jszip.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.html5.min.js"></script>
-
+<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+ -->
 <script type="text/javascript">
 
 var $jq = jQuery.noConflict();
@@ -1147,11 +1149,17 @@ $JQuery.ajax({
 			   dom: 'Bfrtip',
 			   destroy: true,
 			   buttons: [
-			             {
+			              {
 			                 extend: 'excelHtml5',
 			                 title: title,
 			                 text: 'Export as .xlxs'
-			             }			         
+			             }/* ,
+			             {
+			                 extend: 'pdfHtml5',
+			                 title: title,
+			                 text: 'Export as Pdf'
+			             } */
+			            
 			         ]
 			   
 		   });
@@ -1393,7 +1401,13 @@ $JQuery('#serviceProviderDefault').DataTable({
 	                 extend: 'excelHtml5',
 	                 title: "Service Provider Wise Revenue Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }			         
+	             }
+	             /* ,
+	             {
+	                 extend: 'pdfHtml5',
+	                 title: title,
+	                 text: 'Export as Pdf'
+	             } */
 	         ]
 });
 /* $JQuery('#slip_tracking').DataTable({
@@ -1698,11 +1712,19 @@ $JQuery("#regReport").on("submit",function(event){
 $JQuery("#visitReport").on("submit",function(event){
 	event.preventDefault();
 	$JQuery("#loading_visit").show();
+	var clinic = document.getElementById("clinic_visit");
+	var clinicCode = "";
+	if(clinic !== null){		
+		clinicCode = clinic.options[clinic.selectedIndex].value;
+	}else {
+		clinicCode = -1;
+	}
 	var startDate = $JQuery("#startDateVisit").val();
 	var endDate = $JQuery("#endDateVisit").val();
 	
 	var url = "/openmrs/module/PSI/visitReport.form?startDate="+startDate;
 	url += "&endDate="+endDate;
+	url += "&code="+clinicCode;
 	
 	$JQuery.ajax({
 		type:"GET",

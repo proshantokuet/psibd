@@ -92,7 +92,7 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	public List<AUHCRegistrationReport> getRegistrationReport
 		(String startDate,String endDate,String gender,String code);
 	
-	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate);
+	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate,String code);
 	
 	public AUHCDashboardCard getComprehensiveDashboardCard(
 			List<AUHCComprehensiveReport> report, SearchFilterReport filter);
@@ -102,4 +102,12 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public String getDashboardNewClients(String startDate, String endDate,
 			String code, String gender);
+	
+	public String oldClientCount(String startDate,String endDate,String code);
+	
+	public String newClientCount(String startDate,String endDate,String code);
+	
+	public String newRegistration(String startDate, String endDate, String code);
+	public String totalServiceContact(String startDate, String endDate,
+			String code);
 }

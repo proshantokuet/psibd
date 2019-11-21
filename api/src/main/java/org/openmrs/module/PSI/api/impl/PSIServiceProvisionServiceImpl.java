@@ -240,9 +240,9 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	}
 
 	@Override
-	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate) {
+	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate,String code) {
 		// TODO Auto-generated method stub
-		return dao.getVisitReport(startDate, endDate);
+		return dao.getVisitReport(startDate, endDate,code);
 	}
 
 	@Override
@@ -271,6 +271,31 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 			String code, String gender) {
 		// TODO Auto-generated method stub
 		return dao.getDashboardNewClients(startDate, endDate,code,gender);
+	}
+
+	@Override
+	public String oldClientCount(String startDate, String endDate, String code) {
+		// TODO Auto-generated method stub
+		return dao.oldClientCount(startDate, endDate, code);
+	}
+
+	@Override
+	public String newClientCount(String startDate, String endDate, String code) {
+		// TODO Auto-generated method stub
+		return dao.newClientCount(startDate, endDate, code);
+	}
+
+	@Override
+	public String newRegistration(String startDate, String endDate, String code) {
+		// TODO Auto-generated method stub
+		return dao.newRegistration(startDate, endDate, code);
+	}
+
+	@Override
+	public String totalServiceContact(String startDate, String endDate,
+			String code) {
+		// TODO Auto-generated method stub
+		return dao.totalServiceContact(startDate, endDate, code);
 	}
 	
 	
