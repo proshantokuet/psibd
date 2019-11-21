@@ -23,4 +23,6 @@ public interface PSIMoneyReceiptDAO {
 	
 	public void delete(int id);
 	
+	public Boolean checkExistingMoneyReceipt(String slipNo, String date, String clinicCode);
+	
 }

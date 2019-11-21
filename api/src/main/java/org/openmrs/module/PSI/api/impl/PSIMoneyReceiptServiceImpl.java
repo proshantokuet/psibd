@@ -55,6 +55,13 @@ public class PSIMoneyReceiptServiceImpl extends BaseOpenmrsService implements PS
 	}
 	
 	@Override
+	public Boolean checkExistingMoneyReceipt(String slipNo, String date,
+			String clinicCode) {
+		// TODO Auto-generated method stub
+		return dao.checkExistingMoneyReceipt(slipNo, date, clinicCode);
+	}
+
+	@Override
 	public void delete(int id) {
 		dao.delete(id);
 		
