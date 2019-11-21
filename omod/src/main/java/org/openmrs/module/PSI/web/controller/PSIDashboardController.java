@@ -529,11 +529,11 @@ public class PSIDashboardController {
 		
 		
 		model.addAttribute("dashboard_old_clients",
-				Context.getService(PSIServiceProvisionService.class)
-				.getDashboardOldClients(startDate, endDate));
+				Context.getService(PSIServiceProvisionService.class).
+				getDashboardOldClients(startDate, endDate,clinicCode,gender));
 		model.addAttribute("dashboard_new_clients",
 				Context.getService(PSIServiceProvisionService.class)
-				.getDashboardNewClients(startDate, endDate));
+				.getDashboardNewClients(startDate, endDate,clinicCode,gender));
 		
 		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
 			    clinicCode, "");
@@ -544,7 +544,7 @@ public class PSIDashboardController {
 		List<AUHCRegistrationReport> registrationReport =
 				Context.getService(PSIServiceProvisionService.class)
 				.getRegistrationReport(startDate,endDate,gender,code);
-		
+		model.addAttribute("dashboard_new_reg",registrationReport.size());
 		model.addAttribute("regReport", registrationReport);
 		
 		if (psiClinicUser != null && !isAdmin) {

@@ -33,7 +33,7 @@
                  </div>
                 	
            	</div>
-           	<div class="col-md-3">
+           	<%-- <div class="col-md-3">
              	<div class="form-group">
                 	<label for="Service Code">${dashboard.earned }</label>
 				&nbsp;&nbsp; Revenue Earned                  			
@@ -44,7 +44,7 @@
                <div class="form-group">
                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
                </div>
-           </div>
+           </div> --%>
            	
 		
 	</div>

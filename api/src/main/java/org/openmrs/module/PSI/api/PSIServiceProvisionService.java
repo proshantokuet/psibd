@@ -78,6 +78,7 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public String getDashboardOldClients(String startDate,String endDate);
 	
+	public String getDashboardOldClients(String startDate,String endDate,String clinicCode,String gender);
 	public String getDashboardNewClients(String startDate,String endDate);
 	
 	public List<AUHCComprehensiveReport> getComprehensiveReport(SearchFilterReport filter);
@@ -98,4 +99,7 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public AUHCDashboardCard getProviderDashboardCard(List<PSIReport> report,
 			SearchFilterReport filter);
+	
+	public String getDashboardNewClients(String startDate, String endDate,
+			String code, String gender);
 }

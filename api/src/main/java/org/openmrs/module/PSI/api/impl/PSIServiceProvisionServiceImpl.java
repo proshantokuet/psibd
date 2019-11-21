@@ -258,6 +258,20 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		// TODO Auto-generated method stub
 		return dao.getProviderDashboardCard(report, filter);
 	}
+
+	@Override
+	public String getDashboardOldClients(String startDate, String endDate,
+			String clinicCode, String gender) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardOldClients(startDate, endDate,clinicCode,gender);
+	}
+
+	@Override
+	public String getDashboardNewClients(String startDate, String endDate,
+			String code, String gender) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardNewClients(startDate, endDate,code,gender);
+	}
 	
 	
 	

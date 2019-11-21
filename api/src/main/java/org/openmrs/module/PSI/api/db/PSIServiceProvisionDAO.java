@@ -74,6 +74,8 @@ public interface PSIServiceProvisionDAO {
 	public String getDashboardNewReg(String startDate,String endDate);
 	
 	public String getDashboardOldClients(String startDate,String endDate);
+	public String getDashboardOldClients(String startDate, String endDate,
+			String clinicCode, String gender);
 	
 	public String getDashboardNewClients(String startDate,String endDate);
 	
@@ -96,6 +98,7 @@ public interface PSIServiceProvisionDAO {
 	public String oldClientCount(String startDate,String endDate,String code);
 	
 	public String newClientCount(String startDate,String endDate,String code);
+	public String getDashboardNewClients(String startDate, String endDate,String code,String gender);
 	
 	public String patientsServed(String startDate,String endDate,String code,String category);
 	

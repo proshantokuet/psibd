@@ -664,6 +664,49 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}
 		
 	}
+	@Override
+	public String getDashboardOldClients(String startDate, String endDate,
+			String clinicCode, String gender) {
+		// TODO Auto-generated method stub
+		String wh="";
+		
+		if(gender.equals("F")) wh += " and pmr.gender = 'F' ";
+		else if(gender.equals("M")) wh += " and pmr.gender = 'M' ";
+		else if(gender.equals("O")) wh += " and pmr.gender = 'O' ";
+		else if(gender.length() == 2){
+			if(gender.equals("MO"))
+				wh += " and pmr.gender != 'F' ";
+			else if(gender.equals("FO"))
+				wh += "and pmr.gender != 'M' ";
+			else if(gender.equals("MF")){
+				
+			}
+		}
+		
+		if(clinicCode != "0")
+			wh += " and pmr.clinic_code = "+clinicCode;
+		
+		String sql = "SELECT Count(*) "+
+				" FROM   (SELECT pmr.patient_uuid "+ 
+				" FROM   psi_money_receipt pmr "+ 
+				" JOIN (SELECT patient_uuid, "+ 
+                 "  Count(patient_uuid) AS total "+ 
+                 " FROM   psi_money_receipt "+
+                 " WHERE  money_receipt_date BETWEEN "+
+                    "'"+startDate+"' AND '"+endDate+"' "+ 
+                 " GROUP  BY patient_uuid) AS newclient "+ 
+             " ON pmr.patient_uuid = newclient.patient_uuid "+ 
+             " WHERE  pmr.money_receipt_date < '"+startDate+"' "+
+             	wh+
+             " GROUP  BY pmr.patient_uuid) AS tbl ";
+		try{
+			String ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
+					get(0).toString();
+			return ret;
+		}catch(Exception e){
+			return "0";
+		}
+	}
 
 	@Override
 	public String getDashboardNewClients(String startDate, String endDate) {
@@ -1209,7 +1252,46 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 
 		
 	 }
-	 
+	@Override
+	public String getDashboardNewClients(String startDate, String endDate,
+			String code, String gender) {
+		// TODO Auto-generated method stub
+		String ret = "";
+		 String wh = "";
+		 if(code != "0")
+			 wh += " and p.clinic_code = '"+code+"' ";
+		 if(gender.equals("F")) wh += " and p.gender = 'F' ";
+			else if(gender.equals("M")) wh += " and p.gender = 'M' ";
+			else if(gender.equals("O")) wh += " and p.gender = 'O' ";
+			else if(gender.length() == 2){
+				if(gender.equals("MO"))
+					wh += " and p.gender != 'F' ";
+				else if(gender.equals("FO"))
+					wh += "and p.gender != 'M' ";
+				else if(gender.equals("MF")){
+					
+				}
+			}
+		 String sql = ""
+				 + "SELECT Count(*) "
+				 + "	 FROM "
+				 + "	 (SELECT p.patient_uuid "
+				 + "	 FROM   psi_money_receipt p "
+				 + "     WHERE  p.money_receipt_date BETWEEN "
+				 + "    '"+startDate+"' AND '"+endDate+"' "
+				 + wh;
+		 
+				 sql +=  "    GROUP BY p.patient_uuid) "
+						 + "    as p_tbl";
+		 try{
+			 ret = sessionFactory.getCurrentSession()
+						.createSQLQuery(sql).list().get(0).toString();
+			 Long res = Long.parseLong(ret) - Long.parseLong(getDashboardOldClients(startDate,endDate,code,gender));
+			 return res.toString();
+		 }catch(Exception e){
+			 return "0";
+		 }
+	}
 	@Override
 	public String patientsServed(String startDate, String endDate, String code,String category) {
 		// TODO Auto-generated method stub
@@ -1478,6 +1560,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		return dashboardCard;
 	}
 
+	
+
+	
 	
 
 	
