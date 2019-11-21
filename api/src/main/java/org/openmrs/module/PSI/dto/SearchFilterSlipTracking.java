@@ -13,8 +13,15 @@ public class SearchFilterSlipTracking {
 	private String spSatelite;
 	private String spStatic;
 	private String spCsp;
+	private String clinicCode;
 	
 	
+	public String getClinicCode() {
+		return clinicCode;
+	}
+	public void setClinicCode(String clinicCode) {
+		this.clinicCode = clinicCode;
+	}
 	public String getStartDateSlip() {
 		return startDateSlip;
 	}

@@ -8,6 +8,7 @@ import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
+import org.openmrs.module.PSI.dto.AUHCDashboardCard;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.openmrs.module.PSI.dto.AUHCVisitReport;
@@ -216,7 +217,7 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	@Override
 	public String getTotalServiceContact(SearchFilterSlipTracking filter) {
 		// TODO Auto-generated method stub
-		return dao.getTotalServiceContact(filter);
+		return dao.totalServiceContact(filter);
 	}
 
 	@Override
@@ -233,9 +234,9 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 
 	@Override
 	public List<AUHCRegistrationReport> getRegistrationReport(String startDate,
-			String endDate, String gender) {
+			String endDate, String gender,String code) {
 		// TODO Auto-generated method stub
-		return dao.getRegistrationReport(startDate,endDate,gender);
+		return dao.getRegistrationReport(startDate,endDate,gender,code);
 	}
 
 	@Override
@@ -243,6 +244,22 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		// TODO Auto-generated method stub
 		return dao.getVisitReport(startDate, endDate);
 	}
+
+	@Override
+	public AUHCDashboardCard getComprehensiveDashboardCard(
+			List<AUHCComprehensiveReport> report, SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getComprehensiveDashboardCard(report, filter);
+	}
+
+	@Override
+	public AUHCDashboardCard getProviderDashboardCard(List<PSIReport> report,
+			SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getProviderDashboardCard(report, filter);
+	}
+	
+	
 	
 	
 }

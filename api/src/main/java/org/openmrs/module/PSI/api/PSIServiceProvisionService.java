@@ -6,6 +6,7 @@ import java.util.List;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
+import org.openmrs.module.PSI.dto.AUHCDashboardCard;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.openmrs.module.PSI.dto.AUHCVisitReport;
@@ -88,7 +89,13 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	public String getRevenueEarned(SearchFilterSlipTracking filter);
 	
 	public List<AUHCRegistrationReport> getRegistrationReport
-		(String startDate,String endDate,String gender);
+		(String startDate,String endDate,String gender,String code);
 	
 	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate);
+	
+	public AUHCDashboardCard getComprehensiveDashboardCard(
+			List<AUHCComprehensiveReport> report, SearchFilterReport filter);
+	
+	public AUHCDashboardCard getProviderDashboardCard(List<PSIReport> report,
+			SearchFilterReport filter);
 }

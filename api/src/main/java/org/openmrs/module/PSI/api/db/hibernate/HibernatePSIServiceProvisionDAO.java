@@ -20,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
+import org.openmrs.module.PSI.dto.AUHCDashboardCard;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.openmrs.module.PSI.dto.AUHCVisitReport;
@@ -555,6 +556,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or m.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
+		if(filter.getClinicCode() != "0")
+			wh += " and m.clinic_code = '"+filter.getClinicCode()+"' ";
+		
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
@@ -778,20 +782,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					setResultTransformer(new AliasToBeanResultTransformer(AUHCComprehensiveReport.class)).
 					list();
 			
-			double total_revenue = 0.0;
-			double total_discount = 0.0;
 			
-			float total_service_contact = 0;
-			
-			for(int i = 0; i < report.size();i++){
-				total_revenue += report.get(i).getRevenue_total();
-				total_discount += 1;
-				
-				total_service_contact += report.get(i).getService_total();
-			}
-			report.get(0).setTotal_revenue(total_revenue);
-			report.get(0).setTotal_discount(total_discount);
-			report.get(0).setTotal_service_contact(total_service_contact);
 			
 //			AUHCComprehensiveReport rep = new AUHCComprehensiveReport();
 //			rep.setService_name(sql);
@@ -799,11 +790,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 			return report;
 		}catch(Exception e){
-			AUHCComprehensiveReport rep = new AUHCComprehensiveReport();
-			rep.setService_code(e.toString());
-			rep.setService_name(sql);
 			
-			report.add(rep);
 			return report;
 		}
 	
@@ -884,15 +871,20 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or m.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
+		if(filter.getClinicCode() != "0")
+			wh += " and m.clinic_code = '"+filter.getClinicCode()+"' ";
+		
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
+		
 		String sql = " select sum(ROUND(p.discount,2)) "+
 				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				"on p.psi_money_receipt_id = m.mid";
 		
 		sql += wh;
 //		sql += " group by p.psi_money_receipt_id ";
+		
 		
 		String ret = "0";
 		try{
@@ -949,6 +941,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or m.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
+		if(filter.getClinicCode() != "0")
+			wh += " and m.clinic_code = '"+filter.getClinicCode()+"' ";
+		
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
@@ -995,6 +990,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or m.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
+		if(filter.getClinicCode() != "0")
+			wh += " and m.clinic_code = '"+filter.getClinicCode()+"' ";
+		
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
@@ -1017,7 +1015,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 
 	@Override
 	public List<AUHCRegistrationReport> getRegistrationReport(String startDate,
-			String endDate, String gender) {
+			String endDate, String gender,String code) {
 		// TODO Auto-generated method stub
 		
 		String sql = ""
@@ -1088,6 +1086,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				
 			}
 		}
+		if(code != "0")
+			sql += " and temp6.clinicCode = '"+code+"' ";
 		sql +=  " GROUP by p.uuid";
 		
 		List<AUHCRegistrationReport> report = new ArrayList<AUHCRegistrationReport>();
@@ -1153,6 +1153,345 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		return null;
 		
 	}
+	
+	@Override
+	 public String oldClientCount(String startDate,String endDate,String code){
+		String ret = "";
+		String sql = ""
+				+ "SELECT Count(*) "
+				+ " FROM   (SELECT pmr.patient_uuid "
+				+ "	 FROM   psi_money_receipt pmr "
+				+ "	 JOIN (SELECT patient_uuid, "
+				+ "       Count(patient_uuid) AS total "
+				+ "      FROM   psi_money_receipt "
+				+ "      WHERE  money_receipt_date BETWEEN "
+				+ "        '"+startDate+"' AND '"+endDate+"' "
+				+ "       AND clinic_code='"+code+"' "
+				+ "      GROUP  BY patient_uuid) AS newclient "
+				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
+				+ "   "
+				+ "  WHERE  pmr.money_receipt_date < '"+startDate+"' "
+				+ "   "
+				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+		try{
+			ret = sessionFactory.getCurrentSession()
+				.createSQLQuery(sql).list().get(0).toString();
+			
+		}catch(Exception e){
+			return "0";
+		}
+		
+		return ret;
+	}
+	
+	@Override
+	 public String newClientCount(String startDate,String endDate,String code){
+		 String ret = "";
+		 
+		 String sql = ""
+				 + "SELECT Count(*) "
+				 + "	 FROM "
+				 + "	 (SELECT patient_uuid "
+				 + "	 FROM   psi_money_receipt p "
+				 + "     WHERE  p.money_receipt_date BETWEEN "
+				 + "    '"+startDate+"' AND '"+endDate+"' "
+				 + "    AND p.clinic_code = '"+code+"' "
+				 + "    GROUP BY p.patient_uuid) "
+				 + "    as p_tbl";
+		 try{
+			 ret = sessionFactory.getCurrentSession()
+						.createSQLQuery(sql).list().get(0).toString();
+			 Long res = Long.parseLong(ret) - Long.parseLong(oldClientCount(startDate,endDate,code));
+			 return res.toString();
+		 }catch(Exception e){
+			 return "0";
+		 }
+		 
+		
+	 }
+	 
+	@Override
+	public String patientsServed(String startDate, String endDate, String code,String category) {
+		// TODO Auto-generated method stub
+		String ret = "";
+		String sql = "";
+		if(category == ""){ 
+			sql = ""
+				+ "SELECT count(distinct(p.patient_uuid)) as count "
+				+ "FROM openmrs.psi_money_receipt p "
+				+ "where p.money_receipt_date BETWEEN "
+				+ "'"+startDate+"' AND '"+endDate+"' "
+				+ "AND p.clinic_code = '"+code+"' "
+				+ "AND p.is_complete = 1 "
+				+ "";
+		}
+		else {
+			sql = ""
+					+ "SELECT COUNT(DISTINCT(pmr.patient_uuid)) as COUNT "
+					+ "FROM openmrs.psi_money_receipt as pmr "
+					+ "LEFT JOIN openmrs.psi_service_provision psp "
+					+ "ON pmr.mid = psp.psi_money_receipt_id "
+					+ "where pmr.money_receipt_date BETWEEN "
+					+ "'"+startDate+"' AND '"+endDate+"' "
+					+ " AND pmr.clinic_code = '"+code+"' "
+					+ " AND psp.category = '"+category+"'"
+					+" AND pmr.is_complete = 1 ";
+		}
+		try{
+			 ret = sessionFactory.getCurrentSession()
+						.createSQLQuery(sql).list().get(0).toString();
+			 return ret;
+			
+		}catch(Exception e){
+			return "0";
+		}
+	
+	}
+	
+	@Override
+	public String newRegistration(String startDate, String endDate, String code) {
+		// TODO Auto-generated method stub
+		String ret = "";
+		String sql = ""
+				+ "select count(*) from ( "
+				+ "				 select distinct(pa.person_id) personId from person_attribute pa where "
+				+ "		          pa.person_attribute_type_id = 40 and "
+				+ "		          DATE(pa.value) between '"+startDate+"' and '"+endDate+"' "
+				+ "		          ) as a "
+				+ "		          join  ( SELECT distinct (PAT.person_id) personId "
+				+ "		          FROM person_attribute as PAT "
+				+ "		         where PAT.person_attribute_type_id = 32  and PAT.value = '"+code+"'   ) "
+				+ "                 as b      on a.personId = b.personId";
+		try{
+			 ret = sessionFactory.getCurrentSession()
+						.createSQLQuery(sql).list().get(0).toString();
+			 return ret;
+		}catch(Exception e){
+			return "0";
+		}
+		
+	}
+	@Override
+	public String totalServiceContact(String startDate, String endDate,
+			String clinicCode, String provider) {
+		// TODO Auto-generated method stub
+		String ret = "";
+		String sql = ""
+				+ "SELECT COUNT(*) "
+				+ "FROM openmrs.psi_service_provision p "
+				+ "LEFT JOIN openmrs.psi_money_receipt mr "
+				+ "ON p.psi_money_receipt_id = mr.mid "
+				+ "WHERE p.money_receipt_date BETWEEN "
+				+ "'"+startDate+"' AND '"+endDate+"' "
+				+ "AND mr.clinic_code = '"+clinicCode+"' "
+				+ "AND mr.data_collector = '"+provider+"' ";
+		try{
+			ret = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql).list().get(0).toString();
+		 return ret;
+		}catch(Exception e){
+			return "0";
+		}
+		
+	}
+	@Override
+	public String patientsServedProvider(String startDate, String endDate,
+			String code, String collector) {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ "SELECT COUNT(DISTINCT(pmr.patient_uuid)) as COUNT "
+				+ "FROM openmrs.psi_money_receipt as pmr "
+				+ "where pmr.money_receipt_date BETWEEN "
+				+ "'"+startDate+"' AND '"+endDate+"' "
+				+ "AND pmr.clinic_code = '"+code+"' "
+				+ "AND pmr.data_collector='"+collector+"' "
+				+ "AND pmr.is_complete = 1";
+		
+		String ret = "";
+		try{
+			ret = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql).list().get(0).toString();
+			return ret;
+		}catch(Exception e){
+			return "0";
+		}
+		
+	}
+	@Override
+	public String discountOnProvider(String startDate, String endDate,
+			String code, String collector) {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ "SELECT SUM(m.total_discount) "
+				+ "FROM openmrs.psi_money_receipt as m "
+				+ "WHERE m.money_receipt_date BETWEEN "
+				+ "'"+startDate+"' AND '"+endDate+"' "
+				+ "AND m.clinic_code='"+code+"' "
+				+ "AND m.data_collector='"+collector+"' ";
+		String ret = "";
+		try{
+			ret = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql).list().get(0).toString();
+			return ret;
+		}catch(Exception e){
+			return "0";
+		}
+	}
+	@Override
+	public String totalServiceContact(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		String ret = "";
+		String wh = "";
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+				(filter.getWlthPop() != "");
+	
+		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+				(filter.getSpStatic() != "");
+		if(wealthFlag == true) {
+			wh += "and ( mr.wealth = '" + filter.getWlthAbleToPay() + 
+					"' or mr.wealth = '"+filter.getWlthPoor()+
+					"' or mr.wealth = '"+ filter.getWlthPop()+
+					"' ) ";
+		}
+	
+		if(spFlag == true){
+			wh += " and ( mr.service_point = '" + filter.getSpCsp()+
+					"' or mr.service_point = '" + filter.getSpSatelite()+
+					"' or mr.service_point = '"+ filter.getSpStatic()+
+					"' ) ";
+		}
+		if(filter.getClinicCode() != "0")
+			wh += " and mr.clinic_code = '"+filter.getClinicCode()+"' ";
+		
+		if (!"".equalsIgnoreCase(filter.getCollector())){
+			wh += " and mr.data_collector = '" + filter.getCollector()+"' ";
+		}
+		String sql = ""
+				+ "SELECT COUNT(*) "
+				+ "FROM openmrs.psi_service_provision p "
+				+ "LEFT JOIN openmrs.psi_money_receipt mr "
+				+ "ON p.psi_money_receipt_id = mr.mid "
+				+ "WHERE p.money_receipt_date BETWEEN "
+				+ "'"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' ";
+//				+ " AND mr.clinic_code = '"+filter.getCollector()+"' "
+//				+ " AND mr.data_collector = '"+filter.getCollector()+"' ";
+		
+		sql += wh;
+		
+		try{
+			ret = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql).list().get(0).toString();
+		 return ret;
+		}catch(Exception e){
+			return "0";
+		}
+	}
+
+	@Override
+	public AUHCDashboardCard getComprehensiveDashboardCard(
+			List<AUHCComprehensiveReport> report, SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		AUHCDashboardCard dashboardCard = new AUHCDashboardCard();
+		
+		// Total Revenue, Total Discount and Total Service Contact Calculation - Start
+		 double revenue_earned = 0.0;
+		 double discount = 0.0;
+		 
+		 float service_contact = 0;
+		 
+		 for(int i = 0; i < report.size(); i++){
+			 
+			 revenue_earned += report.get(i).getRevenue_total();
+			 
+			 discount += report.get(i).getDiscount_total();
+			 
+			 service_contact += report.get(i).getService_total();
+		 }
+		 
+		 dashboardCard.setRevenueEarned(String.valueOf((long)revenue_earned));
+		 dashboardCard.setTotalDiscount(String.valueOf((long)discount));
+		 dashboardCard.setTotalServiceContact(String.valueOf((long)service_contact));
+		// Total Revenue, Total Discount and Total Service Contact Calculation - End
+		 
+		 //Old Client Calculation - Start
+		 dashboardCard.setOldClients(oldClientCount(filter.getStart_date(),
+				 		filter.getEnd_date(),filter.getClinic_code()));
+		//Old Client Calculation - End
+		
+		 //New Client Calculation - Start
+		 dashboardCard.setNewClients(newClientCount(filter.getStart_date(),
+				 filter.getEnd_date(),filter.getClinic_code()));
+		//New Client Calculation - End
+		 
+		// Patients Served Calculation - Start
+		 dashboardCard.setPatientServed(patientsServed(filter.getStart_date(),
+				 	filter.getEnd_date(),filter.getClinic_code(),filter.getService_category()));
+		//Patients Served Calculation - End
+		 
+		 //New Registration Calculation - Start
+		 dashboardCard.setNewRegistration(newRegistration(filter.getStart_date(),
+				 filter.getEnd_date(),filter.getClinic_code()));
+		//New Registration Calculation - Start
+		return dashboardCard;
+	}
+
+	@Override
+	public AUHCDashboardCard getProviderDashboardCard(List<PSIReport> report,
+			SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		String sql = "";
+		AUHCDashboardCard dashboardCard = new AUHCDashboardCard();
+		
+		//New Registration, OldClient, New Client Calculation - Start
+		dashboardCard.setNewRegistration(newRegistration(filter.getStart_date(),
+				filter.getEnd_date(),filter.getClinic_code()));
+		
+		dashboardCard.setOldClients(oldClientCount(filter.getStart_date(),
+				filter.getEnd_date(),filter.getClinic_code()));
+		
+		dashboardCard.setNewClients(newClientCount(filter.getStart_date(),
+				filter.getEnd_date(),filter.getClinic_code()));
+		//New Registration, OldClient, New Client Calculation - End
+		
+		//Total Service Contact Calculation - Start
+		dashboardCard.setTotalServiceContact(totalServiceContact(filter.getStart_date(),
+				filter.getEnd_date(),filter.getClinic_code(),filter.getData_collector()));
+		
+		//Total Service Contact Calculation - End
+		
+		// Patients Served Calculation - Start
+		dashboardCard.setPatientServed(patientsServedProvider(filter.getStart_date(),filter.getEnd_date(),
+				filter.getClinic_code(),filter.getData_collector()));
+		// Patients Served Calculation - End
+		//Total Revenue - Start
+		float revenue = 0;
+		for(int i = 0; i < report.size();i++)
+			revenue += report.get(i).getTotal();
+		
+		dashboardCard.setRevenueEarned(String.valueOf((long)revenue));
+		//Total Revenue - End
+		
+		//Total Discount - Start
+		 dashboardCard.setTotalDiscount(discountOnProvider(filter.getStart_date(),filter.getEnd_date(),filter.getClinic_code(),
+				 filter.getData_collector()));	
+		//Total Discount - End
+		return dashboardCard;
+	}
+
+	
+
+	
+	
+
+	
+	
+	
+	
+	
+
+	
+
+	
 	
 	
 	

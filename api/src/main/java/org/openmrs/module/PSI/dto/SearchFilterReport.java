@@ -7,6 +7,7 @@ public class SearchFilterReport {
 	private String search_string;
 	private String gender;
 	private String clinic_code;
+	private String data_collector;
 	
 	public String getGender() {
 		return gender;
@@ -44,6 +45,12 @@ public class SearchFilterReport {
 	
 	public void setClinic_code(String clinicCode) {
 		this.clinic_code = clinicCode;
+	}
+	public String getData_collector() {
+		return data_collector;
+	}
+	public void setData_collector(String data_collector) {
+		this.data_collector = data_collector;
 	}
 	
 	

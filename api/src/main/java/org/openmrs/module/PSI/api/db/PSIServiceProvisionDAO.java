@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
+import org.openmrs.module.PSI.dto.AUHCDashboardCard;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.openmrs.module.PSI.dto.AUHCVisitReport;
@@ -85,9 +86,29 @@ public interface PSIServiceProvisionDAO {
 	public String getRevenueEarned(SearchFilterSlipTracking filter);
 	
 	public List<AUHCRegistrationReport> getRegistrationReport
-		(String startDate,String endDate,String gender);
+		(String startDate,String endDate,String gender,String code);
 	
 	public List<AUHCVisitReport> getVisitReport(String startDate,String endDate);
 	
+	public AUHCDashboardCard getComprehensiveDashboardCard(List<AUHCComprehensiveReport> report,
+			SearchFilterReport filter);
 	
+	public String oldClientCount(String startDate,String endDate,String code);
+	
+	public String newClientCount(String startDate,String endDate,String code);
+	
+	public String patientsServed(String startDate,String endDate,String code,String category);
+	
+	public String newRegistration(String startDate,String endDate,String code);
+	
+	public AUHCDashboardCard getProviderDashboardCard(List<PSIReport> report,
+			SearchFilterReport filter);
+	
+	public String totalServiceContact(String startDate,String endDate,String clinicCode,
+			String provider);
+	
+	public String patientsServedProvider(String startDate,String endDate,String code,String collector);
+	public String discountOnProvider(String startDate,String endDate,String code,String collector);
+	
+	public String totalServiceContact(SearchFilterSlipTracking filter);
 }

@@ -114,24 +114,24 @@
 			<div class="row">
 				<div class="col-md-3">
 					<div class="form-group">
-						<label for="Service Code">${dashboard.newPatient }</label>
+						<label for="Service Code">${ comp_dashboard.newRegistration }</label>
                   	  	&nbsp;&nbsp; New Registration
                   	</div>  
 				</div>
 				<div class="col-md-3">
 					<div class="form-group">
-                  		<label> ${dashboard_old_clients } </label> &nbsp;&nbsp; 
+                  		<label> ${ comp_dashboard.oldClients } </label> &nbsp;&nbsp; 
                   		Old Clients
               		</div>
 				</div>
 				<div class="col-md-3">
 					<div class="form-group">
-                  		<label> ${dashboard_new_clients } </label> &nbsp;&nbsp; New Clients
+                  		<label> ${ comp_dashboard.newClients } </label> &nbsp;&nbsp; New Clients
               		</div>
 				</div>
 				<div class="col-md-3">
 					<div class="form-group">
-	                    <label> ${ dashboard_service_cotact_value } </label> &nbsp;&nbsp; Total Service Contact
+	                    <label> ${ comp_dashboard.totalServiceContact } </label> &nbsp;&nbsp; Total Service Contact
 	                </div>
 				</div>
 			</div>
@@ -139,20 +139,20 @@
 			
  				<div class="col-md-3">
                 	<div class="form-group">                							
-						<label> ${dashboard.servedPatient } </label>  &nbsp;&nbsp; Patients Served						
+						<label> ${ comp_dashboard.patientServed } </label>  &nbsp;&nbsp; Patients Served						
                    </div>
                   	
              	</div>
              	<div class="col-md-3">
                	<div class="form-group">
-                  	<label for="Service Code">${dashboard.earned }</label>
+                  	<label for="Service Code">${ comp_dashboard.revenueEarned }</label>
 						&nbsp;&nbsp; Revenue Earned                  			
 				</div>
                   	
               </div>
               <div class="col-md-3">
 	                <div class="form-group">
-	                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
+	                    <label> ${ comp_dashboard.totalDiscount } </label> &nbsp;&nbsp; Total Discount
 	                </div>
 	            </div>
              	
@@ -328,7 +328,9 @@
  
  
  
-  
+  	<div id="loading_prov" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
 	<table id="serviceProviderDefault" class="display">
 		  <thead>
 		        <tr>
@@ -1126,6 +1128,7 @@ if(clinic !== null){
 
 var url = "/openmrs/module/PSI/ServiceProviderWise.form?startDate="+startDate+"&endDate="+endDate+"&dataCollector="+provider+"&code="+clinicCode;
 event.preventDefault();
+$JQuery("#loading_prov").show();
 $JQuery.ajax({
 	   type : "GET",
 	   contentType : "application/json",
@@ -1152,13 +1155,16 @@ $JQuery.ajax({
 			         ]
 			   
 		   });
+		   $JQuery("#loading_prov").hide();
 		   $JQuery("#serviceProviderReports").html(reportTitle);
 	   },
 	   error : function(e) {
 	    console.log("ERROR: ", e);
+	    $JQuery("#loading_prov").hide();
 	    /* display(e); */
 	   },
 	   done : function(e) {	    
+		 $JQuery("#loading_prov").hide();
 	    console.log("DONE");
 	    //enableSearchButton(true);
 	   }
@@ -1294,7 +1300,7 @@ $JQuery("#clinic_slip").change(function(event) {
 
 	});
 $JQuery("#clinic_draft").change(function(event) { 
-	var clinicForProvider = document.getElementById("clinic_slip");
+	var clinicForProvider = document.getElementById("clinic_draft");
 	var clinicForProviderValue = clinicForProvider.options[clinicForProvider.selectedIndex].value;	
 	var url = "/openmrs/module/PSI/providerByClinic.form?code="+clinicForProviderValue;
 
@@ -1449,13 +1455,20 @@ $JQuery("#reg_report").DataTable({
 }); 
 $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
+	var clinic = document.getElementById("clinic_slip");
+	var clinicCode = "";
+	if(clinic !== null){		
+		clinicCode = clinic.options[clinic.selectedIndex].value;
+	}else {
+		clinicCode = -1;
+	}
 	$JQuery("#loading").show();
 	/*  alert("hits"); */
 	var checkStrVal = ["false","true"];
 	var startDateSlip = $JQuery("#startDateSlip").val();
 	var endDateSlip = $JQuery("#endDateSlip").val();
-	console.log(startDateSlip);
-	console.log(endDateSlip);
+	/* console.log(startDateSlip);
+	console.log(endDateSlip); */
 	var dataCollector = $JQuery("#collector").val();
 	var wlthPoor = $JQuery("#wlth_poor").is(":checked") == true ? "Poor" : "";
 	var wlthPop = $JQuery("#wlth_pop").is(":checked") == true ? "PoP" : "";
@@ -1466,6 +1479,7 @@ $JQuery("#slipTracking_").submit(function(event){
 	var url = "/openmrs/module/PSI/slipTracking.form?startDate="+startDateSlip+"&endDate="+endDateSlip;
 	url += "&dataCollector="+dataCollector+"&wlthPoor="+wlthPoor+"&wlthPop="+wlthPop+"&wlthAbleToPay="+wlthPay;
 	url += "&spSatelite="+spSatelite+"&spStatic="+spStatic+"&spCsp="+spCsp;
+	url +="&code="+clinicCode;
 
 	$JQuery.ajax({
 		   type : "GET",
@@ -1477,12 +1491,7 @@ $JQuery("#slipTracking_").submit(function(event){
 		   		
 		   },
 		   success:function(data){
-			  /* alert("Success"); */
-			  /* console.log(data); */
-			 /*  $JQuery("#slipTrackers").html(""); */
-			/*   $JQuery("#slipTrackers").html(""); */
-			  /* $JQuery("#slip_tracking").html(""); */
-		/* 	  $JQuery("#slip_tracking_wrapper").html(""); */
+			  
 			 $JQuery("#slipTrackers").html(data);
 			 
 			  $JQuery("#slip_tracking").DataTable({
@@ -1516,6 +1525,13 @@ $JQuery("#slipTracking_").submit(function(event){
 
 $JQuery("#draftTracking_").submit(function(event){
 	event.preventDefault();
+	var clinic = document.getElementById("clinic_draft");
+	var clinicCode = "";
+	if(clinic !== null){		
+		clinicCode = clinic.options[clinic.selectedIndex].value;
+	}else {
+		clinicCode = -1;
+	}
 	$JQuery("#loading_draft").show();
 	var startDateDraft = $JQuery("#startDateDraft").val();
 	var endDateDraft = $JQuery("#endDateDraft").val();
@@ -1530,6 +1546,8 @@ $JQuery("#draftTracking_").submit(function(event){
 	var url = "/openmrs/module/PSI/draftTracking.form?startDate="+startDateDraft+"&endDate="+endDateDraft;
 	url += "&dataCollector="+dataCollectorDraft+"&wlthPoor="+wlthPoorDraft+"&wlthPop="+wlthPopDraft+"&wlthAbleToPay="+wlthPayDraft;
 	url += "&spSatelite="+spSateliteDraft+"&spStatic="+spStaticDraft+"&spCsp="+spCspDraft;
+	url +="&code="+clinicCode;
+	
 	$JQuery.ajax({
 		type : "GET",
 		   contentType : "application/json",
@@ -1621,6 +1639,13 @@ $JQuery("#draftTracking_").submit(function(event){
 
 $JQuery("#regReport").on("submit",function(event){
 	event.preventDefault();
+	var clinic = document.getElementById("clinic_reg");
+	var clinicCode = "";
+	if(clinic !== null){		
+		clinicCode = clinic.options[clinic.selectedIndex].value;
+	}else {
+		clinicCode = -1;
+	}
 	$JQuery("#loading_reg").show();
 	var st_date = $JQuery("#startDateReg").val();
 	var ed_date = $JQuery("#endDateReg").val();
@@ -1632,6 +1657,7 @@ $JQuery("#regReport").on("submit",function(event){
 	var url =  "/openmrs/module/PSI/registrationReport.form?startDate="+st_date;
 	url += "&endDate="+ed_date;
 	url += "&gender="+gender;
+	url += "&code="+clinicCode;
 	
 	$JQuery.ajax({
 		type:"GET",
