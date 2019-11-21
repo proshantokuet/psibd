@@ -124,28 +124,39 @@ public class PSIClinicRestController extends MainResourceController {
 	    throws Exception {
 		
 		String msg = "";
-		PSIClinicSpot psiClinicSpot = new PSIClinicSpot();
-		psiClinicSpot.setDateCreated(new Date());
-		psiClinicSpot.setCreator(Context.getAuthenticatedUser());
-		psiClinicSpot.setUuid(UUID.randomUUID().toString());
-		
-		psiClinicSpot.setName(psiClinicSpotDTO.getName());
-		psiClinicSpot.setCode(psiClinicSpotDTO.getCode());
-		psiClinicSpot.setAddress(psiClinicSpotDTO.getAddress());
-		psiClinicSpot.setCcsid(psiClinicSpotDTO.getCsid());
-		psiClinicSpot.setDhisId(psiClinicSpotDTO.getDhisId());
+		PSIClinicSpot psiClinicSpot = null;
+		if (psiClinicSpotDTO.getCsid() != 0) {
+			int ccsid = 0;
+			ccsid= psiClinicSpotDTO.getCsid();
+			psiClinicSpot = Context.getService(PSIClinicSpotService.class).findById(ccsid);
+		}
+		else {
+			psiClinicSpot = new PSIClinicSpot();
+			psiClinicSpot.setUuid(UUID.randomUUID().toString());
+			psiClinicSpot.setDateCreated(new Date());
+		}
+
 		PSIClinicManagement psiClinicManagementId = Context.getService(PSIClinicManagementService.class).findById(
 		    psiClinicSpotDTO.getPsiClinicManagementId());
-		psiClinicSpot.setPsiClinicManagement(psiClinicManagementId);
-		psiClinicSpot.setCcsid(psiClinicSpotDTO.getCsid());
-		PSIClinicSpot getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(
-		    psiClinicSpot.getCcsid(), psiClinicSpot.getCode());
 		
-		if (getClinicByClinicId != null) {
+		
+		PSIClinicSpot getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(
+		    0, psiClinicSpotDTO.getCode(),psiClinicSpotDTO.getPsiClinicManagementId());
+		
+		if (getClinicByClinicId!= null && psiClinicSpotDTO.getCsid() != getClinicByClinicId.getCcsid()) 
+		{
 			msg = "This clinic Spot code is already taken";
-		} else {
-			
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
+		} 
+		else {
 			try {
+				psiClinicSpot.setCreator(Context.getAuthenticatedUser());
+				psiClinicSpot.setName(psiClinicSpotDTO.getName());
+				psiClinicSpot.setCode(psiClinicSpotDTO.getCode());
+				psiClinicSpot.setAddress(psiClinicSpotDTO.getAddress());
+				psiClinicSpot.setCcsid(psiClinicSpotDTO.getCsid());
+				psiClinicSpot.setDhisId(psiClinicSpotDTO.getDhisId());
+				psiClinicSpot.setPsiClinicManagement(psiClinicManagementId);
 				Context.openSession();
 				Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
 				Context.clearSession();
@@ -155,9 +166,9 @@ public class PSIClinicRestController extends MainResourceController {
 				// TODO Auto-generated catch block
 				return new ResponseEntity<>(new Gson().toJson(e.getMessage()), HttpStatus.OK);
 			}
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 		}
-		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
-		
+		// return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/spot/get-all-spotlist-by-id/{id}", method = RequestMethod.GET)

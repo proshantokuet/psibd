@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.api.db.PSIMoneyReceiptDAO;
@@ -94,6 +95,21 @@ public class HibernatePSIMoneyReceiptDAO implements PSIMoneyReceiptDAO {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Boolean checkExistingMoneyReceipt(String slipNo, String date,
+			String clinicCode) {
+		List<Object[]> data = null;
+		String existingSlipSql = "select mid,slip_no,money_receipt_date from psi_money_receipt where slip_no = '"+slipNo+"' and YEAR(money_receipt_date) = '"+date+"' and clinic_code = '"+clinicCode+"'";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(existingSlipSql);
+		data = query.list();
+		if (data.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	@Override
 	public PSIMoneyReceipt getAllBetweenDate(Date start, Date end) {
 		// TODO Auto-generated method stub
