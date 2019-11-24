@@ -484,7 +484,7 @@
 	            <tr>
 	                 <th>SL</th> 
 	                 <th>Slip No.</th>
-	                 <th>Date</th>
+	                 <th>Money Receipt Date</th>
 	                 <th>Patient Name</th>
 	                <th>Phone</th>
 	                <th>Wealth Class</th>
@@ -500,10 +500,10 @@
 					<c:forEach var="report" items="${ slipReport }">
 				        <tr>
 		        	 	    <td>#</td>
-		                    <td>${ report.slip_no }</td>	             
+		                    <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>	             
 			            	 <td>${ report.slip_date }</td> 
-				        	 <td>${ report.patient_name }</td>
-				            <td>${ report.phone }</td>
+				        	 <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.patient_name }</a></td>
+				            <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.phone }</a></td>
 				            <td>${ report.wealth_classification }</td>
 				            <td>${ report.service_point }</td>
 				            <td>${ report.total_amount }</td>
@@ -630,7 +630,7 @@
 		           <tr>
 		                <th>SL</th> 
 		                <th>Slip No.</th>
-		                <th>Date</th>
+		                <th>Money Receipt Date</th>
 		                <th>Patient Name</th>
 		               <th>Phone</th>
 		               <th>Wealth Class</th>
@@ -648,10 +648,10 @@
 				        <tr>
 				        	
 				        	<td><%=++sl_d%></td>
-				              <td>${ report.slip_no }</td>	             
+				              <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>	             
 				        	 <td>${ report.slip_date }</td> 
-				        	 <td>${ report.patient_name }</td>
-				            <td>${ report.phone }</td>
+				        	 <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.patient_name }</a></td>
+				            <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.phone }</a></td>
 				            <td>${ report.wealth_classification }</td>
 				            <td>${ report.service_point }</td>
 				            <td>${ report.total_amount }</td>
@@ -1081,9 +1081,10 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jszip.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.html5.min.js"></script>
-<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
- -->
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
+
 <script type="text/javascript">
 
 var $jq = jQuery.noConflict();
@@ -1153,12 +1154,12 @@ $JQuery.ajax({
 			                 extend: 'excelHtml5',
 			                 title: title,
 			                 text: 'Export as .xlxs'
-			             }/* ,
+			             },
 			             {
-			                 extend: 'pdfHtml5',
-			                 title: title,
-			                 text: 'Export as Pdf'
-			             } */
+			         		extend: 'pdfHtml5',
+			         		title: title,
+			         		text: 'Export as .pdf'
+			         	  }
 			            
 			         ]
 			   
@@ -1222,7 +1223,12 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				                 extend: 'excelHtml5',
 				                 title: title,
 				                 text: 'Export as .xlxs'
-				             }			         
+				             },
+				             {
+				         		extend: 'pdfHtml5',
+				         		title: title,
+				         		text: 'Export as .pdf'
+					         }
 				         ]
 			   }); 
 			   $JQuery("#servicePointWiseReport").html("Comprehensive Report From "+startDate + " To " + endDate);
@@ -1354,7 +1360,12 @@ $JQuery('#servicePoint').DataTable({
 	                 extend: 'excelHtml5',
 	                 title: "Comprehensive Revenue Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }			         
+	             },
+	             {
+		         		extend: 'pdfHtml5',
+		         		title: "Comprehensive Revenue Report_"+ new Date(),
+		         		text: 'Export as .pdf'
+		         }
 	         ]
 });
  $JQuery("#visit_report").DataTable({
@@ -1368,7 +1379,12 @@ $JQuery('#servicePoint').DataTable({
 	                 extend: 'excelHtml5',
 	                 title: "Visit Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }			         
+	             },
+	             {
+	         		extend: 'pdfHtml5',
+	         		title: "Visit Report_"+ new Date(),
+	         		text: 'Export as .pdf'
+		         }
 	         ]
 }); 
 /* $JQuery("#comp_service_reporting").DataTable({
@@ -1401,13 +1417,12 @@ $JQuery('#serviceProviderDefault').DataTable({
 	                 extend: 'excelHtml5',
 	                 title: "Service Provider Wise Revenue Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }
-	             /* ,
+	             },
 	             {
-	                 extend: 'pdfHtml5',
-	                 title: title,
-	                 text: 'Export as Pdf'
-	             } */
+		         		extend: 'pdfHtml5',
+		         		title: "Service Provider Wise Revenue Report_"+ new Date(),
+		         		text: 'Export as .pdf'
+			     }
 	         ]
 });
 /* $JQuery('#slip_tracking').DataTable({
@@ -1436,7 +1451,12 @@ $JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report fo
 	                 extend: 'excelHtml5',
 	                 title: "Slip wise Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }			         
+	             },
+	             {
+	         		extend: 'pdfHtml5',
+	         		title: "Slip wise Report_"+ new Date(),
+	         		text: 'Export as .pdf'
+			     }
 	         ]
 });
  $JQuery("#draft_tracking").DataTable({
@@ -1450,7 +1470,12 @@ $JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report fo
 		                 extend: 'excelHtml5',
 		                 title: "Draft wise Report_"+ new Date(),
 		                 text: 'Export as .xlxs'
-		             }			         
+		             },
+		             {
+		         		extend: 'pdfHtml5',
+		         		title: "Draft wise Report_"+ new Date(),
+		         		text: 'Export as .pdf'
+					 }
 		         ]
 	});
 $JQuery("#reg_report").DataTable({
@@ -1464,7 +1489,12 @@ $JQuery("#reg_report").DataTable({
 	                 extend: 'excelHtml5',
 	                 title: "Registration wise Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }
+	             },
+	             {
+	         		extend: 'pdfHtml5',
+	         		title: "Registration wise Report_"+ new Date(),
+	         		text: 'Export as .pdf'
+				}
 	         ]
 }); 
 $JQuery("#slipTracking_").submit(function(event){
@@ -1519,7 +1549,12 @@ $JQuery("#slipTracking_").submit(function(event){
 					                 extend: 'excelHtml5',
 					                 title: "Slip wise Report From "+startDateSlip+" To "+endDateSlip ,
 					                 text: 'Export as .xlxs'
-					             }			         
+					             },
+					             {
+					         		extend: 'pdfHtml5',
+					         		title: "Slip wise Report From "+startDateSlip+" To "+endDateSlip ,
+					         		text: 'Export as .pdf'
+								}
 					         ]
 				});	
 			  /* console.log(data); */
@@ -1589,7 +1624,12 @@ $JQuery("#draftTracking_").submit(function(event){
 						                 extend: 'excelHtml5',
 						                 title: "Draft wise Report From "+startDateDraft+" To "+endDateDraft,
 						                 text: 'Export as .xlxs'
-						             }			         
+						             },
+						             {
+						         		extend: 'pdfHtml5',
+						         		title: "Draft wise Report From "+startDateDraft+" To "+endDateDraft,
+						         		text: 'Export as .pdf'
+						         	  }
 						         ]
 					});	
 				  /* console.log(data); */
@@ -1696,7 +1736,12 @@ $JQuery("#regReport").on("submit",function(event){
 	    		                 title: "Registration Report From "+st_date+" To "+ed_date,
 	    		                 text: 'Export as .xlxs',
 	    		               
-	    		             }
+	    		             },
+				             {
+				         		extend: 'pdfHtml5',
+				         		title: "Registration Report From "+st_date+" To "+ed_date,
+				         		text: 'Export as .pdf'
+							}
 	    		         ]
 	    	});
 	    	$JQuery("#regReportTile").html("Registration Report From "+st_date+" To "+ed_date);
@@ -1749,7 +1794,12 @@ $JQuery("#visitReport").on("submit",function(event){
 	    		                 extend: 'excelHtml5',
 	    		                 title: "Visit Report From "+startDate+" To "+endDate,
 	    		                 text: 'Export as .xlxs'
-	    		             }			         
+	    		             },
+				             {
+				         		extend: 'pdfHtml5',
+				         		title: "Visit Report From "+startDate+" To "+endDate,
+				         		text: 'Export as .pdf'
+					         }
 	    		         ]
 	    	}); 
 	    	$JQuery("#visitReportTitle").html("Visit Report From "+startDate+" To "+endDate);
@@ -1783,7 +1833,7 @@ $JQuery("#visitReport").on("submit",function(event){
     background: #4aad9b;
     color: #0e5c52;
 }
-#serviceP > thead > tr > th{
+#serviceP > thead > tr > th{"Draft wise Report From "+startDateDraft+" To "+endDateDraft,
   border: 1px solid black;
 }
 .dataTables_wrapper .dataTables_filter {

@@ -36,7 +36,7 @@
             <tr>
                  <th>SL</th> 
                  <th>Slip No.</th>
-                 <th>Date</th>
+                 <th>Money Receipt Date</th>
                  <th>Patient Name</th>
                 <th>Phone</th>
                 <th>Wealth Class</th>
@@ -54,10 +54,10 @@
 			        <tr>
 			        	
 			        	<td><%=++sl%></td>
-			              <td>${ report.slip_no }</td>	             
+			              <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>	             
 			        	 <td>${ report.slip_date }</td> 
-			        	 <td>${ report.patient_name }</td>
-			            <td>${ report.phone }</td>
+			        	 <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.patient_name }</a></td>
+			            <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.phone }</a></td>
 			            <td>${ report.wealth_classification }</td>
 			            <td>${ report.service_point }</td>
 			            <td>${ report.total_amount }</td>
