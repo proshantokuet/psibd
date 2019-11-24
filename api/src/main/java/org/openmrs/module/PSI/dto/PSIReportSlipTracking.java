@@ -14,8 +14,14 @@ public class PSIReportSlipTracking {
 	private Double discount;
 	private Double net_payable;
 	private String slip_link;
+	private String patient_uuid;
 	
-	
+	public String getPatient_uuid() {
+		return patient_uuid;
+	}
+	public void setPatient_uuid(String patient_uuid) {
+		this.patient_uuid = patient_uuid;
+	}
 	public long getSl() {
 		return sl;
 	}

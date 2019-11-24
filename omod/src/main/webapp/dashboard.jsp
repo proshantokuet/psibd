@@ -338,7 +338,7 @@
 		            <th>Code</th>            
 		            <th>Item</th>
 		            <th>Number of Service</th>	            
-		            <th>Total</th>
+		            <th>Total Revenue</th>
 		        </tr>
 		    </thead>
 		    <tbody>
@@ -1384,12 +1384,12 @@ $JQuery('#servicePoint').DataTable({
 	             }			         
 	         ]
 }); */
-$JQuery("#servicePointWiseReport").html("Comprehensive Report for Today");
-$JQuery("#slipTracking").html("Slip Tracking wise Report For Today");
-$JQuery("#draftTracking").html("Draft Tracking wise Report For Today");
-$JQuery("#compServiceReporting").html("Comprenhesive Service Reporting For Today");
-$JQuery("#visitReportTitle").html("Visit Report For Today");
-$JQuery("#regReportTile").html("Registration Report For Today");
+$JQuery("#servicePointWiseReport").html("");
+$JQuery("#slipTracking").html("");
+$JQuery("#draftTracking").html("");
+$JQuery("#compServiceReporting").html("");
+$JQuery("#visitReportTitle").html("");
+$JQuery("#regReportTile").html("");
 $JQuery('#serviceProviderDefault').DataTable({
 	   bFilter: false,
        bInfo: false,
@@ -1424,7 +1424,7 @@ $JQuery('#serviceProviderDefault').DataTable({
 		         ]
 	}
 });  */
-$JQuery("#serviceProviderReports").html("Service Provider Wise Revenue Report for Today");
+$JQuery("#serviceProviderReports").html("");
  $JQuery("#slip_tracking").DataTable({
 	bFilter: false,
     bInfo: false,

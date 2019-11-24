@@ -418,7 +418,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public String getTotalDiscount(String startDate, String endDate) {
 		// TODO Auto-generated method stub
 		String hql = "SELECT ROUND(SUM(discount),2) FROM PSIServiceProvision " +
-					" WHERE moneyReceiptDate BETWEEN '"+startDate+"' AND '"+endDate+"'";
+					" WHERE moneyReceiptDate BETWEEN '"+startDate+"' AND '"+endDate+"'"+
+				" AND isComplete=1";
 		Double ret;
 		 try{ 
 			  ret = (Double)sessionFactory.getCurrentSession().createQuery(hql).
@@ -455,9 +456,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		List<Object[]> resultSet = new ArrayList<Object[]>();
 
 		
-		String wh = "";
+		String wh = " where m.is_complete= 1 ";
 		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
-			wh += " where Date(p.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
+			wh += " and Date(p.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
 					+ filter.getEndDateSlip()+"' ";
 		}
 		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
@@ -482,10 +483,17 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
+		
+		if(filter.getClinicCode().equals("0")){
+			
+		}else {
+			wh += " and m.clinic_code='"+filter.getClinicCode()+"' ";
+		}
 		String sql = "select p.spid as sl,m.slip_no as slip_no,p.money_receipt_date as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
 				"sum(p.total_amount) as total_amount,sum(ROUND(p.discount,2)) as discount,sum(p.net_payable) as net_payable "+
+				" p.patient_uuid as patient_uuid "+
 				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				"on p.psi_money_receipt_id = m.mid "+
 				wh+
@@ -505,15 +513,19 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("total_amount",StandardBasicTypes.LONG).
 					addScalar("discount",StandardBasicTypes.DOUBLE).
 					addScalar("net_payable",StandardBasicTypes.DOUBLE).
+					addScalar("patient_uuid",StandardBasicTypes.STRING).
 					setResultTransformer(new AliasToBeanResultTransformer(PSIReportSlipTracking.class)).
 				list();
+				
 			return psiList;
 		}catch(Exception e){
 //			return null;
+			
+			return psiList;
 		}
 	
 		
-		return psiList;
+//		return psiList;
 	}
 	
 	public List<Object[]> getSlip(	SearchFilterSlipTracking filter){
@@ -556,7 +568,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or m.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
-		if(filter.getClinicCode() != "0")
+		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
 			wh += " and m.clinic_code = '"+filter.getClinicCode()+"' ";
 		
 		if (!"".equalsIgnoreCase(filter.getCollector())){
@@ -566,12 +578,13 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
 				"sum(p.total_amount) as total_amount,sum(ROUND(p.discount,2)) as discount,sum(p.net_payable) as net_payable "+
+				" p.patient_uuid as patient_uuid "+
 				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				"on p.psi_money_receipt_id = m.mid "+
 				"where m.is_complete = 0 ";
 		
 		sql += wh;
-		sql += "group by p.psi_money_receipt_id";
+		sql += " group by p.psi_money_receipt_id";
 		List<AUHCDraftTrackingReport> draftList = new ArrayList<AUHCDraftTrackingReport>();
 		try{
 			draftList = sessionFactory.getCurrentSession().createSQLQuery(sql).
@@ -585,6 +598,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				addScalar("total_amount",StandardBasicTypes.LONG).
 				addScalar("discount",StandardBasicTypes.DOUBLE).
 				addScalar("net_payable",StandardBasicTypes.DOUBLE).
+				addScalar("patient_uuid",StandardBasicTypes.STRING).
 				setResultTransformer(new AliasToBeanResultTransformer(AUHCDraftTrackingReport.class)).
 				list();
 		
@@ -733,7 +747,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		// TODO Auto-generated method stub
 		String wh = "";
 		if(filter.getService_category() != "")
-			wh += "AND category = '"+filter.getService_category()+"'";
+			wh += " AND category = '"+filter.getService_category()+"'";
+		String clinicWh = "";
+		if(filter.getClinic_code().equals("0"))
+			clinicWh +="";
+		else	clinicWh+= " AND mr.clinic_code='"+filter.getClinic_code()+"' ";
 		String sql = "SELECT code as service_code," +
 				" item as service_name," +
 				" category as category," +
@@ -795,7 +813,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" LEFT JOIN openmrs.psi_money_receipt AS mr" +
 				"                      ON sp.psi_money_receipt_id = mr.mid" +
 				" WHERE  sp.is_complete = 1" +
-				" AND mr.clinic_code='"+filter.getClinic_code()+"' "+
+				clinicWh+
 				" AND Date(sp.money_receipt_date) BETWEEN" +
 				"'"+filter.getStart_date()+"' AND '"+filter.getEnd_date()+"'"+
                wh+
@@ -914,16 +932,21 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or m.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
-		if(filter.getClinicCode() != "0")
+		if(filter.getClinicCode().equals("0")){
+			
+		}
+		else {
 			wh += " and m.clinic_code = '"+filter.getClinicCode()+"' ";
+		}
 		
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
 		
 		String sql = " select sum(ROUND(p.discount,2)) "+
-				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
-				"on p.psi_money_receipt_id = m.mid";
+				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				" on p.psi_money_receipt_id = m.mid "+
+				" where m.is_complete=1";
 		
 		sql += wh;
 //		sql += " group by p.psi_money_receipt_id ";
@@ -931,8 +954,10 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 		String ret = "0";
 		try{
-			ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
-					get(0).toString();
+			
+			List<Object> sz = sessionFactory.getCurrentSession().createSQLQuery(sql).list(); 
+			ret = sz.size() != 0 ?
+					sz.get(0).toString() : "0";
 			return ret;
 		}catch(Exception e){
 			return "0";
@@ -984,15 +1009,17 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or m.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
-		if(filter.getClinicCode() != "0")
+		
+		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
 			wh += " and m.clinic_code = '"+filter.getClinicCode()+"' ";
 		
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
 		String sql = " select count(distinct(p.patient_uuid)) "+
-				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
-				"on p.psi_money_receipt_id = m.mid";
+				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				" on p.psi_money_receipt_id = m.mid " +
+				" where m.is_complete = 1 ";
 		
 		sql += wh;
 //		sql += " group by p.psi_money_receipt_id ";
@@ -1001,9 +1028,10 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
 					get(0).toString();
+//			return sql;
 			return ret;
 		}catch(Exception e){
-			return "0";
+			return ret;
 		}
 	}
 
@@ -1040,8 +1068,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
 		String sql = " select sum(p.net_payable) "+
-				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
-				"on p.psi_money_receipt_id = m.mid";
+				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
+				" on p.psi_money_receipt_id = m.mid"+
+				" where m.is_complete=1 ";
 		
 		sql += wh;
 //		sql += " group by p.psi_money_receipt_id ";
@@ -1129,7 +1158,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				
 			}
 		}
-		if(code != "0")
+		if(!"0".equalsIgnoreCase(code))
 			sql += " and temp6.clinicCode = '"+code+"' ";
 		sql +=  " GROUP by p.uuid";
 		
@@ -1416,7 +1445,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "WHERE m.money_receipt_date BETWEEN "
 				+ "'"+startDate+"' AND '"+endDate+"' "
 				+ "AND m.clinic_code='"+code+"' "
-				+ "AND m.data_collector='"+collector+"' ";
+				+ "AND m.data_collector='"+collector+"' "
+				+" AND m.is_complete=1";
 		String ret = "";
 		try{
 			ret = sessionFactory.getCurrentSession()
@@ -1449,7 +1479,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or mr.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
-		if(filter.getClinicCode() != "0")
+		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
 			wh += " and mr.clinic_code = '"+filter.getClinicCode()+"' ";
 		
 		if (!"".equalsIgnoreCase(filter.getCollector())){
@@ -1461,7 +1491,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "LEFT JOIN openmrs.psi_money_receipt mr "
 				+ "ON p.psi_money_receipt_id = mr.mid "
 				+ "WHERE p.money_receipt_date BETWEEN "
-				+ "'"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' ";
+				+ "'"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
+				+" AND mr.is_complete = 1 ";
+				
 //				+ " AND mr.clinic_code = '"+filter.getCollector()+"' "
 //				+ " AND mr.data_collector = '"+filter.getCollector()+"' ";
 		
@@ -1586,6 +1618,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					+ "ON p.psi_money_receipt_id = mr.mid "
 					+ "WHERE p.money_receipt_date BETWEEN "
 					+ "'"+startDate+"' AND '"+endDate+"' "
+					+ " AND mr.is_complete=1 "
 					+ wh;
 			try{
 				ret = sessionFactory.getCurrentSession()

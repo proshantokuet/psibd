@@ -64,7 +64,7 @@
 	            <th>Code</th>
 	            <th>Item</th>
 	            <th>Number of Service</th>	            
-	            <th>Total</th>
+	            <th>Total Revenue</th>
 	        </tr>
 	    </thead>
 	    <tbody>
