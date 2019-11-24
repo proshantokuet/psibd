@@ -152,10 +152,11 @@ public class PSIDashboardController {
 		SearchFilterDraftTracking filterdraft = new SearchFilterDraftTracking();
 		filterdraft.setStartDateSlip(today);
 		filterdraft.setEndDateSlip(today);
+		filterdraft.setClinicCode(clinicCode);
 		List<AUHCDraftTrackingReport> draftList = new ArrayList<AUHCDraftTrackingReport>();
 		draftList = Context.getService(PSIServiceProvisionService.class).getDraft(filterdraft);
-		model.addAttribute("no_slip_draft",draftList.size());
-		model.addAttribute("draftReport",draftList);
+		model.addAttribute("no_slip_draft",0);
+		model.addAttribute("draftReport",null);
 		
 		List<AUHCComprehensiveReport> report = new ArrayList<AUHCComprehensiveReport>();
 		model.addAttribute("compReport",report);
