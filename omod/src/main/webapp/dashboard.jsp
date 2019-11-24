@@ -30,8 +30,8 @@
 <div id="tabs">
   <ul>
     <li><a href="#tabs-1">Comprehensive Service Report</a></li>
-    <li><a href="#tabs-2">Service Provider Wise Revenue Report</a></li>
-    <li><a href="#tabs-3">Slip Tracking Report</a></li> 
+    <li><a href="#tabs-2">Service Provider Wise Report</a></li>
+    <li><a href="#tabs-3">Money Receipt Report</a></li> 
     <li><a href="#tabs-4">Draft Tracking Report</a></li>
     <!-- <li><a href="#tabs-5">Comprehensive Service Report</a></li> -->
     <li><a href="#tabs-5">Registration Report</a>
@@ -484,7 +484,7 @@
 	            <tr>
 	                 <th>SL</th> 
 	                 <th>Slip No.</th>
-	                 <th>Date</th>
+	                 <th>Money Receipt Date</th>
 	                 <th>Patient Name</th>
 	                <th>Phone</th>
 	                <th>Wealth Class</th>
@@ -500,10 +500,10 @@
 					<c:forEach var="report" items="${ slipReport }">
 				        <tr>
 		        	 	    <td>#</td>
-		                    <td>${ report.slip_no }</td>	             
+		                    <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>	             
 			            	 <td>${ report.slip_date }</td> 
-				        	 <td>${ report.patient_name }</td>
-				            <td>${ report.phone }</td>
+				        	 <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.patient_name }</a></td>
+				            <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.phone }</a></td>
 				            <td>${ report.wealth_classification }</td>
 				            <td>${ report.service_point }</td>
 				            <td>${ report.total_amount }</td>
@@ -630,7 +630,7 @@
 		           <tr>
 		                <th>SL</th> 
 		                <th>Slip No.</th>
-		                <th>Date</th>
+		                <th>Money Receipt Date</th>
 		                <th>Patient Name</th>
 		               <th>Phone</th>
 		               <th>Wealth Class</th>
@@ -648,10 +648,10 @@
 				        <tr>
 				        	
 				        	<td><%=++sl_d%></td>
-				              <td>${ report.slip_no }</td>	             
+				              <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>	             
 				        	 <td>${ report.slip_date }</td> 
-				        	 <td>${ report.patient_name }</td>
-				            <td>${ report.phone }</td>
+				        	 <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.patient_name }</a></td>
+				            <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.phone }</a></td>
 				            <td>${ report.wealth_classification }</td>
 				            <td>${ report.service_point }</td>
 				            <td>${ report.total_amount }</td>
@@ -1081,9 +1081,11 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jszip.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.html5.min.js"></script>
-<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
- -->
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
+
+
 <script type="text/javascript">
 
 var $jq = jQuery.noConflict();
@@ -1117,16 +1119,22 @@ var e = document.getElementById("provider");
 var provider = e.options[e.selectedIndex].value;
 var startDate = $JQuery('input[name=from]').val();
 var endDate = $JQuery('input[name=to]').val();
-var reportTitle = "Service Provider Wise Revenue Report for "+$JQuery("#provider option:selected").html()+ " (" +startDate +" to "+ endDate+")" ;
+var reportTitle = "Service Provider Wise Report for "+$JQuery("#provider option:selected").html()+ " (" +startDate +" to "+ endDate+")" ;
+var clinicName = "";
 
-var title = "Service Provider Wise Revenue Report From "+startDate+" To "+endDate;
 var clinic = document.getElementById("clinics");
 var clinicCode = "";
 if(clinic !== null){		
 	clinicCode = clinic.options[clinic.selectedIndex].value;
-}else {
+	if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+	}
+}
+else {
 	clinicCode = -1;
 }
+var title = "Service Provider Wise Report "+clinicName+" From "+startDate+" To "+endDate;
 
 var url = "/openmrs/module/PSI/ServiceProviderWise.form?startDate="+startDate+"&endDate="+endDate+"&dataCollector="+provider+"&code="+clinicCode;
 event.preventDefault();
@@ -1153,12 +1161,12 @@ $JQuery.ajax({
 			                 extend: 'excelHtml5',
 			                 title: title,
 			                 text: 'Export as .xlxs'
-			             }/* ,
+			             },
 			             {
-			                 extend: 'pdfHtml5',
-			                 title: title,
-			                 text: 'Export as Pdf'
-			             } */
+			         		extend: 'pdfHtml5',
+			         		title: title,
+			         		text: 'Export as .pdf'
+			         	  }
 			            
 			         ]
 			   
@@ -1183,20 +1191,23 @@ $JQuery("#ServicePointWise").submit(function(event) {
 	/* alert("checked"); */
  	var clinic = document.getElementById("clinic_comp");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
-	 
- 	
 
 	var startDate = $JQuery('input[name=startDate]').val();
 	var endDate = $JQuery('input[name=endDate]').val();
 	var category = $JQuery("#cat").val();
 	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&category="+category;
 	url += "&code="+clinicCode;
-	var title = "Comprehensive Report From "+startDate + " To " + endDate;
+	var title = "Comprehensive Report "+clinicName+" From "+startDate + " To " + endDate;
 	event.preventDefault();	
 	$JQuery("#loading_comp_").show();
 	$JQuery.ajax({
@@ -1222,7 +1233,12 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				                 extend: 'excelHtml5',
 				                 title: title,
 				                 text: 'Export as .xlxs'
-				             }			         
+				             },
+				             {
+				         		extend: 'pdfHtml5',
+				         		title: title,
+				         		text: 'Export as .pdf'
+					         }
 				         ]
 			   }); 
 			   $JQuery("#servicePointWiseReport").html("Comprehensive Report From "+startDate + " To " + endDate);
@@ -1354,7 +1370,12 @@ $JQuery('#servicePoint').DataTable({
 	                 extend: 'excelHtml5',
 	                 title: "Comprehensive Revenue Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }			         
+	             },
+	             {
+		         		extend: 'pdfHtml5',
+		         		title: "Comprehensive Revenue Report_"+ new Date(),
+		         		text: 'Export as .pdf'
+		         }
 	         ]
 });
  $JQuery("#visit_report").DataTable({
@@ -1368,7 +1389,12 @@ $JQuery('#servicePoint').DataTable({
 	                 extend: 'excelHtml5',
 	                 title: "Visit Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }			         
+	             },
+	             {
+	         		extend: 'pdfHtml5',
+	         		title: "Visit Report_"+ new Date(),
+	         		text: 'Export as .pdf'
+		         }
 	         ]
 }); 
 /* $JQuery("#comp_service_reporting").DataTable({
@@ -1401,13 +1427,12 @@ $JQuery('#serviceProviderDefault').DataTable({
 	                 extend: 'excelHtml5',
 	                 title: "Service Provider Wise Revenue Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }
-	             /* ,
+	             },
 	             {
-	                 extend: 'pdfHtml5',
-	                 title: title,
-	                 text: 'Export as Pdf'
-	             } */
+		         		extend: 'pdfHtml5',
+		         		title: "Service Provider Wise Revenue Report_"+ new Date(),
+		         		text: 'Export as .pdf'
+			     }
 	         ]
 });
 /* $JQuery('#slip_tracking').DataTable({
@@ -1436,7 +1461,12 @@ $JQuery("#serviceProviderReports").html("");
 	                 extend: 'excelHtml5',
 	                 title: "Slip wise Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }			         
+	             },
+	             {
+	         		extend: 'pdfHtml5',
+	         		title: "Slip wise Report_"+ new Date(),
+	         		text: 'Export as .pdf'
+			     }
 	         ]
 });
  $JQuery("#draft_tracking").DataTable({
@@ -1450,7 +1480,12 @@ $JQuery("#serviceProviderReports").html("");
 		                 extend: 'excelHtml5',
 		                 title: "Draft wise Report_"+ new Date(),
 		                 text: 'Export as .xlxs'
-		             }			         
+		             },
+		             {
+		         		extend: 'pdfHtml5',
+		         		title: "Draft wise Report_"+ new Date(),
+		         		text: 'Export as .pdf'
+					 }
 		         ]
 	});
 $JQuery("#reg_report").DataTable({
@@ -1464,15 +1499,25 @@ $JQuery("#reg_report").DataTable({
 	                 extend: 'excelHtml5',
 	                 title: "Registration wise Report_"+ new Date(),
 	                 text: 'Export as .xlxs'
-	             }
+	             },
+	             {
+	         		extend: 'pdfHtml5',
+	         		title: "Registration wise Report_"+ new Date(),
+	         		text: 'Export as .pdf'
+				}
 	         ]
 }); 
 $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_slip");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
@@ -1494,7 +1539,7 @@ $JQuery("#slipTracking_").submit(function(event){
 	url += "&dataCollector="+dataCollector+"&wlthPoor="+wlthPoor+"&wlthPop="+wlthPop+"&wlthAbleToPay="+wlthPay;
 	url += "&spSatelite="+spSatelite+"&spStatic="+spStatic+"&spCsp="+spCsp;
 	url +="&code="+clinicCode;
-
+	var title = "Slip wise Report "+clinicName+ " From "+startDateSlip+" To "+endDateSlip
 	$JQuery.ajax({
 		   type : "GET",
 		   contentType : "application/json",
@@ -1517,9 +1562,14 @@ $JQuery("#slipTracking_").submit(function(event){
 					   buttons: [
 					             {
 					                 extend: 'excelHtml5',
-					                 title: "Slip wise Report From "+startDateSlip+" To "+endDateSlip ,
+					                 title: title ,
 					                 text: 'Export as .xlxs'
-					             }			         
+					             },
+					             {
+					         		extend: 'pdfHtml5',
+					         		title: title ,
+					         		text: 'Export as .pdf'
+								}
 					         ]
 				});	
 			  /* console.log(data); */
@@ -1541,8 +1591,13 @@ $JQuery("#draftTracking_").submit(function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_draft");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
@@ -1561,6 +1616,7 @@ $JQuery("#draftTracking_").submit(function(event){
 	url += "&dataCollector="+dataCollectorDraft+"&wlthPoor="+wlthPoorDraft+"&wlthPop="+wlthPopDraft+"&wlthAbleToPay="+wlthPayDraft;
 	url += "&spSatelite="+spSateliteDraft+"&spStatic="+spStaticDraft+"&spCsp="+spCspDraft;
 	url +="&code="+clinicCode;
+	var title = "Draft wise Report "+clinicName+" From "+startDateDraft+" To "+endDateDraft;
 	
 	$JQuery.ajax({
 		type : "GET",
@@ -1587,9 +1643,14 @@ $JQuery("#draftTracking_").submit(function(event){
 						   buttons: [
 						             {
 						                 extend: 'excelHtml5',
-						                 title: "Draft wise Report From "+startDateDraft+" To "+endDateDraft,
+						                 title: title,
 						                 text: 'Export as .xlxs'
-						             }			         
+						             },
+						             {
+						         		extend: 'pdfHtml5',
+						         		title: title,
+						         		text: 'Export as .pdf'
+						         	  }
 						         ]
 					});	
 				  /* console.log(data); */
@@ -1655,8 +1716,13 @@ $JQuery("#regReport").on("submit",function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_reg");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
@@ -1672,6 +1738,7 @@ $JQuery("#regReport").on("submit",function(event){
 	url += "&endDate="+ed_date;
 	url += "&gender="+gender;
 	url += "&code="+clinicCode;
+	var title = "Registration Report "+clinicName+" From "+st_date+" To "+ed_date;
 	
 	$JQuery.ajax({
 		type:"GET",
@@ -1693,10 +1760,15 @@ $JQuery("#regReport").on("submit",function(event){
 	    		   buttons: [
 	    		              {
 	    		                 extend: 'excelHtml5',
-	    		                 title: "Registration Report From "+st_date+" To "+ed_date,
+	    		                 title: title,
 	    		                 text: 'Export as .xlxs',
 	    		               
-	    		             }
+	    		             },
+				             {
+				         		extend: 'pdfHtml5',
+				         		title: title,
+				         		text: 'Export as .pdf'
+							}
 	    		         ]
 	    	});
 	    	$JQuery("#regReportTile").html("Registration Report From "+st_date+" To "+ed_date);
@@ -1714,8 +1786,13 @@ $JQuery("#visitReport").on("submit",function(event){
 	$JQuery("#loading_visit").show();
 	var clinic = document.getElementById("clinic_visit");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
@@ -1725,6 +1802,7 @@ $JQuery("#visitReport").on("submit",function(event){
 	var url = "/openmrs/module/PSI/visitReport.form?startDate="+startDate;
 	url += "&endDate="+endDate;
 	url += "&code="+clinicCode;
+	var title = "Visit Report "+clinicName+" From "+startDate+" To "+endDate;
 	
 	$JQuery.ajax({
 		type:"GET",
@@ -1747,9 +1825,14 @@ $JQuery("#visitReport").on("submit",function(event){
 	    		   buttons: [
 	    		             {
 	    		                 extend: 'excelHtml5',
-	    		                 title: "Visit Report From "+startDate+" To "+endDate,
+	    		                 title: title,
 	    		                 text: 'Export as .xlxs'
-	    		             }			         
+	    		             },
+				             {
+				         		extend: 'pdfHtml5',
+				         		title: title,
+				         		text: 'Export as .pdf'
+					         }
 	    		         ]
 	    	}); 
 	    	$JQuery("#visitReportTitle").html("Visit Report From "+startDate+" To "+endDate);
@@ -1783,7 +1866,7 @@ $JQuery("#visitReport").on("submit",function(event){
     background: #4aad9b;
     color: #0e5c52;
 }
-#serviceP > thead > tr > th{
+#serviceP > thead > tr > th{"Draft wise Report From "+startDateDraft+" To "+endDateDraft,
   border: 1px solid black;
 }
 .dataTables_wrapper .dataTables_filter {
