@@ -30,8 +30,8 @@
 <div id="tabs">
   <ul>
     <li><a href="#tabs-1">Comprehensive Service Report</a></li>
-    <li><a href="#tabs-2">Service Provider Wise Revenue Report</a></li>
-    <li><a href="#tabs-3">Slip Tracking Report</a></li> 
+    <li><a href="#tabs-2">Service Provider Wise Report</a></li>
+    <li><a href="#tabs-3">Money Receipt Report</a></li> 
     <li><a href="#tabs-4">Draft Tracking Report</a></li>
     <!-- <li><a href="#tabs-5">Comprehensive Service Report</a></li> -->
     <li><a href="#tabs-5">Registration Report</a>
@@ -1085,6 +1085,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
 
+
 <script type="text/javascript">
 
 var $jq = jQuery.noConflict();
@@ -1118,16 +1119,22 @@ var e = document.getElementById("provider");
 var provider = e.options[e.selectedIndex].value;
 var startDate = $JQuery('input[name=from]').val();
 var endDate = $JQuery('input[name=to]').val();
-var reportTitle = "Service Provider Wise Revenue Report for "+$JQuery("#provider option:selected").html()+ " (" +startDate +" to "+ endDate+")" ;
+var reportTitle = "Service Provider Wise Report for "+$JQuery("#provider option:selected").html()+ " (" +startDate +" to "+ endDate+")" ;
+var clinicName = "";
 
-var title = "Service Provider Wise Revenue Report From "+startDate+" To "+endDate;
 var clinic = document.getElementById("clinics");
 var clinicCode = "";
 if(clinic !== null){		
 	clinicCode = clinic.options[clinic.selectedIndex].value;
-}else {
+	if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+	}
+}
+else {
 	clinicCode = -1;
 }
+var title = "Service Provider Wise Report "+clinicName+" From "+startDate+" To "+endDate;
 
 var url = "/openmrs/module/PSI/ServiceProviderWise.form?startDate="+startDate+"&endDate="+endDate+"&dataCollector="+provider+"&code="+clinicCode;
 event.preventDefault();
@@ -1184,20 +1191,23 @@ $JQuery("#ServicePointWise").submit(function(event) {
 	/* alert("checked"); */
  	var clinic = document.getElementById("clinic_comp");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
-	 
- 	
 
 	var startDate = $JQuery('input[name=startDate]').val();
 	var endDate = $JQuery('input[name=endDate]').val();
 	var category = $JQuery("#cat").val();
 	var url = "/openmrs/module/PSI/ServicePointWise.form?startDate="+startDate+"&endDate="+endDate+"&category="+category;
 	url += "&code="+clinicCode;
-	var title = "Comprehensive Report From "+startDate + " To " + endDate;
+	var title = "Comprehensive Report "+clinicName+" From "+startDate + " To " + endDate;
 	event.preventDefault();	
 	$JQuery("#loading_comp_").show();
 	$JQuery.ajax({
@@ -1501,8 +1511,13 @@ $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_slip");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
@@ -1524,7 +1539,7 @@ $JQuery("#slipTracking_").submit(function(event){
 	url += "&dataCollector="+dataCollector+"&wlthPoor="+wlthPoor+"&wlthPop="+wlthPop+"&wlthAbleToPay="+wlthPay;
 	url += "&spSatelite="+spSatelite+"&spStatic="+spStatic+"&spCsp="+spCsp;
 	url +="&code="+clinicCode;
-
+	var title = "Slip wise Report "+clinicName+ " From "+startDateSlip+" To "+endDateSlip
 	$JQuery.ajax({
 		   type : "GET",
 		   contentType : "application/json",
@@ -1547,12 +1562,12 @@ $JQuery("#slipTracking_").submit(function(event){
 					   buttons: [
 					             {
 					                 extend: 'excelHtml5',
-					                 title: "Slip wise Report From "+startDateSlip+" To "+endDateSlip ,
+					                 title: title ,
 					                 text: 'Export as .xlxs'
 					             },
 					             {
 					         		extend: 'pdfHtml5',
-					         		title: "Slip wise Report From "+startDateSlip+" To "+endDateSlip ,
+					         		title: title ,
 					         		text: 'Export as .pdf'
 								}
 					         ]
@@ -1576,8 +1591,13 @@ $JQuery("#draftTracking_").submit(function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_draft");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
@@ -1596,6 +1616,7 @@ $JQuery("#draftTracking_").submit(function(event){
 	url += "&dataCollector="+dataCollectorDraft+"&wlthPoor="+wlthPoorDraft+"&wlthPop="+wlthPopDraft+"&wlthAbleToPay="+wlthPayDraft;
 	url += "&spSatelite="+spSateliteDraft+"&spStatic="+spStaticDraft+"&spCsp="+spCspDraft;
 	url +="&code="+clinicCode;
+	var title = "Draft wise Report "+clinicName+" From "+startDateDraft+" To "+endDateDraft;
 	
 	$JQuery.ajax({
 		type : "GET",
@@ -1622,12 +1643,12 @@ $JQuery("#draftTracking_").submit(function(event){
 						   buttons: [
 						             {
 						                 extend: 'excelHtml5',
-						                 title: "Draft wise Report From "+startDateDraft+" To "+endDateDraft,
+						                 title: title,
 						                 text: 'Export as .xlxs'
 						             },
 						             {
 						         		extend: 'pdfHtml5',
-						         		title: "Draft wise Report From "+startDateDraft+" To "+endDateDraft,
+						         		title: title,
 						         		text: 'Export as .pdf'
 						         	  }
 						         ]
@@ -1695,8 +1716,13 @@ $JQuery("#regReport").on("submit",function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_reg");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
@@ -1712,6 +1738,7 @@ $JQuery("#regReport").on("submit",function(event){
 	url += "&endDate="+ed_date;
 	url += "&gender="+gender;
 	url += "&code="+clinicCode;
+	var title = "Registration Report "+clinicName+" From "+st_date+" To "+ed_date;
 	
 	$JQuery.ajax({
 		type:"GET",
@@ -1733,13 +1760,13 @@ $JQuery("#regReport").on("submit",function(event){
 	    		   buttons: [
 	    		              {
 	    		                 extend: 'excelHtml5',
-	    		                 title: "Registration Report From "+st_date+" To "+ed_date,
+	    		                 title: title,
 	    		                 text: 'Export as .xlxs',
 	    		               
 	    		             },
 				             {
 				         		extend: 'pdfHtml5',
-				         		title: "Registration Report From "+st_date+" To "+ed_date,
+				         		title: title,
 				         		text: 'Export as .pdf'
 							}
 	    		         ]
@@ -1759,8 +1786,13 @@ $JQuery("#visitReport").on("submit",function(event){
 	$JQuery("#loading_visit").show();
 	var clinic = document.getElementById("clinic_visit");
 	var clinicCode = "";
+	var clinicName = "";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
 	}else {
 		clinicCode = -1;
 	}
@@ -1770,6 +1802,7 @@ $JQuery("#visitReport").on("submit",function(event){
 	var url = "/openmrs/module/PSI/visitReport.form?startDate="+startDate;
 	url += "&endDate="+endDate;
 	url += "&code="+clinicCode;
+	var title = "Visit Report "+clinicName+" From "+startDate+" To "+endDate;
 	
 	$JQuery.ajax({
 		type:"GET",
@@ -1792,12 +1825,12 @@ $JQuery("#visitReport").on("submit",function(event){
 	    		   buttons: [
 	    		             {
 	    		                 extend: 'excelHtml5',
-	    		                 title: "Visit Report From "+startDate+" To "+endDate,
+	    		                 title: title,
 	    		                 text: 'Export as .xlxs'
 	    		             },
 				             {
 				         		extend: 'pdfHtml5',
-				         		title: "Visit Report From "+startDate+" To "+endDate,
+				         		title: title,
 				         		text: 'Export as .pdf'
 					         }
 	    		         ]
