@@ -65,5 +65,17 @@ public class AUHCDashboardCard {
 		this.totalPayableDraft = totalPayableDraft;
 	}
 	
+	public void init(){
+		
+		this.setNewRegistration("0");
+		this.setOldClients("0");
+		this.setNewClients("0");
+		this.setPatientServed("0");
+		this.setTotalServiceContact("0");
+		this.setRevenueEarned("0");
+		this.setTotalDiscount("0");
+		this.setNoOfSlipsDraft("0");
+		this.setTotalPayableDraft("0");
+	}
 	
 }

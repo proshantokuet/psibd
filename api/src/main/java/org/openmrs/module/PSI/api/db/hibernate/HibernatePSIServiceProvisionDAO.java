@@ -3,8 +3,10 @@ package org.openmrs.module.PSI.api.db.hibernate;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +31,7 @@ import org.openmrs.module.PSI.dto.PSILocationTag;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
+import org.openmrs.module.PSI.dto.SearchFilterRegistrationReport;
 import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterVisitReport;
@@ -1180,11 +1183,13 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("patient_uuid",StandardBasicTypes.STRING).
 					setResultTransformer(new AliasToBeanResultTransformer(AUHCRegistrationReport.class)).
 					list();
+			
 			return report;
 		}catch(Exception e){
-
+			
+			return report;
 		}
-		return null;
+//		return report;
 	}
 
 	@Override
@@ -1871,6 +1876,223 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}catch(Exception e){
 			return "0";
 		}
+	}
+
+	@Override
+	public List<AUHCRegistrationReport> getRegistrationReport(
+			SearchFilterRegistrationReport filter) {
+	// TODO Auto-generated method stub
+		
+		
+		String sql = ""
+				+ "SELECT "
+				+ "	   CONCAT(pname.given_name,\" \",pname.family_name) AS patient_name, "
+				+ "         temp4.UIC as uic, "
+				+ "       pi.identifier         AS health_id, "
+				+ "        temp1.phoneno         AS mobile_no, "
+				+ "       p.gender              AS gender, "
+				+ "       temp5.registeredDate  AS register_date, "
+				+ "        IFNULL(TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()),0) AS age, "
+				+ "        paddress.address3 as cc, "
+				+ "       p.uuid              AS patient_uuid "
+				+ "       FROM   person_name pname "
+				+ "	   left JOIN patient_identifier pi "
+				+ "              ON pname.person_id = pi.patient_id "
+				+ "        JOIN person p "
+				+ "              ON p.person_id = pi.patient_id "
+				+ " "
+				+ "        JOIN (SELECT pat.person_attribute_type_id, "
+				+ "                         pat.value AS phoneNo, "
+				+ "                         pat.person_id "
+				+ "                  FROM   person_attribute pat "
+				+ "                  WHERE  pat.person_attribute_type_id = 42) AS temp1 "
+				+ "              ON pi.patient_id = temp1.person_id "
+				+ "        JOIN (SELECT pa.person_attribute_type_id, "
+				+ "                         pa.value AS UIC, "
+				+ "                         pa.person_id "
+				+ "                  FROM   person_attribute pa "
+				+ "                  WHERE  pa.person_attribute_type_id = 34) AS temp4 "
+				+ "              ON pi.patient_id = temp4.person_id "
+				+ "        JOIN (SELECT person_attribute_temp5.person_attribute_type_id, "
+				+ "                         person_attribute_temp5.value AS registeredDate , "
+				+ "                         person_attribute_temp5.person_id "
+				+ "                  FROM   person_attribute person_attribute_temp5 "
+				+ "                  WHERE  person_attribute_temp5.person_attribute_type_id = 40) AS temp5 "
+				+ "              ON pi.patient_id = temp5.person_id "
+				+ "        JOIN (SELECT person_attribute_temp6.person_attribute_type_id, "
+				+ "                         person_attribute_temp6.value AS clinicCode , "
+				+ "                         person_attribute_temp6.person_id "
+				+ "                  FROM   person_attribute person_attribute_temp6 "
+				+ "                  WHERE  person_attribute_temp6.person_attribute_type_id = 32) AS temp6 "
+				+ "              ON pi.patient_id = temp6.person_id "
+				+ " JOIN (SELECT person_attribute_temp7.person_attribute_type_id, "
+				+ "                         person_attribute_temp7.value AS financialstatus , "
+				+ "                         person_attribute_temp7.person_id "
+				+ "                  FROM   person_attribute person_attribute_temp7 "
+				+ "                  WHERE  person_attribute_temp7.person_attribute_type_id = 28) AS temp7 "
+				+ "              ON pi.patient_id = temp7.person_id"
+				+ "        left JOIN person_address paddress "
+				+ "              ON paddress.person_id = pi.patient_id "
+				+ "              where temp5.registeredDate BETWEEN '"+filter.getStartDate()+"' and " +
+						"	'"+filter.getEndDate()+"' and "
+				+ "              pname.preferred = 1 ";
+				
+		
+		
+		if(filter.getGender().equals("F")) sql += " and p.gender = 'F' ";
+		else if(filter.getGender().equals("M")) sql += " and p.gender = 'M' ";
+		else if(filter.getGender().equals("O")) sql += " and p.gender = 'O' ";
+		else if(filter.getGender().length() == 2){
+			if(filter.getGender().equals("MO"))
+				sql += " and p.gender != 'F' ";
+			else if(filter.getGender().equals("FO"))
+				sql += "and p.gender != 'M' ";
+			else if(filter.getGender().equals("MF")){
+				
+			}
+		}
+		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
+			sql += " and temp6.clinicCode = '"+filter.getClinicCode()+"' ";
+		Map<String,String> wealthMap = new HashMap<String,String>();
+		wealthMap.put("Able to Pay", "3627");
+		wealthMap.put("Poor","3626");
+		wealthMap.put("PoP","3625");
+		
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+				(filter.getWlthPop() != "");
+		
+		if(wealthFlag == true) {
+			sql += "and ( temp7.financialstatus = '" + wealthMap.get(filter.getWlthAbleToPay()) + 
+					"' or temp7.financialstatus = '"+ wealthMap.get(filter.getWlthPoor())+
+					"' or temp7.financialstatus = '"+ wealthMap.get(filter.getWlthPop())+
+					"' ) ";
+		}
+	
+		
+		sql +=  " GROUP by p.uuid";
+		
+		List<AUHCRegistrationReport> report = new ArrayList<AUHCRegistrationReport>();
+		try{
+			report = sessionFactory.getCurrentSession().createSQLQuery(sql).
+					addScalar("patient_name",StandardBasicTypes.STRING).
+					addScalar("uic",StandardBasicTypes.STRING).
+					addScalar("health_id",StandardBasicTypes.STRING).
+					addScalar("mobile_no",StandardBasicTypes.STRING).
+					addScalar("gender",StandardBasicTypes.STRING).
+					addScalar("register_date",StandardBasicTypes.STRING).
+					addScalar("age",StandardBasicTypes.LONG).
+					addScalar("cc",StandardBasicTypes.STRING).
+					addScalar("patient_uuid",StandardBasicTypes.STRING).
+					setResultTransformer(new AliasToBeanResultTransformer(AUHCRegistrationReport.class)).
+					list();
+			
+			return report;
+		}catch(Exception e){
+			
+			return report;
+		}
+	}
+
+	@Override
+	public String getDashboardOldClients(SearchFilterRegistrationReport filter) {
+		// TODO Auto-generated method stub
+		String wh="";
+		
+		if(filter.getGender().equals("F")) wh += " and pmr.gender = 'F' ";
+		else if(filter.getGender().equals("M")) wh += " and pmr.gender = 'M' ";
+		else if(filter.getGender().equals("O")) wh += " and pmr.gender = 'O' ";
+		else if(filter.getGender().length() == 2){
+			if(filter.getGender().equals("MO"))
+				wh += " and pmr.gender != 'F' ";
+			else if(filter.getGender().equals("FO"))
+				wh += "and pmr.gender != 'M' ";
+			else if(filter.getGender().equals("MF")){
+				
+			}
+		}
+		
+		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
+			wh += " and pmr.clinic_code = "+filter.getClinicCode();
+		
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+				(filter.getWlthPop() != "");
+		
+		if(wealthFlag == true) {
+			wh += "and ( pmr.wealth = '" + filter.getWlthAbleToPay() + 
+					"' or pmr.wealth = '"+filter.getWlthPoor()+
+					"' or pmr.wealth = '"+ filter.getWlthPop()+
+					"' ) ";
+		}
+		
+		String sql = "SELECT Count(*) "+
+				" FROM   (SELECT pmr.patient_uuid "+ 
+				" FROM   psi_money_receipt pmr "+ 
+				" JOIN (SELECT patient_uuid, "+ 
+                 "  Count(patient_uuid) AS total "+ 
+                 " FROM   psi_money_receipt "+
+                 " WHERE  money_receipt_date BETWEEN "+
+                    "'"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "+ 
+                 " GROUP  BY patient_uuid) AS newclient "+ 
+             " ON pmr.patient_uuid = newclient.patient_uuid "+ 
+             " WHERE  pmr.money_receipt_date < '"+filter.getStartDate()+"' "+
+             	wh+
+             " GROUP  BY pmr.patient_uuid) AS tbl ";
+		try{
+			String ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
+					get(0).toString();
+			return ret;
+		}catch(Exception e){
+			return "0";
+		}
+	}
+
+	@Override
+	public String getDashboardNewClients(SearchFilterRegistrationReport filter) {
+		// TODO Auto-generated method stub
+		String ret = "";
+		 String wh = "";
+		 if(!"0".equalsIgnoreCase(filter.getClinicCode()))
+			 wh += " and p.clinic_code = '"+filter.getClinicCode()+"' ";
+		 if(filter.getGender().equals("F")) wh += " and p.gender = 'F' ";
+			else if(filter.getGender().equals("M")) wh += " and p.gender = 'M' ";
+			else if(filter.getGender().equals("O")) wh += " and p.gender = 'O' ";
+			else if(filter.getGender().length() == 2){
+				if(filter.getGender().equals("MO"))
+					wh += " and p.gender != 'F' ";
+				else if(filter.getGender().equals("FO"))
+					wh += "and p.gender != 'M' ";
+				else if(filter.getGender().equals("MF")){
+					
+				}
+			}
+		 Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+					(filter.getWlthPop() != "");
+			
+			if(wealthFlag == true) {
+				wh += "and ( p.wealth = '" + filter.getWlthAbleToPay() + 
+						"' or p.wealth = '"+filter.getWlthPoor()+
+						"' or p.wealth = '"+ filter.getWlthPop()+
+						"' ) ";
+			}
+		 String sql = ""
+				 + "SELECT Count(*) "
+				 + "	 FROM "
+				 + "	 (SELECT p.patient_uuid "
+				 + "	 FROM   psi_money_receipt p "
+				 + "     WHERE  p.money_receipt_date BETWEEN "
+				 + "    '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "
+				 + wh;
+		 
+				 sql +=  "    GROUP BY p.patient_uuid) "
+						 + "    as p_tbl";
+		 try{
+			 ret = sessionFactory.getCurrentSession()
+						.createSQLQuery(sql).list().get(0).toString();
+			 Long res = Long.parseLong(ret) - Long.parseLong(getDashboardOldClients(filter));
+			 return res.toString();
+		 }catch(Exception e){
+			 return "0";
+		 }
 	}
 
 	

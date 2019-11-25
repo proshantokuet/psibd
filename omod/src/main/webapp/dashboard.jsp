@@ -772,7 +772,7 @@
 						<th>Registration Date</th>
 						<th>Age</th>
 						<th>Union/Municipality/CC</th>
-						<th>Action</th>
+						
 					</tr>
 				</thead>
 				<tbody>
@@ -1054,7 +1054,9 @@ $JQuery.ajax({
 			             {
 			         		extend: 'pdfHtml5',
 			         		title: title,
-			         		text: 'Export as .pdf'
+			         		text: 'Export as .pdf',
+			         		orientation: 'landscape',
+			         		pageSize: 'LEGAL'
 			         	  }
 			            
 			         ]
@@ -1126,7 +1128,9 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				             {
 				         		extend: 'pdfHtml5',
 				         		title: title,
-				         		text: 'Export as .pdf'
+				         		text: 'Export as .pdf',
+				         		orientation: 'landscape',
+				         		pageSize: 'LEGAL'
 					         }
 				         ]
 			   }); 
@@ -1263,7 +1267,9 @@ $JQuery('#servicePoint').DataTable({
 	             {
 		         		extend: 'pdfHtml5',
 		         		title: "Comprehensive Revenue Report_"+ new Date(),
-		         		text: 'Export as .pdf'
+		         		text: 'Export as .pdf',
+		         		orientation: 'landscape',
+		         		pageSize: 'LEGAL'
 		         }
 	         ]
 });
@@ -1282,7 +1288,9 @@ $JQuery('#servicePoint').DataTable({
 	             {
 	         		extend: 'pdfHtml5',
 	         		title: "Visit Report_"+ new Date(),
-	         		text: 'Export as .pdf'
+	         		text: 'Export as .pdf',
+	         		orientation: 'landscape',
+	         		pageSize: 'LEGAL'
 		         }
 	         ]
 }); 
@@ -1320,7 +1328,9 @@ $JQuery('#serviceProviderDefault').DataTable({
 	             {
 		         		extend: 'pdfHtml5',
 		         		title: "Service Provider Wise Revenue Report_"+ new Date(),
-		         		text: 'Export as .pdf'
+		         		text: 'Export as .pdf',
+		         		orientation: 'landscape',
+		         		pageSize: 'LEGAL'
 			     }
 	         ]
 });
@@ -1354,7 +1364,9 @@ $JQuery("#serviceProviderReports").html("");
 	             {
 	         		extend: 'pdfHtml5',
 	         		title: "Slip wise Report_"+ new Date(),
-	         		text: 'Export as .pdf'
+	         		text: 'Export as .pdf',
+	         		orientation: 'landscape',
+	         		pageSize: 'LEGAL'
 			     }
 	         ]
 });
@@ -1392,7 +1404,9 @@ $JQuery("#reg_report").DataTable({
 	             {
 	         		extend: 'pdfHtml5',
 	         		title: "Registration wise Report_"+ new Date(),
-	         		text: 'Export as .pdf'
+	         		text: 'Export as .pdf',
+	         		orientation: 'landscape',
+	         		pageSize: 'LEGAL' 
 				}
 	         ]
 }); 
@@ -1457,7 +1471,9 @@ $JQuery("#slipTracking_").submit(function(event){
 					             {
 					         		extend: 'pdfHtml5',
 					         		title: title ,
-					         		text: 'Export as .pdf'
+					         		text: 'Export as .pdf',
+					         		orientation: 'landscape',
+					         		pageSize: 'LEGAL'
 								}
 					         ]
 				});	
@@ -1535,7 +1551,9 @@ $JQuery("#draftTracking_").submit(function(event){
 						             {
 						         		extend: 'pdfHtml5',
 						         		title: title,
-						         		text: 'Export as .pdf'
+						         		text: 'Export as .pdf',
+						         		orientation: 'landscape',
+						         		pageSize: 'LEGAL'
 						         	  }
 						         ]
 					});	
@@ -1657,7 +1675,9 @@ $JQuery("#regReport").on("submit",function(event){
 				             {
 				         		extend: 'pdfHtml5',
 				         		title: title,
-				         		text: 'Export as .pdf'
+				         		text: 'Export as .pdf',
+				         		orientation: 'landscape',
+				         		pageSize: 'LEGAL' 
 							}
 	    		         ]
 	    	});
@@ -1729,7 +1749,9 @@ $JQuery("#visitReport").on("submit",function(event){
 				             {
 				         		extend: 'pdfHtml5',
 				         		title: title,
-				         		text: 'Export as .pdf'
+				         		text: 'Export as .pdf',
+				         		orientation: 'landscape',
+				         		pageSize: 'LEGAL'
 					         }
 	    		         ]
 	    	}); 

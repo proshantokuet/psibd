@@ -33,7 +33,6 @@
 					<th>Registration Date</th>
 					<th>Age</th>
 					<th>Union/Municipality/CC</th>
-					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>

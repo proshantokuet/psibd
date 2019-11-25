@@ -16,6 +16,7 @@ import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
+import org.openmrs.module.PSI.dto.SearchFilterRegistrationReport;
 import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterVisitReport;
@@ -327,6 +328,25 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 	public String totalServiceContact(SearchFilterVisitReport filter) {
 		// TODO Auto-generated method stub
 		return dao.totalServiceContact(filter);
+	}
+
+	@Override
+	public List<AUHCRegistrationReport> getRegistrationReport(
+			SearchFilterRegistrationReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getRegistrationReport(filter);
+	}
+
+	@Override
+	public String getDashboardOldClients(SearchFilterRegistrationReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardOldClients(filter);
+	}
+
+	@Override
+	public String getDashboardNewClients(SearchFilterRegistrationReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardNewClients(filter);
 	}
 	
 	

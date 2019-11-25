@@ -14,6 +14,7 @@ import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
+import org.openmrs.module.PSI.dto.SearchFilterRegistrationReport;
 import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterVisitReport;
@@ -121,4 +122,12 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	public String newClientCount(SearchFilterVisitReport filter);
 	
 	public String totalServiceContact(SearchFilterVisitReport filter);
+	
+	public List<AUHCRegistrationReport> getRegistrationReport(
+			SearchFilterRegistrationReport filter);
+	
+	public String getDashboardOldClients(SearchFilterRegistrationReport filter);
+	
+	public String getDashboardNewClients(SearchFilterRegistrationReport filter);
+	
 }
