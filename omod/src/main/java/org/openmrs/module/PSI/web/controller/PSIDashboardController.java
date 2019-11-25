@@ -59,7 +59,7 @@ public class PSIDashboardController {
 		String today = dateFormat.format(date);
 		if (isAdmin) {
 			clinicCode = "0";
-			clinicName= "";
+			clinicName= "All";
 		} else {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 			clinicName = psiClinicUser.getPsiClinicManagementId().getName();

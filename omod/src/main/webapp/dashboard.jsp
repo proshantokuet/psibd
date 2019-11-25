@@ -38,7 +38,7 @@
     <li><a href="#tabs-6">Visit Report</a>
   </ul>
   <div id="tabs-1">
-  <input id="clnic" type="text" value="${clinic_name}">
+  <input id="clinicName" type="hidden" value="${clinic_name}">
   <form:form id="ServicePointWise">
   	<div class="form-content">
         	<div class="row">
@@ -784,155 +784,6 @@
 		</div>
 	</div>
  </div>
-  <%-- <div id="tabs-5">
- 	<form:form id="compServiceReporting_">
- 		<div class="form-content">
- 			<div class="row">
- 				<div class="col-md-4">
- 					<div class="form-group">
- 						 <label for="startDateComp"> From</label>
-                        <br />
-                        <input class="dt" id="startDateComp" name="startDateComp" type="text" required="true" />
- 					</div>
- 				</div>
- 				<div class="col-md-4">
- 					<div class="form-group">
- 						 <label for="endDateComp"> To</label>
-                        <br />
-                        <input class="dt" id="endDateComp" name="endDateComp" type="text" required="true" />
- 					</div>
- 				</div>
- 			</div>
- 			<div class="row">
- 				<div class="col-md-4">
- 					<div class="form-group">
- 						<label for="service_category">Service Category</label><br/>
- 						<select id="service_category" name="service_category" style="width: 160px">
- 							<option value=""></option>
- 							  <c:forEach items="${service_category}" var="service"> 
-					              	 <form:option value="${service.categoryName}" label="${service.categoryName}"/>					              
-					              </c:forEach>
- 						</select>
- 					</div>
- 				</div>
- 				<div class="col-md-4">
- 					<div class="form-group">
- 						<label for="search_comp">Search</label><br/>
- 						<input id="search_comp" name="search_comp" type="text">
- 					</div>
- 				</div>
-				 <div class="col-md-4">
-                   <div class="form-group">
-                       <!-- 	<label for="Service Code"></label><br /> -->
-                       <button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>
-                   </div>
-
-               </div>
-			
-               </div>
- 			</div>
- 	</form:form>
- 	<div id="loading_comp" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
-			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
-	</div>
-	
-	<div id="compServiceReports" >
-		<div class="form-content" id="compServiceReporting"></div>
-		<div class="form-content">
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-		                  		<label> ${${dashboard.newPatient } } </label> &nbsp;&nbsp; New Registration
-		              		</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-		                  		<label> ${dashboard_old_clients } </label> &nbsp;&nbsp; Old Clients
-		              		</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-		                  		<label> ${dashboard_new_clients } </label> &nbsp;&nbsp; New Clients
-		              		</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-		                  		<label> ${dashboard_service_cotact_value } </label> &nbsp;&nbsp; 
-		                  		Total Service Contact
-		              		</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-			                    <label> ${dashboard.servedPatient } </label> &nbsp;&nbsp; Patients Served
-			                </div>
-						</div>
-						 <div class="col-md-3">
-			                <div class="form-group">
-			                    <label for="Service Code">${dashboard.earned }</label>
-			                    &nbsp;&nbsp; Revenue Earned
-			                </div>
-			            </div>
-			             <div class="col-md-3">
-			                <div class="form-group">
-			                    <label> ${ dashbaord_discount_value } </label> &nbsp;&nbsp; Total Discount
-			                </div>
-			            </div>
-					</div>
-		</div>
-		<div style="overflow:auto;">
-			<br/>
-			
-			<table id="comp_service_reporting" class="display">
-						<thead>
-							<tr>
-								<th rowspan="2">Sl</th>
-								<th rowspan="2">Service Code</th>
-								<th rowspan="2">Service Name</th>
-								<th colspan="4">Service Contact</th>
-								<th colspan="4">Revenue</th>
-								<th colspan="4">Discount</th>
-							</tr>
-							<tr>
-								<% for(int i = 0; i < 3; i++) {%>
-							 	<th>Static</th>
-							 	<th>CSP</th>
-							 	<th>Satellite</th>
-							 	<th>Total</th>
-							 	<% } %>
-							</tr>
-						</thead>
-						<tbody>
-						 <% int sl_c = 0; %>
-					       	<c:if test="${not empty compReport }">
-								<c:forEach var="report" items="${ compReport }">
-							        <tr>
-							        	
-							        	 <td><%=++sl_c%></td>
-							             <td>${ report.service_code }</td>	             
-							        	 <td>${ report.service_name }</td> 
-							        	 <td>${ report.service_contact_static }</td>
-							             <td>${ report.service_contact_csp }</td>
-							             <td>${ report.service_contact_satellite }</td>
-							             <td>${ report.service_contact_total }</td>
-							             <td>${ report.revenue_static }</td>
-							             <td>${ report.revenue_csp }</td>
-							             <td>${ report.revenue_satellite }</td>
-							             <td>${ report.revnue_total }</td>
-							             <td>${ report.discount_static }</td>
-							             <td>${ report.discount_csp }</td>
-							             <td>${ report.discount_satellite }</td>
-							             <td>${ report.discount_total }</td>
-							             
-							        </tr>
-						       </c:forEach>
-						    </c:if>
-						</tbody>
-			</table>
-		</div>
-	</div>
- </div> --%>
  <div id="tabs-6">
  	<form:form id="visitReport">
  		<div class="form-content">
@@ -1120,7 +971,7 @@ var provider = e.options[e.selectedIndex].value;
 var startDate = $JQuery('input[name=from]').val();
 var endDate = $JQuery('input[name=to]').val();
 var reportTitle = "Service Provider Wise Report for "+$JQuery("#provider option:selected").html()+ " (" +startDate +" to "+ endDate+")" ;
-var clinicName = $JQuery(#clinicName).val();
+var clinicName = $JQuery("#clinicName").val();
 
 var clinic = document.getElementById("clinics");
 var clinicCode = "";
@@ -1191,7 +1042,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 	/* alert("checked"); */
  	var clinic = document.getElementById("clinic_comp");
 	var clinicCode = "";
-	var clinicName = $JQuery(#clinicName).val();
+	var clinicName = $JQuery("#clinicName").val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
@@ -1511,7 +1362,7 @@ $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_slip");
 	var clinicCode = "";
-	var clinicName = $JQuery(#clinicName).val();
+	var clinicName = $JQuery("#clinicName").val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
@@ -1591,7 +1442,7 @@ $JQuery("#draftTracking_").submit(function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_draft");
 	var clinicCode = "";
-	var clinicName = $JQuery(#clinicName).val();
+	var clinicName = $JQuery("#clinicName").val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
@@ -1716,11 +1567,11 @@ $JQuery("#regReport").on("submit",function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_reg");
 	var clinicCode = "";
-	var clinicName = $JQuery(#clinicName).val();
+	var clinicName = $JQuery("#clinicName").val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
-		clinicName = $JQuery(#clinicName).val();
+		clinicName = $JQuery("#clinicName").val();
 		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
 		}
 	}else {
@@ -1786,7 +1637,7 @@ $JQuery("#visitReport").on("submit",function(event){
 	$JQuery("#loading_visit").show();
 	var clinic = document.getElementById("clinic_visit");
 	var clinicCode = "";
-	var clinicName = $JQuery(#clinicName).val();
+	var clinicName = $JQuery("#clinicName").val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
