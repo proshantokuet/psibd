@@ -16,6 +16,7 @@ import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
 import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterVisitReport;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -110,4 +111,14 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	public String newRegistration(String startDate, String endDate, String code);
 	public String totalServiceContact(String startDate, String endDate,
 			String code);
+	
+	public List<AUHCVisitReport> getVisitReport(SearchFilterVisitReport filter);
+	
+	public String newRegistration(SearchFilterVisitReport filter);
+	
+	public String oldClientCount(SearchFilterVisitReport filter);
+	
+	public String newClientCount(SearchFilterVisitReport filter);
+	
+	public String totalServiceContact(SearchFilterVisitReport filter);
 }

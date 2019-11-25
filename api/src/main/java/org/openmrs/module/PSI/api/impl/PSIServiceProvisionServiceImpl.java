@@ -18,6 +18,7 @@ import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
 import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterVisitReport;
 
 public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implements PSIServiceProvisionService {
 	
@@ -297,6 +298,38 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		// TODO Auto-generated method stub
 		return dao.totalServiceContact(startDate, endDate, code);
 	}
+
+	@Override
+	public List<AUHCVisitReport> getVisitReport(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getVisitReport(filter);
+	}
+
+	@Override
+	public String newRegistration(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.newRegistration(filter);
+	}
+
+	@Override
+	public String oldClientCount(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.oldClientCount(filter);
+	}
+
+	@Override
+	public String newClientCount(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.newClientCount(filter);
+	}
+
+	@Override
+	public String totalServiceContact(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.totalServiceContact(filter);
+	}
+	
+	
 	
 	
 	

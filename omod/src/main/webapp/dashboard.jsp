@@ -710,6 +710,19 @@
 						</div>                  	
 	              	</div>
               	</c:if>
+              	<div class="col-md-3">
+                    <div class="form-group">
+                        Wealth Classification
+                        <br />
+                        <input type="checkbox" id="wlth_poor_reg" name="wlthPoorReg" value="">Poor
+                        <br>
+                        <input type="checkbox" id="wlth_pop_reg" name="wlthPopReg" value="">Pop
+                        <br>
+                        <input type="checkbox" id="wlth_pay_reg" name="wlthAbleToPayReg" value=""> Able to pay
+                        <br>
+                        <br>
+                    </div>
+                </div>
  			</div>
  			<div class="row">
  				<div class="col-md-4">
@@ -823,6 +836,32 @@
 						</div>                  	
 	              	</div>
               	</c:if>
+              	 <div class="col-md-3">
+                    <div class="form-group">
+                        Wealth Classification
+                        <br />
+                        <input type="checkbox" id="wlth_poor_visit" name="wlthPoorVisit" value="">Poor
+                        <br>
+                        <input type="checkbox" id="wlth_pop_visit" name="wlthPopVisit" value="">Pop
+                        <br>
+                        <input type="checkbox" id="wlth_pay_visit" name="wlthAbleToPayVisit" value=""> Able to pay
+                        <br>
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Service Point
+                        <br />
+                        <input type="checkbox" id="sp_satelite_visit" name="spSateliteVisit" value="">Satelite
+                        <br>
+                        <input type="checkbox" id="sp_static_visit" name="spStaticVisit" value="">Static
+                        <br>
+                        <input type="checkbox" id="sp_csp_visit" name="spCspVisit" value="">CSP
+                        <br>
+                        <br>
+                    </div>
+                </div>
  				<div class="col-md-3">
                    <div class="form-group">
                      
@@ -1479,9 +1518,6 @@ $JQuery("#draftTracking_").submit(function(event){
 		   		
 		   },
 		   success:function(data){
-			  /*  	$JQuery("#draftTrackers").html("");
-				  $JQuery("#draft_tracking").html("");
-				  $JQuery("#draft_tracking_wrapper").html(""); */
 				 $JQuery("#draftTrackers").html(data);
 				 
 				  $JQuery("#draft_tracking").DataTable({
@@ -1584,11 +1620,15 @@ $JQuery("#regReport").on("submit",function(event){
 	$JQuery("#male").is(":checked") == true ? gender += "M" : gender += "";
 	$JQuery("#female").is(":checked") == true ? gender += "F" : gender += "";
 	$JQuery("#others").is(":checked") == true ? gender += "O" : gender += "";
-	
+	var wlthPoorDraft = $JQuery("#wlth_poor_reg").is(":checked") == true ? "Poor" : "";
+	var wlthPopDraft = $JQuery("#wlth_pop_reg").is(":checked") == true ? "PoP" : "";
+	var wlthPayDraft = $JQuery("#wlth_pay_reg").is(":checked") == true ? "Able to Pay" : "";
 	var url =  "/openmrs/module/PSI/registrationReport.form?startDate="+st_date;
 	url += "&endDate="+ed_date;
 	url += "&gender="+gender;
 	url += "&code="+clinicCode;
+	url += "&wlthPoor="+wlthPoorDraft+"&wlthPop="+wlthPopDraft+"&wlthAbleToPay="+wlthPayDraft;
+	
 	var title = "Registration Report "+clinicName+" From "+st_date+" To "+ed_date;
 	
 	$JQuery.ajax({
@@ -1649,10 +1689,18 @@ $JQuery("#visitReport").on("submit",function(event){
 	}
 	var startDate = $JQuery("#startDateVisit").val();
 	var endDate = $JQuery("#endDateVisit").val();
-	
+	var wlthPoorDraft = $JQuery("#wlth_poor_visit").is(":checked") == true ? "Poor" : "";
+	var wlthPopDraft = $JQuery("#wlth_pop_visit").is(":checked") == true ? "PoP" : "";
+	var wlthPayDraft = $JQuery("#wlth_pay_visit").is(":checked") == true ? "Able to Pay" : "";
+	var spSateliteDraft = $JQuery("#sp_satelite_visit").is(":checked") == true ? "Satellite" : "";
+	var spStaticDraft = $JQuery("#sp_static_visit").is(":checked") == true ? "Static" : "";
+	var spCspDraft = $JQuery("#sp_csp_visit").is(":checked") == true ? "CSP" : "";
 	var url = "/openmrs/module/PSI/visitReport.form?startDate="+startDate;
 	url += "&endDate="+endDate;
+	url += "&wlthPoor="+wlthPoorDraft+"&wlthPop="+wlthPopDraft+"&wlthAbleToPay="+wlthPayDraft;
+	url += "&spSatelite="+spSateliteDraft+"&spStatic="+spStaticDraft+"&spCsp="+spCspDraft;
 	url += "&code="+clinicCode;
+	
 	var title = "Visit Report "+clinicName+" From "+startDate+" To "+endDate;
 	
 	$JQuery.ajax({

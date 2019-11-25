@@ -31,6 +31,7 @@ import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
 import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterVisitReport;
 import org.openmrs.module.PSI.utils.PSIConstants;
 
 public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
@@ -196,6 +197,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			report.setTotal(Float.parseFloat(objects[4].toString()));
 			reportDTOs.add(report);
 		}
+		
 		return reportDTOs;
 	}
 	
@@ -1235,6 +1237,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@Override
 	 public String oldClientCount(String startDate,String endDate,String code){
 		String ret = "";
+		String wh = "";
+		if(!"0".equalsIgnoreCase(code))
+			wh += "       AND clinic_code='"+code+"' ";
 		String sql = ""
 				+ "SELECT Count(*) "
 				+ " FROM   (SELECT pmr.patient_uuid "
@@ -1244,19 +1249,20 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "      FROM   psi_money_receipt "
 				+ "      WHERE  money_receipt_date BETWEEN "
 				+ "        '"+startDate+"' AND '"+endDate+"' "
-				+ "       AND clinic_code='"+code+"' "
+				+ wh
 				+ "      GROUP  BY patient_uuid) AS newclient "
 				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
 				+ "   "
 				+ "  WHERE  pmr.money_receipt_date < '"+startDate+"' "
 				+ "   "
 				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+			
 		try{
 			ret = sessionFactory.getCurrentSession()
 				.createSQLQuery(sql).list().get(0).toString();
 			
 		}catch(Exception e){
-			return "0";
+			return e.toString();
 		}
 		
 		return ret;
@@ -1265,7 +1271,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@Override
 	 public String newClientCount(String startDate,String endDate,String code){
 		 String ret = "";
-		 
+		 String wh = "";
+			if(!"0".equalsIgnoreCase(code))
+				wh += "       AND clinic_code='"+code+"' ";
 		 String sql = ""
 				 + "SELECT Count(*) "
 				 + "	 FROM "
@@ -1273,7 +1281,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				 + "	 FROM   psi_money_receipt p "
 				 + "     WHERE  p.money_receipt_date BETWEEN "
 				 + "    '"+startDate+"' AND '"+endDate+"' "
-				 + "    AND p.clinic_code = '"+code+"' "
+				 + wh
 				 + "    GROUP BY p.patient_uuid) "
 				 + "    as p_tbl";
 		 try{
@@ -1402,7 +1410,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "WHERE p.money_receipt_date BETWEEN "
 				+ "'"+startDate+"' AND '"+endDate+"' "
 				+ "AND mr.clinic_code = '"+clinicCode+"' "
-				+ "AND mr.data_collector = '"+provider+"' ";
+				+ "AND mr.data_collector = '"+provider+"' "
+				+" AND mr.is_complete=1 ";
 		try{
 			ret = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql).list().get(0).toString();
@@ -1627,6 +1636,238 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			}catch(Exception e){
 				return "0";
 			}
+	}
+
+	@Override
+	public List<AUHCVisitReport> getVisitReport(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		List<AUHCVisitReport> report = new ArrayList<AUHCVisitReport>();
+		String wh = "";
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+				(filter.getWlthPop() != "");
+	
+		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+				(filter.getSpStatic() != "");
+		if(wealthFlag == true) {
+			wh += "and ( m.wealth = '" + filter.getWlthAbleToPay() + 
+					"' or m.wealth = '"+filter.getWlthPoor()+
+					"' or m.wealth = '"+ filter.getWlthPop()+
+					"' ) ";
+		}
+	
+		if(spFlag == true){
+			wh += " and ( m.service_point = '" + filter.getSpCsp()+
+					"' or m.service_point = '" + filter.getSpSatelite()+
+					"' or m.service_point = '"+ filter.getSpStatic()+
+					"' ) ";
+		}
+		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
+			wh += " AND m.clinic_code = '"+filter.getClinicCode()+"' ";
+		String sql = " SELECT m.patient_name as patient_name,pi.patient_identifier_id as hid, " +
+				" m.contact as mobile_number, m.gender as gender, " +
+				" TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()) as age, " +
+				" DATE_FORMAT(m.patient_registered_date, '%d.%m.%Y') as reg_date, " +
+				" MAX(DATE_FORMAT(m.money_receipt_date, '%d.%m.%Y')) as last_visit_date, " +
+				" COUNT(m.patient_uuid) as visit_count" +
+				" FROM openmrs.psi_money_receipt  m " +
+				" JOIN openmrs.person p " +
+				" ON m.patient_uuid = p.uuid " +
+				" JOIN openmrs.patient_identifier pi " +
+				" ON p.person_id = pi.patient_id  " +
+				" JOIN openmrs.person_address pa " +
+				" ON pa.person_id = p.person_id " +
+				" WHERE m.money_receipt_date BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"'" +
+					wh +
+				" GROUP BY m.patient_uuid";
+		try{
+			report = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql).
+					addScalar("patient_name",StandardBasicTypes.STRING).
+					addScalar("hid",StandardBasicTypes.STRING).
+					addScalar("mobile_number",StandardBasicTypes.STRING).
+					addScalar("gender",StandardBasicTypes.STRING).
+					addScalar("age",StandardBasicTypes.LONG).
+					addScalar("reg_date",StandardBasicTypes.STRING).
+					addScalar("last_visit_date",StandardBasicTypes.STRING).
+					addScalar("visit_count",StandardBasicTypes.LONG).
+					setResultTransformer(new AliasToBeanResultTransformer(AUHCVisitReport.class)).
+					list();
+
+			return report;
+		}
+		catch(Exception e){
+
+		}
+		return null;
+		
+	}
+
+	@Override
+	public String newRegistration(SearchFilterVisitReport filter) {
+		String ret = "";
+		String wh="";
+		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
+			wh += "		         where PAT.person_attribute_type_id = 32  and PAT.value = '"+filter.getClinicCode()+"'   ) "
+					+ "                 as b      on a.personId = b.personId";
+		String sql = ""
+				+ "select count(*) from ( "
+				+ "				 select distinct(pa.person_id) personId from person_attribute pa where "
+				+ "		          pa.person_attribute_type_id = 40 and "
+				+ "		          DATE(pa.value) between '"+filter.getStartDateSlip()+"' and '"+filter.getEndDateSlip()+"' "
+				+ "		          ) as a "
+				+ "		          join  ( SELECT distinct (PAT.person_id) personId "
+				+ "		          FROM person_attribute as PAT "
+				+ wh;
+		try{
+			 ret = sessionFactory.getCurrentSession()
+						.createSQLQuery(sql).list().get(0).toString();
+			 return ret;
+		}catch(Exception e){
+			return "0";
+		}
+	}
+
+	@Override
+	public String oldClientCount(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		String ret = "";
+		String wh = "";
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+				(filter.getWlthPop() != "");
+	
+		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+				(filter.getSpStatic() != "");
+		if(wealthFlag == true) {
+			wh += "and ( wealth = '" + filter.getWlthAbleToPay() + 
+					"' or wealth = '"+filter.getWlthPoor()+
+					"' or wealth = '"+ filter.getWlthPop()+
+					"' ) ";
+		}
+	
+		if(spFlag == true){
+			wh += " and ( service_point = '" + filter.getSpCsp()+
+					"' or service_point = '" + filter.getSpSatelite()+
+					"' or service_point = '"+ filter.getSpStatic()+
+					"' ) ";
+		}
+		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
+			wh += "       AND clinic_code='"+filter.getClinicCode()+"' ";
+		
+		String sql = ""
+				+ "SELECT Count(*) "
+				+ " FROM   (SELECT pmr.patient_uuid "
+				+ "	 FROM   psi_money_receipt pmr "
+				+ "	 JOIN (SELECT patient_uuid, "
+				+ "       Count(patient_uuid) AS total "
+				+ "      FROM   psi_money_receipt "
+				+ "      WHERE  money_receipt_date BETWEEN "
+				+ "        '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
+				+ wh
+				+ "      GROUP  BY patient_uuid) AS newclient "
+				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
+				+ "   "
+				+ "  WHERE  pmr.money_receipt_date < '"+filter.getStartDateSlip()+"' "
+				+ "   "
+				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+		try{
+			ret = sessionFactory.getCurrentSession()
+				.createSQLQuery(sql).list().get(0).toString();
+			
+		}catch(Exception e){
+			return e.toString();
+		}
+		
+		return ret;
+	}
+
+	@Override
+	public String newClientCount(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		 String ret = "";
+		 String wh = "";
+		  Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+					(filter.getWlthPop() != "");
+		
+			Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+					(filter.getSpStatic() != "");
+			if(wealthFlag == true) {
+				wh += "and ( p.wealth = '" + filter.getWlthAbleToPay() + 
+						"' or p.wealth = '"+filter.getWlthPoor()+
+						"' or p.wealth = '"+ filter.getWlthPop()+
+						"' ) ";
+			}
+		
+			if(spFlag == true){
+				wh += " and ( p.service_point = '" + filter.getSpCsp()+
+						"' or p.service_point = '" + filter.getSpSatelite()+
+						"' or p.service_point = '"+ filter.getSpStatic()+
+						"' ) ";
+			}
+			if(!"0".equalsIgnoreCase(filter.getClinicCode()))
+				wh += "       AND p.clinic_code='"+filter.getClinicCode()+"' ";
+		 String sql = ""
+				 + "SELECT Count(*) "
+				 + "	 FROM "
+				 + "	 (SELECT patient_uuid "
+				 + "	 FROM   psi_money_receipt p "
+				 + "     WHERE  p.money_receipt_date BETWEEN "
+				 + "    '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
+				 + wh
+				 + "    GROUP BY p.patient_uuid) "
+				 + "    as p_tbl";
+		 try{
+			 ret = sessionFactory.getCurrentSession()
+						.createSQLQuery(sql).list().get(0).toString();
+			 Long res = Long.parseLong(ret) 
+					 - Long.parseLong(oldClientCount(filter));
+			 return res.toString();
+		 }catch(Exception e){
+			 return e.toString();
+		 }
+	}
+
+	@Override
+	public String totalServiceContact(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		String ret = "";
+		String wh = "";
+		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+				(filter.getWlthPop() != "");
+	
+		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+				(filter.getSpStatic() != "");
+		if(wealthFlag == true) {
+			wh += "and ( mr.wealth = '" + filter.getWlthAbleToPay() + 
+					"' or mr.wealth = '"+filter.getWlthPoor()+
+					"' or mr.wealth = '"+ filter.getWlthPop()+
+					"' ) ";
+		}
+	
+		if(spFlag == true){
+			wh += " and ( mr.service_point = '" + filter.getSpCsp()+
+					"' or mr.service_point = '" + filter.getSpSatelite()+
+					"' or mr.service_point = '"+ filter.getSpStatic()+
+					"' ) ";
+		}
+		if(!"0".equalsIgnoreCase(filter.getClinicCode())) {
+			wh += " AND mr.clinic_code = '"+filter.getClinicCode()+"' ";
+		}
+		String sql = ""
+				+ "SELECT COUNT(*) "
+				+ "FROM openmrs.psi_service_provision p "
+				+ "LEFT JOIN openmrs.psi_money_receipt mr "
+				+ "ON p.psi_money_receipt_id = mr.mid "
+				+ "WHERE p.money_receipt_date BETWEEN "
+				+ "'"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
+				+ " AND mr.is_complete=1 "
+				+ wh;
+		try{
+			ret = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql).list().get(0).toString();
+		 return ret;
+		}catch(Exception e){
+			return "0";
+		}
 	}
 
 	
