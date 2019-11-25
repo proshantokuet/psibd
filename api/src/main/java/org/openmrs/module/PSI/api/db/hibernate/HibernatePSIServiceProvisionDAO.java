@@ -697,7 +697,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			}
 		}
 		
-		if(clinicCode != "0")
+		if(!"0".equalsIgnoreCase(clinicCode))
 			wh += " and pmr.clinic_code = "+clinicCode;
 		
 		String sql = "SELECT Count(*) "+
@@ -1294,7 +1294,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		// TODO Auto-generated method stub
 		String ret = "";
 		 String wh = "";
-		 if(code != "0")
+		 if(!"0".equalsIgnoreCase(code))
 			 wh += " and p.clinic_code = '"+code+"' ";
 		 if(gender.equals("F")) wh += " and p.gender = 'F' ";
 			else if(gender.equals("M")) wh += " and p.gender = 'M' ";
@@ -1325,7 +1325,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			 Long res = Long.parseLong(ret) - Long.parseLong(getDashboardOldClients(startDate,endDate,code,gender));
 			 return res.toString();
 		 }catch(Exception e){
-			 return "0";
+			 return e.toString();
 		 }
 	}
 	@Override

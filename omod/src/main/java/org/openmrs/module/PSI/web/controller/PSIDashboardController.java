@@ -129,9 +129,15 @@ public class PSIDashboardController {
 		model.addAttribute("service_category",
 				Context.getService(AUHCServiceCategoryService.class).getAll());
 		
-		model.addAttribute("dashboard_new_reg",0);
-		model.addAttribute("dashboard_old_clients",0);
-		model.addAttribute("dashboard_new_clients",0);
+		model.addAttribute("dashboard_new_reg",
+				Context.getService(PSIServiceProvisionService.class).
+				newRegistration(today, today,clinicCode));
+		model.addAttribute("dashboard_old_clients",
+				Context.getService(PSIServiceProvisionService.class)
+				.oldClientCount(today, today, clinicCode));
+		model.addAttribute("dashboard_new_clients",
+				Context.getService(PSIServiceProvisionService.class)
+				.newClientCount(today, today, clinicCode));
 		
 		
 		
