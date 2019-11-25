@@ -10,6 +10,7 @@ public class AUHCRegistrationReport {
 	private String register_date;
 	private Long age;
 	private String cc;
+	private String patient_uuid;
 	
 	public Long getSl() {
 		return sl;
@@ -64,6 +65,12 @@ public class AUHCRegistrationReport {
 	}
 	public void setCc(String cc) {
 		this.cc = cc;
+	}
+	public String getPatient_uuid() {
+		return patient_uuid;
+	}
+	public void setPatient_uuid(String patient_uuid) {
+		this.patient_uuid = patient_uuid;
 	}
 	
 	
