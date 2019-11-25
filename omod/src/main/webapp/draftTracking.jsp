@@ -39,10 +39,10 @@
 			        <tr>
 			        	
 			        	<td><%=++sl_d%></td>
-			              <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>	             
+			              <td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${ report.slip_no }</a></td>	             
 			        	 <td>${ report.slip_date }</td> 
-			        	 <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.patient_name }</a></td>
-			            <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.phone }</a></td>
+			        	 <td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${ report.patient_name }</a></td>
+			            <td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${ report.phone }</a></td>
 			            <td>${ report.wealth_classification }</td>
 			            <td>${ report.service_point }</td>
 			            <td>${ report.total_amount }</td>
