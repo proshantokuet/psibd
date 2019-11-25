@@ -87,7 +87,6 @@
                   		Service Category: 
                   			<select class="form-control selcls" id="cat">
                   				<option value="" selected>Select Category</option>
-                  				<option value=""/>  
 					               <c:forEach items="${services}" var="service"> 
 					              	 <option value="${service.categoryName}" label="${service.categoryName}"/>					              
 					              </c:forEach>				             
@@ -690,9 +689,9 @@
  					<div class="form-group">
                         Gender
                         <br />
-                        <input type="checkbox" id="male" name="male" value="">Male
+                        <input type="checkbox" id="male" name="male" value=""> Male
                         <br>
-                        <input type="checkbox" id="female" name="female" value="">Female
+                        <input type="checkbox" id="female" name="female" value=""> Female
                         <br>
                         <input type="checkbox" id="others" name="others" value=""> Others
                     </div>

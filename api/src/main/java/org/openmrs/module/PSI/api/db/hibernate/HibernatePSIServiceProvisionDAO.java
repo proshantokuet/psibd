@@ -1087,6 +1087,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<AUHCRegistrationReport> getRegistrationReport(String startDate,
 			String endDate, String gender,String code) {
@@ -1101,7 +1102,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       p.gender              AS gender, "
 				+ "       temp5.registeredDate  AS register_date, "
 				+ "        IFNULL(TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()),0) AS age, "
-				+ "        paddress.address3 as cc "
+				+ "        paddress.address3 as cc, "
+				+ "       p.uuid              AS patient_uuid "
 				+ "       FROM   person_name pname "
 				+ "	   left JOIN patient_identifier pi "
 				+ "              ON pname.person_id = pi.patient_id "
@@ -1175,6 +1177,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("register_date",StandardBasicTypes.STRING).
 					addScalar("age",StandardBasicTypes.LONG).
 					addScalar("cc",StandardBasicTypes.STRING).
+					addScalar("patient_uuid",StandardBasicTypes.STRING).
 					setResultTransformer(new AliasToBeanResultTransformer(AUHCRegistrationReport.class)).
 					list();
 			return report;

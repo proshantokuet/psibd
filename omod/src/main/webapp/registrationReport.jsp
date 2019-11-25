@@ -41,10 +41,10 @@
 				<c:forEach var="report" items="${regReport }">
 					<tr>
 						<td><%=++sl_r%></td>
-						<td>${report.patient_name }</td>
-						<td>${report.uic }</td>
-						<td>${report.health_id }</td>
-						<td>${report.mobile_no }</td>
+						<td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${report.patient_name }</a></td>
+						<td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${report.uic }</a></td>
+						<td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${report.health_id }</a></td>
+						<td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${report.mobile_no }</a></td>
 						<td>${report.gender }</td>
 						<td>${report.register_date }</td>
 						<td>${report.age }</td>
