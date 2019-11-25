@@ -48,7 +48,7 @@
 						<td>${report.register_date }</td>
 						<td>${report.age }</td>
 						<td>${report.cc }</td>
-						<td></td>
+	
 					</tr>
 				</c:forEach>
 			</tbody>

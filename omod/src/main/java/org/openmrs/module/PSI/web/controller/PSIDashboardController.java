@@ -276,7 +276,7 @@ public class PSIDashboardController {
 		SearchFilterReport filter = new SearchFilterReport();
 		filter.setStart_date(startDate);
 		filter.setEnd_date(endDate);
-		filter.setClinic_code(code);
+		filter.setClinic_code(clinicCode);
 		filter.setData_collector(dataCollector);
 		
 		AUHCDashboardCard dashboardCard = new AUHCDashboardCard();

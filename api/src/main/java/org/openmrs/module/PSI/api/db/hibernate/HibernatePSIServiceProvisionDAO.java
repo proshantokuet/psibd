@@ -1212,7 +1212,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" ON m.patient_uuid = p.uuid " +
 				" JOIN openmrs.patient_identifier pi " +
 				" ON p.person_id = pi.patient_id  " +
-				" JOIN openmrs.person_address pa " +
+				" LEFT JOIN openmrs.person_address pa " +
 				" ON pa.person_id = p.person_id " +
 				" WHERE m.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"'" +
 					wh +
@@ -1281,7 +1281,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 String ret = "";
 		 String wh = "";
 			if(!"0".equalsIgnoreCase(code))
-				wh += "       AND clinic_code='"+code+"' ";
+				wh += "       AND p.clinic_code='"+code+"' ";
 		 String sql = ""
 				 + "SELECT Count(*) "
 				 + "	 FROM "
@@ -1349,17 +1349,24 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		// TODO Auto-generated method stub
 		String ret = "";
 		String sql = "";
-		if(category == ""){ 
+		
+		if(category == ""){
+			String wh = "";
+			if(!"0".equalsIgnoreCase(code))
+				wh += " AND p.clinic_code = '"+code+"' ";
 			sql = ""
 				+ "SELECT count(distinct(p.patient_uuid)) as count "
 				+ "FROM openmrs.psi_money_receipt p "
 				+ "where p.money_receipt_date BETWEEN "
 				+ "'"+startDate+"' AND '"+endDate+"' "
-				+ "AND p.clinic_code = '"+code+"' "
+				+ wh
 				+ "AND p.is_complete = 1 "
 				+ "";
 		}
 		else {
+			String wh = "";
+			if(!"0".equalsIgnoreCase(code))
+				wh += " AND pmr.clinic_code = '"+code+"' ";
 			sql = ""
 					+ "SELECT COUNT(DISTINCT(pmr.patient_uuid)) as COUNT "
 					+ "FROM openmrs.psi_money_receipt as pmr "
@@ -1367,7 +1374,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					+ "ON pmr.mid = psp.psi_money_receipt_id "
 					+ "where pmr.money_receipt_date BETWEEN "
 					+ "'"+startDate+"' AND '"+endDate+"' "
-					+ " AND pmr.clinic_code = '"+code+"' "
+					+ wh
 					+ " AND psp.category = '"+category+"'"
 					+" AND pmr.is_complete = 1 ";
 		}
@@ -1386,6 +1393,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public String newRegistration(String startDate, String endDate, String code) {
 		// TODO Auto-generated method stub
 		String ret = "";
+		String wh = "";
+		if(!"0".equalsIgnoreCase(code))
+			wh += " where PAT.person_attribute_type_id = 32  and PAT.value = '"+code+"'  ";
 		String sql = ""
 				+ "select count(*) from ( "
 				+ "				 select distinct(pa.person_id) personId from person_attribute pa where "
@@ -1394,7 +1404,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "		          ) as a "
 				+ "		          join  ( SELECT distinct (PAT.person_id) personId "
 				+ "		          FROM person_attribute as PAT "
-				+ "		         where PAT.person_attribute_type_id = 32  and PAT.value = '"+code+"'   ) "
+				+ wh + "		          ) "
 				+ "                 as b      on a.personId = b.personId";
 		try{
 			 ret = sessionFactory.getCurrentSession()
@@ -1682,7 +1692,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" ON m.patient_uuid = p.uuid " +
 				" JOIN openmrs.patient_identifier pi " +
 				" ON p.person_id = pi.patient_id  " +
-				" JOIN openmrs.person_address pa " +
+				" LEFT JOIN openmrs.person_address pa " +
 				" ON pa.person_id = p.person_id " +
 				" WHERE m.money_receipt_date BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"'" +
 					wh +
