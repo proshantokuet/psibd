@@ -38,7 +38,7 @@
     <li><a href="#tabs-6">Visit Report</a>
   </ul>
   <div id="tabs-1">
-  
+  <input id="clnic" type="text" value="${clinic_name}">
   <form:form id="ServicePointWise">
   	<div class="form-content">
         	<div class="row">
@@ -1120,7 +1120,7 @@ var provider = e.options[e.selectedIndex].value;
 var startDate = $JQuery('input[name=from]').val();
 var endDate = $JQuery('input[name=to]').val();
 var reportTitle = "Service Provider Wise Report for "+$JQuery("#provider option:selected").html()+ " (" +startDate +" to "+ endDate+")" ;
-var clinicName = "";
+var clinicName = $JQuery(#clinicName).val();
 
 var clinic = document.getElementById("clinics");
 var clinicCode = "";
@@ -1191,7 +1191,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 	/* alert("checked"); */
  	var clinic = document.getElementById("clinic_comp");
 	var clinicCode = "";
-	var clinicName = "";
+	var clinicName = $JQuery(#clinicName).val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
@@ -1511,7 +1511,7 @@ $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_slip");
 	var clinicCode = "";
-	var clinicName = "";
+	var clinicName = $JQuery(#clinicName).val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
@@ -1591,7 +1591,7 @@ $JQuery("#draftTracking_").submit(function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_draft");
 	var clinicCode = "";
-	var clinicName = "";
+	var clinicName = $JQuery(#clinicName).val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
@@ -1716,11 +1716,11 @@ $JQuery("#regReport").on("submit",function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_reg");
 	var clinicCode = "";
-	var clinicName = "";
+	var clinicName = $JQuery(#clinicName).val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
-		clinicName = "";
+		clinicName = $JQuery(#clinicName).val();
 		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
 		}
 	}else {
@@ -1786,7 +1786,7 @@ $JQuery("#visitReport").on("submit",function(event){
 	$JQuery("#loading_visit").show();
 	var clinic = document.getElementById("clinic_visit");
 	var clinicCode = "";
-	var clinicName = "";
+	var clinicName = $JQuery(#clinicName).val();
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
