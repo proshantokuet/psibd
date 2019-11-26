@@ -1066,7 +1066,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					"' or m.service_point = '"+ filter.getSpStatic()+
 					"' ) ";
 		}
-		if(filter.getClinicCode() != "0")
+		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
 			wh += " and m.clinic_code = '"+filter.getClinicCode()+"' ";
 		
 		if (!"".equalsIgnoreCase(filter.getCollector())){
