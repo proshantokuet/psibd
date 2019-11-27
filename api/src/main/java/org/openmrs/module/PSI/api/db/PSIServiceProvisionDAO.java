@@ -136,5 +136,12 @@ public interface PSIServiceProvisionDAO {
 	
 	public String getDashboardNewClients(SearchFilterRegistrationReport filter);
 	
+	 public String oldClientCount(String startDate,String endDate,String code,String collector);
+	 
+	 public String newClientCount(String startDate,String endDate,String code,String collector);
+	 
+//	 public String newRegistration(String startDate,String endDate,String code,String collector);
+	 
+	
 	
 }

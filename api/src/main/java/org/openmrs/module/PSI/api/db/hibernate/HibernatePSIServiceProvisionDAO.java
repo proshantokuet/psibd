@@ -1595,10 +1595,10 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				filter.getEnd_date(),filter.getClinic_code()));
 		
 		dashboardCard.setOldClients(oldClientCount(filter.getStart_date(),
-				filter.getEnd_date(),filter.getClinic_code()));
+				filter.getEnd_date(),filter.getClinic_code(),filter.getData_collector()));
 		
 		dashboardCard.setNewClients(newClientCount(filter.getStart_date(),
-				filter.getEnd_date(),filter.getClinic_code()));
+				filter.getEnd_date(),filter.getClinic_code(),filter.getData_collector()));
 		//New Registration, OldClient, New Client Calculation - End
 		
 		//Total Service Contact Calculation - Start
@@ -2008,29 +2008,29 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		// TODO Auto-generated method stub
 		String wh="";
 		
-		if(filter.getGender().equals("F")) wh += " and pmr.gender = 'F' ";
-		else if(filter.getGender().equals("M")) wh += " and pmr.gender = 'M' ";
-		else if(filter.getGender().equals("O")) wh += " and pmr.gender = 'O' ";
+		if(filter.getGender().equals("F")) wh += " and gender = 'F' ";
+		else if(filter.getGender().equals("M")) wh += " and gender = 'M' ";
+		else if(filter.getGender().equals("O")) wh += " and gender = 'O' ";
 		else if(filter.getGender().length() == 2){
 			if(filter.getGender().equals("MO"))
-				wh += " and pmr.gender != 'F' ";
+				wh += " and gender != 'F' ";
 			else if(filter.getGender().equals("FO"))
-				wh += "and pmr.gender != 'M' ";
+				wh += "and gender != 'M' ";
 			else if(filter.getGender().equals("MF")){
 				
 			}
 		}
 		
 		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
-			wh += " and pmr.clinic_code = "+filter.getClinicCode();
+			wh += " and clinic_code = "+filter.getClinicCode();
 		
 		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
 				(filter.getWlthPop() != "");
 		
 		if(wealthFlag == true) {
-			wh += "and ( pmr.wealth = '" + filter.getWlthAbleToPay() + 
-					"' or pmr.wealth = '"+filter.getWlthPoor()+
-					"' or pmr.wealth = '"+ filter.getWlthPop()+
+			wh += "and ( wealth = '" + filter.getWlthAbleToPay() + 
+					"' or wealth = '"+filter.getWlthPoor()+
+					"' or wealth = '"+ filter.getWlthPop()+
 					"' ) ";
 		}
 		
@@ -2041,11 +2041,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
                  "  Count(patient_uuid) AS total "+ 
                  " FROM   psi_money_receipt "+
                  " WHERE  money_receipt_date BETWEEN "+
-                    "'"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "+ 
+                    "'"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "+
+                 wh+
                  " GROUP  BY patient_uuid) AS newclient "+ 
              " ON pmr.patient_uuid = newclient.patient_uuid "+ 
              " WHERE  pmr.money_receipt_date < '"+filter.getStartDate()+"' "+
-             	wh+
+             
              " GROUP  BY pmr.patient_uuid) AS tbl ";
 		try{
 			String ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
@@ -2105,27 +2106,78 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 }
 	}
 
+	@Override
+	public String oldClientCount(String startDate, String endDate, String code,
+			String collector) {
+		String ret = "";
+		String wh = "";
+		if(!"0".equalsIgnoreCase(code))
+			wh += "       AND clinic_code='"+code+"' ";
+		if(!"".equalsIgnoreCase(collector))
+			wh += "    AND data_collector='"+collector+"' ";
+		String sql = ""
+				+ "SELECT Count(*) "
+				+ " FROM   (SELECT pmr.patient_uuid "
+				+ "	 FROM   psi_money_receipt pmr "
+				+ "	 JOIN (SELECT patient_uuid, "
+				+ "       Count(patient_uuid) AS total "
+				+ "      FROM   psi_money_receipt "
+				+ "      WHERE  money_receipt_date BETWEEN "
+				+ "        '"+startDate+"' AND '"+endDate+"' "
+				+ wh
+				+ "      GROUP  BY patient_uuid) AS newclient "
+				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
+				+ "   "
+				+ "  WHERE  pmr.money_receipt_date < '"+startDate+"' "
+				+ "   "
+				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+			
+		try{
+			ret = sessionFactory.getCurrentSession()
+				.createSQLQuery(sql).list().get(0).toString();
+			
+		}catch(Exception e){
+			return e.toString();
+		}
+		
+		return ret;
+	}
+
+	@Override
+	public String newClientCount(String startDate, String endDate, String code,
+			String collector) {
+		String ret = "";
+		 String wh = "";
+			if(!"0".equalsIgnoreCase(code))
+				wh += "       AND p.clinic_code='"+code+"' ";
+			if(!"".equalsIgnoreCase(collector))
+				wh += "   AND p.data_collector='"+collector+"' ";
+		 String sql = ""
+				 + "SELECT Count(*) "
+				 + "	 FROM "
+				 + "	 (SELECT patient_uuid "
+				 + "	 FROM   psi_money_receipt p "
+				 + "     WHERE  p.money_receipt_date BETWEEN "
+				 + "    '"+startDate+"' AND '"+endDate+"' "
+				 + wh
+				 + "    GROUP BY p.patient_uuid) "
+				 + "    as p_tbl";
+		 try{
+			 ret = sessionFactory.getCurrentSession()
+						.createSQLQuery(sql).list().get(0).toString();
+			 Long res = Long.parseLong(ret) 
+					 - Long.parseLong(oldClientCount(startDate,endDate,code,collector));
+			 return res.toString();
+		 }catch(Exception e){
+			 return e.toString();
+		 }
+		 
+	}
+
 	
 
 	
 	
 
-	
-	
-
-	
-	
-	
-	
-	
-
-	
-
-	
-	
-	
-	
-
-	
 	
 }

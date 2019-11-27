@@ -69,10 +69,10 @@
 						<th colspan="4">Discount</th>
 					</tr>
 					<tr>
-						<% for(int i = 0; i < 3; i++) {%>
+						<% for(int i = 0; i < 3; i++) {%>	
 					 	<th>Static</th>
-					 	<th>CSP</th>
 					 	<th>Satellite</th>
+					 	<th>CSP</th>
 					 	<th>Total</th>
 					 	<% } %>
 					</tr>

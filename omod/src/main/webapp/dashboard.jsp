@@ -251,7 +251,7 @@
                		<div class="form-group">
                   	<label for="Service Code">Data Collector</label><br />
 						<select id="provider" required="true"  class="form-control selcls">
-						  <option value=""></option>
+						  <option value="" selected></option>
 						  <c:forEach var="user" items="${ psiClinicUsers }">
 							  <option value="${user.username }">${user.userRole }</option>							  
 						  </c:forEach>
@@ -409,9 +409,9 @@
                     <div class="form-group">
                         Wealth Classification
                         <br />
-                        <input type="checkbox" id="wlth_poor" name="wlthPoor" value="">Poor
+                        <input type="checkbox" id="wlth_poor" name="wlthPoor" value=""> Poor
                         <br>
-                        <input type="checkbox" id="wlth_pop" name="wlthPop" value="">Pop
+                        <input type="checkbox" id="wlth_pop" name="wlthPop" value=""> Pop
                         <br>
                         <input type="checkbox" id="wlth_pay" name="wlthAbleToPay" value=""> Able to pay
                         <br>
@@ -422,11 +422,11 @@
                     <div class="form-group">
                         Service Point
                         <br />
-                        <input type="checkbox" id="sp_satelite" name="spSatelite" value="">Satelite
+                        <input type="checkbox" id="sp_satelite" name="spSatelite" value=""> Satelite
                         <br>
-                        <input type="checkbox" id="sp_static" name="spStatic" value="">Static
+                        <input type="checkbox" id="sp_static" name="spStatic" value=""> Static
                         <br>
-                        <input type="checkbox" id="sp_csp" name="spCsp" value="">CSP
+                        <input type="checkbox" id="sp_csp" name="spCsp" value=""> CSP
                         <br>
                         <br>
                     </div>
@@ -723,16 +723,15 @@
                         <br>
                     </div>
                 </div>
- 			</div>
- 			<!-- <div class="row"> -->
- 				<div class="col-md-4">
+ 		
+ 				<div class="col-md-3">
                    <div class="form-group">
-                     
                        <button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>
                    </div>
 
-               </div>
- 		<!-- 	</div> -->
+               	</div>
+         </div>
+ 		
  		</div>
  	</form:form>
  	<div id="loading_reg" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
@@ -839,9 +838,9 @@
                     <div class="form-group">
                         Wealth Classification
                         <br />
-                        <input type="checkbox" id="wlth_poor_visit" name="wlthPoorVisit" value="">Poor
+                        <input type="checkbox" id="wlth_poor_visit" name="wlthPoorVisit" value=""> Poor
                         <br>
-                        <input type="checkbox" id="wlth_pop_visit" name="wlthPopVisit" value="">Pop
+                        <input type="checkbox" id="wlth_pop_visit" name="wlthPopVisit" value=""> Pop
                         <br>
                         <input type="checkbox" id="wlth_pay_visit" name="wlthAbleToPayVisit" value=""> Able to pay
                         <br>
@@ -852,11 +851,11 @@
                     <div class="form-group">
                         Service Point
                         <br />
-                        <input type="checkbox" id="sp_satelite_visit" name="spSateliteVisit" value="">Satelite
+                        <input type="checkbox" id="sp_satelite_visit" name="spSateliteVisit" value=""> Satelite
                         <br>
-                        <input type="checkbox" id="sp_static_visit" name="spStaticVisit" value="">Static
+                        <input type="checkbox" id="sp_static_visit" name="spStaticVisit" value=""> Static
                         <br>
-                        <input type="checkbox" id="sp_csp_visit" name="spCspVisit" value="">CSP
+                        <input type="checkbox" id="sp_csp_visit" name="spCspVisit" value=""> CSP
                         <br>
                         <br>
                     </div>
@@ -1057,6 +1056,7 @@ $JQuery.ajax({
 			         		orientation: 'landscape',
 			         		pageSize: 'LEGAL'
 			         	  }
+			         	 
 			            
 			         ]
 			   
@@ -1122,14 +1122,40 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				             {
 				                 extend: 'excelHtml5',
 				                 title: title,
-				                 text: 'Export as .xlxs'
+				                 text: 'Export as .xlxs',
+				                 customize:function(doc){
+				                	 var sheet = doc.xl.worksheets['sheet1.xml'];
+				                 }
 				             },
 				             {
 				         		extend: 'pdfHtml5',
 				         		title: title,
 				         		text: 'Export as .pdf',
 				         		orientation: 'landscape',
-				         		pageSize: 'LEGAL'
+				         		pageSize: 'LEGAL',
+				         		customize:function(pdfDocument){
+				         			pdfDocument.content[1].table.headerRows = 2;
+				                    var firstHeaderRow = [];
+				                    $JQuery('#servicePoint').find("thead>tr:first-child>th").each(
+				                            function(index, element) {
+				                              var colSpan = element.getAttribute("colSpan");
+				                              firstHeaderRow.push({
+				                                text: element.innerHTML,
+				                                style: "tableHeader",
+				                                colSpan: colSpan
+				                              });
+				                              
+				                              for (var i = 0; i < colSpan - 1; i++) {
+				                                firstHeaderRow.push({});
+				                              }
+		                            });
+				                    pdfDocument.content[1].table.body.unshift(firstHeaderRow);
+				                    pdfDocument.content[1].table.body[1][0].text = "";
+				                    pdfDocument.content[1].table.body[1][1].text = "";
+				                    pdfDocument.content[1].table.body[1][2].text = "";
+				                    pdfDocument.content[1].layout = "";
+				                    
+				         		}
 					         }
 				         ]
 			   }); 
@@ -1268,7 +1294,29 @@ $JQuery('#servicePoint').DataTable({
 		         		title: "Comprehensive Revenue Report_"+ new Date(),
 		         		text: 'Export as .pdf',
 		         		orientation: 'landscape',
-		         		pageSize: 'LEGAL'
+		         		pageSize: 'LEGAL',
+		         		customize:function(pdfDocument){
+		         			pdfDocument.content[1].table.headerRows = 2;
+		                    var firstHeaderRow = [];
+		                    $JQuery('#servicePoint').find("thead>tr:first-child>th").each(
+		                            function(index, element) {
+		                              var colSpan = element.getAttribute("colSpan");
+		                              firstHeaderRow.push({
+		                                text: element.innerHTML,
+		                                style: "tableHeader",
+		                                colSpan: colSpan
+		                              });
+		                              for (var i = 0; i < colSpan - 1; i++) {
+		                                firstHeaderRow.push({});
+		                              }
+                            });
+		                    pdfDocument.content[1].table.body.unshift(firstHeaderRow);
+		                    pdfDocument.content[1].table.body[1][0].text = "";
+		                    pdfDocument.content[1].table.body[1][1].text = "";
+		                    pdfDocument.content[1].table.body[1][2].text = "";
+		                    pdfDocument.content[1].layout = "";
+		                    
+		         		}
 		         }
 	         ]
 });
