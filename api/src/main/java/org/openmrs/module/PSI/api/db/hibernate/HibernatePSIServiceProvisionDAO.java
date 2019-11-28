@@ -423,7 +423,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public String getTotalDiscount(String startDate, String endDate) {
 		// TODO Auto-generated method stub
 		String hql = "SELECT ROUND(SUM(discount),2) FROM PSIServiceProvision " +
-					" WHERE moneyReceiptDate BETWEEN '"+startDate+"' AND '"+endDate+"'"+
+					" WHERE DATE(moneyReceiptDate) BETWEEN '"+startDate+"' AND '"+endDate+"'"+
 				" AND isComplete=1";
 		Double ret;
 		 try{ 
@@ -1280,11 +1280,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       LEFT JOIN (SELECT patient_uuid, "
 				+ "                         Count(patient_uuid) AS total "
 				+ "                  FROM   psi_money_receipt "
-				+ "                  WHERE  money_receipt_date < '"+startDate+"' " +
+				+ "                  WHERE  DATE(money_receipt_date) < '"+startDate+"' " +
 						wh1
 				+ "                  GROUP  BY patient_uuid) AS table1 "
 				+ "              ON pmr.patient_uuid = table1.patient_uuid "
-				+ " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' "
+				+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+startDate+"' AND '"+endDate+"' "
 				+ "       AND table1.patient_uuid IS NOT NULL " +
 				wh2
 				+ "  GROUP  BY pmr.patient_uuid) as tbl";
@@ -1297,11 +1297,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       LEFT JOIN (SELECT patient_uuid, "
 				+ "                         Count(patient_uuid) AS total "
 				+ "                  FROM   psi_money_receipt "
-				+ "                  WHERE  money_receipt_date < '"+startDate+"' " +
+				+ "                  WHERE  DATE(money_receipt_date) < '"+startDate+"' " +
 						wh1
 				+ "                  GROUP  BY patient_uuid) AS table1 "
 				+ "              ON pmr.patient_uuid = table1.patient_uuid "
-				+ " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' " +
+				+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+startDate+"' AND '"+endDate+"' " +
 						" and table1.patient_uuid is NULL" +
 						wh2
 				+ " GROUP  BY pmr.patient_uuid HAVING Count(pmr.patient_uuid) > 1) "
@@ -1357,11 +1357,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				 + "       LEFT JOIN (SELECT patient_uuid, "
 				 + "                         Count(patient_uuid) AS total "
 				 + "                  FROM   psi_money_receipt "
-				 + "                  WHERE  money_receipt_date < '"+startDate+"' " +
+				 + "                  WHERE  DATE(money_receipt_date) < '"+startDate+"' " +
 				 		wh1
 				 + "                  GROUP  BY patient_uuid) AS table1 "
 				 + "              ON pmr.patient_uuid = table1.patient_uuid "
-				 + " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' and " +
+				 + " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+startDate+"' AND '"+endDate+"' and " +
 				 		"	table1.patient_uuid is NULL" +
 				 		wh2
 				 + " GROUP  BY pmr.patient_uuid) as tbl";
@@ -1430,7 +1430,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			sql = ""
 				+ "SELECT count(distinct(p.patient_uuid)) as count "
 				+ "FROM openmrs.psi_money_receipt p "
-				+ "where p.money_receipt_date BETWEEN "
+				+ "where DATE(p.money_receipt_date) BETWEEN "
 				+ "'"+startDate+"' AND '"+endDate+"' "
 				+ wh
 				+ "AND p.is_complete = 1 "
@@ -1445,7 +1445,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					+ "FROM openmrs.psi_money_receipt as pmr "
 					+ "LEFT JOIN openmrs.psi_service_provision psp "
 					+ "ON pmr.mid = psp.psi_money_receipt_id "
-					+ "where pmr.money_receipt_date BETWEEN "
+					+ "where DATE(pmr.money_receipt_date) BETWEEN "
 					+ "'"+startDate+"' AND '"+endDate+"' "
 					+ wh
 					+ " AND psp.category = '"+category+"'"
@@ -1498,7 +1498,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "FROM openmrs.psi_service_provision p "
 				+ "LEFT JOIN openmrs.psi_money_receipt mr "
 				+ "ON p.psi_money_receipt_id = mr.mid "
-				+ "WHERE p.money_receipt_date BETWEEN "
+				+ "WHERE DATE(p.money_receipt_date) BETWEEN "
 				+ "'"+startDate+"' AND '"+endDate+"' "
 				+ "AND mr.clinic_code = '"+clinicCode+"' "
 				+ "AND mr.data_collector = '"+provider+"' "
@@ -1519,7 +1519,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String sql = ""
 				+ "SELECT COUNT(DISTINCT(pmr.patient_uuid)) as COUNT "
 				+ "FROM openmrs.psi_money_receipt as pmr "
-				+ "where pmr.money_receipt_date BETWEEN "
+				+ "where DATE(pmr.money_receipt_date) BETWEEN "
 				+ "'"+startDate+"' AND '"+endDate+"' "
 				+ "AND pmr.clinic_code = '"+code+"' "
 				+ "AND pmr.data_collector='"+collector+"' "
@@ -1542,7 +1542,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String sql = ""
 				+ "SELECT SUM(m.total_discount) "
 				+ "FROM openmrs.psi_money_receipt as m "
-				+ "WHERE m.money_receipt_date BETWEEN "
+				+ "WHERE DATE(m.money_receipt_date) BETWEEN "
 				+ "'"+startDate+"' AND '"+endDate+"' "
 				+ "AND m.clinic_code='"+code+"' "
 				+ "AND m.data_collector='"+collector+"' "
@@ -1590,7 +1590,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "FROM openmrs.psi_service_provision p "
 				+ "LEFT JOIN openmrs.psi_money_receipt mr "
 				+ "ON p.psi_money_receipt_id = mr.mid "
-				+ "WHERE p.money_receipt_date BETWEEN "
+				+ "WHERE DATE(p.money_receipt_date) BETWEEN "
 				+ "'"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
 				+" AND mr.is_complete = 1 ";
 				
@@ -1767,7 +1767,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" ON p.person_id = pi.patient_id  " +
 				" LEFT JOIN openmrs.person_address pa " +
 				" ON pa.person_id = p.person_id " +
-				" WHERE m.money_receipt_date BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"'" +
+				" WHERE DATE(m.money_receipt_date) BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"'" +
 					wh +
 				" GROUP BY m.patient_uuid";
 		try{
@@ -1881,11 +1881,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       LEFT JOIN (SELECT patient_uuid, "
 				+ "                         Count(patient_uuid) AS total "
 				+ "                  FROM   psi_money_receipt "
-				+ "                  WHERE  money_receipt_date < '"+filter.getStartDateSlip()+"'" +
+				+ "                  WHERE  DATE(money_receipt_date) < '"+filter.getStartDateSlip()+"'" +
 						wh
 				+ "                  GROUP  BY patient_uuid) AS table1 "
 				+ "              ON pmr.patient_uuid = table1.patient_uuid "
-				+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
+				+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
 				+ "       AND table1.patient_uuid IS NOT NULL " +
 				wh1
 				+ " "
@@ -1900,11 +1900,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       LEFT JOIN (SELECT patient_uuid, "
 				+ "                         Count(patient_uuid) AS total "
 				+ "                  FROM   psi_money_receipt "
-				+ "                  WHERE  money_receipt_date < '"+filter.getStartDateSlip()+"' " +
+				+ "                  WHERE  DATE(money_receipt_date) < '"+filter.getStartDateSlip()+"' " +
 				"	 " + wh
 				+ "                  GROUP  BY patient_uuid) AS table1 "
 				+ "              ON pmr.patient_uuid = table1.patient_uuid "
-				+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' " +
+				+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' " +
 						" and table1.patient_uuid is NULL" +
 						"   " + wh1
 				+ " GROUP  BY pmr.patient_uuid HAVING Count(pmr.patient_uuid) > 1 ) "
@@ -1981,11 +1981,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					+ "       LEFT JOIN (SELECT patient_uuid, "
 					+ "                         Count(patient_uuid) AS total "
 					+ "                  FROM   psi_money_receipt "
-					+ "                  WHERE  money_receipt_date < '"+filter.getStartDateSlip()+"'" +
+					+ "                  WHERE  DATE(money_receipt_date) < '"+filter.getStartDateSlip()+"'" +
 							wh
 					+ "                  GROUP  BY patient_uuid) AS table1 "
 					+ "              ON pmr.patient_uuid = table1.patient_uuid "
-					+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' and table1.patient_uuid is NULL " +
+					+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' and table1.patient_uuid is NULL " +
 							wh1
 					+ " GROUP  BY pmr.patient_uuid) as tbl ";
 			
@@ -2030,7 +2030,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "FROM openmrs.psi_service_provision p "
 				+ "LEFT JOIN openmrs.psi_money_receipt mr "
 				+ "ON p.psi_money_receipt_id = mr.mid "
-				+ "WHERE p.money_receipt_date BETWEEN "
+				+ "WHERE DATE(p.money_receipt_date) BETWEEN "
 				+ "'"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
 				+ " AND mr.is_complete=1 "
 				+ wh;
@@ -2098,7 +2098,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "              ON pi.patient_id = temp7.person_id"
 				+ "        left JOIN person_address paddress "
 				+ "              ON paddress.person_id = pi.patient_id "
-				+ "              where temp5.registeredDate BETWEEN '"+filter.getStartDate()+"' and " +
+				+ "              where DATE(temp5.registeredDate) BETWEEN '"+filter.getStartDate()+"' and " +
 						"	'"+filter.getEndDate()+"' and "
 				+ "              pname.preferred = 1 ";
 				
@@ -2229,11 +2229,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       LEFT JOIN (SELECT patient_uuid, "
 				+ "                         Count(patient_uuid) AS total "
 				+ "                  FROM   psi_money_receipt "
-				+ "                  WHERE  money_receipt_date < '"+filter.getStartDate()+"' " +
+				+ "                  WHERE  DATE(money_receipt_date) < '"+filter.getStartDate()+"' " +
 						wh
 				+ "                  GROUP  BY patient_uuid) AS table1 "
 				+ "              ON pmr.patient_uuid = table1.patient_uuid "
-				+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "
+				+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "
 				+ "       AND table1.patient_uuid IS NOT NULL " +
 				 wh1
 				
@@ -2248,11 +2248,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       LEFT JOIN (SELECT patient_uuid, "
 				+ "                         Count(patient_uuid) AS total "
 				+ "                  FROM   psi_money_receipt "
-				+ "                  WHERE  money_receipt_date < '"+filter.getStartDate()+"' " +
+				+ "                  WHERE  DATE(money_receipt_date) < '"+filter.getStartDate()+"' " +
 				wh
 				+ "                  GROUP  BY patient_uuid) AS table1 "
 				+ "              ON pmr.patient_uuid = table1.patient_uuid "
-				+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' " +
+				+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' " +
 						" and table1.patient_uuid is NULL" +
 						wh1
 				+ " GROUP  BY pmr.patient_uuid HAVING Count(pmr.patient_uuid) > 1) "
@@ -2339,11 +2339,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					+ "       LEFT JOIN (SELECT patient_uuid, "
 					+ "                         Count(patient_uuid) AS total "
 					+ "                  FROM   psi_money_receipt "
-					+ "                  WHERE  money_receipt_date < '"+filter.getStartDate()+"'" +
+					+ "                  WHERE  DATE(money_receipt_date) < '"+filter.getStartDate()+"'" +
 							 wh
 					+ "                  GROUP  BY patient_uuid) AS table1 "
 					+ "              ON pmr.patient_uuid = table1.patient_uuid "
-					+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' and table1.patient_uuid is NULL " +
+					+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' and table1.patient_uuid is NULL " +
 							wh1
 					+ " GROUP  BY pmr.patient_uuid) as tbl";
 		 try{
@@ -2404,12 +2404,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       LEFT JOIN (SELECT patient_uuid, "
 				+ "                         Count(patient_uuid) AS total "
 				+ "                  FROM   psi_money_receipt "
-				+ "                  WHERE  money_receipt_date < '"+startDate+"' " +
+				+ "                  WHERE  DATE(money_receipt_date) < '"+startDate+"' " +
 						wh1
 						+ wh3
 				+ "                  GROUP  BY patient_uuid) AS table1 "
 				+ "              ON pmr.patient_uuid = table1.patient_uuid "
-				+ " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' "
+				+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+startDate+"' AND '"+endDate+"' "
 				+ "       AND table1.patient_uuid IS NOT NULL " +
 				wh2
 				+ wh4
@@ -2423,12 +2423,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       LEFT JOIN (SELECT patient_uuid, "
 				+ "                         Count(patient_uuid) AS total "
 				+ "                  FROM   psi_money_receipt "
-				+ "                  WHERE  money_receipt_date < '"+startDate+"' " +
+				+ "                  WHERE  DATE(money_receipt_date) < '"+startDate+"' " +
 						wh1
 						+ wh3
 				+ "                  GROUP  BY patient_uuid) AS table1 "
 				+ "              ON pmr.patient_uuid = table1.patient_uuid "
-				+ " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' " +
+				+ " WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+startDate+"' AND '"+endDate+"' " +
 						" and table1.patient_uuid is NULL" +
 						wh2
 						+ wh4
@@ -2504,12 +2504,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				 + "       LEFT JOIN (SELECT patient_uuid, "
 				 + "                         Count(patient_uuid) AS total "
 				 + "                  FROM   psi_money_receipt "
-				 + "                  WHERE  money_receipt_date < '"+startDate+"' " +
+				 + "                  WHERE  DATE(money_receipt_date) < '"+startDate+"' " +
 				 		wh1
 				 		+ wh3
 				 + "                  GROUP  BY patient_uuid) AS table1 "
 				 + "              ON pmr.patient_uuid = table1.patient_uuid "
-				 + "WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' and " +
+				 + "WHERE  DATE(pmr.money_receipt_date) BETWEEN '"+startDate+"' AND '"+endDate+"' and " +
 				 		"	table1.patient_uuid is NULL" +
 				 		wh2
 				 		+ wh4
