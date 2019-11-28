@@ -178,8 +178,8 @@
 					<tr>
 						<% for(int i = 0; i < 3; i++) {%>
 					 	<th>Static</th>
-					 	<th>CSP</th>
 					 	<th>Satellite</th>
+					 	<th>CSP</th>
 					 	<th>Total</th>
 					 	<% } %>
 					</tr>
@@ -997,6 +997,51 @@ $jq(function(){
 /* $jq('#startDate').attr('max', maxDate);
 $jq('#endDate').attr('max', maxDate); */
 
+$jq("#startDate").on("change",function(){
+	/* console.log("change"); */
+	$jq("#endDate").datepicker(
+			'option',
+			{ minDate: new Date($jq("#startDate").val()),
+			  maxDate: new Date()
+			});
+});
+$jq("#from").on("change",function(){
+	$jq("#to").datepicker(
+		'option',{
+			minDate: new Date($jq("#from").val()),
+			maxDate: new Date()
+		});
+});
+$jq("#startDateSlip").on("change",function(){
+	$jq("#endDateSlip").datepicker(
+		'option',{
+			minDate: new Date($jq("#startDateSlip").val()),
+			maxDate: new Date()
+		});
+});
+
+$jq("#startDateDraft").on("change",function(){
+	$jq("#endDateDraft").datepicker(
+		'option',{
+			minDate: new Date($jq("#startDateDraft").val()),
+			maxDate: new Date()
+		});
+});
+
+$jq("#startDateReg").on("change",function(){
+	$jq("#endDateReg").datepicker(
+		'option',{
+			minDate: new Date($jq("#startDateReg").val()),
+			maxDate: new Date()
+		});
+});
+$jq("#startDateVisit").on("change",function(){
+	$jq("#endDateVisit").datepicker(
+		'option',{
+			minDate: new Date($jq("#startDateVisit").val()),
+			maxDate: new Date()
+		});
+});
 </script>
 
 <script type="text/javascript">
@@ -1123,9 +1168,8 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				                 extend: 'excelHtml5',
 				                 title: title,
 				                 text: 'Export as .xlxs',
-				                 customize:function(doc){
-				                	 var sheet = doc.xl.worksheets['sheet1.xml'];
-				                 }
+				                 customize:function(win){
+				                }
 				             },
 				             {
 				         		extend: 'pdfHtml5',
@@ -1287,7 +1331,9 @@ $JQuery('#servicePoint').DataTable({
 	             {
 	                 extend: 'excelHtml5',
 	                 title: "Comprehensive Revenue Report_"+ new Date(),
-	                 text: 'Export as .xlxs'
+	                 text: 'Export as .xlxs',
+	                 customize:function(win){
+	                	  }
 	             },
 	             {
 		         		extend: 'pdfHtml5',
@@ -1840,5 +1886,9 @@ $JQuery("#visitReport").on("submit",function(event){
     float: left;
     text-align: right;
 }
-
+@media print {
+  .header-print {
+    display: table-header-group;
+  }
+}
 </style>

@@ -1033,7 +1033,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
 					get(0).toString();
-//			return sql;
+//			return "0";
 			return ret;
 		}catch(Exception e){
 			return ret;
@@ -1245,41 +1245,91 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	@Override
 	 public String oldClientCount(String startDate,String endDate,String code){
 		String ret = "";
-		String wh = "";
-		if(!"0".equalsIgnoreCase(code))
-			wh += "       AND clinic_code='"+code+"' ";
-		String sql = ""
-				+ "SELECT Count(*) "
-				+ " FROM   (SELECT pmr.patient_uuid "
-				+ "	 FROM   psi_money_receipt pmr "
-				+ "	 JOIN (SELECT patient_uuid, "
-				+ "       Count(patient_uuid) AS total "
-				+ "      FROM   psi_money_receipt "
-				+ "      WHERE  money_receipt_date BETWEEN "
-				+ "        '"+startDate+"' AND '"+endDate+"' "
-				+ wh
-				+ "      GROUP  BY patient_uuid) AS newclient "
-				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
-				+ "   "
-				+ "  WHERE  pmr.money_receipt_date < '"+startDate+"' "
-				+ "   "
-				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+//    Previous Version on SQL		
+//		String wh = "";
+//		if(!"0".equalsIgnoreCase(code))
+//			wh += "       AND clinic_code='"+code+"' ";
+//		String sql = ""
+//				+ "SELECT Count(*) "
+//				+ " FROM   (SELECT pmr.patient_uuid "
+//				+ "	 FROM   psi_money_receipt pmr "
+//				+ "	 JOIN (SELECT patient_uuid, "
+//				+ "       Count(patient_uuid) AS total "
+//				+ "      FROM   psi_money_receipt "
+//				+ "      WHERE  money_receipt_date BETWEEN "
+//				+ "        '"+startDate+"' AND '"+endDate+"' "
+//				+ wh
+//				+ "      GROUP  BY patient_uuid) AS newclient "
+//				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
+//				+ "   "
+//				+ "  WHERE  pmr.money_receipt_date < '"+startDate+"' "
+//				+ "   "
+//				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+		String wh1 = "";
+		String wh2 = "";
+		if(!"0".equalsIgnoreCase(code)){
+			wh1 += "	and clinic_code = '"+code+"' ";
+			wh2 += "  and pmr.clinic_code = '"+code+"' ";
+		}
+		String sql1 = ""
+				+ " SELECT COUNT(*) FROM "
+				+ " (SELECT pmr.patient_uuid    AS oldPatientID, "
+				+ "       table1.patient_uuid AS oldpatient, "
+				+ "       Count(pmr.patient_uuid) as visitTaken "
+				+ " FROM   psi_money_receipt pmr "
+				+ "       LEFT JOIN (SELECT patient_uuid, "
+				+ "                         Count(patient_uuid) AS total "
+				+ "                  FROM   psi_money_receipt "
+				+ "                  WHERE  money_receipt_date < '"+startDate+"' " +
+						wh1
+				+ "                  GROUP  BY patient_uuid) AS table1 "
+				+ "              ON pmr.patient_uuid = table1.patient_uuid "
+				+ " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' "
+				+ "       AND table1.patient_uuid IS NOT NULL " +
+				wh2
+				+ "  GROUP  BY pmr.patient_uuid) as tbl";
+		String sql2 = ""
+				+ " SELECT COUNT(*) FROM "
+				+ " (SELECT pmr.patient_uuid    AS newpatientId, "
+				+ "       table1.patient_uuid AS oldpatientid, "
+				+ "       Count(pmr.patient_uuid) as visitTaken "
+				+ " FROM   psi_money_receipt pmr "
+				+ "       LEFT JOIN (SELECT patient_uuid, "
+				+ "                         Count(patient_uuid) AS total "
+				+ "                  FROM   psi_money_receipt "
+				+ "                  WHERE  money_receipt_date < '"+startDate+"' " +
+						wh1
+				+ "                  GROUP  BY patient_uuid) AS table1 "
+				+ "              ON pmr.patient_uuid = table1.patient_uuid "
+				+ " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' " +
+						" and table1.patient_uuid is NULL" +
+						wh2
+				+ " GROUP  BY pmr.patient_uuid HAVING Count(pmr.patient_uuid) > 1) "
+				+ " as tbl";
 			
 		try{
-			ret = sessionFactory.getCurrentSession()
-				.createSQLQuery(sql).list().get(0).toString();
+//			ret = sessionFactory.getCurrentSession()
+//				.createSQLQuery(sql1).list().get(0).toString();
+			String res1,res2;
+			res1 = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql1).list().get(0).toString();
+			res2 = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql2).list().get(0).toString();
+			Long res = Long.parseLong(res1)+ Long.parseLong(res2);
+			
+			return res.toString();
 			
 		}catch(Exception e){
-			return e.toString();
+			return "0";
 		}
 		
-		return ret;
+//		return ret;
 	}
 	
 	@Override
 	 public String newClientCount(String startDate,String endDate,String code){
 		 String ret = "";
-		 String wh = "";
+		 /* String wh = "";
 			if(!"0".equalsIgnoreCase(code))
 				wh += "       AND p.clinic_code='"+code+"' ";
 		 String sql = ""
@@ -1291,15 +1341,38 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				 + "    '"+startDate+"' AND '"+endDate+"' "
 				 + wh
 				 + "    GROUP BY p.patient_uuid) "
-				 + "    as p_tbl";
+				 + "    as p_tbl";*/
+		 String wh1 = "";
+			String wh2 = "";
+			if(!"0".equalsIgnoreCase(code)){
+				wh1 += "	and clinic_code = '"+code+"' ";
+				wh2 += "  and pmr.clinic_code = '"+code+"' ";
+			}
+		 String sql = ""
+				 + " SELECT COUNT(*) FROM "
+				 + " (SELECT pmr.patient_uuid    AS newpatientId, "
+				 + "       table1.patient_uuid AS oldpatientid, "
+				 + "       Count(pmr.patient_uuid) as visitTaken "
+				 + " FROM   psi_money_receipt pmr "
+				 + "       LEFT JOIN (SELECT patient_uuid, "
+				 + "                         Count(patient_uuid) AS total "
+				 + "                  FROM   psi_money_receipt "
+				 + "                  WHERE  money_receipt_date < '"+startDate+"' " +
+				 		wh1
+				 + "                  GROUP  BY patient_uuid) AS table1 "
+				 + "              ON pmr.patient_uuid = table1.patient_uuid "
+				 + " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' and " +
+				 		"	table1.patient_uuid is NULL" +
+				 		wh2
+				 + " GROUP  BY pmr.patient_uuid) as tbl";
 		 try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
-			 Long res = Long.parseLong(ret) 
-					 - Long.parseLong(oldClientCount(startDate,endDate,code));
-			 return res.toString();
+//			 Long res = Long.parseLong(ret) 
+//					 - Long.parseLong(oldClientCount(startDate,endDate,code));
+			 return ret;
 		 }catch(Exception e){
-			 return e.toString();
+			 return "0";
 		 }
 		 
 		
@@ -1341,7 +1414,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			 Long res = Long.parseLong(ret) - Long.parseLong(getDashboardOldClients(startDate,endDate,code,gender));
 			 return res.toString();
 		 }catch(Exception e){
-			 return e.toString();
+			 return "0";
 		 }
 	}
 	@Override
@@ -1749,53 +1822,108 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public String oldClientCount(SearchFilterVisitReport filter) {
 		// TODO Auto-generated method stub
 		String ret = "";
-		String wh = "";
-		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
-				(filter.getWlthPop() != "");
-	
-		Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
-				(filter.getSpStatic() != "");
-		if(wealthFlag == true) {
-			wh += "and ( wealth = '" + filter.getWlthAbleToPay() + 
-					"' or wealth = '"+filter.getWlthPoor()+
-					"' or wealth = '"+ filter.getWlthPop()+
-					"' ) ";
-		}
-	
-		if(spFlag == true){
-			wh += " and ( service_point = '" + filter.getSpCsp()+
-					"' or service_point = '" + filter.getSpSatelite()+
-					"' or service_point = '"+ filter.getSpStatic()+
-					"' ) ";
-		}
-		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
-			wh += "       AND clinic_code='"+filter.getClinicCode()+"' ";
+		 String wh = "";
+		 String wh1= "";
+		  Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+					(filter.getWlthPop() != "");
 		
-		String sql = ""
-				+ "SELECT Count(*) "
-				+ " FROM   (SELECT pmr.patient_uuid "
-				+ "	 FROM   psi_money_receipt pmr "
-				+ "	 JOIN (SELECT patient_uuid, "
-				+ "       Count(patient_uuid) AS total "
-				+ "      FROM   psi_money_receipt "
-				+ "      WHERE  money_receipt_date BETWEEN "
-				+ "        '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
-				+ wh
-				+ "      GROUP  BY patient_uuid) AS newclient "
-				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
-				+ "   "
-				+ "  WHERE  pmr.money_receipt_date < '"+filter.getStartDateSlip()+"' "
-				+ "   "
-				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+			Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
+					(filter.getSpStatic() != "");
+			if(wealthFlag == true) {
+				wh += " and ( wealth = '" + filter.getWlthAbleToPay() + 
+						"' or wealth = '"+filter.getWlthPoor()+
+						"' or wealth = '"+ filter.getWlthPop()+
+						"' ) ";
+				wh1 += " and ( pmr.wealth = '" + filter.getWlthAbleToPay() + 
+						"' or pmr.wealth = '"+filter.getWlthPoor()+
+						"' or pmr.wealth = '"+ filter.getWlthPop()+
+						"' ) ";
+			}
+		
+			if(spFlag == true){
+				wh += " and ( service_point = '" + filter.getSpCsp()+
+						"' or service_point = '" + filter.getSpSatelite()+
+						"' or service_point = '"+ filter.getSpStatic()+
+						"' ) ";
+				wh1 += " and ( pmr.service_point = '" + filter.getSpCsp()+
+						"' or pmr.service_point = '" + filter.getSpSatelite()+
+						"' or pmr.service_point = '"+ filter.getSpStatic()+
+						"' ) "; 
+			}
+			if(!"0".equalsIgnoreCase(filter.getClinicCode())) {
+				wh += "       AND clinic_code='"+filter.getClinicCode()+"' ";
+				wh1 += "       AND pmr.clinic_code='"+filter.getClinicCode()+"' ";
+			}
+		
+//		String sql = ""
+//				+ "SELECT Count(*) "
+//				+ " FROM   (SELECT pmr.patient_uuid "
+//				+ "	 FROM   psi_money_receipt pmr "
+//				+ "	 JOIN (SELECT patient_uuid, "
+//				+ "       Count(patient_uuid) AS total "
+//				+ "      FROM   psi_money_receipt "
+//				+ "      WHERE  money_receipt_date BETWEEN "
+//				+ "        '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
+//				+ wh
+//				+ "      GROUP  BY patient_uuid) AS newclient "
+//				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
+//				+ "   "
+//				+ "  WHERE  pmr.money_receipt_date < '"+filter.getStartDateSlip()+"' "
+//				+ "   "
+//				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+		
+		String sql1 = ""
+				+ " SELECT COUNT(*) FROM "
+				+ " (SELECT pmr.patient_uuid    AS oldPatientID, "
+				+ "       table1.patient_uuid AS oldpatient, "
+				+ "       Count(pmr.patient_uuid) as visitTaken "
+				+ " FROM   psi_money_receipt pmr "
+				+ "       LEFT JOIN (SELECT patient_uuid, "
+				+ "                         Count(patient_uuid) AS total "
+				+ "                  FROM   psi_money_receipt "
+				+ "                  WHERE  money_receipt_date < '"+filter.getStartDateSlip()+"'" +
+						wh
+				+ "                  GROUP  BY patient_uuid) AS table1 "
+				+ "              ON pmr.patient_uuid = table1.patient_uuid "
+				+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
+				+ "       AND table1.patient_uuid IS NOT NULL " +
+				wh1
+				+ " "
+				+ " GROUP  BY pmr.patient_uuid ) as tbl";
+		
+		String sql2 = ""
+				+ " SELECT COUNT(*) FROM "
+				+ " (SELECT pmr.patient_uuid    AS newpatientId, "
+				+ "       table1.patient_uuid AS oldpatientid, "
+				+ "       Count(pmr.patient_uuid) as visitTaken "
+				+ " FROM   psi_money_receipt pmr "
+				+ "       LEFT JOIN (SELECT patient_uuid, "
+				+ "                         Count(patient_uuid) AS total "
+				+ "                  FROM   psi_money_receipt "
+				+ "                  WHERE  money_receipt_date < '"+filter.getStartDateSlip()+"' " +
+				"	 " + wh
+				+ "                  GROUP  BY patient_uuid) AS table1 "
+				+ "              ON pmr.patient_uuid = table1.patient_uuid "
+				+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' " +
+						" and table1.patient_uuid is NULL" +
+						"   " + wh1
+				+ " GROUP  BY pmr.patient_uuid HAVING Count(pmr.patient_uuid) > 1 ) "
+				+ " as tbl";
 		try{
-			ret = sessionFactory.getCurrentSession()
-				.createSQLQuery(sql).list().get(0).toString();
+			String res1,res2;
+			res1 = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql1).list().get(0).toString();
+			res2 = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql2).list().get(0).toString();
+			Long res = Long.parseLong(res1)+ Long.parseLong(res2);
+			
+			return res.toString();
 			
 		}catch(Exception e){
-			return e.toString();
+			return "0";
 		}
 		
-		return ret;
+		
 	}
 
 	@Override
@@ -1803,44 +1931,71 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		// TODO Auto-generated method stub
 		 String ret = "";
 		 String wh = "";
+		 String wh1= "";
 		  Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
 					(filter.getWlthPop() != "");
 		
 			Boolean spFlag = (filter.getSpCsp() != "") || (filter.getSpSatelite() != "")||
 					(filter.getSpStatic() != "");
 			if(wealthFlag == true) {
-				wh += "and ( p.wealth = '" + filter.getWlthAbleToPay() + 
-						"' or p.wealth = '"+filter.getWlthPoor()+
-						"' or p.wealth = '"+ filter.getWlthPop()+
+				wh += " and ( wealth = '" + filter.getWlthAbleToPay() + 
+						"' or wealth = '"+filter.getWlthPoor()+
+						"' or wealth = '"+ filter.getWlthPop()+
+						"' ) ";
+				wh1 += " and ( pmr.wealth = '" + filter.getWlthAbleToPay() + 
+						"' or pmr.wealth = '"+filter.getWlthPoor()+
+						"' or pmr.wealth = '"+ filter.getWlthPop()+
 						"' ) ";
 			}
 		
 			if(spFlag == true){
-				wh += " and ( p.service_point = '" + filter.getSpCsp()+
-						"' or p.service_point = '" + filter.getSpSatelite()+
-						"' or p.service_point = '"+ filter.getSpStatic()+
+				wh += " and ( service_point = '" + filter.getSpCsp()+
+						"' or service_point = '" + filter.getSpSatelite()+
+						"' or service_point = '"+ filter.getSpStatic()+
 						"' ) ";
+				wh1 += " and ( pmr.service_point = '" + filter.getSpCsp()+
+						"' or pmr.service_point = '" + filter.getSpSatelite()+
+						"' or pmr.service_point = '"+ filter.getSpStatic()+
+						"' ) "; 
 			}
-			if(!"0".equalsIgnoreCase(filter.getClinicCode()))
-				wh += "       AND p.clinic_code='"+filter.getClinicCode()+"' ";
-		 String sql = ""
-				 + "SELECT Count(*) "
-				 + "	 FROM "
-				 + "	 (SELECT patient_uuid "
-				 + "	 FROM   psi_money_receipt p "
-				 + "     WHERE  p.money_receipt_date BETWEEN "
-				 + "    '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
-				 + wh
-				 + "    GROUP BY p.patient_uuid) "
-				 + "    as p_tbl";
+			if(!"0".equalsIgnoreCase(filter.getClinicCode())) {
+				wh += "       AND clinic_code='"+filter.getClinicCode()+"' ";
+				wh1 += "       AND pmr.clinic_code='"+filter.getClinicCode()+"' ";
+			}
+//		 String sql = ""
+//				 + "SELECT Count(*) "
+//				 + "	 FROM "
+//				 + "	 (SELECT patient_uuid "
+//				 + "	 FROM   psi_money_receipt p "
+//				 + "     WHERE  p.money_receipt_date BETWEEN "
+//				 + "    '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' "
+//				 + wh
+//				 + "    GROUP BY p.patient_uuid) "
+//				 + "    as p_tbl";
+			String sql = ""
+					+ " SELECT COUNT(*) FROM "
+					+ " (SELECT pmr.patient_uuid    AS newpatientId, "
+					+ "       table1.patient_uuid AS oldpatientid, "
+					+ "       Count(pmr.patient_uuid) as visitTaken "
+					+ " FROM   psi_money_receipt pmr "
+					+ "       LEFT JOIN (SELECT patient_uuid, "
+					+ "                         Count(patient_uuid) AS total "
+					+ "                  FROM   psi_money_receipt "
+					+ "                  WHERE  money_receipt_date < '"+filter.getStartDateSlip()+"'" +
+							wh
+					+ "                  GROUP  BY patient_uuid) AS table1 "
+					+ "              ON pmr.patient_uuid = table1.patient_uuid "
+					+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDateSlip()+"' AND '"+filter.getEndDateSlip()+"' and table1.patient_uuid is NULL " +
+							wh1
+					+ " GROUP  BY pmr.patient_uuid) as tbl ";
+			
 		 try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
-			 Long res = Long.parseLong(ret) 
-					 - Long.parseLong(oldClientCount(filter));
-			 return res.toString();
+			
+			 return ret;
 		 }catch(Exception e){
-			 return e.toString();
+			 return "0";
 		 }
 	}
 
@@ -2007,71 +2162,32 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public String getDashboardOldClients(SearchFilterRegistrationReport filter) {
 		// TODO Auto-generated method stub
 		String wh="";
-		
-		if(filter.getGender().equals("F")) wh += " and gender = 'F' ";
-		else if(filter.getGender().equals("M")) wh += " and gender = 'M' ";
-		else if(filter.getGender().equals("O")) wh += " and gender = 'O' ";
-		else if(filter.getGender().length() == 2){
-			if(filter.getGender().equals("MO"))
-				wh += " and gender != 'F' ";
-			else if(filter.getGender().equals("FO"))
-				wh += "and gender != 'M' ";
-			else if(filter.getGender().equals("MF")){
-				
+		String wh1 = "";
+		 if(!"0".equalsIgnoreCase(filter.getClinicCode())) {
+			 wh += " and clinic_code = '"+filter.getClinicCode()+"' ";
+			 wh1 += " and pmr.clinic_code = '"+filter.getClinicCode()+"' " ;
+		 }
+		 if(filter.getGender().equals("F")) {
+			 wh += " and gender = 'F' ";
+			 wh1 += " and pmr.gender = 'F' ";
+		 }
+			else if(filter.getGender().equals("M")) {
+				wh += " and gender = 'M' ";
+				wh1 += " and pmr.gender = 'M' ";
 			}
-		}
-		
-		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
-			wh += " and clinic_code = "+filter.getClinicCode();
-		
-		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
-				(filter.getWlthPop() != "");
-		
-		if(wealthFlag == true) {
-			wh += "and ( wealth = '" + filter.getWlthAbleToPay() + 
-					"' or wealth = '"+filter.getWlthPoor()+
-					"' or wealth = '"+ filter.getWlthPop()+
-					"' ) ";
-		}
-		
-		String sql = "SELECT Count(*) "+
-				" FROM   (SELECT pmr.patient_uuid "+ 
-				" FROM   psi_money_receipt pmr "+ 
-				" JOIN (SELECT patient_uuid, "+ 
-                 "  Count(patient_uuid) AS total "+ 
-                 " FROM   psi_money_receipt "+
-                 " WHERE  money_receipt_date BETWEEN "+
-                    "'"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "+
-                 wh+
-                 " GROUP  BY patient_uuid) AS newclient "+ 
-             " ON pmr.patient_uuid = newclient.patient_uuid "+ 
-             " WHERE  pmr.money_receipt_date < '"+filter.getStartDate()+"' "+
-             
-             " GROUP  BY pmr.patient_uuid) AS tbl ";
-		try{
-			String ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
-					get(0).toString();
-			return ret;
-		}catch(Exception e){
-			return "0";
-		}
-	}
-
-	@Override
-	public String getDashboardNewClients(SearchFilterRegistrationReport filter) {
-		// TODO Auto-generated method stub
-		String ret = "";
-		 String wh = "";
-		 if(!"0".equalsIgnoreCase(filter.getClinicCode()))
-			 wh += " and p.clinic_code = '"+filter.getClinicCode()+"' ";
-		 if(filter.getGender().equals("F")) wh += " and p.gender = 'F' ";
-			else if(filter.getGender().equals("M")) wh += " and p.gender = 'M' ";
-			else if(filter.getGender().equals("O")) wh += " and p.gender = 'O' ";
+			else if(filter.getGender().equals("O")){ 
+				wh += " and gender = 'O' ";
+				wh1 += " and pmr.gender = 'O' ";
+			}
 			else if(filter.getGender().length() == 2){
-				if(filter.getGender().equals("MO"))
-					wh += " and p.gender != 'F' ";
-				else if(filter.getGender().equals("FO"))
-					wh += "and p.gender != 'M' ";
+				if(filter.getGender().equals("MO")) {
+					wh += " and gender != 'F' ";
+					wh1 += " and pmr.gender != 'F' ";
+				}
+				else if(filter.getGender().equals("FO")){
+					wh += " and gender != 'M' ";
+					wh1 += " and pmr.gender != 'M' ";
+				}
 				else if(filter.getGender().equals("MF")){
 					
 				}
@@ -2080,22 +2196,156 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					(filter.getWlthPop() != "");
 			
 			if(wealthFlag == true) {
-				wh += "and ( p.wealth = '" + filter.getWlthAbleToPay() + 
-						"' or p.wealth = '"+filter.getWlthPoor()+
-						"' or p.wealth = '"+ filter.getWlthPop()+
+				wh += "and ( wealth = '" + filter.getWlthAbleToPay() + 
+						"' or wealth = '"+filter.getWlthPoor()+
+						"' or wealth = '"+ filter.getWlthPop()+
+						"' ) ";
+				wh1 += "and ( pmr.wealth = '" + filter.getWlthAbleToPay() + 
+						"' or pmr.wealth = '"+filter.getWlthPoor()+
+						"' or pmr.wealth = '"+ filter.getWlthPop()+
 						"' ) ";
 			}
-		 String sql = ""
-				 + "SELECT Count(*) "
-				 + "	 FROM "
-				 + "	 (SELECT p.patient_uuid "
-				 + "	 FROM   psi_money_receipt p "
-				 + "     WHERE  p.money_receipt_date BETWEEN "
-				 + "    '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "
-				 + wh;
-		 
-				 sql +=  "    GROUP BY p.patient_uuid) "
-						 + "    as p_tbl";
+		
+//		String sql = "SELECT Count(*) "+
+//				" FROM   (SELECT pmr.patient_uuid "+ 
+//				" FROM   psi_money_receipt pmr "+ 
+//				" JOIN (SELECT patient_uuid, "+ 
+//                 "  Count(patient_uuid) AS total "+ 
+//                 " FROM   psi_money_receipt "+
+//                 " WHERE  money_receipt_date BETWEEN "+
+//                    "'"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "+
+//                 wh+
+//                 " GROUP  BY patient_uuid) AS newclient "+ 
+//             " ON pmr.patient_uuid = newclient.patient_uuid "+ 
+//             " WHERE  pmr.money_receipt_date < '"+filter.getStartDate()+"' "+
+//             
+//             " GROUP  BY pmr.patient_uuid) AS tbl ";
+		String sql1 = ""
+				+ " SELECT COUNT(*) FROM "
+				+ " (SELECT pmr.patient_uuid    AS oldPatientID, "
+				+ "       table1.patient_uuid AS oldpatient, "
+				+ "       Count(pmr.patient_uuid) as visitTaken "
+				+ " FROM   psi_money_receipt pmr "
+				+ "       LEFT JOIN (SELECT patient_uuid, "
+				+ "                         Count(patient_uuid) AS total "
+				+ "                  FROM   psi_money_receipt "
+				+ "                  WHERE  money_receipt_date < '"+filter.getStartDate()+"' " +
+						wh
+				+ "                  GROUP  BY patient_uuid) AS table1 "
+				+ "              ON pmr.patient_uuid = table1.patient_uuid "
+				+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "
+				+ "       AND table1.patient_uuid IS NOT NULL " +
+				 wh1
+				
+				+ " GROUP  BY pmr.patient_uuid ) "
+				+ " as tbl";
+		String sql2 = ""
+				+ " SELECT COUNT(*) FROM "
+				+ " (SELECT pmr.patient_uuid    AS newpatientId, "
+				+ "       table1.patient_uuid AS oldpatientid, "
+				+ "       Count(pmr.patient_uuid) as visitTaken "
+				+ " FROM   psi_money_receipt pmr "
+				+ "       LEFT JOIN (SELECT patient_uuid, "
+				+ "                         Count(patient_uuid) AS total "
+				+ "                  FROM   psi_money_receipt "
+				+ "                  WHERE  money_receipt_date < '"+filter.getStartDate()+"' " +
+				wh
+				+ "                  GROUP  BY patient_uuid) AS table1 "
+				+ "              ON pmr.patient_uuid = table1.patient_uuid "
+				+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' " +
+						" and table1.patient_uuid is NULL" +
+						wh1
+				+ " GROUP  BY pmr.patient_uuid HAVING Count(pmr.patient_uuid) > 1) "
+				+ " as tbl";
+		try{
+			String res1,res2;
+			res1 = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql1).list().get(0).toString();
+			res2 = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql2).list().get(0).toString();
+			Long res = Long.parseLong(res1)+ Long.parseLong(res2);
+			
+			return res.toString();
+		}catch(Exception e){
+		 return "0";
+		}
+	}
+
+	@Override
+	public String getDashboardNewClients(SearchFilterRegistrationReport filter) {
+		// TODO Auto-generated method stub
+		String ret = "";
+		 String wh = "";
+		 String wh1 = "";
+		 if(!"0".equalsIgnoreCase(filter.getClinicCode())) {
+			 wh += " and clinic_code = '"+filter.getClinicCode()+"' ";
+			 wh1 += " and pmr.clinic_code = '"+filter.getClinicCode()+"' " ;
+		 }
+		 if(filter.getGender().equals("F")) {
+			 wh += " and gender = 'F' ";
+			 wh1 += " and pmr.gender = 'F' ";
+		 }
+			else if(filter.getGender().equals("M")) {
+				wh += " and gender = 'M' ";
+				wh1 += " and pmr.gender = 'M' ";
+			}
+			else if(filter.getGender().equals("O")){ 
+				wh += " and gender = 'O' ";
+				wh1 += " and pmr.gender = 'O' ";
+			}
+			else if(filter.getGender().length() == 2){
+				if(filter.getGender().equals("MO")) {
+					wh += " and gender != 'F' ";
+					wh1 += " and pmr.gender != 'F' ";
+				}
+				else if(filter.getGender().equals("FO")){
+					wh += " and gender != 'M' ";
+					wh1 += " and pmr.gender != 'M' ";
+				}
+				else if(filter.getGender().equals("MF")){
+					
+				}
+			}
+		 Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
+					(filter.getWlthPop() != "");
+			
+			if(wealthFlag == true) {
+				wh += "and ( wealth = '" + filter.getWlthAbleToPay() + 
+						"' or wealth = '"+filter.getWlthPoor()+
+						"' or wealth = '"+ filter.getWlthPop()+
+						"' ) ";
+				wh1 += "and ( pmr.wealth = '" + filter.getWlthAbleToPay() + 
+						"' or pmr.wealth = '"+filter.getWlthPoor()+
+						"' or pmr.wealth = '"+ filter.getWlthPop()+
+						"' ) ";
+			}
+//		 String sql = ""
+//				 + "SELECT Count(*) "
+//				 + "	 FROM "
+//				 + "	 (SELECT p.patient_uuid "
+//				 + "	 FROM   psi_money_receipt p "
+//				 + "     WHERE  p.money_receipt_date BETWEEN "
+//				 + "    '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' "
+//				 + wh;
+//		 
+//				 sql +=  "    GROUP BY p.patient_uuid) "
+//						 + "    as p_tbl";
+			String sql = ""
+					+ " SELECT COUNT(*) FROM "
+					+ " (SELECT pmr.patient_uuid    AS newpatientId, "
+					+ "       table1.patient_uuid AS oldpatientid, "
+					+ "       Count(pmr.patient_uuid) as visitTaken "
+					+ " FROM   psi_money_receipt pmr "
+					+ "       LEFT JOIN (SELECT patient_uuid, "
+					+ "                         Count(patient_uuid) AS total "
+					+ "                  FROM   psi_money_receipt "
+					+ "                  WHERE  money_receipt_date < '"+filter.getStartDate()+"'" +
+							 wh
+					+ "                  GROUP  BY patient_uuid) AS table1 "
+					+ "              ON pmr.patient_uuid = table1.patient_uuid "
+					+ " WHERE  pmr.money_receipt_date BETWEEN '"+filter.getStartDate()+"' AND '"+filter.getEndDate()+"' and table1.patient_uuid is NULL " +
+							wh1
+					+ " GROUP  BY pmr.patient_uuid) as tbl";
 		 try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
@@ -2110,66 +2360,168 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public String oldClientCount(String startDate, String endDate, String code,
 			String collector) {
 		String ret = "";
-		String wh = "";
-		if(!"0".equalsIgnoreCase(code))
-			wh += "       AND clinic_code='"+code+"' ";
-		if(!"".equalsIgnoreCase(collector))
-			wh += "    AND data_collector='"+collector+"' ";
-		String sql = ""
-				+ "SELECT Count(*) "
-				+ " FROM   (SELECT pmr.patient_uuid "
-				+ "	 FROM   psi_money_receipt pmr "
-				+ "	 JOIN (SELECT patient_uuid, "
-				+ "       Count(patient_uuid) AS total "
-				+ "      FROM   psi_money_receipt "
-				+ "      WHERE  money_receipt_date BETWEEN "
-				+ "        '"+startDate+"' AND '"+endDate+"' "
-				+ wh
-				+ "      GROUP  BY patient_uuid) AS newclient "
-				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
-				+ "   "
-				+ "  WHERE  pmr.money_receipt_date < '"+startDate+"' "
-				+ "   "
-				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+		
+// Previous Code		
+//		String wh = "";
+//		if(!"0".equalsIgnoreCase(code))
+//			wh += "       AND clinic_code='"+code+"' ";
+//		if(!"".equalsIgnoreCase(collector))
+//			wh += "    AND data_collector='"+collector+"' ";
+//		String sql = ""
+//				+ "SELECT Count(*) "
+//				+ " FROM   (SELECT pmr.patient_uuid "
+//				+ "	 FROM   psi_money_receipt pmr "
+//				+ "	 JOIN (SELECT patient_uuid, "
+//				+ "       Count(patient_uuid) AS total "
+//				+ "      FROM   psi_money_receipt "
+//				+ "      WHERE  money_receipt_date BETWEEN "
+//				+ "        '"+startDate+"' AND '"+endDate+"' "
+//				+ wh
+//				+ "      GROUP  BY patient_uuid) AS newclient "
+//				+ "  ON pmr.patient_uuid = newclient.patient_uuid "
+//				+ "   "
+//				+ "  WHERE  pmr.money_receipt_date < '"+startDate+"' "
+//				+ "   "
+//				+ "  GROUP  BY pmr.patient_uuid) AS tbl";
+		String wh1 = "";
+		String wh2 = "";
+		if(!"0".equalsIgnoreCase(code)){
+			wh1 += "	and clinic_code = '"+code+"' ";
+			wh2 += "  and pmr.clinic_code = '"+code+"' ";
+		}
+		String wh3 = "";
+		String wh4 = "";
+		if(!"".equalsIgnoreCase(collector)) {
+			wh3 += "    AND data_collector='"+collector+"' ";
+			wh4 += " and pmr.data_collector='"+collector+"' ";
+		}
+		String sql1 = ""
+				+ " SELECT COUNT(*) FROM "
+				+ " (SELECT pmr.patient_uuid    AS oldPatientID, "
+				+ "       table1.patient_uuid AS oldpatient, "
+				+ "       Count(pmr.patient_uuid) as visitTaken "
+				+ " FROM   psi_money_receipt pmr "
+				+ "       LEFT JOIN (SELECT patient_uuid, "
+				+ "                         Count(patient_uuid) AS total "
+				+ "                  FROM   psi_money_receipt "
+				+ "                  WHERE  money_receipt_date < '"+startDate+"' " +
+						wh1
+						+ wh3
+				+ "                  GROUP  BY patient_uuid) AS table1 "
+				+ "              ON pmr.patient_uuid = table1.patient_uuid "
+				+ " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' "
+				+ "       AND table1.patient_uuid IS NOT NULL " +
+				wh2
+				+ wh4
+				+ "  GROUP  BY pmr.patient_uuid) as tbl";
+		String sql2 = ""
+				+ " SELECT COUNT(*) FROM "
+				+ " (SELECT pmr.patient_uuid    AS newpatientId, "
+				+ "       table1.patient_uuid AS oldpatientid, "
+				+ "       Count(pmr.patient_uuid) as visitTaken "
+				+ " FROM   psi_money_receipt pmr "
+				+ "       LEFT JOIN (SELECT patient_uuid, "
+				+ "                         Count(patient_uuid) AS total "
+				+ "                  FROM   psi_money_receipt "
+				+ "                  WHERE  money_receipt_date < '"+startDate+"' " +
+						wh1
+						+ wh3
+				+ "                  GROUP  BY patient_uuid) AS table1 "
+				+ "              ON pmr.patient_uuid = table1.patient_uuid "
+				+ " WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' " +
+						" and table1.patient_uuid is NULL" +
+						wh2
+						+ wh4
+				+ "GROUP  BY pmr.patient_uuid HAVING Count(pmr.patient_uuid) > 1) "
+				+ "as tbl";
 			
 		try{
-			ret = sessionFactory.getCurrentSession()
-				.createSQLQuery(sql).list().get(0).toString();
+//			ret = sessionFactory.getCurrentSession()
+//				.createSQLQuery(sql1).list().get(0).toString();
+			String res1,res2;
+			res1 = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql1).list().get(0).toString();
+			res2 = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql2).list().get(0).toString();
+			Long res = Long.parseLong(res1)+ Long.parseLong(res2);
+			
+			return res.toString();
 			
 		}catch(Exception e){
-			return e.toString();
+			return "0";
 		}
+			
 		
-		return ret;
 	}
 
 	@Override
 	public String newClientCount(String startDate, String endDate, String code,
 			String collector) {
 		String ret = "";
-		 String wh = "";
-			if(!"0".equalsIgnoreCase(code))
-				wh += "       AND p.clinic_code='"+code+"' ";
-			if(!"".equalsIgnoreCase(collector))
-				wh += "   AND p.data_collector='"+collector+"' ";
+//		Prevoius Code
+//		String wh = "";
+//			if(!"0".equalsIgnoreCase(code))
+//				wh += "       AND p.clinic_code='"+code+"' ";
+//			if(!"".equalsIgnoreCase(collector))
+//				wh += "   AND p.data_collector='"+collector+"' ";
+//		 String sql = ""
+//				 + "SELECT Count(*) "
+//				 + "	 FROM "
+//				 + "	 (SELECT patient_uuid "
+//				 + "	 FROM   psi_money_receipt p "
+//				 + "     WHERE  p.money_receipt_date BETWEEN "
+//				 + "    '"+startDate+"' AND '"+endDate+"' "
+//				 + wh
+//				 + "    GROUP BY p.patient_uuid) "
+//				 + "    as p_tbl";
+//		 try{
+//			 ret = sessionFactory.getCurrentSession()
+//						.createSQLQuery(sql).list().get(0).toString();
+//			 Long res = Long.parseLong(ret) 
+//					 - Long.parseLong(oldClientCount(startDate,endDate,code,collector));
+//			 return res.toString();
+//		 }catch(Exception e){
+//			 return "0";
+//		 }
+		 String wh1 = "";
+			String wh2 = "";
+			if(!"0".equalsIgnoreCase(code)){
+				wh1 += "	and clinic_code = '"+code+"' ";
+				wh2 += "  and pmr.clinic_code = '"+code+"' ";
+			}
+			String wh3 = "";
+			String wh4 = "";
+			if(!"".equalsIgnoreCase(collector)){
+				wh3 += "    AND data_collector='"+collector+"' ";
+				wh4 += " AND pmr.data_collector='"+collector+"' ";
+			}
 		 String sql = ""
-				 + "SELECT Count(*) "
-				 + "	 FROM "
-				 + "	 (SELECT patient_uuid "
-				 + "	 FROM   psi_money_receipt p "
-				 + "     WHERE  p.money_receipt_date BETWEEN "
-				 + "    '"+startDate+"' AND '"+endDate+"' "
-				 + wh
-				 + "    GROUP BY p.patient_uuid) "
-				 + "    as p_tbl";
+				 + "SELECT COUNT(*) FROM "
+				 + "(SELECT pmr.patient_uuid    AS newpatientId, "
+				 + "       table1.patient_uuid AS oldpatientid, "
+				 + "       Count(pmr.patient_uuid) as visitTaken "
+				 + "FROM   psi_money_receipt pmr "
+				 + "       LEFT JOIN (SELECT patient_uuid, "
+				 + "                         Count(patient_uuid) AS total "
+				 + "                  FROM   psi_money_receipt "
+				 + "                  WHERE  money_receipt_date < '"+startDate+"' " +
+				 		wh1
+				 		+ wh3
+				 + "                  GROUP  BY patient_uuid) AS table1 "
+				 + "              ON pmr.patient_uuid = table1.patient_uuid "
+				 + "WHERE  pmr.money_receipt_date BETWEEN '"+startDate+"' AND '"+endDate+"' and " +
+				 		"	table1.patient_uuid is NULL" +
+				 		wh2
+				 		+ wh4
+				 + "GROUP  BY pmr.patient_uuid) as tbl";
 		 try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
-			 Long res = Long.parseLong(ret) 
-					 - Long.parseLong(oldClientCount(startDate,endDate,code,collector));
-			 return res.toString();
+//			 Long res = Long.parseLong(ret) 
+//					 - Long.parseLong(oldClientCount(startDate,endDate,code));
+			 return ret;
 		 }catch(Exception e){
-			 return e.toString();
+			 return "0";
 		 }
 		 
 	}
