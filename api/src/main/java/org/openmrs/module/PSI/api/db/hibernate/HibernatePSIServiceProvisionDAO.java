@@ -1320,6 +1320,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			return res.toString();
 			
 		}catch(Exception e){
+//			return e.toString();
 			return "0";
 		}
 		
@@ -2349,8 +2350,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
-			 Long res = Long.parseLong(ret) - Long.parseLong(getDashboardOldClients(filter));
-			 return res.toString();
+//			 Long res = Long.parseLong(ret) - Long.parseLong(getDashboardOldClients(filter));
+			 return ret;
 		 }catch(Exception e){
 			 return "0";
 		 }

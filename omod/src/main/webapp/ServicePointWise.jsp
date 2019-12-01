@@ -78,6 +78,7 @@
 					</tr>
 				</thead>
 			    <tbody>
+			    	
 			    	<% int slcp = 0; %>
 			    	 <c:forEach var="report" items="${ compReports }">
 			        <tr>

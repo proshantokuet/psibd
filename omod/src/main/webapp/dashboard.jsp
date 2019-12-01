@@ -1169,6 +1169,23 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				                 title: title,
 				                 text: 'Export as .xlxs',
 				                 customize:function(win){
+				                	/*  console.log(win); */
+				                	 var sheet = win.xl.worksheets['sheet1.xml'];
+				                	 console.log(sheet);
+				                	 $JQuery('c[r=D2 ] t', sheet).text( 'Service Contact - Static' );
+				                	 $JQuery('c[r=E2 ] t', sheet).text( 'Service Contact - Satellite' );
+				                	 $JQuery('c[r=F2 ] t', sheet).text( 'Service Contact - CSP' );
+				                	 $JQuery('c[r=G2 ] t', sheet).text( 'Service Contact - Satellite' );
+				                	 $JQuery('c[r=H2 ] t', sheet).text( 'Revenue - Static' );
+				                	 $JQuery('c[r=I2 ] t', sheet).text( 'Revenue - Satellite' );
+				                	 $JQuery('c[r=J2 ] t', sheet).text( 'Revenue - CSP' );
+				                	 $JQuery('c[r=K2 ] t', sheet).text( 'Revenue - Total' );
+				                	 $JQuery('c[r=L2 ] t', sheet).text( 'Discount - Static' );
+				                	 $JQuery('c[r=M2 ] t', sheet).text( 'Discount - Satellite');
+				                	 $JQuery('c[r=N2 ] t', sheet).text( 'Discount - CSP' );
+				                	 $JQuery('c[r=O2 ] t', sheet).text( 'Discount - Total' );
+				                	
+				                	
 				                }
 				             },
 				             {
@@ -1333,6 +1350,21 @@ $JQuery('#servicePoint').DataTable({
 	                 title: "Comprehensive Revenue Report_"+ new Date(),
 	                 text: 'Export as .xlxs',
 	                 customize:function(win){
+	                	 var sheet = win.xl.worksheets['sheet1.xml'];
+	                	 console.log(sheet);
+	                	 $JQuery('c[r=D2 ] t', sheet).text( 'Service Contact - Static' );
+	                	 $JQuery('c[r=E2 ] t', sheet).text( 'Service Contact - Satellite' );
+	                	 $JQuery('c[r=F2 ] t', sheet).text( 'Service Contact - CSP' );
+	                	 $JQuery('c[r=G2 ] t', sheet).text( 'Service Contact - Satellite' );
+	                	 $JQuery('c[r=H2 ] t', sheet).text( 'Revenue - Static' );
+	                	 $JQuery('c[r=I2 ] t', sheet).text( 'Revenue - Satellite' );
+	                	 $JQuery('c[r=J2 ] t', sheet).text( 'Revenue - CSP' );
+	                	 $JQuery('c[r=K2 ] t', sheet).text( 'Revenue - Total' );
+	                	 $JQuery('c[r=L2 ] t', sheet).text( 'Discount - Static' );
+	                	 $JQuery('c[r=M2 ] t', sheet).text( 'Discount - Satellite');
+	                	 $JQuery('c[r=N2 ] t', sheet).text( 'Discount - CSP' );
+	                	 $JQuery('c[r=O2 ] t', sheet).text( 'Discount - Total' );
+	                	
 	                	  }
 	             },
 	             {
