@@ -1355,7 +1355,7 @@ $JQuery('#servicePoint').DataTable({
 	                	 $JQuery('c[r=D2 ] t', sheet).text( 'Service Contact - Static' );
 	                	 $JQuery('c[r=E2 ] t', sheet).text( 'Service Contact - Satellite' );
 	                	 $JQuery('c[r=F2 ] t', sheet).text( 'Service Contact - CSP' );
-	                	 $JQuery('c[r=G2 ] t', sheet).text( 'Service Contact - Satellite' );
+	                	 $JQuery('c[r=G2 ] t', sheet).text( 'Service Contact - Total' );
 	                	 $JQuery('c[r=H2 ] t', sheet).text( 'Revenue - Static' );
 	                	 $JQuery('c[r=I2 ] t', sheet).text( 'Revenue - Satellite' );
 	                	 $JQuery('c[r=J2 ] t', sheet).text( 'Revenue - CSP' );
