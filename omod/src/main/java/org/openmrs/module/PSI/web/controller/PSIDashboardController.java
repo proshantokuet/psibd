@@ -31,8 +31,10 @@ import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
+import org.openmrs.module.PSI.dto.SearchFilterRegistrationReport;
 import org.openmrs.module.PSI.dto.SearchFilterReport;
 import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterVisitReport;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
@@ -68,20 +70,25 @@ public class PSIDashboardController {
 		    clinicCode, "");
 //		dashboardDTO.setTotalDiscount(1);
 		String val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(today, today);
-		model.addAttribute("dashbaord_discount_value",val);
+		model.addAttribute("dashbaord_discount_value",0);
 		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalServiceContract(today, today);
-		model.addAttribute("dashboard_service_cotact_value",totalServiceContact);
+		model.addAttribute("dashboard_service_cotact_value",0);
+		dashboardDTO.setEarned(0);
+		dashboardDTO.setNewPatient(0);
+		dashboardDTO.setServedPatient(0);
+		dashboardDTO.setTotalDiscount(0);
+		
 		model.addAttribute("dashboard", dashboardDTO);
 		
 		List<PSIReport> providerWiseReports = Context.getService(PSIServiceProvisionService.class)
 		        .serviceProviderWiseReport(today, today, clinicCode, "");
-		model.addAttribute("providerWiseReports", providerWiseReports);
+		model.addAttribute("providerWiseReports", null);
 		
 		List<AUHCServiceCategory> serviceCategory = Context.getService(AUHCServiceCategoryService.class).getAll();
 		model.addAttribute("services",serviceCategory);
 		
 		List<PSIReport> servicePointWiseReports = Context.getService(PSIServiceProvisionService.class)
-		        .servicePointWiseReport(today, today, clinicCode);
+		        .servicePointWiseReport(today, today, "");
 		model.addAttribute("servicePointWiseReports", servicePointWiseReports);
 		SearchFilterSlipTracking filter = new SearchFilterSlipTracking();
 		filter.setStartDateSlip(today);
@@ -121,23 +128,15 @@ public class PSIDashboardController {
 		model.addAttribute("hasDashboardPermission", Utils.hasPrivilige(privileges, PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission", Utils.hasPrivilige(privileges, PSIConstants.ClinicList));
 		
-		model.addAttribute("no_slip_draft",Context.getService(PSIServiceProvisionService.class)
-				.getNoOfDraft(today, today));
-		model.addAttribute("total_payable_draft",Context.getService(PSIServiceProvisionService.class)
-				.getTotalPayableDraft(today, today));
+		model.addAttribute("no_slip_draft",0);
+		model.addAttribute("total_payable_draft",0);
 		
 		model.addAttribute("service_category",
 				Context.getService(AUHCServiceCategoryService.class).getAll());
 		
-		model.addAttribute("dashboard_new_reg",
-				Context.getService(PSIServiceProvisionService.class).
-				newRegistration(today, today,clinicCode));
-		model.addAttribute("dashboard_old_clients",
-				Context.getService(PSIServiceProvisionService.class)
-				.oldClientCount(today, today, clinicCode));
-		model.addAttribute("dashboard_new_clients",
-				Context.getService(PSIServiceProvisionService.class)
-				.newClientCount(today, today, clinicCode));
+		model.addAttribute("dashboard_new_reg",0);
+		model.addAttribute("dashboard_old_clients",0);
+		model.addAttribute("dashboard_new_clients",0);
 		
 		
 		
@@ -148,13 +147,14 @@ public class PSIDashboardController {
 				Context.getService(PSIServiceProvisionService.class)
 				.getRegistrationReport(regFilter);
 		
-		model.addAttribute("regReport", registrationReport);
+		model.addAttribute("regReport", null);
 		model.addAttribute("clinic",clinicCode);
-		model.addAttribute("visitReport",
-				Context.getService(PSIServiceProvisionService.class).
-				getVisitReport(today, today,clinicCode));
 		
-		
+//		model.addAttribute("visitReport",
+//				Context.getService(PSIServiceProvisionService.class).
+//				getVisitReport(today, today,clinicCode));
+//		
+		model.addAttribute("visitReport",null);
 		SearchFilterDraftTracking filterdraft = new SearchFilterDraftTracking();
 		filterdraft.setStartDateSlip(today);
 		filterdraft.setEndDateSlip(today);
@@ -172,8 +172,8 @@ public class PSIDashboardController {
 		comp_filter.setService_category("");
 		comp_filter.setClinic_code(clinicCode);
 
-		AUHCDashboardCard dashboardCard = Context.getService(
-				PSIServiceProvisionService.class).getComprehensiveDashboardCard(report,comp_filter);
+		AUHCDashboardCard dashboardCard = new AUHCDashboardCard();
+		dashboardCard.init();
 		model.addAttribute("comp_dashboard",dashboardCard);
 		model.addAttribute("clinic_code",clinicCode);
 		model.addAttribute("clinic_name",clinicName);
@@ -276,7 +276,7 @@ public class PSIDashboardController {
 		SearchFilterReport filter = new SearchFilterReport();
 		filter.setStart_date(startDate);
 		filter.setEnd_date(endDate);
-		filter.setClinic_code(code);
+		filter.setClinic_code(clinicCode);
 		filter.setData_collector(dataCollector);
 		
 		AUHCDashboardCard dashboardCard = new AUHCDashboardCard();
@@ -508,7 +508,10 @@ public class PSIDashboardController {
 			@RequestParam(required = true) String startDate,
             @RequestParam(required = true) String endDate,
             @RequestParam String gender,
-            @RequestParam(required = true) String code){
+            @RequestParam(required = true) String code,
+            @RequestParam String wlthPoor,
+            @RequestParam String wlthPop,
+            @RequestParam String wlthAbleToPay){
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 			    Context.getAuthenticatedUser().getUsername());
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
@@ -519,14 +522,21 @@ public class PSIDashboardController {
 		} else {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 		}
-		
+		SearchFilterRegistrationReport filter = new SearchFilterRegistrationReport();
+		filter.setStartDate(startDate);
+		filter.setEndDate(endDate);
+		filter.setGender(gender);
+		filter.setWlthAbleToPay(wlthAbleToPay);
+		filter.setWlthPoor(wlthPoor);
+		filter.setWlthPop(wlthPop);
+		filter.setClinicCode(clinicCode);
 		
 		model.addAttribute("dashboard_old_clients",
 				Context.getService(PSIServiceProvisionService.class).
-				getDashboardOldClients(startDate, endDate,clinicCode,gender));
+				getDashboardOldClients(filter));
 		model.addAttribute("dashboard_new_clients",
 				Context.getService(PSIServiceProvisionService.class)
-				.getDashboardNewClients(startDate, endDate,clinicCode,gender));
+				.getDashboardNewClients(filter));
 		
 		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
 			    clinicCode, "");
@@ -536,7 +546,7 @@ public class PSIDashboardController {
 		
 		List<AUHCRegistrationReport> registrationReport =
 				Context.getService(PSIServiceProvisionService.class)
-				.getRegistrationReport(startDate,endDate,gender,code);
+				.getRegistrationReport(filter);
 		model.addAttribute("dashboard_new_reg",registrationReport.size());
 		model.addAttribute("regReport", registrationReport);
 		
@@ -553,14 +563,23 @@ public class PSIDashboardController {
 			model.addAttribute("showClinic", 1);
 			
 		}
-		model.addAttribute("clinic_code",clinicCode);
+		
 	}
 	
 	@RequestMapping(value="/module/PSI/visitReport",method=RequestMethod.GET)
 	public void visitReport(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(required=true) String startDate,
 			@RequestParam(required=true) String endDate,
+			@RequestParam String wlthPoor,
+            @RequestParam String wlthPop,
+            @RequestParam String wlthAbleToPay,
+            @RequestParam String spSatelite,
+            @RequestParam String spStatic,
+            @RequestParam String spCsp,
 			@RequestParam(required = true) String code){
+		
+		
+		
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 			    Context.getAuthenticatedUser().getUsername());
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
@@ -571,28 +590,41 @@ public class PSIDashboardController {
 		} else {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 		}
+		SearchFilterVisitReport filter = new SearchFilterVisitReport();
+		filter.setStartDateSlip(startDate);
+		filter.setEndDateSlip(endDate);
+		filter.setSpCsp(spCsp);
+		filter.setSpSatelite(spSatelite);
+		filter.setSpStatic(spStatic);
+		filter.setWlthAbleToPay(wlthAbleToPay);
+		filter.setWlthPoor(wlthPoor);
+		filter.setWlthPop(wlthPop);
+		filter.setClinicCode(clinicCode);
 		model.addAttribute("service_category",
 				Context.getService(AUHCServiceCategoryService.class).getAll());
 		
 		model.addAttribute("dashboard_new_reg",
 				Context.getService(PSIServiceProvisionService.class).
-				newRegistration(startDate, endDate,code));
+				newRegistration(filter));
 		model.addAttribute("dashboard_old_clients",
 				Context.getService(PSIServiceProvisionService.class)
-				.oldClientCount(startDate, endDate, clinicCode));
+				.oldClientCount(filter));
 		model.addAttribute("dashboard_new_clients",
 				Context.getService(PSIServiceProvisionService.class)
-				.newClientCount(startDate, endDate, clinicCode));
+				.newClientCount(filter));
 		
 		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(startDate, endDate,
 			    clinicCode, "");
 		model.addAttribute("dashboard",dashboardDTO);
+		
+		//
+		
 		List<AUHCVisitReport> visitReport = Context.getService(PSIServiceProvisionService.class)
-				.getVisitReport(startDate, endDate,clinicCode);
+				.getVisitReport(filter);
 		String val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(startDate, endDate);
 		model.addAttribute("dashbaord_discount_value",val);
 //		model.addAttribute("dashbaord_discount_value",Context.getService(PSIServiceProvisionService.class).);
-		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).totalServiceContact(startDate, endDate,clinicCode);
+		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).totalServiceContact(filter);
 		model.addAttribute("dashboard_service_cotact_value",totalServiceContact);
 		
 		model.addAttribute("visitReport",visitReport);
@@ -608,6 +640,6 @@ public class PSIDashboardController {
 			model.addAttribute("showClinic", 1);
 			
 		}
-		model.addAttribute("clinic_code",clinicCode);
+//		model.addAttribute("clinic_code",clinicCode);
 	}
 }

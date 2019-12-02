@@ -4,6 +4,7 @@
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="dashboard" otherwise="/login.htm" />
 
+
 <%-- <div class="form-content">
         <div class="row">
             <div class="col-md-4">
@@ -177,8 +178,8 @@
 					<tr>
 						<% for(int i = 0; i < 3; i++) {%>
 					 	<th>Static</th>
-					 	<th>CSP</th>
 					 	<th>Satellite</th>
+					 	<th>CSP</th>
 					 	<th>Total</th>
 					 	<% } %>
 					</tr>
@@ -250,7 +251,7 @@
                		<div class="form-group">
                   	<label for="Service Code">Data Collector</label><br />
 						<select id="provider" required="true"  class="form-control selcls">
-						  <option value=""></option>
+						  <option value="" selected></option>
 						  <c:forEach var="user" items="${ psiClinicUsers }">
 							  <option value="${user.username }">${user.userRole }</option>							  
 						  </c:forEach>
@@ -408,9 +409,9 @@
                     <div class="form-group">
                         Wealth Classification
                         <br />
-                        <input type="checkbox" id="wlth_poor" name="wlthPoor" value="">Poor
+                        <input type="checkbox" id="wlth_poor" name="wlthPoor" value=""> Poor
                         <br>
-                        <input type="checkbox" id="wlth_pop" name="wlthPop" value="">Pop
+                        <input type="checkbox" id="wlth_pop" name="wlthPop" value=""> Pop
                         <br>
                         <input type="checkbox" id="wlth_pay" name="wlthAbleToPay" value=""> Able to pay
                         <br>
@@ -421,11 +422,11 @@
                     <div class="form-group">
                         Service Point
                         <br />
-                        <input type="checkbox" id="sp_satelite" name="spSatelite" value="">Satelite
+                        <input type="checkbox" id="sp_satelite" name="spSatelite" value=""> Satelite
                         <br>
-                        <input type="checkbox" id="sp_static" name="spStatic" value="">Static
+                        <input type="checkbox" id="sp_static" name="spStatic" value=""> Static
                         <br>
-                        <input type="checkbox" id="sp_csp" name="spCsp" value="">CSP
+                        <input type="checkbox" id="sp_csp" name="spCsp" value=""> CSP
                         <br>
                         <br>
                     </div>
@@ -709,16 +710,28 @@
 						</div>                  	
 	              	</div>
               	</c:if>
- 			</div>
- 			<div class="row">
- 				<div class="col-md-4">
+              	<div class="col-md-3">
+                    <div class="form-group">
+                        Wealth Classification
+                        <br />
+                        <input type="checkbox" id="wlth_poor_reg" name="wlthPoorReg" value="">Poor
+                        <br>
+                        <input type="checkbox" id="wlth_pop_reg" name="wlthPopReg" value="">Pop
+                        <br>
+                        <input type="checkbox" id="wlth_pay_reg" name="wlthAbleToPayReg" value=""> Able to pay
+                        <br>
+                        <br>
+                    </div>
+                </div>
+ 		
+ 				<div class="col-md-3">
                    <div class="form-group">
-                     
                        <button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>
                    </div>
 
-               </div>
- 			</div>
+               	</div>
+         </div>
+ 		
  		</div>
  	</form:form>
  	<div id="loading_reg" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
@@ -759,7 +772,7 @@
 						<th>Registration Date</th>
 						<th>Age</th>
 						<th>Union/Municipality/CC</th>
-						<th>Action</th>
+						
 					</tr>
 				</thead>
 				<tbody>
@@ -775,7 +788,6 @@
 							<td>${report.register_date }</td>
 							<td>${report.age }</td>
 							<td>${report.cc }</td>
-							<td></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -822,6 +834,32 @@
 						</div>                  	
 	              	</div>
               	</c:if>
+              	 <div class="col-md-3">
+                    <div class="form-group">
+                        Wealth Classification
+                        <br />
+                        <input type="checkbox" id="wlth_poor_visit" name="wlthPoorVisit" value=""> Poor
+                        <br>
+                        <input type="checkbox" id="wlth_pop_visit" name="wlthPopVisit" value=""> Pop
+                        <br>
+                        <input type="checkbox" id="wlth_pay_visit" name="wlthAbleToPayVisit" value=""> Able to pay
+                        <br>
+                        <br>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        Service Point
+                        <br />
+                        <input type="checkbox" id="sp_satelite_visit" name="spSateliteVisit" value=""> Satelite
+                        <br>
+                        <input type="checkbox" id="sp_static_visit" name="spStaticVisit" value=""> Static
+                        <br>
+                        <input type="checkbox" id="sp_csp_visit" name="spCspVisit" value=""> CSP
+                        <br>
+                        <br>
+                    </div>
+                </div>
  				<div class="col-md-3">
                    <div class="form-group">
                      
@@ -935,7 +973,6 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
 
-
 <script type="text/javascript">
 
 var $jq = jQuery.noConflict();
@@ -960,6 +997,51 @@ $jq(function(){
 /* $jq('#startDate').attr('max', maxDate);
 $jq('#endDate').attr('max', maxDate); */
 
+$jq("#startDate").on("change",function(){
+	/* console.log("change"); */
+	$jq("#endDate").datepicker(
+			'option',
+			{ minDate: new Date($jq("#startDate").val()),
+			  maxDate: new Date()
+			});
+});
+$jq("#from").on("change",function(){
+	$jq("#to").datepicker(
+		'option',{
+			minDate: new Date($jq("#from").val()),
+			maxDate: new Date()
+		});
+});
+$jq("#startDateSlip").on("change",function(){
+	$jq("#endDateSlip").datepicker(
+		'option',{
+			minDate: new Date($jq("#startDateSlip").val()),
+			maxDate: new Date()
+		});
+});
+
+$jq("#startDateDraft").on("change",function(){
+	$jq("#endDateDraft").datepicker(
+		'option',{
+			minDate: new Date($jq("#startDateDraft").val()),
+			maxDate: new Date()
+		});
+});
+
+$jq("#startDateReg").on("change",function(){
+	$jq("#endDateReg").datepicker(
+		'option',{
+			minDate: new Date($jq("#startDateReg").val()),
+			maxDate: new Date()
+		});
+});
+$jq("#startDateVisit").on("change",function(){
+	$jq("#endDateVisit").datepicker(
+		'option',{
+			minDate: new Date($jq("#startDateVisit").val()),
+			maxDate: new Date()
+		});
+});
 </script>
 
 <script type="text/javascript">
@@ -1015,8 +1097,11 @@ $JQuery.ajax({
 			             {
 			         		extend: 'pdfHtml5',
 			         		title: title,
-			         		text: 'Export as .pdf'
+			         		text: 'Export as .pdf',
+			         		orientation: 'landscape',
+			         		pageSize: 'LEGAL'
 			         	  }
+			         	 
 			            
 			         ]
 			   
@@ -1082,12 +1167,56 @@ $JQuery("#ServicePointWise").submit(function(event) {
 				             {
 				                 extend: 'excelHtml5',
 				                 title: title,
-				                 text: 'Export as .xlxs'
+				                 text: 'Export as .xlxs',
+				                 customize:function(win){
+				                	/*  console.log(win); */
+				                	 var sheet = win.xl.worksheets['sheet1.xml'];
+				                	 console.log(sheet);
+				                	 $JQuery('c[r=D2 ] t', sheet).text( 'Service Contact - Static' );
+				                	 $JQuery('c[r=E2 ] t', sheet).text( 'Service Contact - Satellite' );
+				                	 $JQuery('c[r=F2 ] t', sheet).text( 'Service Contact - CSP' );
+				                	 $JQuery('c[r=G2 ] t', sheet).text( 'Service Contact - Satellite' );
+				                	 $JQuery('c[r=H2 ] t', sheet).text( 'Revenue - Static' );
+				                	 $JQuery('c[r=I2 ] t', sheet).text( 'Revenue - Satellite' );
+				                	 $JQuery('c[r=J2 ] t', sheet).text( 'Revenue - CSP' );
+				                	 $JQuery('c[r=K2 ] t', sheet).text( 'Revenue - Total' );
+				                	 $JQuery('c[r=L2 ] t', sheet).text( 'Discount - Static' );
+				                	 $JQuery('c[r=M2 ] t', sheet).text( 'Discount - Satellite');
+				                	 $JQuery('c[r=N2 ] t', sheet).text( 'Discount - CSP' );
+				                	 $JQuery('c[r=O2 ] t', sheet).text( 'Discount - Total' );
+				                	
+				                	
+				                }
 				             },
 				             {
 				         		extend: 'pdfHtml5',
 				         		title: title,
-				         		text: 'Export as .pdf'
+				         		text: 'Export as .pdf',
+				         		orientation: 'landscape',
+				         		pageSize: 'LEGAL',
+				         		customize:function(pdfDocument){
+				         			pdfDocument.content[1].table.headerRows = 2;
+				                    var firstHeaderRow = [];
+				                    $JQuery('#servicePoint').find("thead>tr:first-child>th").each(
+				                            function(index, element) {
+				                              var colSpan = element.getAttribute("colSpan");
+				                              firstHeaderRow.push({
+				                                text: element.innerHTML,
+				                                style: "tableHeader",
+				                                colSpan: colSpan
+				                              });
+				                              
+				                              for (var i = 0; i < colSpan - 1; i++) {
+				                                firstHeaderRow.push({});
+				                              }
+		                            });
+				                    pdfDocument.content[1].table.body.unshift(firstHeaderRow);
+				                    pdfDocument.content[1].table.body[1][0].text = "";
+				                    pdfDocument.content[1].table.body[1][1].text = "";
+				                    pdfDocument.content[1].table.body[1][2].text = "";
+				                    pdfDocument.content[1].layout = "";
+				                    
+				         		}
 					         }
 				         ]
 			   }); 
@@ -1219,12 +1348,53 @@ $JQuery('#servicePoint').DataTable({
 	             {
 	                 extend: 'excelHtml5',
 	                 title: "Comprehensive Revenue Report_"+ new Date(),
-	                 text: 'Export as .xlxs'
+	                 text: 'Export as .xlxs',
+	                 customize:function(win){
+	                	 var sheet = win.xl.worksheets['sheet1.xml'];
+	                	 console.log(sheet);
+	                	 $JQuery('c[r=D2 ] t', sheet).text( 'Service Contact - Static' );
+	                	 $JQuery('c[r=E2 ] t', sheet).text( 'Service Contact - Satellite' );
+	                	 $JQuery('c[r=F2 ] t', sheet).text( 'Service Contact - CSP' );
+	                	 $JQuery('c[r=G2 ] t', sheet).text( 'Service Contact - Total' );
+	                	 $JQuery('c[r=H2 ] t', sheet).text( 'Revenue - Static' );
+	                	 $JQuery('c[r=I2 ] t', sheet).text( 'Revenue - Satellite' );
+	                	 $JQuery('c[r=J2 ] t', sheet).text( 'Revenue - CSP' );
+	                	 $JQuery('c[r=K2 ] t', sheet).text( 'Revenue - Total' );
+	                	 $JQuery('c[r=L2 ] t', sheet).text( 'Discount - Static' );
+	                	 $JQuery('c[r=M2 ] t', sheet).text( 'Discount - Satellite');
+	                	 $JQuery('c[r=N2 ] t', sheet).text( 'Discount - CSP' );
+	                	 $JQuery('c[r=O2 ] t', sheet).text( 'Discount - Total' );
+	                	
+	                	  }
 	             },
 	             {
 		         		extend: 'pdfHtml5',
 		         		title: "Comprehensive Revenue Report_"+ new Date(),
-		         		text: 'Export as .pdf'
+		         		text: 'Export as .pdf',
+		         		orientation: 'landscape',
+		         		pageSize: 'LEGAL',
+		         		customize:function(pdfDocument){
+		         			pdfDocument.content[1].table.headerRows = 2;
+		                    var firstHeaderRow = [];
+		                    $JQuery('#servicePoint').find("thead>tr:first-child>th").each(
+		                            function(index, element) {
+		                              var colSpan = element.getAttribute("colSpan");
+		                              firstHeaderRow.push({
+		                                text: element.innerHTML,
+		                                style: "tableHeader",
+		                                colSpan: colSpan
+		                              });
+		                              for (var i = 0; i < colSpan - 1; i++) {
+		                                firstHeaderRow.push({});
+		                              }
+                            });
+		                    pdfDocument.content[1].table.body.unshift(firstHeaderRow);
+		                    pdfDocument.content[1].table.body[1][0].text = "";
+		                    pdfDocument.content[1].table.body[1][1].text = "";
+		                    pdfDocument.content[1].table.body[1][2].text = "";
+		                    pdfDocument.content[1].layout = "";
+		                    
+		         		}
 		         }
 	         ]
 });
@@ -1243,7 +1413,9 @@ $JQuery('#servicePoint').DataTable({
 	             {
 	         		extend: 'pdfHtml5',
 	         		title: "Visit Report_"+ new Date(),
-	         		text: 'Export as .pdf'
+	         		text: 'Export as .pdf',
+	         		orientation: 'landscape',
+	         		pageSize: 'LEGAL'
 		         }
 	         ]
 }); 
@@ -1281,7 +1453,9 @@ $JQuery('#serviceProviderDefault').DataTable({
 	             {
 		         		extend: 'pdfHtml5',
 		         		title: "Service Provider Wise Revenue Report_"+ new Date(),
-		         		text: 'Export as .pdf'
+		         		text: 'Export as .pdf',
+		         		orientation: 'landscape',
+		         		pageSize: 'LEGAL'
 			     }
 	         ]
 });
@@ -1315,7 +1489,9 @@ $JQuery("#serviceProviderReports").html("");
 	             {
 	         		extend: 'pdfHtml5',
 	         		title: "Slip wise Report_"+ new Date(),
-	         		text: 'Export as .pdf'
+	         		text: 'Export as .pdf',
+	         		orientation: 'landscape',
+	         		pageSize: 'LEGAL'
 			     }
 	         ]
 });
@@ -1353,7 +1529,9 @@ $JQuery("#reg_report").DataTable({
 	             {
 	         		extend: 'pdfHtml5',
 	         		title: "Registration wise Report_"+ new Date(),
-	         		text: 'Export as .pdf'
+	         		text: 'Export as .pdf',
+	         		orientation: 'landscape',
+	         		pageSize: 'LEGAL' 
 				}
 	         ]
 }); 
@@ -1418,7 +1596,9 @@ $JQuery("#slipTracking_").submit(function(event){
 					             {
 					         		extend: 'pdfHtml5',
 					         		title: title ,
-					         		text: 'Export as .pdf'
+					         		text: 'Export as .pdf',
+					         		orientation: 'landscape',
+					         		pageSize: 'LEGAL'
 								}
 					         ]
 				});	
@@ -1478,9 +1658,6 @@ $JQuery("#draftTracking_").submit(function(event){
 		   		
 		   },
 		   success:function(data){
-			  /*  	$JQuery("#draftTrackers").html("");
-				  $JQuery("#draft_tracking").html("");
-				  $JQuery("#draft_tracking_wrapper").html(""); */
 				 $JQuery("#draftTrackers").html(data);
 				 
 				  $JQuery("#draft_tracking").DataTable({
@@ -1499,7 +1676,9 @@ $JQuery("#draftTracking_").submit(function(event){
 						             {
 						         		extend: 'pdfHtml5',
 						         		title: title,
-						         		text: 'Export as .pdf'
+						         		text: 'Export as .pdf',
+						         		orientation: 'landscape',
+						         		pageSize: 'LEGAL'
 						         	  }
 						         ]
 					});	
@@ -1583,11 +1762,15 @@ $JQuery("#regReport").on("submit",function(event){
 	$JQuery("#male").is(":checked") == true ? gender += "M" : gender += "";
 	$JQuery("#female").is(":checked") == true ? gender += "F" : gender += "";
 	$JQuery("#others").is(":checked") == true ? gender += "O" : gender += "";
-	
+	var wlthPoorDraft = $JQuery("#wlth_poor_reg").is(":checked") == true ? "Poor" : "";
+	var wlthPopDraft = $JQuery("#wlth_pop_reg").is(":checked") == true ? "PoP" : "";
+	var wlthPayDraft = $JQuery("#wlth_pay_reg").is(":checked") == true ? "Able to Pay" : "";
 	var url =  "/openmrs/module/PSI/registrationReport.form?startDate="+st_date;
 	url += "&endDate="+ed_date;
 	url += "&gender="+gender;
 	url += "&code="+clinicCode;
+	url += "&wlthPoor="+wlthPoorDraft+"&wlthPop="+wlthPopDraft+"&wlthAbleToPay="+wlthPayDraft;
+	
 	var title = "Registration Report "+clinicName+" From "+st_date+" To "+ed_date;
 	
 	$JQuery.ajax({
@@ -1617,7 +1800,9 @@ $JQuery("#regReport").on("submit",function(event){
 				             {
 				         		extend: 'pdfHtml5',
 				         		title: title,
-				         		text: 'Export as .pdf'
+				         		text: 'Export as .pdf',
+				         		orientation: 'landscape',
+				         		pageSize: 'LEGAL' 
 							}
 	    		         ]
 	    	});
@@ -1648,10 +1833,18 @@ $JQuery("#visitReport").on("submit",function(event){
 	}
 	var startDate = $JQuery("#startDateVisit").val();
 	var endDate = $JQuery("#endDateVisit").val();
-	
+	var wlthPoorDraft = $JQuery("#wlth_poor_visit").is(":checked") == true ? "Poor" : "";
+	var wlthPopDraft = $JQuery("#wlth_pop_visit").is(":checked") == true ? "PoP" : "";
+	var wlthPayDraft = $JQuery("#wlth_pay_visit").is(":checked") == true ? "Able to Pay" : "";
+	var spSateliteDraft = $JQuery("#sp_satelite_visit").is(":checked") == true ? "Satellite" : "";
+	var spStaticDraft = $JQuery("#sp_static_visit").is(":checked") == true ? "Static" : "";
+	var spCspDraft = $JQuery("#sp_csp_visit").is(":checked") == true ? "CSP" : "";
 	var url = "/openmrs/module/PSI/visitReport.form?startDate="+startDate;
 	url += "&endDate="+endDate;
+	url += "&wlthPoor="+wlthPoorDraft+"&wlthPop="+wlthPopDraft+"&wlthAbleToPay="+wlthPayDraft;
+	url += "&spSatelite="+spSateliteDraft+"&spStatic="+spStaticDraft+"&spCsp="+spCspDraft;
 	url += "&code="+clinicCode;
+	
 	var title = "Visit Report "+clinicName+" From "+startDate+" To "+endDate;
 	
 	$JQuery.ajax({
@@ -1681,7 +1874,9 @@ $JQuery("#visitReport").on("submit",function(event){
 				             {
 				         		extend: 'pdfHtml5',
 				         		title: title,
-				         		text: 'Export as .pdf'
+				         		text: 'Export as .pdf',
+				         		orientation: 'landscape',
+				         		pageSize: 'LEGAL'
 					         }
 	    		         ]
 	    	}); 
@@ -1723,5 +1918,9 @@ $JQuery("#visitReport").on("submit",function(event){
     float: left;
     text-align: right;
 }
-
+@media print {
+  .header-print {
+    display: table-header-group;
+  }
+}
 </style>

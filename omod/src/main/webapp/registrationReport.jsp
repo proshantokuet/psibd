@@ -33,7 +33,6 @@
 					<th>Registration Date</th>
 					<th>Age</th>
 					<th>Union/Municipality/CC</th>
-					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -49,7 +48,7 @@
 						<td>${report.register_date }</td>
 						<td>${report.age }</td>
 						<td>${report.cc }</td>
-						<td></td>
+	
 					</tr>
 				</c:forEach>
 			</tbody>
