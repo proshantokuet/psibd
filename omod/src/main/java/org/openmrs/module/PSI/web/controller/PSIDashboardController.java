@@ -66,8 +66,9 @@ public class PSIDashboardController {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 			clinicName = psiClinicUser.getPsiClinicManagementId().getName();
 		}
-		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, today,
-		    clinicCode, "");
+//		DashboardDTO dashboardDTO = Context.getService(PSIServiceProvisionService.class).dashboardReport(today, today,
+//		    clinicCode, "");
+		DashboardDTO dashboardDTO = new DashboardDTO();
 //		dashboardDTO.setTotalDiscount(1);
 		String val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(today, today);
 		model.addAttribute("dashbaord_discount_value",0);
@@ -80,22 +81,22 @@ public class PSIDashboardController {
 		
 		model.addAttribute("dashboard", dashboardDTO);
 		
-		List<PSIReport> providerWiseReports = Context.getService(PSIServiceProvisionService.class)
-		        .serviceProviderWiseReport(today, today, clinicCode, "");
+//		List<PSIReport> providerWiseReports = Context.getService(PSIServiceProvisionService.class)
+//		        .serviceProviderWiseReport(today, today, clinicCode, "");
 		model.addAttribute("providerWiseReports", null);
 		
 		List<AUHCServiceCategory> serviceCategory = Context.getService(AUHCServiceCategoryService.class).getAll();
 		model.addAttribute("services",serviceCategory);
 		
-		List<PSIReport> servicePointWiseReports = Context.getService(PSIServiceProvisionService.class)
-		        .servicePointWiseReport(today, today, "");
-		model.addAttribute("servicePointWiseReports", servicePointWiseReports);
-		SearchFilterSlipTracking filter = new SearchFilterSlipTracking();
-		filter.setStartDateSlip(today);
-		filter.setEndDateSlip(today);
-		filter.setClinicCode(clinicCode);
-		List<PSIReportSlipTracking> trackingList = Context.getService(PSIServiceProvisionService.class)
-							.getSlipTrackingReport(filter);
+//		List<PSIReport> servicePointWiseReports = Context.getService(PSIServiceProvisionService.class)
+//		        .servicePointWiseReport(today, today, "");
+		model.addAttribute("servicePointWiseReports", null);
+//		SearchFilterSlipTracking filter = new SearchFilterSlipTracking();
+//		filter.setStartDateSlip(today);
+//		filter.setEndDateSlip(today);
+//		filter.setClinicCode(clinicCode);
+//		List<PSIReportSlipTracking> trackingList = Context.getService(PSIServiceProvisionService.class)
+//							.getSlipTrackingReport(filter);
 //		List<Object[]> slipList = Context.getService(PSIServiceProvisionService.class).getSlip(filter);
 		model.addAttribute("slipReport",null);
 		
@@ -140,12 +141,12 @@ public class PSIDashboardController {
 		
 		
 		
-		SearchFilterReport regFilter = new SearchFilterReport();
-		regFilter.setStart_date(today);
-		regFilter.setEnd_date(today);
-		List<AUHCRegistrationReport> registrationReport =
-				Context.getService(PSIServiceProvisionService.class)
-				.getRegistrationReport(regFilter);
+//		SearchFilterReport regFilter = new SearchFilterReport();
+//		regFilter.setStart_date(today);
+//		regFilter.setEnd_date(today);
+//		List<AUHCRegistrationReport> registrationReport =
+//				Context.getService(PSIServiceProvisionService.class)
+//				.getRegistrationReport(regFilter);
 		
 		model.addAttribute("regReport", null);
 		model.addAttribute("clinic",clinicCode);
@@ -155,22 +156,22 @@ public class PSIDashboardController {
 //				getVisitReport(today, today,clinicCode));
 //		
 		model.addAttribute("visitReport",null);
-		SearchFilterDraftTracking filterdraft = new SearchFilterDraftTracking();
-		filterdraft.setStartDateSlip(today);
-		filterdraft.setEndDateSlip(today);
-		filterdraft.setClinicCode(clinicCode);
-		List<AUHCDraftTrackingReport> draftList = new ArrayList<AUHCDraftTrackingReport>();
-		draftList = Context.getService(PSIServiceProvisionService.class).getDraft(filterdraft);
+//		SearchFilterDraftTracking filterdraft = new SearchFilterDraftTracking();
+//		filterdraft.setStartDateSlip(today);
+//		filterdraft.setEndDateSlip(today);
+//		filterdraft.setClinicCode(clinicCode);
+//		List<AUHCDraftTrackingReport> draftList = new ArrayList<AUHCDraftTrackingReport>();
+//		draftList = Context.getService(PSIServiceProvisionService.class).getDraft(filterdraft);
 		model.addAttribute("no_slip_draft",0);
 		model.addAttribute("draftReport",null);
 		
-		List<AUHCComprehensiveReport> report = new ArrayList<AUHCComprehensiveReport>();
-		model.addAttribute("compReport",report);
-		SearchFilterReport comp_filter = new SearchFilterReport();
-		comp_filter.setStart_date(today);
-		comp_filter.setEnd_date(today);
-		comp_filter.setService_category("");
-		comp_filter.setClinic_code(clinicCode);
+//		List<AUHCComprehensiveReport> report = new ArrayList<AUHCComprehensiveReport>();
+		model.addAttribute("compReport",null);
+//		SearchFilterReport comp_filter = new SearchFilterReport();
+//		comp_filter.setStart_date(today);
+//		comp_filter.setEnd_date(today);
+//		comp_filter.setService_category("");
+//		comp_filter.setClinic_code(clinicCode);
 
 		AUHCDashboardCard dashboardCard = new AUHCDashboardCard();
 		dashboardCard.init();

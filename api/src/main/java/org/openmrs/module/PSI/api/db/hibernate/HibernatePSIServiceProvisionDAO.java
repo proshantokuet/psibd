@@ -1755,7 +1755,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}
 		if(!"0".equalsIgnoreCase(filter.getClinicCode()))
 			wh += " AND m.clinic_code = '"+filter.getClinicCode()+"' ";
-		String sql = " SELECT m.patient_name as patient_name,pi.patient_identifier_id as hid, " +
+		String sql = " SELECT m.patient_name as patient_name,pi.identifier as hid, " +
 				" m.contact as mobile_number, m.gender as gender, " +
 				" TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()) as age, " +
 				" DATE_FORMAT(m.patient_registered_date, '%d.%m.%Y') as reg_date, " +
