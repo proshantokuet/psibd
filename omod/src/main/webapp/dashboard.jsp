@@ -969,9 +969,9 @@
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jszip.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.html5.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
+<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/pdfmake.min.js"></script>
+<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.print.min.js"></script>
+<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/vfs_fonts.js"></script>
 
 <script type="text/javascript">
 
@@ -1044,7 +1044,7 @@ $jq("#startDateVisit").on("change",function(){
 });
 </script>
 
-<script type="text/javascript">
+<script defer type="text/javascript">
 var $JQuery = jQuery.noConflict();
 $JQuery("#ServiceProviderWise").submit(function(event) { 
 var e = document.getElementById("provider");
