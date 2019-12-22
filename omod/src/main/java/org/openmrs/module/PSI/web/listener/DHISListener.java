@@ -11,10 +11,12 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.AUHCClinicType;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.api.AUHCClinicTypeService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
@@ -74,8 +76,18 @@ public class DHISListener {
 			
 			status = false;
 		}
-		
 		if (status) {
+			
+//			Context.openSession();
+//			String errorStatus = "";
+//			PSIDHISException psidhisException = new PSIDHISException();
+//			psidhisException.setResponse("testee");
+//			psidhisException.setError("adds");
+//			psidhisException.setType("test");
+//			psidhisException.setJson("dsd");
+//			Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+//			
+//			Context.clearSession();
 //			try {
 //				sendFailedPatient();
 //			}
@@ -102,6 +114,7 @@ public class DHISListener {
 //				
 //			}
 		}
+//		throw new RuntimeException("DHIS testing");
 	}
 	
 	public void sendFailedPatient() {
