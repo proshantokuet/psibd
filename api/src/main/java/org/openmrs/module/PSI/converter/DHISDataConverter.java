@@ -281,9 +281,9 @@ public class DHISDataConverter {
 		event.put("program", DHISMapper.registrationMapper.get("program"));
 		event.put("programStage", DHISMapper.ServiceProvision.get("programStage"));
 		event.put("status", "COMPLETED");
-		Date date = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String today = dateFormat.format(date);
+		// Date date = Calendar.getInstance().getTime();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+		// String today = dateFormat.format(date);
 		String moneyReceiptDate = dateFormat.format(getServiceDate);
 		event.put("eventDate", moneyReceiptDate);
 		JSONArray dataValues = new JSONArray();

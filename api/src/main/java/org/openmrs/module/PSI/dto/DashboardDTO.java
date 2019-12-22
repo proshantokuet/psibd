@@ -8,6 +8,8 @@ public class DashboardDTO {
 	
 	private int newPatient;
 	
+	private int totalDiscount;
+	
 	public int getServedPatient() {
 		return servedPatient;
 	}
@@ -30,6 +32,14 @@ public class DashboardDTO {
 	
 	public void setNewPatient(int newPatient) {
 		this.newPatient = newPatient;
+	}
+
+	public int getTotalDiscount() {
+		return totalDiscount;
+	}
+
+	public void setTotalDiscount(int totalDiscount) {
+		this.totalDiscount = totalDiscount;
 	}
 	
 }

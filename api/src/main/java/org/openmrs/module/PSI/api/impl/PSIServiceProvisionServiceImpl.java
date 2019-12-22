@@ -7,8 +7,19 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
+import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
+import org.openmrs.module.PSI.dto.AUHCDashboardCard;
+import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
+import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
+import org.openmrs.module.PSI.dto.AUHCVisitReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
+import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
+import org.openmrs.module.PSI.dto.SearchFilterRegistrationReport;
+import org.openmrs.module.PSI.dto.SearchFilterReport;
+import org.openmrs.module.PSI.dto.SearchFilterSlipTracking;
+import org.openmrs.module.PSI.dto.SearchFilterVisitReport;
 
 public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implements PSIServiceProvisionService {
 	
@@ -117,5 +128,230 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		dao.deleteByPatientUuidAndMoneyReceiptIdNull(patientUuid);
 		
 	}
+
+	@Override
+	public String getTotalDiscount(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getTotalDiscount(startDate, endDate);
+	}
+
+	@Override
+	public String getTotalServiceContract(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getTotalServiceContact(startDate, endDate);
+	}
+
+	@Override
+	public List<PSIReportSlipTracking> getSlipTrackingReport(
+			SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getSlipTrackingReport(filter);
+	}
+
+	@Override
+	public List<Object[]> getSlip(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getSlip(filter);
+	}
+
+	@Override
+	public String getNoOfDraft(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getNoOfDraft(startDate, endDate);
+	}
+
+	@Override
+	public String getTotalPayableDraft(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getTotalPayableDraft(startDate, endDate);
+	}
+
+	@Override
+	public List<AUHCDraftTrackingReport> getDraft(
+			SearchFilterDraftTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getDraftTrackingReport(filter);
+	}
+
+	@Override
+	public String getDashboardNewReg(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardNewReg(startDate, endDate);
+	}
+
+	@Override
+	public String getDashboardOldClients(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardOldClients(startDate, endDate);
+	}
+
+	@Override
+	public String getDashboardNewClients(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardNewClients(startDate, endDate);
+	}
+
+	@Override
+	public List<AUHCComprehensiveReport> getComprehensiveReport(SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getComprehensiveReport(filter);
+	}
+
+	@Override
+	public List<AUHCRegistrationReport> getRegistrationReport(
+			SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getRegistrationReport(filter);
+	}
+
+	@Override
+	public String getTotalPayableDraft(SearchFilterDraftTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getTotalPayableDraft(filter);
+	}
+
+	@Override
+	public String getTotalDiscount(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getTotalDiscount(filter);
+	}
+
+	@Override
+	public String getTotalServiceContact(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.totalServiceContact(filter);
+	}
+
+	@Override
+	public String getPatientsServed(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getPatientsServed(filter);
+	}
+
+	@Override
+	public String getRevenueEarned(SearchFilterSlipTracking filter) {
+		// TODO Auto-generated method stub
+		return dao.getRevenueEarned(filter);
+	}
+
+	@Override
+	public List<AUHCRegistrationReport> getRegistrationReport(String startDate,
+			String endDate, String gender,String code) {
+		// TODO Auto-generated method stub
+		return dao.getRegistrationReport(startDate,endDate,gender,code);
+	}
+
+	@Override
+	public List<AUHCVisitReport> getVisitReport(String startDate, String endDate,String code) {
+		// TODO Auto-generated method stub
+		return dao.getVisitReport(startDate, endDate,code);
+	}
+
+	@Override
+	public AUHCDashboardCard getComprehensiveDashboardCard(
+			List<AUHCComprehensiveReport> report, SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getComprehensiveDashboardCard(report, filter);
+	}
+
+	@Override
+	public AUHCDashboardCard getProviderDashboardCard(List<PSIReport> report,
+			SearchFilterReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getProviderDashboardCard(report, filter);
+	}
+
+	@Override
+	public String getDashboardOldClients(String startDate, String endDate,
+			String clinicCode, String gender) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardOldClients(startDate, endDate,clinicCode,gender);
+	}
+
+	@Override
+	public String getDashboardNewClients(String startDate, String endDate,
+			String code, String gender) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardNewClients(startDate, endDate,code,gender);
+	}
+
+	@Override
+	public String oldClientCount(String startDate, String endDate, String code) {
+		// TODO Auto-generated method stub
+		return dao.oldClientCount(startDate, endDate, code);
+	}
+
+	@Override
+	public String newClientCount(String startDate, String endDate, String code) {
+		// TODO Auto-generated method stub
+		return dao.newClientCount(startDate, endDate, code);
+	}
+
+	@Override
+	public String newRegistration(String startDate, String endDate, String code) {
+		// TODO Auto-generated method stub
+		return dao.newRegistration(startDate, endDate, code);
+	}
+
+	@Override
+	public String totalServiceContact(String startDate, String endDate,
+			String code) {
+		// TODO Auto-generated method stub
+		return dao.totalServiceContact(startDate, endDate, code);
+	}
+
+	@Override
+	public List<AUHCVisitReport> getVisitReport(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getVisitReport(filter);
+	}
+
+	@Override
+	public String newRegistration(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.newRegistration(filter);
+	}
+
+	@Override
+	public String oldClientCount(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.oldClientCount(filter);
+	}
+
+	@Override
+	public String newClientCount(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.newClientCount(filter);
+	}
+
+	@Override
+	public String totalServiceContact(SearchFilterVisitReport filter) {
+		// TODO Auto-generated method stub
+		return dao.totalServiceContact(filter);
+	}
+
+	@Override
+	public List<AUHCRegistrationReport> getRegistrationReport(
+			SearchFilterRegistrationReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getRegistrationReport(filter);
+	}
+
+	@Override
+	public String getDashboardOldClients(SearchFilterRegistrationReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardOldClients(filter);
+	}
+
+	@Override
+	public String getDashboardNewClients(SearchFilterRegistrationReport filter) {
+		// TODO Auto-generated method stub
+		return dao.getDashboardNewClients(filter);
+	}
+	
+	
+	
+	
+	
 	
 }

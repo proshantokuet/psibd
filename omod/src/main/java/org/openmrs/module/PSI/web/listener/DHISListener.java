@@ -11,10 +11,12 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.AUHCClinicType;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.api.AUHCClinicTypeService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
@@ -44,11 +46,11 @@ public class DHISListener {
 	
 	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	//private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+//	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
 	
 	//private final String DHIS2BASEURL = "http://192.168.19.162:8080";
 	
-	private final String DHIS2BASEURL = "http://10.100.11.2:5271";
+	private final String DHIS2BASEURL = "http://10.100.11.3:5271";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -74,34 +76,45 @@ public class DHISListener {
 			
 			status = false;
 		}
-		
 		if (status) {
-			try {
-				//sendFailedPatient();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				//sendPatient();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				//sendMoneyReceipt();
-			}
-			catch (Exception e) {
-				
-			}
 			
-			try {
-				//sendFailedMoneyReceipt();
-			}
-			catch (Exception e) {
-				
-			}
+//			Context.openSession();
+//			String errorStatus = "";
+//			PSIDHISException psidhisException = new PSIDHISException();
+//			psidhisException.setResponse("testee");
+//			psidhisException.setError("adds");
+//			psidhisException.setType("test");
+//			psidhisException.setJson("dsd");
+//			Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+//			
+//			Context.clearSession();
+//			try {
+//				sendFailedPatient();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			try {
+//				sendPatient();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			try {
+//				sendMoneyReceipt();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			
+//			try {
+//				sendFailedMoneyReceipt();
+//			}
+//			catch (Exception e) {
+//				
+//			}
 		}
+//		throw new RuntimeException("DHIS testing");
 	}
 	
 	public void sendFailedPatient() {

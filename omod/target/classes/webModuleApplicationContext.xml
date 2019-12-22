@@ -38,7 +38,7 @@
     </task:scheduled-tasks>
     
    <task:scheduler pool-size="1" id="dhis2Task"/>
-	<task:annotation-driven />
+	<task:annotation-driven /> 
  
 		
 </beans>
