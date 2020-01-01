@@ -66,6 +66,13 @@ public class DHISListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
+		
+		//log testing
+//		log.info("Info Message");
+//		log.debug("Debug Message");
+//		log.error("Error Message Testing");
+		//log testing
+		
 		JSONObject getResponse = null;
 		boolean status = true;
 		try {

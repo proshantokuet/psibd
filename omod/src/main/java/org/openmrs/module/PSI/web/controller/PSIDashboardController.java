@@ -228,6 +228,7 @@ public class PSIDashboardController {
 
 		AUHCDashboardCard dashboardCard = Context.getService(
 				PSIServiceProvisionService.class).getComprehensiveDashboardCard(reports,filter);
+		
 		model.addAttribute("comp_dashboard",dashboardCard);
 		model.addAttribute("dashboard", dashboardDTO);
 		model.addAttribute("compReports", reports);

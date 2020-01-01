@@ -68,6 +68,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public List<PSIServiceProvision> getAll() {
 		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
 		lists = sessionFactory.getCurrentSession().createQuery("from PSIServiceProvision ").list();
+		log.error(sessionFactory.getCurrentSession().createQuery(" from PSIServiceProvision ").
+					getQueryString());
 		return lists;
 		
 	}
@@ -80,6 +82,10 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .createQuery("from PSIServiceProvision where patientUuid = :id  order by spid desc")
 		        .setString("id", patientUuid).list();
 		
+		log.error(sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceProvision where patientUuid = :id  order by spid desc")
+		        .setString("id", patientUuid).getQueryString());
+		
 		return lists;
 		
 	}
@@ -89,6 +95,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public PSIServiceProvision findById(int id) {
 		List<PSIServiceProvision> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIServiceProvision where spid = :id").setInteger("id", id).list();
+		
+		log.error(sessionFactory.getCurrentSession()
+				.createQuery("from PSIServiceProvision where spid = :id").setInteger("id", id)
+				.getQueryString());
+		
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {
@@ -136,6 +147,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        + clinicCondition
 		        + "  group by code ,item,service_point,category order  by code) as Report  group by code, item ";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		log.error(sql);
 		if (!code.equalsIgnoreCase("0")) {
 			data = query.setString("code", code).list();
 		} else {
@@ -179,7 +191,10 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        + clinicCondition
 		        + dataCollectorCondition
 		        + "  group by code ,item,category order  by code";
+		
+		log.error(sql);
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		
 		
 		if (!code.equalsIgnoreCase("0")) {
 			query = (SQLQuery) query.setString("code", code);
@@ -220,7 +235,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		*/
 		String sql = "select code, item, category, sum(Clilic) as Clilic, sum(Satellite) as Satellite,  sum(CSP) as CSP , sum(Clilic)+sum(Satellite)+sum(CSP) as total from ( select code,item ,  category,service_point, sum(net_payable) as ttt,count(*), CASE WHEN service_point = 'Clinic' THEN sum(net_payable) ELSE 0 END Clilic,  CASE WHEN service_point = 'Satellite' THEN sum(net_payable) ELSE 0 END Satellite, CASE WHEN service_point = 'CSP' THEN sum(net_payable)  ELSE 0 END CSP from openmrs.psi_service_provision as sp  left join  openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid  where DATE(sp.money_receipt_date)  between  '2019-02-06'  and  '2019-06-04'  and clinic_code = 'mouha84s'   group by code ,item,service_point,category order  by code) as Report  group by code, item ";
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-		
+		log.error(sql);
 		data = query.list();
 		String s = "";
 		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
@@ -247,6 +262,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String servedPatientSql = "SELECT count(distinct(patient_uuid)) as count FROM openmrs.psi_money_receipt where "
 		        + servedPatienClinicCondition + servedPatienDataCollectorCondition
 		        + " is_complete = 1 and DATE(money_receipt_date) between '" + start + "' and '" + end + "'";
+		
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(servedPatientSql);
 		
 		List<BigInteger> servedPatientData = new ArrayList<BigInteger>();
@@ -274,6 +290,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		if (!"".equalsIgnoreCase(dataCollector)) {
 			earnedPatientDataCollectorCondition = " and data_collector = :dataCollector ";
 		}
+		log.error(query.getQueryString());
+		
 		String earnedPatientSql = "SELECT sum(net_payable) FROM openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr  on sp.psi_money_receipt_id = mr.mid where sp.is_complete = 1 and DATE(sp.money_receipt_date) between '"
 		        + start + "' and '" + end + "'" + earnedPatientClinicCondition + earnedPatientDataCollectorCondition + "";
 		SQLQuery earnedQuery = sessionFactory.getCurrentSession().createSQLQuery(earnedPatientSql);
@@ -295,6 +313,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		} else {
 			dashboardDTO.setEarned(0);
 		}
+		
+		log.error(earnedQuery.getQueryString());
 		
 		String newPatienClinicCondition = "";
 		String newPatienDataCollectorCondition = "";
@@ -335,6 +355,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        + " join  ( SELECT distinct (PAT.person_id) personId "
 		        + " FROM person_attribute as PAT "
 		        + newPatienClinicCondition + " ) as b  " + "  on a.personId = b.personId ";
+		
+	
 		SQLQuery newPatientQuery = sessionFactory.getCurrentSession().createSQLQuery(newPatientSql);
 		List<BigInteger> newPatientData = new ArrayList<BigInteger>();
 		if (!"0".equalsIgnoreCase(code)) {
@@ -346,6 +368,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			newPatientQuery = (SQLQuery) newPatientQuery.setInteger("creator", creator);
 		}
 		newPatientData = newPatientQuery.list();
+		
+		log.error(newPatientQuery.getQueryString());
 		
 		for (BigInteger newPatient : newPatientData) {
 			dashboardDTO.setNewPatient(newPatient.intValue());
@@ -363,6 +387,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .createQuery("from PSIServiceProvision where  dhisId IS NULL and is_complete = :complete  order by spid asc")
 		        .setLong("timestamp", timestamp).setInteger("complete", 1).list();
 		
+		log.error(sessionFactory
+		        .getCurrentSession()
+		        .createQuery("from PSIServiceProvision where  dhisId IS NULL and is_complete = :complete  order by spid asc")
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).getQueryString());
+		
 		return lists;
 	}
 	
@@ -375,6 +404,14 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .createQuery(
 		            "from PSIServiceProvision where timestamp > :timestamp and  is_complete = :complete  order by timestamp asc ")
 		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(3000).list();
+		
+		log.error(sessionFactory
+		        .getCurrentSession()
+		        .createQuery(
+		            "from PSIServiceProvision where timestamp > :timestamp and  is_complete = :complete  order by timestamp asc ")
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(3000)
+		        	.getQueryString());
+		
 		return lists;
 		
 	}
@@ -390,6 +427,13 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .setInteger("isSendToDHIS3", PSIConstants.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
 		        .setMaxResults(2000).list();
 		
+		log.error(sessionFactory
+		        .getCurrentSession()
+		        .createQuery(
+		            "from PSIServiceProvision where is_send_to_dhis= :isSendToDHIS3 and is_complete = :complete  order by spid asc")
+		        .setInteger("isSendToDHIS3", PSIConstants.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
+		        .setMaxResults(2000).getQueryString());
+		
 		return lists;
 	}
 	
@@ -401,6 +445,10 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .createQuery("from PSIServiceProvision where  psiMoneyReceiptId = :moneyReceiptId")
 		        .setInteger("moneyReceiptId", moneyReceiptId).list();
 		
+		log.error(sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceProvision where  psiMoneyReceiptId = :moneyReceiptId")
+		        .setInteger("moneyReceiptId", moneyReceiptId)
+		        	.getQueryString());
 		return lists;
 	}
 	
@@ -429,8 +477,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 try{ 
 			  ret = (Double)sessionFactory.getCurrentSession().createQuery(hql).
 					 list().get(0);
+			  log.error(sessionFactory.getCurrentSession().createQuery(hql).getQueryString());
+			  
 			 return  ret != null ? String.valueOf(ret) : "0";
 		 }catch (Exception e){
+			 log.error(sessionFactory.getCurrentSession().createQuery(hql).getQueryString());
+			 log.error(e.toString());
 			 return "0";
 //			 return e.toString();
 		 }
@@ -445,8 +497,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" WHERE moneyReceiptDate BETWEEN '"+startDate+"' AND '"+endDate+"'";
 		 try{ 
 			 Long ret = (Long)sessionFactory.getCurrentSession().createQuery(hql).list().get(0);
+			 log.error(sessionFactory.getCurrentSession().createQuery(hql).toString());
+			 
 			 return  ret != null ? String.valueOf(ret) : "0";
 		 }catch (Exception e){
+			 log.error(sessionFactory.getCurrentSession().createQuery(hql).toString());
+			 log.error(e.toString());
 			 return "0";
 		 }
 		
@@ -521,11 +577,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("patient_uuid",StandardBasicTypes.STRING).
 					setResultTransformer(new AliasToBeanResultTransformer(PSIReportSlipTracking.class)).
 				list();
-				
+			log.error(sql);	
 			return psiList;
 		}catch(Exception e){
 //			return null;
-			
+			log.error(sql);
+			log.error(e.toString());
 			return psiList;
 		}
 	
@@ -542,6 +599,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m"+
 					" on p.patient_uuid = m.patient_uuid";
 		ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
+		log.error(sql);
 		return ret;
 	}
 	
@@ -606,8 +664,10 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				addScalar("patient_uuid",StandardBasicTypes.STRING).
 				setResultTransformer(new AliasToBeanResultTransformer(AUHCDraftTrackingReport.class)).
 				list();
-		
+			log.error(sql);
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return null;
 		}
 		return draftList;
@@ -625,8 +685,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 		 ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
 				get(0).toString();
+		 log.error(sql);
 		}
 		catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 		return ret;
@@ -640,12 +703,15 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				"	on p.psi_money_receipt_id = m.mid " +
 				"  where p.money_receipt_date BETWEEN '"+startDate+"' AND  '"+endDate+"' "+
 				" and m.is_complete = 0";
-		String ret = "0";
+		String ret = "";
 		try{
 			 ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
-				get(0).toString();
+					get(0).toString();
+			 log.error(sql);
 		}
 		catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 		
@@ -677,8 +743,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			String ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
 					get(0).toString();
+			log.error(sql);
+			
 			return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 		
@@ -721,8 +791,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			String ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
 					get(0).toString();
+			log.error(sql);
 			return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 	}
@@ -739,10 +812,13 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			String res = sessionFactory.getCurrentSession().createSQLQuery(sql).list().get(0).toString();
 			Long ret =(Long.parseLong(res) -  Long.parseLong(getDashboardOldClients(startDate,endDate)));
+			log.error(sql);
 			return ret.toString();
 //			return res;
 		}
 		catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 	}
@@ -826,6 +902,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
         	" item,      service_point, category" +
         	" ORDER  BY code) AS Report" +
         	" GROUP  BY code, item";
+
 		
 		List<AUHCComprehensiveReport> report = new ArrayList<AUHCComprehensiveReport>();
 		try{
@@ -853,10 +930,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 //			AUHCComprehensiveReport rep = new AUHCComprehensiveReport();
 //			rep.setService_name(sql);
 //			report.add(rep);
-		
+			log.error(sql);
 			return report;
 		}catch(Exception e){
-			
+			log.error(sql);
+			log.error(e.toString());
 			return report;
 		}
 	
@@ -892,7 +970,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
                     " group by code ,item,service_point,category order  by code) as Report "+         
          			" group by code, item";
        
-         		
+		log.error(sql); 		
 		List<AUHCRegistrationReport> ret = new ArrayList<AUHCRegistrationReport>();
 		return ret;
 	}
@@ -963,8 +1041,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			List<Object> sz = sessionFactory.getCurrentSession().createSQLQuery(sql).list(); 
 			ret = sz.size() != 0 ?
 					sz.get(0).toString() : "0";
+			log.error(sql);
 			return ret;
+			
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 		
@@ -982,8 +1064,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		
 		 try{ 
 			 Long ret = (Long)sessionFactory.getCurrentSession().createQuery(hql).list().get(0);
+			 log.error(sessionFactory.getCurrentSession().createQuery(hql).getQueryString());
 			 return ret.toString();
 		 }catch (Exception e){
+			 log.error(sessionFactory.getCurrentSession().createQuery(hql).getQueryString());
+			 log.error(e.toString());
 			 return "0";
 		 }
 	}
@@ -1034,8 +1119,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
 					get(0).toString();
 //			return "0";
+			log.error(sql);
 			return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return ret;
 		}
 	}
@@ -1084,8 +1172,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
 					get(0).toString();
+			log.error(sql);
 			return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 	}
@@ -1184,9 +1275,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					setResultTransformer(new AliasToBeanResultTransformer(AUHCRegistrationReport.class)).
 					list();
 			
+			log.error(sql);
 			return report;
-		}catch(Exception e){
 			
+		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return report;
 		}
 //		return report;
@@ -1234,8 +1328,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 //			AUHCVisitReport r = new AUHCVisitReport();
 //			r.setPatient_name(sql);
 //			report.add(r);
+			log.error(sql);
 			return report;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e);
 //			return new ArrayList<AUHCVisitReport>();
 		}
 		return null;
@@ -1316,11 +1413,15 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			res2 = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql2).list().get(0).toString();
 			Long res = Long.parseLong(res1)+ Long.parseLong(res2);
-			
+			log.error(sql1);
+			log.error(sql2);
 			return res.toString();
 			
 		}catch(Exception e){
 //			return e.toString();
+			log.error(sql1);
+			log.error(sql2);
+			log.error(e.toString());
 			return "0";
 		}
 		
@@ -1371,8 +1472,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 						.createSQLQuery(sql).list().get(0).toString();
 //			 Long res = Long.parseLong(ret) 
 //					 - Long.parseLong(oldClientCount(startDate,endDate,code));
+			 log.error(sql);
 			 return ret;
 		 }catch(Exception e){
+			 log.error(sql);
+			 log.error(e.toString());
 			 return "0";
 		 }
 		 
@@ -1413,8 +1517,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
 			 Long res = Long.parseLong(ret) - Long.parseLong(getDashboardOldClients(startDate,endDate,code,gender));
+			 log.error(sql);
 			 return res.toString();
 		 }catch(Exception e){
+			 log.error(sql);
+			 log.error(e.toString());
 			 return "0";
 		 }
 	}
@@ -1455,9 +1562,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
+			 log.error(sql);
 			 return ret;
 			
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 	
@@ -1483,8 +1593,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
+			 log.error(sql);
 			 return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 		
@@ -1507,8 +1620,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			ret = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql).list().get(0).toString();
+			log.error(sql);
 		 return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 		
@@ -1530,8 +1646,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			ret = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql).list().get(0).toString();
+			log.error(sql);
 			return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 		
@@ -1552,8 +1671,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			ret = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql).list().get(0).toString();
+			log.error(sql);
 			return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 	}
@@ -1603,8 +1725,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			ret = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql).list().get(0).toString();
+			log.error(sql);
 		 return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 	}
@@ -1724,8 +1849,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			try{
 				ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
+				log.error(sql);
 			 return ret;
 			}catch(Exception e){
+				log.error(sql);
+				log.error(e.toString());
 				return "0";
 			}
 	}
@@ -1784,11 +1912,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("visit_count",StandardBasicTypes.LONG).
 					setResultTransformer(new AliasToBeanResultTransformer(AUHCVisitReport.class)).
 					list();
-
+			log.error(sql);
 			return report;
 		}
 		catch(Exception e){
-
+			log.error(sql);
+			log.error(e.toString());
 		}
 		return null;
 		
@@ -1813,8 +1942,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
+			 log.error(sql);
+		
 			 return ret;
 		}catch(Exception e){
+			 log.error(sql);
+			 log.error(e.toString());
 			return "0";
 		}
 	}
@@ -1917,10 +2050,14 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			res2 = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql2).list().get(0).toString();
 			Long res = Long.parseLong(res1)+ Long.parseLong(res2);
-			
+			log.error(sql1);
+			log.error(sql2);
 			return res.toString();
 			
 		}catch(Exception e){
+			log.error(sql1);
+			log.error(sql2);
+			log.error(e.toString());
 			return "0";
 		}
 		
@@ -1993,9 +2130,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 try{
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
-			
+			log.error(sql);
 			 return ret;
 		 }catch(Exception e){
+			 log.error(sql);
+			 log.error(e.toString());
 			 return "0";
 		 }
 	}
@@ -2038,8 +2177,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			ret = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql).list().get(0).toString();
+			log.error(sql);
 		 return ret;
 		}catch(Exception e){
+			log.error(sql);
+			log.error(e.toString());
 			return "0";
 		}
 	}
@@ -2151,10 +2293,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("patient_uuid",StandardBasicTypes.STRING).
 					setResultTransformer(new AliasToBeanResultTransformer(AUHCRegistrationReport.class)).
 					list();
-			
+			log.error(sql);
 			return report;
 		}catch(Exception e){
-			
+			log.error(sql);
+			log.error(e.toString());
 			return report;
 		}
 	}
@@ -2265,9 +2408,13 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			res2 = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql2).list().get(0).toString();
 			Long res = Long.parseLong(res1)+ Long.parseLong(res2);
-			
+			log.error(sql1);
+			log.error(sql2);
 			return res.toString();
 		}catch(Exception e){
+			log.error(sql1);
+			log.error(sql2);
+			log.error(e.toString());
 		 return "0";
 		}
 	}
@@ -2351,8 +2498,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			 ret = sessionFactory.getCurrentSession()
 						.createSQLQuery(sql).list().get(0).toString();
 //			 Long res = Long.parseLong(ret) - Long.parseLong(getDashboardOldClients(filter));
+			 log.error(sql);
 			 return ret;
 		 }catch(Exception e){
+			 log.error(sql);
+			 log.error(e.toString());
 			 return "0";
 		 }
 	}
@@ -2445,10 +2595,14 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			res2 = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql2).list().get(0).toString();
 			Long res = Long.parseLong(res1)+ Long.parseLong(res2);
-			
+			log.error(sql1);
+			log.error(sql2);
 			return res.toString();
 			
 		}catch(Exception e){
+			log.error(sql1);
+			log.error(sql2);
+			log.error(e.toString());
 			return "0";
 		}
 			
@@ -2520,8 +2674,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 						.createSQLQuery(sql).list().get(0).toString();
 //			 Long res = Long.parseLong(ret) 
 //					 - Long.parseLong(oldClientCount(startDate,endDate,code));
+			 log.error(sql);
 			 return ret;
 		 }catch(Exception e){
+			 log.error(sql);
+			 log.error(e.toString());
 			 return "0";
 		 }
 		 
