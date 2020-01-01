@@ -1659,8 +1659,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public String discountOnProvider(String startDate, String endDate,
 			String code, String collector) {
 		// TODO Auto-generated method stub
+//		CONVERT(int,ROUND(SUM(Amount),0))
 		String sql = ""
-				+ "SELECT SUM(m.total_discount) "
+				+ "SELECT ROUND(SUM(m.total_discount),2) "
 				+ "FROM openmrs.psi_money_receipt as m "
 				+ "WHERE DATE(m.money_receipt_date) BETWEEN "
 				+ "'"+startDate+"' AND '"+endDate+"' "
