@@ -181,6 +181,7 @@ public class PSIDashboardController {
 
 	}
 	
+	//Comprehensive Search Report
 	@RequestMapping(value = "/module/PSI/ServicePointWise", method = RequestMethod.GET)
 	public void ServicePointWiseReport(HttpServletRequest request, HttpSession session, Model model,
 	                                   @RequestParam(required = true) String startDate,
@@ -297,6 +298,7 @@ public class PSIDashboardController {
 		
 	}
 	
+	//Money Receipt
 	@RequestMapping(value = "/module/PSI/slipTracking", method = RequestMethod.GET)
 	public void slipTrackingWise(HttpServletRequest request, HttpSession session, Model model,
 	                                      @RequestParam(required = true) String startDate,
