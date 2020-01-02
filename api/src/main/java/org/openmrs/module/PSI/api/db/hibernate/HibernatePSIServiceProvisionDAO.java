@@ -550,7 +550,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}else {
 			wh += " and m.clinic_code='"+filter.getClinicCode()+"' ";
 		}
-		String sql = "select p.spid as sl,m.slip_no as slip_no,p.money_receipt_date as slip_date, "+
+		String dateFormat = "%Y-%m-%d %h:%i";
+		String sql = "select p.spid as sl,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
 				"sum(p.total_amount) as total_amount,sum(ROUND(p.discount,2)) as discount,sum(p.net_payable) as net_payable, "+
@@ -637,7 +638,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
-		String sql = "select p.spid as sl,m.slip_no as slip_no,p.money_receipt_date as slip_date, "+
+		String dateFormat = "%Y-%m-%d %h:%i";
+		String sql = "select p.spid as sl,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
 				"sum(p.total_amount) as total_amount,sum(ROUND(p.discount,2)) as discount,sum(p.net_payable) as net_payable, "+

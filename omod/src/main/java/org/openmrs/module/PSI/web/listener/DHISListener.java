@@ -67,12 +67,6 @@ public class DHISListener {
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
 		
-		//log testing
-//		log.info("Info Message");
-//		log.debug("Debug Message");
-//		log.error("Error Message Testing");
-		//log testing
-		
 		JSONObject getResponse = null;
 		boolean status = true;
 		try {
@@ -85,16 +79,6 @@ public class DHISListener {
 		}
 		if (status) {
 			
-//			Context.openSession();
-//			String errorStatus = "";
-//			PSIDHISException psidhisException = new PSIDHISException();
-//			psidhisException.setResponse("testee");
-//			psidhisException.setError("adds");
-//			psidhisException.setType("test");
-//			psidhisException.setJson("dsd");
-//			Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
-//			
-//			Context.clearSession();
 //			try {
 //				sendFailedPatient();
 //			}
@@ -121,7 +105,7 @@ public class DHISListener {
 //				
 //			}
 		}
-//		throw new RuntimeException("DHIS testing");
+
 	}
 	
 	public void sendFailedPatient() {
