@@ -11,11 +11,23 @@ public class PSIReportSlipTracking {
 	private String wealth_classification;
 	private String service_point;
 	private Long total_amount;
-	private Double discount;
-	private Double net_payable;
+	private String discount;
+	private String net_payable;
 	private String slip_link;
 	private String patient_uuid;
 	
+	public String getDiscount() {
+		return discount;
+	}
+	public void setDiscount(String discount) {
+		this.discount = discount;
+	}
+	public String getNet_payable() {
+		return net_payable;
+	}
+	public void setNet_payable(String net_payable) {
+		this.net_payable = net_payable;
+	}
 	public String getPatient_uuid() {
 		return patient_uuid;
 	}
@@ -70,21 +82,7 @@ public class PSIReportSlipTracking {
 	public void setTotal_amount(Long total_amount) {
 		this.total_amount = total_amount;
 	}
-	public Double getDiscount() {
-		return discount;
-	}
-	public void setDiscount(Double discount) {
-		this.discount = discount;
-	}
-	public Double getNet_payable() {
-		return net_payable;
-	}
-	public void setNet_payable(Double net_payable) {
-		this.net_payable = net_payable;
-	}
-	public String getSlip_link() {
-		return slip_link;
-	}
+	
 	public void setSlip_link(String slip_link) {
 		this.slip_link = slip_link;
 	}

@@ -8,10 +8,16 @@ public class AUHCRegistrationReport {
 	private String mobile_no;
 	private String gender;
 	private String register_date;
-	private Long age;
+	private String age;
 	private String cc;
 	private String patient_uuid;
 	
+	public String getAge() {
+		return age;
+	}
+	public void setAge(String age) {
+		this.age = age;
+	}
 	public Long getSl() {
 		return sl;
 	}
@@ -54,12 +60,7 @@ public class AUHCRegistrationReport {
 	public void setRegister_date(String register_date) {
 		this.register_date = register_date;
 	}
-	public Long getAge() {
-		return age;
-	}
-	public void setAge(Long age) {
-		this.age = age;
-	}
+	
 	public String getCc() {
 		return cc;
 	}

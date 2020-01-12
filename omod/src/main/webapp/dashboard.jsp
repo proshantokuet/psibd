@@ -393,7 +393,7 @@
 		        	<td>${ report.code }</td>
 		        	<td>${ report.item }</td>
 		            <td>${ report.serviceCount }</td>
-		            <td>${ report.total }</td>
+		            <td>${ report.total_ }</td>
 		        </tr>
 		       </c:forEach>
 		        
@@ -1938,7 +1938,7 @@ $JQuery("#visitReport").on("submit",function(event){
 	});
 });
 
-
+$JQuery("form").attr('autocomplete', 'off');
 </script>
  
 
