@@ -14,6 +14,8 @@ public class PSIReport {
 	
 	private float total;
 	
+	private String total_;
+	
 	private int serviceCount;
 	
 	private String category;
@@ -82,6 +84,14 @@ public class PSIReport {
 		this.serviceCount = serviceCount;
 	}
 	
+	public String getTotal_() {
+		return total_;
+	}
+
+	public void setTotal_(String total_) {
+		this.total_ = total_;
+	}
+
 	@Override
 	public String toString() {
 		return "PSIReport [code=" + code + ", item=" + item + ", clinic=" + clinic + ", satelite=" + satelite + ", csp="

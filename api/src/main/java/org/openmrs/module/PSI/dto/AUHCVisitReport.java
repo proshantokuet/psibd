@@ -5,7 +5,7 @@ public class AUHCVisitReport {
 	private String hid;
 	private String mobile_number;
 	private String gender;
-	private Long age;
+	private String age;
 	private String reg_date;
 	private String last_visit_date;
 	private Long visit_count;
@@ -35,10 +35,11 @@ public class AUHCVisitReport {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public Long getAge() {
+	
+	public String getAge() {
 		return age;
 	}
-	public void setAge(Long age) {
+	public void setAge(String age) {
 		this.age = age;
 	}
 	public String getReg_date() {

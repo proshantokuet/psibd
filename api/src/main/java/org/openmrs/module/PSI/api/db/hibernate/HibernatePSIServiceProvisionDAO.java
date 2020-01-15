@@ -183,7 +183,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		if (!"".equalsIgnoreCase(dataCollector)) {
 			dataCollectorCondition = " and data_collector = :dataCollector";
 		}
-		String sql = "select code,item ,category, count(*) as serviceCount ,sum(net_payable) as total from openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid where sp.is_complete = 1 and DATE(sp.money_receipt_date)  between '"
+		String sql = "select code,item ,category, count(*) as serviceCount ,ROUND(sum(net_payable),2) as total from openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid where sp.is_complete = 1 and DATE(sp.money_receipt_date)  between '"
 		        + startDate
 		        + "' and '"
 		        + endDate
@@ -212,7 +212,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			report.setItem(objects[1] + "");
 			report.setCategory(objects[2] + "");
 			report.setServiceCount(Integer.parseInt(objects[3].toString()));
-			report.setTotal(Float.parseFloat(objects[4].toString()));
+			report.setTotal_(objects[4].toString()+"0");
 			reportDTOs.add(report);
 		}
 		
@@ -554,7 +554,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String sql = "select p.spid as sl,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
-				"sum(p.total_amount) as total_amount,sum(ROUND(p.discount,2)) as discount,sum(p.net_payable) as net_payable, "+
+				"sum(p.total_amount) as total_amount,ROUND(sum((p.discount)),2) as discount,ROUND(sum(p.net_payable),2) as net_payable, "+
 				" p.patient_uuid as patient_uuid "+
 				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				"on p.psi_money_receipt_id = m.mid "+
@@ -573,8 +573,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("wealth_classification",StandardBasicTypes.STRING).
 					addScalar("service_point",StandardBasicTypes.STRING).
 					addScalar("total_amount",StandardBasicTypes.LONG).
-					addScalar("discount",StandardBasicTypes.DOUBLE).
-					addScalar("net_payable",StandardBasicTypes.DOUBLE).
+					addScalar("discount",StandardBasicTypes.STRING).
+					addScalar("net_payable",StandardBasicTypes.STRING).
 					addScalar("patient_uuid",StandardBasicTypes.STRING).
 					setResultTransformer(new AliasToBeanResultTransformer(PSIReportSlipTracking.class)).
 				list();
@@ -642,7 +642,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String sql = "select p.spid as sl,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
-				"sum(p.total_amount) as total_amount,sum(ROUND(p.discount,2)) as discount,sum(p.net_payable) as net_payable, "+
+				"sum(p.total_amount) as total_amount,ROUND(sum(p.discount),2) as discount,ROUND(sum(p.net_payable),2) as net_payable, "+
 				" p.patient_uuid as patient_uuid "+
 				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				"on p.psi_money_receipt_id = m.mid "+
@@ -661,8 +661,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				addScalar("wealth_classification",StandardBasicTypes.STRING).
 				addScalar("service_point",StandardBasicTypes.STRING).
 				addScalar("total_amount",StandardBasicTypes.LONG).
-				addScalar("discount",StandardBasicTypes.DOUBLE).
-				addScalar("net_payable",StandardBasicTypes.DOUBLE).
+				addScalar("discount",StandardBasicTypes.STRING).
+				addScalar("net_payable",StandardBasicTypes.STRING).
 				addScalar("patient_uuid",StandardBasicTypes.STRING).
 				setResultTransformer(new AliasToBeanResultTransformer(AUHCDraftTrackingReport.class)).
 				list();
@@ -838,18 +838,18 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String sql = "SELECT code as service_code," +
 				" item as service_name," +
 				" category as category," +
-				" Sum(static)                             AS revenue_static," +
-				" Sum(satellite)                          AS revenue_satellite," +
-				" Sum(csp)                                AS revenue_csp," +
-				" Sum(static) + Sum(satellite) + Sum(csp) AS revenue_total," +
-				" Sum(countstatic)                        AS service_contact_static," +
-				" Sum(countsatellite)                     AS service_contact_satellite," +
-				" Sum(countcsp)                           AS service_contact_csp," +
-				" Sum(countstatic)+ Sum(countsatellite)+Sum(countcsp) AS service_total," +
-				" Sum(discountstatic)                     AS discount_static," +
-				" Sum(discountsatellite)                  AS discount_satellite," +
-				" Sum(discountcsp)                        AS discount_csp," +
-				" Sum(discountstatic) + Sum(discountsatellite) + Sum(discountcsp) AS discount_total" +
+				" ROUND(Sum(static),2)                             AS revenue_static," +
+				" ROUND(Sum(satellite),2)                          AS revenue_satellite," +
+				" ROUND(Sum(csp),2)                                AS revenue_csp," +
+				" ROUND(Sum(static) + Sum(satellite) + Sum(csp),2) AS revenue_total," +
+				" ROUND(Sum(countstatic),2)                        AS service_contact_static," +
+				" ROUND(Sum(countsatellite),2)                     AS service_contact_satellite," +
+				" ROUND(Sum(countcsp),2)                           AS service_contact_csp," +
+				" ROUND(Sum(countstatic)+ Sum(countsatellite)+Sum(countcsp),2) AS service_total," +
+				" ROUND(Sum(discountstatic),2)                     AS discount_static," +
+				" ROUND(Sum(discountsatellite),2)                  AS discount_satellite," +
+				" ROUND(Sum(discountcsp),2)                        AS discount_csp," +
+				" ROUND(Sum(discountstatic) + Sum(discountsatellite) + Sum(discountcsp),2) AS discount_total" +
 				" FROM   (SELECT code," +
 				" item," +
 				" category," +
@@ -912,18 +912,18 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("service_code",StandardBasicTypes.STRING).
 					addScalar("service_name",StandardBasicTypes.STRING).
 					addScalar("category",StandardBasicTypes.STRING).
-					addScalar("revenue_static",StandardBasicTypes.DOUBLE).
-					addScalar("revenue_satellite",StandardBasicTypes.DOUBLE).
-					addScalar("revenue_csp",StandardBasicTypes.DOUBLE).
-					addScalar("revenue_total",StandardBasicTypes.DOUBLE).
-					addScalar("service_contact_static",StandardBasicTypes.FLOAT).
-					addScalar("service_contact_satellite",StandardBasicTypes.FLOAT).
-					addScalar("service_contact_csp",StandardBasicTypes.FLOAT).
-					addScalar("service_total",StandardBasicTypes.FLOAT).
-					addScalar("discount_static",StandardBasicTypes.DOUBLE).
-					addScalar("discount_satellite",StandardBasicTypes.DOUBLE).
-					addScalar("discount_csp",StandardBasicTypes.DOUBLE).
-					addScalar("discount_total",StandardBasicTypes.DOUBLE).
+					addScalar("revenue_static",StandardBasicTypes.STRING).
+					addScalar("revenue_satellite",StandardBasicTypes.STRING).
+					addScalar("revenue_csp",StandardBasicTypes.STRING).
+					addScalar("revenue_total",StandardBasicTypes.STRING).
+					addScalar("service_contact_static",StandardBasicTypes.STRING).
+					addScalar("service_contact_satellite",StandardBasicTypes.STRING).
+					addScalar("service_contact_csp",StandardBasicTypes.STRING).
+					addScalar("service_total",StandardBasicTypes.STRING).
+					addScalar("discount_static",StandardBasicTypes.STRING).
+					addScalar("discount_satellite",StandardBasicTypes.STRING).
+					addScalar("discount_csp",StandardBasicTypes.STRING).
+					addScalar("discount_total",StandardBasicTypes.STRING).
 					setResultTransformer(new AliasToBeanResultTransformer(AUHCComprehensiveReport.class)).
 					list();
 			
@@ -982,12 +982,13 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		// TODO Auto-generated method stub
 			try{
 				List<AUHCDraftTrackingReport> drafts =  getDraftTrackingReport(filter);
-				Double ret = 0.0;
+				Double ret = 0.00;
 				for(int i = 0; i < drafts.size();i++)
-					ret += drafts.get(i).getNet_payable();
+					ret += Double.parseDouble(drafts.get(i).getNet_payable());
+				
 				return ret.toString();
 			}catch(Exception e){
-				return "0";
+				return "0.00";
 			}
 	}
 
@@ -1028,7 +1029,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
 		
-		String sql = " select sum(ROUND(p.discount,2)) "+
+		String sql = " select ROUND(sum(p.discount),2) "+
 				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				" on p.psi_money_receipt_id = m.mid "+
 				" where m.is_complete=1";
@@ -1043,6 +1044,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			List<Object> sz = sessionFactory.getCurrentSession().createSQLQuery(sql).list(); 
 			ret = sz.size() != 0 ?
 					sz.get(0).toString() : "0";
+					
 			log.error(sql);
 			return ret;
 			
@@ -1162,7 +1164,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
-		String sql = " select sum(p.net_payable) "+
+		String sql = " select ROUND(sum(p.net_payable),2) "+
 				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				" on p.psi_money_receipt_id = m.mid"+
 				" where m.is_complete=1 ";
@@ -1174,7 +1176,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		try{
 			ret = sessionFactory.getCurrentSession().createSQLQuery(sql).list().
 					get(0).toString();
+//			ret = ret != "0" ? prepareDoubleFloat(ret): "0";
 			log.error(sql);
+			
 			return ret;
 		}catch(Exception e){
 			log.error(sql);
@@ -1751,11 +1755,11 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 
 		 for(int i = 0; i < report.size(); i++){
 			 
-			 revenue_earned += report.get(i).getRevenue_total();
+			 revenue_earned += Double.parseDouble(report.get(i).getRevenue_total());
 			 
-			 discount += report.get(i).getDiscount_total();
+			 discount += Double.parseDouble(report.get(i).getDiscount_total());
 			 
-			 service_contact += report.get(i).getService_total();
+			 service_contact += Double.parseDouble(report.get(i).getService_total());
 		 }
 		 
 		 dashboardCard.setRevenueEarned(String.valueOf((long)revenue_earned));
@@ -1816,7 +1820,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		//Total Revenue - Start
 		float revenue = 0;
 		for(int i = 0; i < report.size();i++)
-			revenue += report.get(i).getTotal();
+			revenue += Float.parseFloat(report.get(i).getTotal_());
 		
 		dashboardCard.setRevenueEarned(String.valueOf((long)revenue));
 		//Total Revenue - End
@@ -1888,7 +1892,9 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			wh += " AND m.clinic_code = '"+filter.getClinicCode()+"' ";
 		String sql = " SELECT m.patient_name as patient_name,pi.identifier as hid, " +
 				" m.contact as mobile_number, m.gender as gender, " +
-				" TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()) as age, " +
+				" CONCAT(TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()),'Y '," +
+				" TIMESTAMPDIFF(MONTH, p.birthdate, CURDATE())%12,'M '," +
+				" FLOOR(TIMESTAMPDIFF(DAY, p.birthdate, CURDATE())% 30.4375),'D ') as age, " +
 				" DATE_FORMAT(m.patient_registered_date, '%d.%m.%Y') as reg_date, " +
 				" MAX(DATE_FORMAT(m.money_receipt_date, '%d.%m.%Y')) as last_visit_date, " +
 				" COUNT(m.patient_uuid) as visit_count" +
@@ -1909,7 +1915,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("hid",StandardBasicTypes.STRING).
 					addScalar("mobile_number",StandardBasicTypes.STRING).
 					addScalar("gender",StandardBasicTypes.STRING).
-					addScalar("age",StandardBasicTypes.LONG).
+					addScalar("age",StandardBasicTypes.STRING).
 					addScalar("reg_date",StandardBasicTypes.STRING).
 					addScalar("last_visit_date",StandardBasicTypes.STRING).
 					addScalar("visit_count",StandardBasicTypes.LONG).
@@ -2203,7 +2209,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "        temp1.phoneno         AS mobile_no, "
 				+ "       p.gender              AS gender, "
 				+ "       temp5.registeredDate  AS register_date, "
-				+ "        IFNULL(TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()),0) AS age, "
+				+ "        CONCAT(TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()) ,'Y ' ,TIMESTAMPDIFF(MONTH, p.birthdate, CURDATE()) %12 ," +
+				"					'M ',FLOOR(TIMESTAMPDIFF(DAY,p.birthdate,CURDATE())% 30.4375)  ,'D ') AS age, "
 				+ "        paddress.address3 as cc, "
 				+ "       p.uuid              AS patient_uuid "
 				+ "       FROM   person_name pname "
@@ -2291,7 +2298,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 					addScalar("mobile_no",StandardBasicTypes.STRING).
 					addScalar("gender",StandardBasicTypes.STRING).
 					addScalar("register_date",StandardBasicTypes.STRING).
-					addScalar("age",StandardBasicTypes.LONG).
+					addScalar("age",StandardBasicTypes.STRING).
 					addScalar("cc",StandardBasicTypes.STRING).
 					addScalar("patient_uuid",StandardBasicTypes.STRING).
 					setResultTransformer(new AliasToBeanResultTransformer(AUHCRegistrationReport.class)).
@@ -2689,7 +2696,6 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 
 	
 
-	
 	
 
 	
