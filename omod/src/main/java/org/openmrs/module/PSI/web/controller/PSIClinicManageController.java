@@ -100,6 +100,8 @@ public class PSIClinicManageController {
 		    clinic.getDivisionId());
 		List<PSILocation> upazilas = Context.getService(PSIClinicManagementService.class).findByparentLocation(
 		    clinic.getDistrictId());
+		List<AUHCClinicType> clinicTypeList = Context.getService(AUHCClinicTypeService.class).getAll();
+		model.addAttribute("clinicTypes",clinicTypeList);
 		model.addAttribute("pSIClinic", clinic);
 		model.addAttribute("divisions", divisions);
 		model.addAttribute("districts", districts);

@@ -44,11 +44,13 @@
              	</div>
               	<div class="col-md-6">
                		<div class="form-group">
-                  	Category: 	<form:select path="category" class="form-control selcls" required="required" tabindex="1">
-                  				<form:option value=""/>
-					              <form:option value="BEmOC"/>
+                  	Category Type	<form:select path="category" class="form-control selcls" required="required" tabindex="1">
+                  				<!-- <form:option value="BEmOC"/>
 					              <form:option value="CEmOC"/>
-					              <form:option value="Vital"/>					             
+					              <form:option value="Vital"/> -->
+					              <c:forEach items="${clinicTypes}" var="type"> 
+                                     <form:option value="${type.clinicTypeName}" label="${type.clinicTypeName}"/>                               
+                                  </c:forEach>      					             
 					         </form:select>
 					</div>
                   	<div class="form-group">
