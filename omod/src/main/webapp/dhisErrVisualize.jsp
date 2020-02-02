@@ -93,11 +93,11 @@ table.dataTable tbody th, table.dataTable tbody td {
 							<label>${patientFailedSync}</label> &nbsp;&nbsp; Sync Failed
 						</div>
 					</div>
-					<div class="col-md-3">
+					<!-- <div class="col-md-3">
 						<div class="form-group">
 							<button onclick="dhisPatientSyncReport()">View Failure Report</button>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<table id="table_id" class="display cell-border compact">
@@ -195,11 +195,11 @@ table.dataTable tbody th, table.dataTable tbody td {
 	                    <label>${sync_failed}</label> &nbsp;&nbsp; Sync Failed
 	                </div>
 				</div>
-				<div class="col-md-3">
+				<!-- <div class="col-md-3">
 					<div class="form-group">
 	                   <button onclick="dhisMoneyReceiptSyncReport()">View Failure Report</button>
 	                </div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 
