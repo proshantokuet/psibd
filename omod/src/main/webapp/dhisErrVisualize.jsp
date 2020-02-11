@@ -3,9 +3,21 @@
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="dashboard" otherwise="/login.htm" />
 <style>
+.dataTables_wrapper .dt-buttons {
+  float:none;  
+  text-align:right;
+  position: static;
+  top: -26px;
+  margin-left: 1036px
+}
+.dataTables_wrapper .dataTables_filter {
+    float: left;
+    text-align: right;
+}
 table.dataTable tbody th, table.dataTable tbody td {
      padding: 0px 0px; 
 }
+
 #loader{
 	background-color:#fff;
 	 padding: 15px;
@@ -100,6 +112,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 					</div> -->
 				</div>
 			</div>
+			<div style="overflow:auto;">
 			<table id="table_id" class="display cell-border compact">
 				<thead>
 					<tr>
@@ -108,7 +121,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 						<th>HID</th>
 						<!-- <th>Clinic Code</th> -->
 						<th>Error</th>
-						<th>Date Created</th>
+						<th>Sync Started</th>
 						<th>Last Sync Date</th>
 					</tr>
 				</thead>
@@ -126,6 +139,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 					</c:forEach>
 				</tbody>
 			</table>
+			</div>
 		</div>
 	</div>
 	
@@ -202,7 +216,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 				</div> -->
 			</div>
 		</div>
-
+<div style="overflow:auto;">
 	<table id="table_id_moneyreceipt" class="display cell-border compact">
 		  <thead>
 		        <tr>
@@ -212,7 +226,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 		            <!-- <th>Clinic Code</th>  -->
 		            <th>Money Receipt ID</th>
 		            <th>Error</th>
-		            <th>Date Created</th>		            
+		            <th>Sync Started</th>		            
 		            <th>Last Sync Date</th>
 		        </tr>
 		    </thead>
@@ -232,10 +246,18 @@ table.dataTable tbody th, table.dataTable tbody td {
 		        </c:forEach>
 		    </tbody>
 	</table>
+	</div>
 		</div>
 	</div>
  </div>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jszip.min.js"></script>
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.html5.min.js"></script>
+<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/pdfmake.min.js"></script>
+<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.print.min.js"></script>
+<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/vfs_fonts.js"></script>
+
 <script type="text/javascript">
 var $jq = jQuery.noConflict();
 $jq(window).load(function() {
@@ -244,10 +266,52 @@ $jq(window).load(function() {
 	$jq("#tabs").show();
 });
 $jq(document).ready( function () {
-	$jq('#table_id').DataTable();
+	//$jq('#table_id').DataTable();
+	$jq('#table_id').DataTable({
+		   bFilter: false,
+	       bInfo: false,
+	       "searching": true,
+		   dom: 'Bfrtip',
+		   destroy: true,
+		   buttons: [
+		             {
+		                 extend: 'excelHtml5',
+		                 title: "Patient DHIS2 Sync Report",
+		                 text: 'Export as .xlxs'
+		             },
+		             {
+			         		extend: 'pdfHtml5',
+			         		title: "Patient DHIS2 Sync Report",
+			         		text: 'Export as .pdf',
+			         		orientation: 'landscape',
+			         		pageSize: 'LEGAL'
+				     }
+		         ]
+	});
 } );
 $jq(document).ready( function () {
-	$jq('#table_id_moneyreceipt').DataTable();
+	//$jq('#table_id_moneyreceipt').DataTable();
+	$jq('#table_id_moneyreceipt').DataTable({
+		   bFilter: false,
+	       bInfo: false,
+	       "searching": true,
+		   dom: 'Bfrtip',
+		   destroy: true,
+		   buttons: [
+		             {
+		                 extend: 'excelHtml5',
+		                 title: "Money Receipt DHIS2 Sync Report",
+		                 text: 'Export as .xlxs'
+		             },
+		             {
+			         		extend: 'pdfHtml5',
+			         		title: "Money Receipt DHIS2 Sync Report",
+			         		text: 'Export as .pdf',
+			         		orientation: 'landscape',
+			         		pageSize: 'LEGAL'
+				     }
+		         ]
+	});
 } );
 
 $jq("#patienterrorvisualize").on("submit",function(event){
@@ -277,7 +341,29 @@ $jq("#patienterrorvisualize").on("submit",function(event){
 	    },
 	    success:function(data){
 			   $jq("#patientsyncReport").html(data);
-			   $jq('#table_id').DataTable();
+			   //$jq('#table_id').DataTable();
+				$jq('#table_id').DataTable({
+					   bFilter: false,
+				       bInfo: false,
+				       "searching": true,
+					   dom: 'Bfrtip',
+					   destroy: true,
+					   buttons: [
+					             {
+					                 extend: 'excelHtml5',
+					                 title: "Money Receipt DHIS2 Sync Report",
+					                 text: 'Export as .xlxs'
+					             },
+					             {
+						         		extend: 'pdfHtml5',
+						         		title: "Money Receipt DHIS2 Sync Report",
+						         		text: 'Export as .pdf',
+						         		orientation: 'landscape',
+						         		pageSize: 'LEGAL'
+							     }
+					         ]
+				});
+			   
 			   $jq("#loading_prov").hide();
 	    },
 	    error:function(data){
@@ -287,7 +373,7 @@ $jq("#patienterrorvisualize").on("submit",function(event){
 	});
 });
 
-function dhisPatientSyncReport() {
+/* function dhisPatientSyncReport() {
 	
 	var url = "/openmrs/module/PSI/dhisPatientReportSyncData.form";
 	event.preventDefault();
@@ -345,7 +431,7 @@ function dhisMoneyReceiptSyncReport() {
 		    console.log("DONE");
 		   }
 		  }); 
-}
+} */
 
 $jq("#moneyreceipterrorvisualize").on("submit",function(event){
 	event.preventDefault();
@@ -374,7 +460,28 @@ $jq("#moneyreceipterrorvisualize").on("submit",function(event){
 	    },
 	    success:function(data){
 			   $jq("#moneyReceiptReport").html(data);
-			   $jq('#table_id_moneyreceipt').DataTable();
+			   //$jq('#table_id_moneyreceipt').DataTable();
+			   $jq('#table_id_moneyreceipt').DataTable({
+					   bFilter: false,
+				       bInfo: false,
+				       "searching": true,
+					   dom: 'Bfrtip',
+					   destroy: true,
+					   buttons: [
+					             {
+					                 extend: 'excelHtml5',
+					                 title: "Money Receipt DHIS2 Sync Report",
+					                 text: 'Export as .xlxs'
+					             },
+					             {
+						         		extend: 'pdfHtml5',
+						         		title: "Money Receipt DHIS2 Sync Report",
+						         		text: 'Export as .pdf',
+						         		orientation: 'landscape',
+						         		pageSize: 'LEGAL'
+							     }
+					         ]
+				});
 			   $jq("#loading_prov_money_receipt").hide();
 	    },
 	    error:function(data){

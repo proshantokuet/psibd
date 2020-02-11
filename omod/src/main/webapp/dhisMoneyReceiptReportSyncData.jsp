@@ -19,14 +19,14 @@
 	                    <label>${sync_failed}</label> &nbsp;&nbsp; Sync Failed
 	                </div>
 				</div>
-				<div class="col-md-3">
+				<!-- <div class="col-md-3">
 					<div class="form-group">
 	                   <button onclick="dhisPatientSyncReport()">View Failure Report</button>
 	                </div>
-				</div>
+				</div> -->
 			</div>
 		</div>
- 
+ <div style="overflow:auto;">
 	<table id="table_id_moneyreceipt" class="display cell-border compact">
 		  <thead>
 		        <tr>
@@ -37,7 +37,7 @@
 		                          
 		            <th>Money Receipt ID</th>
 		            <th>Error</th>
-		            <th>Date Created</th>		            
+		            <th>Sync Started</th>		            
 		            <th>Last Sync Date</th>
 		        </tr>
 		    </thead>
@@ -57,4 +57,5 @@
 		        </c:forEach>
 		    </tbody>
 	</table>
+	</div>
 		</div>

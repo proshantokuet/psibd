@@ -98,7 +98,7 @@ public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualiz
 					+ "FROM   psi_service_provision psp "
 					+ "       JOIN psi_money_receipt pmr "
 					+ "         ON pmr.mid = psp.psi_money_receipt_id "
-					+ "WHERE  psp.dhis_id IS NULL "
+					+ "WHERE  (psp.dhis_id IS NULL OR psp.dhis_id = '') "
 					+ "       AND psp.is_complete = 1 "
 					+ "       AND psp.is_send_to_dhis = 2 " + conditionString + ";";
 		}
@@ -202,7 +202,7 @@ public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualiz
 				+ "         ON pmr.patient_uuid = p.uuid "
 				+ "       JOIN patient_identifier pi "
 				+ "         ON p.person_id = pi.patient_id "
-				+ "WHERE  psp.dhis_id IS NULL "
+				+ "WHERE  (psp.dhis_id IS NULL OR psp.dhis_id = '') "
 				+ "       AND psp.is_complete = 1 "
 				+ "       AND psp.is_send_to_dhis = 2 " + conditionString + ";";
 		

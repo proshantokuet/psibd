@@ -656,16 +656,23 @@
 		<div class="form-content" id="draftTracking"> </div>
 		<div class="form-content">
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-3">
 					<div class="form-group">
 	                    <label> ${ no_slip_draft} </label> &nbsp;&nbsp; No of Slips in Draft
 	                </div>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-4">
 					<div class="form-group">
 	                    <label> ${ total_payable_draft} </label> &nbsp;&nbsp; Total Payable in Draft
 	                </div>
 				</div>
+		<c:if test ="${not empty draftReport }">
+		<div class="col-md-4">
+			<div class="form-group">
+                   <button onclick="submitAllDraft()">Submit All Draft</button>
+               </div>
+		</div>
+		</c:if>
 			</div>
 		</div>
 		<div style="overflow:auto;">
@@ -680,6 +687,7 @@
 		               <th>Phone</th>
 		               <th>Wealth Class</th>
 		               <th>Service Point</th>
+		               <th>Total Service Contact</th>
 		               <th>Total Amount</th>
 		               <th>Discount</th>
 		               <th>Payable Amount</th>
@@ -699,6 +707,7 @@
 				            <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.phone }</a></td>
 				            <td>${ report.wealth_classification }</td>
 				            <td>${ report.service_point }</td>
+				            <td>${ report.total_service_contact }</td>
 				            <td>${ report.total_amount }</td>
 				            <td>${ report.discount }</td>
 				            <td>${ report.net_payable }</td>
@@ -1937,6 +1946,83 @@ $JQuery("#visitReport").on("submit",function(event){
 	    }
 	});
 });
+
+function submitAllDraft() {
+	debugger;
+	event.preventDefault();
+	var clinic = document.getElementById("clinic_draft");
+	var clinicCode = "";
+	var clinicName = $JQuery("#clinicName").val();
+	if(clinic !== null){		
+		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		}
+	}else {
+		clinicCode = -1;
+	}
+	$JQuery("#loading_draft").show();
+	var startDateDraft = $JQuery("#startDateDraft").val();
+	var endDateDraft = $JQuery("#endDateDraft").val();
+	
+	var dataCollectorDraft = $JQuery("#collector_draft").val();
+	var wlthPoorDraft = $JQuery("#wlth_poor_draft").is(":checked") == true ? "Poor" : "";
+	var wlthPopDraft = $JQuery("#wlth_pop_draft").is(":checked") == true ? "PoP" : "";
+	var wlthPayDraft = $JQuery("#wlth_pay_draft").is(":checked") == true ? "Able to Pay" : "";
+	var spSateliteDraft = $JQuery("#sp_satelite_draft").is(":checked") == true ? "Satellite" : "";
+	var spStaticDraft = $JQuery("#sp_static_draft").is(":checked") == true ? "Static" : "";
+	var spCspDraft = $JQuery("#sp_csp_draft").is(":checked") == true ? "CSP" : "";
+	var url = "/openmrs/module/PSI/submitAllDraft.form?startDate="+startDateDraft+"&endDate="+endDateDraft;
+	url += "&dataCollector="+dataCollectorDraft+"&wlthPoor="+wlthPoorDraft+"&wlthPop="+wlthPopDraft+"&wlthAbleToPay="+wlthPayDraft;
+	url += "&spSatelite="+spSateliteDraft+"&spStatic="+spStaticDraft+"&spCsp="+spCspDraft;
+	url +="&code="+clinicCode;
+	var title = "Draft wise Report "+clinicName+" From "+startDateDraft+" To "+endDateDraft;
+	
+	$JQuery.ajax({
+		type : "GET",
+		   contentType : "application/json",
+		   url : url,	 
+		   dataType : 'html',
+		   timeout : 100000,
+		   beforeSend: function() {	    
+		   		
+		   },
+		   success:function(data){
+				 $JQuery("#draftTrackers").html(data);
+				 
+				  $JQuery("#draft_tracking").DataTable({
+					  "searching": true,
+						bFilter: false,
+					    bInfo: false,
+					    
+						   dom: 'Bfrtip',
+						   destroy: true,
+						   buttons: [
+						             {
+						                 extend: 'excelHtml5',
+						                 title: title,
+						                 text: 'Export as .xlxs'
+						             },
+						             {
+						         		extend: 'pdfHtml5',
+						         		title: title,
+						         		text: 'Export as .pdf',
+						         		orientation: 'landscape',
+						         		pageSize: 'LEGAL'
+						         	  }
+						         ]
+					});	
+				  /* console.log(data); */
+				  $JQuery("#draftTracking").html("Draft Tracking wise Report From "+startDateDraft+" To "+endDateDraft);
+				  $JQuery("#loading_draft").hide();   
+		   },
+		   error:function(){
+			   $JQuery("#loading_draft").hide();
+		   }
+	});
+}
+
 
 $JQuery("form").attr('autocomplete', 'off');
 </script>

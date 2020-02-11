@@ -15,6 +15,8 @@ public class PSIReportSlipTracking {
 	private String net_payable;
 	private String slip_link;
 	private String patient_uuid;
+	private String total_service_contact;
+	private int mid;
 	
 	public String getDiscount() {
 		return discount;
@@ -33,6 +35,18 @@ public class PSIReportSlipTracking {
 	}
 	public void setPatient_uuid(String patient_uuid) {
 		this.patient_uuid = patient_uuid;
+	}
+	public String getTotal_service_contact() {
+		return total_service_contact;
+	}
+	public void setTotal_service_contact(String total_service_contact) {
+		this.total_service_contact = total_service_contact;
+	}
+	public int getMid() {
+		return mid;
+	}
+	public void setMid(int mid) {
+		this.mid = mid;
 	}
 	public long getSl() {
 		return sl;
