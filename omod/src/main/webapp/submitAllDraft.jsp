@@ -21,6 +21,10 @@
 				</c:if>
 			</div>
 		</c:if>
+		<div class="col-md-3">
+			<div class="form-group">
+                   <label> ${msg} </label>
+		</div>
 	</div>
 </div>
 <div style="overflow:auto;">

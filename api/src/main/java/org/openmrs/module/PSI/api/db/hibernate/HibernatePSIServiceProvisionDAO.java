@@ -639,7 +639,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
 		String dateFormat = "%Y-%m-%d %h:%i";
-		String sql = "select p.spid as sl,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
+		String sql = "select p.psi_money_receipt_id as mid,COUNT(p.psi_money_receipt_id) as total_service_contact,p.spid as sl,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
 				"sum(p.total_amount) as total_amount,ROUND(sum(p.discount),2) as discount,ROUND(sum(p.net_payable),2) as net_payable, "+
@@ -653,6 +653,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		List<AUHCDraftTrackingReport> draftList = new ArrayList<AUHCDraftTrackingReport>();
 		try{
 			draftList = sessionFactory.getCurrentSession().createSQLQuery(sql).
+				addScalar("mid",StandardBasicTypes.INTEGER).
+				addScalar("total_service_contact",StandardBasicTypes.STRING).
 				addScalar("sl",StandardBasicTypes.LONG).
 				addScalar("slip_no",StandardBasicTypes.STRING).
 				addScalar("slip_date",StandardBasicTypes.STRING).

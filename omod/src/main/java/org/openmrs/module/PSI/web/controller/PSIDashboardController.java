@@ -17,9 +17,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.AUHCServiceCategory;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicUser;
+import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.api.AUHCServiceCategoryService;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
+import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
@@ -43,6 +46,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PSIDashboardController {
@@ -55,7 +59,7 @@ public class PSIDashboardController {
 		String clinicCode = "0";
 		String clinicName = "";
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
-		
+		boolean isManager = Utils.hasPrivilige(privileges, PSIConstants.ClinicManager);
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String today = dateFormat.format(date);
@@ -164,6 +168,9 @@ public class PSIDashboardController {
 //		draftList = Context.getService(PSIServiceProvisionService.class).getDraft(filterdraft);
 		model.addAttribute("no_slip_draft",0);
 		model.addAttribute("draftReport",null);
+		if(psiClinicUser != null && isManager || isAdmin) {
+			model.addAttribute("showSubmitDraft", 2);
+		}
 		
 //		List<AUHCComprehensiveReport> report = new ArrayList<AUHCComprehensiveReport>();
 		model.addAttribute("compReport",null);
@@ -394,6 +401,7 @@ public class PSIDashboardController {
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
 		String clinicCode = "0";
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		boolean isManager = Utils.hasPrivilige(privileges, PSIConstants.ClinicManager);
 		if (isAdmin) {
 			clinicCode = code != "-1" ? code : "0";
 		} else {
@@ -433,6 +441,9 @@ public class PSIDashboardController {
 			model.addAttribute("clinics", clinics);
 			model.addAttribute("showClinic", 1);
 			
+		}
+		if(psiClinicUser != null && isManager || isAdmin) {
+			model.addAttribute("showSubmitDraft", 2);
 		}
 		model.addAttribute("clinic_code",clinicCode);
 	}
@@ -646,4 +657,94 @@ public class PSIDashboardController {
 		}
 //		model.addAttribute("clinic_code",clinicCode);
 	}
+	
+	
+	@RequestMapping(value = "/module/PSI/submitAllDraft", method = RequestMethod.GET)
+	public void submitAllDraft(HttpServletRequest request, HttpSession session, Model model,
+			@RequestParam(required = true) String startDate,
+            @RequestParam(required = true) String endDate,
+            @RequestParam	String dataCollector,
+            @RequestParam String wlthPoor,
+            @RequestParam String wlthPop,
+            @RequestParam String wlthAbleToPay,
+            @RequestParam String spSatelite,
+            @RequestParam String spStatic,
+            @RequestParam String spCsp,
+            @RequestParam(required = true) String code){
+		
+		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+			    Context.getAuthenticatedUser().getUsername());
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		String clinicCode = "0";
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		boolean isManager = Utils.hasPrivilige(privileges, PSIConstants.ClinicManager);
+		if (isAdmin) {
+			clinicCode = code != "-1" ? code : "0";
+		} else {
+			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+		}
+		SearchFilterDraftTracking filter = new SearchFilterDraftTracking();
+		filter.setStartDateSlip(startDate);
+		filter.setEndDateSlip(endDate);
+		filter.setCollector(dataCollector);
+		filter.setWlthPoor(wlthPoor);
+		filter.setWlthPop(wlthPop);
+		filter.setWlthAbleToPay(wlthAbleToPay);
+		filter.setSpSatelite(spSatelite);
+		filter.setSpStatic(spStatic);
+		filter.setSpCsp(spCsp);
+		filter.setClinicCode(clinicCode);
+		
+		List<AUHCDraftTrackingReport> draftListForSubmitting = new ArrayList<AUHCDraftTrackingReport>();
+		draftListForSubmitting = Context.getService(PSIServiceProvisionService.class).getDraft(filter);
+		try {
+			for (AUHCDraftTrackingReport auhcDraftTrackingReport : draftListForSubmitting) {
+				PSIMoneyReceipt psiMoneyReceipt = null;
+				psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(auhcDraftTrackingReport.getMid());
+				psiMoneyReceipt.setIsComplete(1);
+				psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
+				for (PSIServiceProvision serviceProvisions : psiMoneyReceipt.getServices()) {
+					
+					serviceProvisions.setIsComplete(1);
+					serviceProvisions.setTimestamp(System.currentTimeMillis());
+					
+				}
+				Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);								
+			}
+			
+		} catch (Exception e) {
+			model.addAttribute("msg", "An error Occurred, please Try again later");
+		}
+		
+		model.addAttribute("total_payable_draft",Context.getService(PSIServiceProvisionService.class)
+				.getTotalPayableDraft(filter));
+		
+		List<AUHCDraftTrackingReport> draftList = new ArrayList<AUHCDraftTrackingReport>();
+		draftList = Context.getService(PSIServiceProvisionService.class).getDraft(filter);
+		
+		model.addAttribute("no_slip_draft",draftList.size());
+		model.addAttribute("draftReport",draftList);
+		
+		if (psiClinicUser != null && !isAdmin) {
+			
+			List<UserDTO> psiClinicUsers = Context.getService(PSIClinicUserService.class).findAllactiveAndInactiveUserByCode(clinicCode);
+			model.addAttribute("psiClinicUsers", psiClinicUsers);
+			
+			model.addAttribute("showClinic", 0);
+			
+		
+			
+		} else if (psiClinicUser != null && isAdmin) {
+			List<PSIClinicManagement> clinics = Context.getService(PSIClinicManagementService.class).getAllClinic();
+			model.addAttribute("clinics", clinics);
+			model.addAttribute("showClinic", 1);
+			
+		}
+		model.addAttribute("clinic_code",clinicCode);
+		if(psiClinicUser != null && isManager || isAdmin) {
+			model.addAttribute("showSubmitDraft", 2);
+		}
+	}
+	
+	
 }
