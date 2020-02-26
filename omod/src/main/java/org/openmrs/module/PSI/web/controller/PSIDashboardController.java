@@ -59,7 +59,7 @@ public class PSIDashboardController {
 		String clinicCode = "0";
 		String clinicName = "";
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
-		
+		boolean isManager = Utils.hasPrivilige(privileges, PSIConstants.ClinicManager);
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String today = dateFormat.format(date);
@@ -168,6 +168,9 @@ public class PSIDashboardController {
 //		draftList = Context.getService(PSIServiceProvisionService.class).getDraft(filterdraft);
 		model.addAttribute("no_slip_draft",0);
 		model.addAttribute("draftReport",null);
+		if(psiClinicUser != null && isManager || isAdmin) {
+			model.addAttribute("showSubmitDraft", 2);
+		}
 		
 //		List<AUHCComprehensiveReport> report = new ArrayList<AUHCComprehensiveReport>();
 		model.addAttribute("compReport",null);
@@ -398,6 +401,7 @@ public class PSIDashboardController {
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
 		String clinicCode = "0";
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		boolean isManager = Utils.hasPrivilige(privileges, PSIConstants.ClinicManager);
 		if (isAdmin) {
 			clinicCode = code != "-1" ? code : "0";
 		} else {
@@ -437,6 +441,9 @@ public class PSIDashboardController {
 			model.addAttribute("clinics", clinics);
 			model.addAttribute("showClinic", 1);
 			
+		}
+		if(psiClinicUser != null && isManager || isAdmin) {
+			model.addAttribute("showSubmitDraft", 2);
 		}
 		model.addAttribute("clinic_code",clinicCode);
 	}
@@ -670,6 +677,7 @@ public class PSIDashboardController {
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
 		String clinicCode = "0";
 		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		boolean isManager = Utils.hasPrivilige(privileges, PSIConstants.ClinicManager);
 		if (isAdmin) {
 			clinicCode = code != "-1" ? code : "0";
 		} else {
@@ -733,6 +741,9 @@ public class PSIDashboardController {
 			
 		}
 		model.addAttribute("clinic_code",clinicCode);
+		if(psiClinicUser != null && isManager || isAdmin) {
+			model.addAttribute("showSubmitDraft", 2);
+		}
 	}
 	
 	

@@ -12,12 +12,14 @@
                    <label> ${ total_payable_draft} </label> &nbsp;&nbsp; Total Payable in Draft
                </div>
 		</div>
-		<c:if test ="${not empty draftReport }">
-		<div class="col-md-4">
-			<div class="form-group">
-                   <button onclick="submitAllDraft()">Submit All Draft</button>
-               </div>
-		</div>
+		<c:if test="${showSubmitDraft eq 2}">
+			<div class="col-md-4">
+				<c:if test="${not empty draftReport }">
+					<div class="form-group">
+						<button onclick="submitAllDraft()">Submit All Draft</button>
+					</div>
+				</c:if>
+			</div>
 		</c:if>
 	</div>
 </div>

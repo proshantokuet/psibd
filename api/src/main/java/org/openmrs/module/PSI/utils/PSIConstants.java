@@ -28,6 +28,8 @@ public class PSIConstants {
 	
 	public static final String AdminUser = "Admin-User";
 	
+	public static final String ClinicManager = "Manager-User";
+	
 	public static final String Dashboard = "dashboard";
 	
 	public static final String ClinicList = "Clinic List";

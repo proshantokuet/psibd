@@ -46,11 +46,11 @@ public class DHISListener {
 	
 	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-//	private final String DHIS2BASEURL = "http://192.168.19.149:1971";
+	private final String DHIS2BASEURL = "http://192.168.19.149";
 	
 	//private final String DHIS2BASEURL = "http://192.168.19.162:8080";
 	
-	private final String DHIS2BASEURL = "http://10.100.11.3:5271";
+	//private final String DHIS2BASEURL = "http://10.100.11.3:5271";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -79,31 +79,31 @@ public class DHISListener {
 		}
 		if (status) {
 			
-//			try {
-//				sendFailedPatient();
-//			}
-//			catch (Exception e) {
-//				
-//			}
-//			try {
-//				sendPatient();
-//			}
-//			catch (Exception e) {
-//				
-//			}
-//			try {
-//				sendMoneyReceipt();
-//			}
-//			catch (Exception e) {
-//				
-//			}
-//			
-//			try {
-//				sendFailedMoneyReceipt();
-//			}
-//			catch (Exception e) {
-//				
-//			}
+			try {
+				sendFailedPatient();
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				sendPatient();
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				sendMoneyReceipt();
+			}
+			catch (Exception e) {
+				
+			}
+			
+			try {
+				sendFailedMoneyReceipt();
+			}
+			catch (Exception e) {
+				
+			}
 		}
 
 	}
@@ -201,7 +201,7 @@ public class DHISListener {
 		getPsidhisException.setJson(patientJson.toString());
 		getPsidhisException.setStatus(status);
 		getPsidhisException.setResponse(response.toString());
-		getPsidhisException.setDateCreated(new Date());
+		getPsidhisException.setDateChanged(new Date());
 		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
 		
 		Context.clearSession();
