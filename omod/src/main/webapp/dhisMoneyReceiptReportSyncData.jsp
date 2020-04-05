@@ -5,7 +5,13 @@
 				<div class="col-md-3">
 					<div class="form-group">
 						<label >${transferredMoneyReceipt}</label>
-                  	  	&nbsp;&nbsp;Total Transferred
+                  	  	&nbsp;&nbsp;Money Receipt Transferred
+                  	</div>  
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label >${transferredServiceContact}</label>
+                  	  	&nbsp;&nbsp; Service Contact Transferred
                   	</div>  
 				</div>
 				<div class="col-md-3">

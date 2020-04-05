@@ -34,26 +34,46 @@ public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualiz
 
 	@Override
 	public String getPatientToDhisSyncInformation(String status, String clinicCode) {
+		String sqlString = "";
 		// TODO Auto-generated method stub
 		/*String sqlQuery = "select Count(pe.rid)  from psi_exception pe where pe.status = '"+ status +"'";*/
-		String conditionStringForPatient = "";
-		if (!StringUtils.isEmpty(clinicCode)) {
-			conditionStringForPatient = " and temp1.cliniccode = '"+clinicCode+"'";
-		}
+//		String conditionStringForPatient = "";
+//		if (!StringUtils.isEmpty(clinicCode)) {
+//			conditionStringForPatient = " and temp1.cliniccode = '"+clinicCode+"'";
+//		}
 		
-		String sqlQuery = ""
-				+ "SELECT Count(pe.rid) "
-				+ "FROM   psi_exception pe "
-				+ "       LEFT JOIN person p "
-				+ "              ON Substring(pe.url, 29, 36) = p.uuid "
-				+ "       LEFT JOIN (SELECT pa.person_id, "
-				+ "                         pa.value AS cliniccode "
-				+ "                  FROM   person_attribute pa "
-				+ "                  WHERE  pa.person_attribute_type_id = '32') temp1 "
-				+ "              ON p.person_id = temp1.person_id "
-				+ "WHERE  pe.status = '"+status+"'" + conditionStringForPatient + ";";
+//		String sqlQuery = ""
+//				+ "SELECT Count(pe.rid) "
+//				+ "FROM   psi_exception pe "
+//				+ "       LEFT JOIN person p "
+//				+ "              ON Substring(pe.url, 29, 36) = p.uuid "
+//				+ "       LEFT JOIN (SELECT pa.person_id, "
+//				+ "                         pa.value AS cliniccode "
+//				+ "                  FROM   person_attribute pa "
+//				+ "                  WHERE  pa.person_attribute_type_id = '32') temp1 "
+//				+ "              ON p.person_id = temp1.person_id "
+//				+ "WHERE  pe.status = '"+status+"'" + conditionStringForPatient + ";";
+//		
+//		String varname1 = ""
+//				+ "select Count(DISTINCT psi.patient_uuid) from psi_exception psi "
+//				+ " "
+//				+ "join person p on p.uuid = psi.patient_uuid "
+//				+ " JOIN (SELECT pa.person_id, "
+//				+ "                         pa.value AS cliniccode "
+//				+ "                  FROM   person_attribute pa "
+//				+ "                  WHERE  pa.person_attribute_type_id = '32') temp1 "
+//				+ "              ON p.person_id = temp1.person_id "
+//				+ " "
+//				+ "where psi.status = 1";
+		
+		if (StringUtils.isEmpty(clinicCode)) {
+			sqlString = "SELECT SyncAggValOfPatient()";
+		}
+		else {
+			sqlString = "SELECT SyncAggValOfPatientWithClinic('"+ clinicCode +"')";
+		}
 		try {
-			String patientCount = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery).list().get(0).toString();
+			String patientCount = sessionFactory.getCurrentSession().createSQLQuery(sqlString).list().get(0).toString();
 			return patientCount;
 			
 		} catch (Exception e) {
@@ -64,44 +84,50 @@ public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualiz
 	@Override
 	public String getMoneyReceiptToDhisSyncInformation(String moneyReceiptKey, String clinicCode) {
 		String sqlString = "";
-		String conditionString = "";
-		if (!StringUtils.isEmpty(clinicCode)) {
-			conditionString = "AND pmr.clinic_code = '"+clinicCode+"'";
+		if (StringUtils.isEmpty(clinicCode)) {
+			sqlString = "SELECT SyncAggVal()";
 		}
-		if(moneyReceiptKey.equalsIgnoreCase("money_receipt_transferred")) {
-			
-			sqlString = "select COUNT(spid) from psi_service_provision where dhis_id is not NULL and is_complete = 1 and is_send_to_dhis = 1";
-			sqlString = ""
-					+ "SELECT Count(psp.spid) "
-					+ "FROM   psi_service_provision psp "
-					+ "       JOIN psi_money_receipt pmr "
-					+ "         ON pmr.mid = psp.psi_money_receipt_id "
-					+ "WHERE  psp.dhis_id IS not NULL "
-					+ "       AND psp.is_complete = 1 "
-					+ "       AND psp.is_send_to_dhis = 1 " + conditionString + ";";
+		else {
+			sqlString = "SELECT SyncAggValWithClinicCode('"+ clinicCode +"')";
 		}
-		else if(moneyReceiptKey.equalsIgnoreCase("money_receipt_to_sync")) {
-			
-			sqlString = ""
-					+ "SELECT Count(psp.spid) "
-					+ "FROM   psi_service_provision psp "
-					+ "       JOIN psi_money_receipt pmr "
-					+ "         ON pmr.mid = psp.psi_money_receipt_id "
-					+ "WHERE  psp.dhis_id IS NULL "
-					+ "       AND psp.is_complete = 1 "
-					+ "       AND psp.is_send_to_dhis = 0 " + conditionString + ";";
-		}
-		else if(moneyReceiptKey.equalsIgnoreCase("sync_failed")) {
-			
-			sqlString = ""
-					+ "SELECT Count(psp.spid) "
-					+ "FROM   psi_service_provision psp "
-					+ "       JOIN psi_money_receipt pmr "
-					+ "         ON pmr.mid = psp.psi_money_receipt_id "
-					+ "WHERE  (psp.dhis_id IS NULL OR psp.dhis_id = '') "
-					+ "       AND psp.is_complete = 1 "
-					+ "       AND psp.is_send_to_dhis = 2 " + conditionString + ";";
-		}
+//		String conditionString = "";
+//		if (!StringUtils.isEmpty(clinicCode)) {
+//			conditionString = "AND pmr.clinic_code = '"+clinicCode+"'";
+//		}
+//		if(moneyReceiptKey.equalsIgnoreCase("money_receipt_transferred")) {
+//			
+//			sqlString = "select COUNT(spid) from psi_service_provision where dhis_id is not NULL and is_complete = 1 and is_send_to_dhis = 1";
+//			sqlString = ""
+//					+ "SELECT Count(psp.spid) "
+//					+ "FROM   psi_service_provision psp "
+//					+ "       JOIN psi_money_receipt pmr "
+//					+ "         ON pmr.mid = psp.psi_money_receipt_id "
+//					+ "WHERE  psp.dhis_id IS not NULL "
+//					+ "       AND psp.is_complete = 1 "
+//					+ "       AND psp.is_send_to_dhis = 1 " + conditionString + ";";
+//		}
+//		else if(moneyReceiptKey.equalsIgnoreCase("money_receipt_to_sync")) {
+//			
+//			sqlString = ""
+//					+ "SELECT Count(psp.spid) "
+//					+ "FROM   psi_service_provision psp "
+//					+ "       JOIN psi_money_receipt pmr "
+//					+ "         ON pmr.mid = psp.psi_money_receipt_id "
+//					+ "WHERE  psp.dhis_id IS NULL "
+//					+ "       AND psp.is_complete = 1 "
+//					+ "       AND psp.is_send_to_dhis = 0 " + conditionString + ";";
+//		}
+//		else if(moneyReceiptKey.equalsIgnoreCase("sync_failed")) {
+//			
+//			sqlString = ""
+//					+ "SELECT Count(psp.spid) "
+//					+ "FROM   psi_service_provision psp "
+//					+ "       JOIN psi_money_receipt pmr "
+//					+ "         ON pmr.mid = psp.psi_money_receipt_id "
+//					+ "WHERE  (psp.dhis_id IS NULL OR psp.dhis_id = '') "
+//					+ "       AND psp.is_complete = 1 "
+//					+ "       AND psp.is_send_to_dhis = 2 " + conditionString + ";";
+//		}
 		try {
 			log.error(sqlString);
 			String moneyReceiptCount = sessionFactory.getCurrentSession().createSQLQuery(sqlString).list().get(0).toString();
@@ -149,10 +175,11 @@ public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualiz
 				+ "       JOIN (SELECT psi.url, "
 				+ "                    psi.error, "
 				+ "                    psi.date_created, "
-				+ "                    psi.date_changed "
+				+ "                    psi.date_changed, "
+				+ "                    psi.patient_uuid "
 				+ "             FROM   psi_exception psi "
 				+ "             WHERE  psi.status = '2') temp3 "
-				+ "         ON Substring(temp3.url, 29, 36) = p.uuid " + conditionString + ";";
+				+ "         ON temp3.patient_uuid = p.uuid " + conditionString + ";";
 		
 		log.error(patientreportSQL);
 		

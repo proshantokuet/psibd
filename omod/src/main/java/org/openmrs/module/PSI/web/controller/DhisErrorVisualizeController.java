@@ -46,14 +46,15 @@ public class DhisErrorVisualizeController {
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 			model.addAttribute("hasClinicPermission",
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
-		model.addAttribute("patientDhisReport", null);
-		model.addAttribute("clinics", clinics);
-		model.addAttribute("patientToSync", "0");
-		model.addAttribute("patientTransferred", "0");
-		model.addAttribute("patientFailedSync", "0");
-		model.addAttribute("transferredMoneyReceipt", "0");
-		model.addAttribute("money_receipt_to_sync", "0");
-		model.addAttribute("sync_failed", "0");						
+			model.addAttribute("patientDhisReport", null);
+			model.addAttribute("clinics", clinics);
+			model.addAttribute("patientToSync", "0");
+			model.addAttribute("patientTransferred", "0");
+			model.addAttribute("patientFailedSync", "0");
+			model.addAttribute("transferredMoneyReceipt", "0");
+			model.addAttribute("transferredServiceContact", "0");
+			model.addAttribute("money_receipt_to_sync", "0");
+			model.addAttribute("sync_failed", "0");						
 	}
 	
 	@RequestMapping(value = "/module/PSI/dhisPatientReportSyncData", method = RequestMethod.GET)
@@ -64,20 +65,22 @@ public class DhisErrorVisualizeController {
 			auhcDhisErrorVisualize.setClinic_code(clinicCode);
 		}
 		List<AUHCDhisErrorVisualize> patientDhisReport = Context.getService(AUHCDhisErrorVisualizeService.class).getPatientDhisSyncReport(auhcDhisErrorVisualize);
-		String patientToSync = Context.getService(AUHCDhisErrorVisualizeService.class).getPatientToDhisSyncInformation("3", auhcDhisErrorVisualize.getClinic_code());
+		String patientToSyncInfo = Context.getService(AUHCDhisErrorVisualizeService.class).getPatientToDhisSyncInformation("3", auhcDhisErrorVisualize.getClinic_code());
 		
-		String patientTransferred = Context.getService(AUHCDhisErrorVisualizeService.class).getPatientToDhisSyncInformation("1", auhcDhisErrorVisualize.getClinic_code());
+		String[] splitAggValPatient = patientToSyncInfo.split("\\|");
 		
-		String patientFailedSync = Context.getService(AUHCDhisErrorVisualizeService.class).getPatientToDhisSyncInformation("2", auhcDhisErrorVisualize.getClinic_code());
+		//String patientTransferred = Context.getService(AUHCDhisErrorVisualizeService.class).getPatientToDhisSyncInformation("1", auhcDhisErrorVisualize.getClinic_code());
+		
+		//String patientFailedSync = Context.getService(AUHCDhisErrorVisualizeService.class).getPatientToDhisSyncInformation("2", auhcDhisErrorVisualize.getClinic_code());
 		
 		model.addAttribute("hasDashboardPermission",
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 			model.addAttribute("hasClinicPermission",
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		model.addAttribute("patientDhisReport", patientDhisReport);
-		model.addAttribute("patientToSync", patientToSync);
-		model.addAttribute("patientTransferred", patientTransferred);
-		model.addAttribute("patientFailedSync", patientFailedSync);
+		model.addAttribute("patientToSync", splitAggValPatient[2]);
+		model.addAttribute("patientTransferred", splitAggValPatient[0]);
+		model.addAttribute("patientFailedSync", splitAggValPatient[1]);
 	}
 	
 	@RequestMapping(value = "/module/PSI/dhisMoneyReceiptReportSyncData", method = RequestMethod.GET)
@@ -88,18 +91,20 @@ public class DhisErrorVisualizeController {
 			auhcDhisErrorVisualize.setClinic_code(clinicCode);
 		}
 		List<AUHCDhisErrorVisualize> moneyReceiptDhisReport = Context.getService(AUHCDhisErrorVisualizeService.class).getMoneyReceiptDhisSyncReport(auhcDhisErrorVisualize);
-		String transferredMoneyReceipt = Context.getService(AUHCDhisErrorVisualizeService.class).getMoneyReceiptToDhisSyncInformation("money_receipt_transferred", auhcDhisErrorVisualize.getClinic_code());
+		String transferredMoneyReceiptInfo = Context.getService(AUHCDhisErrorVisualizeService.class).getMoneyReceiptToDhisSyncInformation("money_receipt_info", auhcDhisErrorVisualize.getClinic_code());
 		
-		String money_receipt_to_sync = Context.getService(AUHCDhisErrorVisualizeService.class).getMoneyReceiptToDhisSyncInformation("money_receipt_to_sync", auhcDhisErrorVisualize.getClinic_code());
+		String[] splitAggVal = transferredMoneyReceiptInfo.split("\\|");
+		//String money_receipt_to_sync = Context.getService(AUHCDhisErrorVisualizeService.class).getMoneyReceiptToDhisSyncInformation("money_receipt_to_sync", auhcDhisErrorVisualize.getClinic_code());
 		
-		String sync_failed = Context.getService(AUHCDhisErrorVisualizeService.class).getMoneyReceiptToDhisSyncInformation("sync_failed", auhcDhisErrorVisualize.getClinic_code());
+		//String sync_failed = Context.getService(AUHCDhisErrorVisualizeService.class).getMoneyReceiptToDhisSyncInformation("sync_failed", auhcDhisErrorVisualize.getClinic_code());
 		model.addAttribute("hasDashboardPermission",
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 			model.addAttribute("hasClinicPermission",
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		model.addAttribute("moneyReceiptDhisReport", moneyReceiptDhisReport);
-		model.addAttribute("transferredMoneyReceipt", transferredMoneyReceipt);
-		model.addAttribute("money_receipt_to_sync", money_receipt_to_sync);
-		model.addAttribute("sync_failed", sync_failed);	
+		model.addAttribute("transferredMoneyReceipt", splitAggVal[0]);
+		model.addAttribute("money_receipt_to_sync", splitAggVal[3]);
+		model.addAttribute("sync_failed", splitAggVal[2]);	
+		model.addAttribute("transferredServiceContact", splitAggVal[1]);
 	}
 }
