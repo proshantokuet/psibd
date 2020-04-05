@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class PSIDHISAPIServiceImpl implements PSIAPIService {
 	
-	private final String userName = "admin";
+	private final String userName = "apiadmin";
 	
-	private final String password = "district";
+	private final String password = "Apiadmin@123";
 	
 	/* (non-Javadoc)
 	 * @see org.openmrs.module.PSI.dhis.service.PSIAPIService#add(java.lang.String, org.json.JSONObject, java.lang.String)
