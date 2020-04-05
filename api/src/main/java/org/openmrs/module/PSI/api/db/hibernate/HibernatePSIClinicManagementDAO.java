@@ -51,7 +51,7 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 	@Override
 	public List<PSIClinicManagement> getAllClinic() {
 		List<PSIClinicManagement> clinics = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIClinicManagement  order by cid desc").list();
+		        .createQuery("from PSIClinicManagement  order by name ASC").list();
 		if (clinics.size() != 0) {
 			return clinics;
 		}

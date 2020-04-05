@@ -34,6 +34,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 @Service
 @EnableScheduling
 @Configuration
@@ -163,9 +166,9 @@ public class DHISListener {
 						psidhisException.setStatus(PSIConstants.FAILEDSTATUS);
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
 						Context.clearSession();*/
-						
+						String errorDetails = errorMessageCreation(response);
 						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.FAILEDSTATUS, response
-						        + "", "");
+						        + "", errorDetails);
 					}
 					
 				}
@@ -282,6 +285,7 @@ public class DHISListener {
 							PSIDHISException newPsidhisException = new PSIDHISException();
 							getPsidhisException = newPsidhisException;
 						}
+						String errorDetails = errorMessageCreation(response);
 						/*getPsidhisException.setError("");
 						getPsidhisException.setJson(patientJson.toString());
 						getPsidhisException.setMarkId(eventReceordDTO.getId());
@@ -292,7 +296,7 @@ public class DHISListener {
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
 						*/
 						updateException(getPsidhisException, patientJson + "", eventReceordDTO,
-						    PSIConstants.CONNECTIONTIMEOUTSTATUS, response + "", "");
+						    PSIConstants.CONNECTIONTIMEOUTSTATUS, response + "", errorDetails);
 					}
 					
 					Context.clearSession();
@@ -336,8 +340,11 @@ public class DHISListener {
 		getPsidhisException.setStatus(status);
 		getPsidhisException.setResponse(response.toString());
 		getPsidhisException.setDateCreated(new Date());
+		if(!StringUtils.isEmpty(eventReceordDTO.getUrl())) {
+			String eventUrl = eventReceordDTO.getUrl();
+			getPsidhisException.setPatientUuid(eventUrl.substring(28,64));
+		}
 		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
-		
 		Context.clearSession();
 	}
 	
@@ -475,7 +482,7 @@ public class DHISListener {
 									Context.clearSession();
 									
 									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
-									    statusCode, eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
+									    statusCode, "Dhis2 returns empty import summaries without reference id", PSIConstants.CONNECTIONTIMEOUTSTATUS);
 								}
 							} else {
 								getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
@@ -488,8 +495,9 @@ public class DHISListener {
 								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);*/
 								getlastTimeStamp.setVoidReason(httpStatus);
 								Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+								String errorDetails = errorMessageCreation(eventResponse);
 								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
-								    statusCode, eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
+								    statusCode, errorDetails, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 							}
 							
 						} else {
@@ -508,7 +516,7 @@ public class DHISListener {
 							Context.clearSession();
 							
 							updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
-							    statusCode, eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
+							    statusCode, "No Track Entity Instances found in DHIS2 Containing this URL " + URL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 						}
 					}
 					catch (Exception e) {
@@ -525,7 +533,7 @@ public class DHISListener {
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 						Context.clearSession();
 						updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
-						    eventURL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
+						    e.toString(), PSIConstants.CONNECTIONTIMEOUTSTATUS);
 					}
 					
 				} else {
@@ -657,7 +665,7 @@ public class DHISListener {
 									
 									Context.clearSession();*/
 									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
-									    statusCode, eventURL, PSIConstants.FAILEDSTATUS);
+									    statusCode, "Dhis2 returns empty import summaries without reference id", PSIConstants.FAILEDSTATUS);
 								}
 							} else {
 								
@@ -671,9 +679,10 @@ public class DHISListener {
 								
 								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 								*/
+								String errorDetails = errorMessageCreation(eventResponse);
 								Context.clearSession();
 								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
-								    statusCode, eventURL, PSIConstants.FAILEDSTATUS);
+								    statusCode, errorDetails, PSIConstants.FAILEDSTATUS);
 							}
 							
 						} else {
@@ -687,7 +696,7 @@ public class DHISListener {
 							Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 							Context.clearSession();*/
 							updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
-							    statusCode, eventURL, PSIConstants.FAILEDSTATUS);
+							    statusCode, "No Track Entity Instances found in DHIS2 Containing this URL " + URL, PSIConstants.FAILEDSTATUS);
 						}
 					}
 					catch (Exception e) {
@@ -721,7 +730,7 @@ public class DHISListener {
 						Context.clearSession();*/
 						
 						updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
-						    eventURL, status);
+						    e.toString(), status);
 					}
 				} else {
 					/*Context.openSession();
@@ -751,11 +760,40 @@ public class DHISListener {
 		psiServiceProvision.setField1(getResponse + "");
 		psiServiceProvision.setField2(moneyReceiptJson + "");
 		psiServiceProvision.setField3(statusCode);
-		psiServiceProvision.setError(":" + URL);
+		psiServiceProvision.setError("" + URL);
 		psiServiceProvision.setIsSendToDHIS(status);
 		Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 		Context.clearSession();
 		
 	}
 	
-}
+	private String errorMessageCreation(JSONObject responsefull) {
+		JSONObject response = new JSONObject();
+		String errorMessage = "";
+		try {
+			 response = responsefull.getJSONObject("response");
+		} catch (Exception e) {
+			errorMessage = e.toString();
+		}
+		
+		if (response.has("importSummaries")) {
+			try {
+				JSONArray importSummaries = response.getJSONArray("importSummaries");
+				errorMessage = "has importsummaries";
+					JSONObject importsObject = importSummaries.getJSONObject(0);
+					if (importsObject.has("conflicts")) {
+						JSONArray conflictsArray = importsObject.getJSONArray("conflicts");
+						JSONObject conflictsObject = conflictsArray.getJSONObject(0);
+						String httpStatusCode = responsefull.getString("httpStatusCode");
+						errorMessage = "Http Status Code : " + httpStatusCode + " Message: " + conflictsObject.getString("value");
+				}
+			} catch (Exception e) {
+				errorMessage = e.getMessage();
+			}
+
+		}
+		return errorMessage;
+	}
+		
+	}
+	

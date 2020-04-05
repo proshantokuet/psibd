@@ -29,6 +29,8 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 	
 	private String response;
 	
+	private String patientUuid;
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -105,6 +107,14 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 		this.status = status;
 	}
 	
+	public String getPatientUuid() {
+		return patientUuid;
+	}
+
+	public void setPatientUuid(String patientUuid) {
+		this.patientUuid = patientUuid;
+	}
+
 	public String getType() {
 		return type;
 	}
