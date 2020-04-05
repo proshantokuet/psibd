@@ -12,4 +12,6 @@ public interface PSIDHISMarkerDAO {
 	public PSIDHISMarker findByType(String type);
 	
 	public List<EventReceordDTO> rawQuery(int id);
+	
+	public List<EventReceordDTO> getEventRecordsOfEncounter(int id);
 }

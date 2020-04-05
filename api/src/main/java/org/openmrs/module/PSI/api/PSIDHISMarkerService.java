@@ -16,4 +16,6 @@ public interface PSIDHISMarkerService extends OpenmrsService {
 	
 	public List<EventReceordDTO> rawQuery(int id);
 	
+	public List<EventReceordDTO> getEventRecordsOfEncounter(int id);
+	
 }

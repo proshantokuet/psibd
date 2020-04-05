@@ -609,5 +609,18 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="dhis_obs_element-1.0.0" author="tanvir">
+		<createTable tableName="dhis_obs_element">
+			<column name="eid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>			
+			<column name="element_name" type="varchar(500)" />
+			<column name="element_dhisId" type="varchar(200)" />
+			
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
 	
 </databaseChangeLog>
