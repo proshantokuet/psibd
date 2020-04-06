@@ -58,5 +58,27 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 			return null;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIDHISException> findAllFailedEncounterByStatus(int status) {
+		List<PSIDHISException> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIDHISException where (status = :id0 OR status = :id3) and type = 'Encounter'").setInteger("id0", status)
+		        .setInteger("id3", PSIConstants.CONNECTIONTIMEOUTSTATUS).list();
+		
+		return lists;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIDHISException findAllBymarkerIdAndFormName(int markerId,String formsName) {
+		List<PSIDHISException> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIDHISException where markId = :id and formsName = :formname").setInteger("id", markerId).setString("formname", formsName).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
 	
 }

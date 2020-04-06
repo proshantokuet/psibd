@@ -28,6 +28,7 @@ import org.openmrs.module.PSI.api.PSIDHISMarkerService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.SHNDhisObsElementService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
+import org.openmrs.module.PSI.converter.DhisObsEventDataConverter;
 import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
@@ -385,14 +386,14 @@ public class DHISListener {
 		
 		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
 		        .findAllByTimestamp(timestamp);
-		Context.openSession();
-		PSIDHISException psidhisException1 = new PSIDHISException();
-		psidhisException1.setResponse("");
-		psidhisException1.setError(psiServiceProvisions.size() + "");
-		psidhisException1.setType("fff");
-		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException1);
-		
-		Context.clearSession();
+//		Context.openSession();
+//		PSIDHISException psidhisException1 = new PSIDHISException();
+//		psidhisException1.setResponse("");
+//		psidhisException1.setError(psiServiceProvisions.size() + "");
+//		psidhisException1.setType("fff");
+//		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException1);
+//		
+//		Context.clearSession();
 		if (psiServiceProvisions.size() != 0) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
 				JSONObject eventResponse = new JSONObject();
@@ -419,15 +420,15 @@ public class DHISListener {
 					if (getEventResponse.has("events")) {
 						getEevnts = getEventResponse.getJSONArray("events");
 					}
-					Context.openSession();
-					PSIDHISException psidhisException = new PSIDHISException();
-					psidhisException.setResponse(getEventResponse + "");
-					psidhisException.setError(getEevnts + "");
-					psidhisException.setType(getEevnts.length() + "");
-					psidhisException.setJson(eventURL);
-					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
-					
-					Context.clearSession();
+//					Context.openSession();
+//					PSIDHISException psidhisException = new PSIDHISException();
+//					psidhisException.setResponse(getEventResponse + "");
+//					psidhisException.setError(getEevnts + "");
+//					psidhisException.setType(getEevnts.length() + "");
+//					psidhisException.setJson(eventURL);
+//					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+//					
+//					Context.clearSession();
 					
 				}
 				catch (Exception e) {
@@ -576,14 +577,14 @@ public class DHISListener {
 		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
 		        .findAllResend();
 		String errorStatus = "";
-		PSIDHISException psidhisException = new PSIDHISException();
-		psidhisException.setResponse("");
-		psidhisException.setError("");
-		psidhisException.setType(psiServiceProvisions.size() + "");
-		psidhisException.setJson("");
-		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
-		
-		Context.clearSession();
+//		PSIDHISException psidhisException = new PSIDHISException();
+//		psidhisException.setResponse("");
+//		psidhisException.setError("");
+//		psidhisException.setType(psiServiceProvisions.size() + "");
+//		psidhisException.setJson("");
+//		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+//		
+//		Context.clearSession();
 		
 		if (psiServiceProvisions.size() != 0) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
@@ -829,13 +830,14 @@ public class DHISListener {
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		eventReceordDTOs = Context.getService(PSIDHISMarkerService.class).getEventRecordsOfEncounter(lastReadEncounter);
 		if (eventReceordDTOs.size() != 0 && eventReceordDTOs != null) {
+			mapDhisDataElementsId();
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
 				PSIDHISException getPsidhisException = Context.getService(PSIDHISExceptionService.class).findAllById(
 					    eventReceordDTO.getId());
 				try {  
 					JSONObject EncounterObj = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
 				
-					JSONArray  servicesToPost = new JSONArray();
+					JSONObject  servicesToPost = new JSONObject();
 					String patientUuid = (String)EncounterObj.get("patientUuid");
 					getDhisEventInformation(patientUuid);
 					org.json.simple.JSONArray obs = (org.json.simple.JSONArray) EncounterObj.get("observations");
@@ -847,7 +849,7 @@ public class DHISListener {
 						List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]");
 							try {
 								JSONArray extractServiceArray = new JSONArray(extractServiceJSON);
-								JSONObject event = (JSONObject) getEvent(patientUuid).get(uniqueSetOfService);
+								JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(trackeEntityInstanceIDString, orgUnitString).get(uniqueSetOfService);
 								JSONArray dataValues = new JSONArray();
 								for (int i = 0; i < extractServiceArray.length(); i++) {
 									JSONObject serviceObject = (JSONObject) extractServiceArray.get(i);
@@ -863,47 +865,53 @@ public class DHISListener {
 									}
 								}
 								event.put("dataValues", dataValues);
-								servicesToPost.put(event);
+								servicesToPost.put(uniqueSetOfService, event);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 					});
+                     
+					JSONArray keys = servicesToPost.names();
 					
-					for (int i = 0; i < servicesToPost.length(); i++) {
-						JSONObject postEncounter = (JSONObject) servicesToPost.get(i);
+					for (int i = 0; i < keys.length(); i++) {
+						
+						String formsName = keys.getString(i); // Here's your key
+						String value = servicesToPost.getString(formsName);
+						JSONObject postEncounter = new JSONObject(value);
+						PSIDHISException getPsidhisExceptionforEachForms = Context.getService(PSIDHISExceptionService.class).findAllBymarkerIdAndFormName(eventReceordDTO.getId(), formsName);
 						JSONObject eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", postEncounter, EVENTURL);
 						int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
 						if (statusCode == 200) {
 							JSONObject successResponse = eventResponse.getJSONObject("response");
 							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
 							if (importSummaries.length() != 0) {
-								if (getPsidhisException == null) {
+								if (getPsidhisExceptionforEachForms == null) {
 									PSIDHISException newPsidhisException = new PSIDHISException();
-									getPsidhisException = newPsidhisException;
+									getPsidhisExceptionforEachForms = newPsidhisException;
 								}
 
-								updateException(getPsidhisException, postEncounter + "", eventReceordDTO, PSIConstants.SUCCESSSTATUS,
-										eventResponse + "", "");
+								updateEncounterException(getPsidhisExceptionforEachForms, postEncounter + "", eventReceordDTO, PSIConstants.SUCCESSSTATUS,
+										eventResponse + "", "","Encounter",formsName);
 							} else {								
-								if (getPsidhisException == null) {
+								if (getPsidhisExceptionforEachForms == null) {
 									PSIDHISException newPsidhisException = new PSIDHISException();
-									getPsidhisException = newPsidhisException;
+									getPsidhisExceptionforEachForms = newPsidhisException;
 								}
-								updateException(getPsidhisException, postEncounter + "", eventReceordDTO, PSIConstants.FAILEDSTATUS,
-										eventResponse + "", "Dhis2 returns empty import summaries without reference id");
+								updateEncounterException(getPsidhisExceptionforEachForms, postEncounter + "", eventReceordDTO, PSIConstants.CONNECTIONTIMEOUTSTATUS,
+										eventResponse + "", "Dhis2 returns empty import summaries without reference id","Encounter",formsName);
 							}
 						}
 						else 
 						{
-							if (getPsidhisException == null) {
+							if (getPsidhisExceptionforEachForms == null) {
 								PSIDHISException newPsidhisException = new PSIDHISException();
-								getPsidhisException = newPsidhisException;
+								getPsidhisExceptionforEachForms = newPsidhisException;
 							}
 							String errorDetails = errorMessageCreation(eventResponse);
-							updateException(getPsidhisException, postEncounter+ "", eventReceordDTO,
-							    PSIConstants.CONNECTIONTIMEOUTSTATUS, eventResponse + "", errorDetails);
+							updateEncounterException(getPsidhisExceptionforEachForms, postEncounter+ "", eventReceordDTO,
+							    PSIConstants.CONNECTIONTIMEOUTSTATUS, eventResponse + "", errorDetails,"Encounter",formsName);
 						}
-					}
+					} //loop end
 					Context.openSession();
 					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
@@ -918,47 +926,94 @@ public class DHISListener {
 					}
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					Context.clearSession();
-					updateException(getPsidhisException, "Encounter Failed" + "", eventReceordDTO,
-					    PSIConstants.CONNECTIONTIMEOUTSTATUS, "No response please check exception for details" + "", e.toString());
+					updateEncounterException(getPsidhisException, "Encounter Failed" + "", eventReceordDTO,
+					    PSIConstants.CONNECTIONTIMEOUTSTATUS, "Please check Error for details" + "", e.toString(),"Encounter","");
 				}
 			}
 	 }
 
  }
 	
-	@SuppressWarnings("unchecked")
-	public  JSONObject getEvent(String patientUuid){
-		JSONObject serviceEvents = new JSONObject();
-		JSONObject clientHistory = new JSONObject();
-		try {
-			Date date = Calendar.getInstance().getTime();
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			String today = dateFormat.format(date);
-			
-			clientHistory.put("trackedEntityInstance", trackeEntityInstanceIDString);
-			clientHistory.put("orgUnit", orgUnitString);
-			clientHistory.put("program", "q2uZRqRc0UD");
-			clientHistory.put("programStage", "qfKF04HR0lU");
-			clientHistory.put("status", "COMPLETED");
-			clientHistory.put("eventDate", today);
-			serviceEvents.put("Client History", clientHistory);
-			
-			JSONObject inwardReferral = new JSONObject();
-			inwardReferral.put("trackedEntityInstance", "inwardReferral");
-			inwardReferral.put("orgUnit", "orgUnitinwardReferral");
-			inwardReferral.put("program", "programinwardReferral");
-			inwardReferral.put("programStage", "programStage inwardReferral");
-			inwardReferral.put("status", "COMPLETED");
-			inwardReferral.put("eventDate", today);
-			serviceEvents.put("Inward Referral", inwardReferral);
-		}
-		catch (Exception e) {
-			// TODO: handle exception
-		}
-		    return serviceEvents;
+	private void sendEncounterFailed() {
+		List<PSIDHISException> psidhisExceptions = Context.getService(PSIDHISExceptionService.class).findAllFailedEncounterByStatus(
+			    PSIConstants.CONNECTIONTIMEOUTSTATUS);
+			if (psidhisExceptions.size() != 0 && psidhisExceptions != null) {
+				mapDhisDataElementsId();
+				for (PSIDHISException psidhisException : psidhisExceptions) {
+					try {  
+						JSONObject EncounterObj = psiapiServiceFactory.getAPIType("openmrs").get("", "", psidhisException.getUrl());
+					
+						JSONObject  servicesToPost = new JSONObject();
+						String patientUuid = (String)EncounterObj.get("patientUuid");
+						getDhisEventInformation(patientUuid);
+						org.json.simple.JSONArray obs = (org.json.simple.JSONArray) EncounterObj.get("observations");
+						String IntialJsonDHISArray = DhisObsJsonDataConverter.getObservations(obs);
+						Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);
+						String serviceForm = psidhisException.getFormsName();
+						//List<String> servicesInObservation = JsonPath.read(document, "$..service");
+						Set<String> uniqueSetOfServices = new HashSet<>();
+						uniqueSetOfServices.add(serviceForm);
+						uniqueSetOfServices.forEach(uniqueSetOfService ->{
+							List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]");
+								try {
+									JSONArray extractServiceArray = new JSONArray(extractServiceJSON);
+									JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(trackeEntityInstanceIDString, orgUnitString).get(uniqueSetOfService);
+									JSONArray dataValues = new JSONArray();
+									for (int i = 0; i < extractServiceArray.length(); i++) {
+										JSONObject serviceObject = (JSONObject) extractServiceArray.get(i);
+										String field = (String) serviceObject.get("question");
+										Object value =  serviceObject.get("answer");
+										
+										String elementId = ObserVationDHISMapping.get(field);
+										if (!StringUtils.isEmpty(elementId)){
+										JSONObject dataValue = new JSONObject();
+										dataValue.put("dataElement", elementId);
+										dataValue.put("value", value);
+										dataValues.put(dataValue);			
+										}
+									}
+									event.put("dataValues", dataValues);
+									servicesToPost.put(uniqueSetOfService, event);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+						});
+	                     
+						JSONArray keys = servicesToPost.names();
+						
+						for (int i = 0; i < keys.length(); i++) {
+							
+							String formsName = keys.getString(i); // Here's your key
+							String value = servicesToPost.getString(formsName);
+							JSONObject postEncounter = new JSONObject(value);
+							JSONObject eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", postEncounter, EVENTURL);
+							int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
+							if (statusCode == 200) {
+								JSONObject successResponse = eventResponse.getJSONObject("response");
+								JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+								if (importSummaries.length() != 0) {
+									updateExceptionForEncounterFailed(psidhisException,postEncounter + "", PSIConstants.SUCCESSSTATUS,eventResponse + "","");
+								} else {								
+									updateExceptionForEncounterFailed(psidhisException,postEncounter + "", PSIConstants.FAILEDSTATUS,eventResponse + "","Dhis2 returns empty import summaries without reference id");
+								}
+							}
+							else 
+							{
+								String errorDetails = errorMessageCreation(eventResponse);
+								updateExceptionForEncounterFailed(psidhisException,postEncounter + "", PSIConstants.FAILEDSTATUS,eventResponse + "",errorDetails);
+							}
+						} //loop end
+					} 
+					catch (Exception e) {
+						updateExceptionForEncounterFailed(psidhisException,"Encounter Failed", PSIConstants.FAILEDSTATUS, "Please check Error for details", e.toString());
+					}
+				}
+				
+			}
 	}
 	
-	@SuppressWarnings("unchecked")
+	
+	
 	private  void getDhisEventInformation(String patientUuid) {
 		try {
 			String patientUrl =  "/openmrs/ws/rest/v1/patient/"+patientUuid+"?v=full";
@@ -974,32 +1029,63 @@ public class DHISListener {
 				}
 				
 			}
-		String URL = trackInstanceUrl + "filter=" + "oW51s5NUIqo" + ":EQ:" + patientUuid + "&ou=" + orgUnitString;
-		JSONObject trackentityIsntances = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-	
-	
-			JSONArray trackedEntityInstances = new JSONArray();
-			if (trackentityIsntances.has("trackedEntityInstances")) {
-				trackedEntityInstances = (JSONArray) trackentityIsntances.get("trackedEntityInstances");
-			}
-	
-			if (trackedEntityInstances.length() != 0) {
-				JSONObject trackedEntityInstance = (JSONObject) trackedEntityInstances.get(0);
-				trackeEntityInstanceIDString = (String) trackedEntityInstance.get("trackedEntityInstance");
+			String uuid = DHISMapper.registrationMapper.get("uuid");
+			String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgUnitString;
+			JSONObject trackentityIsntances = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+		
+		
+				JSONArray trackedEntityInstances = new JSONArray();
+				if (trackentityIsntances.has("trackedEntityInstances")) {
+					trackedEntityInstances = (JSONArray) trackentityIsntances.get("trackedEntityInstances");
 				}
-			}
-	 catch (Exception e) {
-				// TODO Auto-generated catch block
+		
+				if (trackedEntityInstances.length() != 0) {
+					JSONObject trackedEntityInstance = (JSONObject) trackedEntityInstances.get(0);
+					trackeEntityInstanceIDString = (String) trackedEntityInstance.get("trackedEntityInstance");
+					}
+				}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	@SuppressWarnings("unused")
 	private void mapDhisDataElementsId() {
 		List<SHNDhisObsElement> dhisObsElement = Context.getService(SHNDhisObsElementService.class).getAllDhisElement();
 		for (SHNDhisObsElement item : dhisObsElement) {
 			ObserVationDHISMapping.put(item.getElementName(),item.getElementDhisId());
 		}
+	}
+	
+	private void updateEncounterException(PSIDHISException getPsidhisException,
+			String encounterJson, EventReceordDTO eventReceordDTO, int status,
+			String response, String error, String type, String formsName) {
+		Context.openSession();
+
+		getPsidhisException.setError(error);
+		getPsidhisException.setJson(encounterJson.toString());
+		getPsidhisException.setMarkId(eventReceordDTO.getId());
+		getPsidhisException.setUrl(eventReceordDTO.getUrl());
+		getPsidhisException.setStatus(status);
+		getPsidhisException.setResponse(response.toString());
+		getPsidhisException.setDateCreated(new Date());
+		getPsidhisException.setType(type);
+		getPsidhisException.setFormsName(formsName);
+		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(
+				getPsidhisException);
+		Context.clearSession();
+	}
+	
+	private void updateExceptionForEncounterFailed(PSIDHISException getPsidhisException,
+			String encounterJson, int status, String response, String error) {
+		Context.openSession();
+		getPsidhisException.setError(error);
+		getPsidhisException.setJson(encounterJson.toString());
+		getPsidhisException.setStatus(status);
+		getPsidhisException.setResponse(response.toString());
+		getPsidhisException.setDateChanged(new Date());
+		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(
+				getPsidhisException);
+		Context.clearSession();
 	}
 }
 	
