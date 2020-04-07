@@ -14,5 +14,6 @@ public interface PSIAPIService {
 	public JSONObject getByQuery(String payload, String URL) throws JSONException;
 	
 	public JSONObject delete(String payload, String uuid, String URL) throws JSONException;
+	public JSONObject getFromRemoteOpenMRS(String payload, String uuid, String URL) throws JSONException;
 	
 }

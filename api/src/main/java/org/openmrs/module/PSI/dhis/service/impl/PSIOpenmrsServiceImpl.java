@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	
 	private final String OPENMRS_BASE_URL = "https://localhost";
+	private final String CENTRAL_OPENMRS_BASE_URL = "https://localhost";
 	
 	@Override
 	public JSONObject add(String payload, JSONObject jsonObject, String URL) throws JSONException {
@@ -40,6 +41,13 @@ public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	public JSONObject delete(String payload, String uuid, String URL) throws JSONException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public JSONObject getFromRemoteOpenMRS(String payload, String uuid, String URL)
+			throws JSONException {
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "sohel", "Sohel@123");
+		return new JSONObject(op.body());
 	}
 	
 }

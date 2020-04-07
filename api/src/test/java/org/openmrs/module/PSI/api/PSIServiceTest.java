@@ -17,13 +17,18 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.derby.tools.sysinfo;
+import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.Test;
+import org.openmrs.module.PSI.utils.DateTimeTypeConverter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Tests {@link $ PSIService} .
@@ -32,8 +37,11 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 	
 	public static DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
 	
+	Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+	        .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter()).create();
+	
 	@Test
-	public void shouldSetupContext() throws ParseException {
+	public void shouldSetupContext() throws ParseException, JSONException {
 		/*assertNotNull(Context.getService(PSIService.class));
 		String s = "1985-04-18T00:00:00.000+0000";
 		
@@ -106,6 +114,11 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		/*for (int i = 0; i < 7; i = i + 2) {
 			System.out.println(i);
 		}*/
+		String preferredName = "[{\"dateChanged\":\"2019-09-03 12:03:55\",\"name\":\"test name\",\"id\":12,\"unitCost\":23}]";
+		JSONArray dd = new JSONArray(preferredName);
+		//PreferredName preName = new Gson().fromJson(dd.toString(), PreferredName.class);
 		
+		List<PreferredName> clients = gson.fromJson(dd.toString(), new TypeToken<ArrayList<PreferredName>>() {}.getType());
+		System.out.println(clients);
 	}
 }

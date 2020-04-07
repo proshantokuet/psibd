@@ -15,6 +15,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
@@ -30,10 +31,13 @@ import org.openmrs.module.PSI.api.PSIClinicSpotService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.converter.ClinicDataConverter;
 import org.openmrs.module.PSI.converter.PSIClinicSpotConverter;
+import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.ClinicDTO;
 import org.openmrs.module.PSI.dto.PSIClinicSpotDTO;
 import org.openmrs.module.PSI.dto.PSILocation;
+import org.openmrs.module.PSI.utils.DateTimeTypeConverter;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -46,10 +50,28 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 @RequestMapping("/rest/v1/clinic/")
 @RestController
 public class PSIClinicRestController extends MainResourceController {
+	
+	@Autowired
+	private PSIAPIServiceFactory psiapiServiceFactory;
+	
+	Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+	        .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter()).create();
+	
+	private final String CLINIC_ENDPOINT = "/rest/v1/clinic/byClinicCode";
+	
+	private final String CLINIC_TYPE_ENDPOINT = "/rest/v1/clinic/type";
+	
+	private final String SERVICE_CATEGORY_ENDPOINT = "/rest/v1/clinic/servive/category";
+	
+	private final String SERVICE_ENDPOINT = "/rest/v1/clinic/service/byClinicId";
+	
+	private final String SPOT_ENDPOINT = "/rest/v1/clinic//spot/byClinicId";
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public ResponseEntity<String> saveClinic(@RequestBody ClinicDTO clinicDTO, ModelMap model) throws Exception {
@@ -135,28 +157,24 @@ public class PSIClinicRestController extends MainResourceController {
 		PSIClinicSpot psiClinicSpot = null;
 		if (psiClinicSpotDTO.getCsid() != 0) {
 			int ccsid = 0;
-			ccsid= psiClinicSpotDTO.getCsid();
+			ccsid = psiClinicSpotDTO.getCsid();
 			psiClinicSpot = Context.getService(PSIClinicSpotService.class).findById(ccsid);
-		}
-		else {
+		} else {
 			psiClinicSpot = new PSIClinicSpot();
 			psiClinicSpot.setUuid(UUID.randomUUID().toString());
 			psiClinicSpot.setDateCreated(new Date());
 		}
-
+		
 		PSIClinicManagement psiClinicManagementId = Context.getService(PSIClinicManagementService.class).findById(
 		    psiClinicSpotDTO.getPsiClinicManagementId());
 		
+		PSIClinicSpot getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(0,
+		    psiClinicSpotDTO.getCode(), psiClinicSpotDTO.getPsiClinicManagementId());
 		
-		PSIClinicSpot getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(
-		    0, psiClinicSpotDTO.getCode(),psiClinicSpotDTO.getPsiClinicManagementId());
-		
-		if (getClinicByClinicId!= null && psiClinicSpotDTO.getCsid() != getClinicByClinicId.getCcsid()) 
-		{
+		if (getClinicByClinicId != null && psiClinicSpotDTO.getCsid() != getClinicByClinicId.getCcsid()) {
 			msg = "This clinic Spot code is already taken";
 			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
-		} 
-		else {
+		} else {
 			try {
 				psiClinicSpot.setCreator(Context.getAuthenticatedUser());
 				psiClinicSpot.setName(psiClinicSpotDTO.getName());
@@ -197,53 +215,49 @@ public class PSIClinicRestController extends MainResourceController {
 	
 	@SuppressWarnings("resource")
 	@RequestMapping(value = "/spot/upload", method = RequestMethod.POST)
-	public ResponseEntity<String> uploadClinicService(
-			@RequestParam MultipartFile file, HttpServletRequest request,
-			ModelMap model, @RequestParam(required = false) int id)
-			throws Exception {
+	public ResponseEntity<String> uploadClinicService(@RequestParam MultipartFile file, HttpServletRequest request,
+	                                                  ModelMap model, @RequestParam(required = false) int id)
+	    throws Exception {
 		String msg = "";
 		String failedMessage = "";
 		if (file.isEmpty()) {
 			msg = "failed to upload file because its empty";
 			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
-
+			
 		}
-
-		String rootPath = request.getSession().getServletContext()
-				.getRealPath("/");
+		
+		String rootPath = request.getSession().getServletContext().getRealPath("/");
 		File dir = new File(rootPath + File.separator + "uploadedfile");
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
-
-		File csvFile = new File(dir.getAbsolutePath() + File.separator
-				+ file.getOriginalFilename());
-
+		
+		File csvFile = new File(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+		
 		try {
 			try (InputStream is = file.getInputStream();
-					BufferedOutputStream stream = new BufferedOutputStream(
-							new FileOutputStream(csvFile))) {
+			        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(csvFile))) {
 				int i;
-
+				
 				while ((i = is.read()) != -1) {
 					stream.write(i);
 				}
 				stream.flush();
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			msg = "failed to process file because : " + e.getMessage();
 			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 		}
-
+		
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ",";
 		int index = 0;
 		try {
-			PSIClinicManagement psiClinicManagement = Context.getService(
-					PSIClinicManagementService.class).findById(id);
+			PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
 			br = new BufferedReader(new FileReader(csvFile));
-
+			
 			while ((line = br.readLine()) != null) {
 				String[] spot = line.split(cvsSplitBy);
 				if (index != 0) {
@@ -269,37 +283,34 @@ public class PSIClinicRestController extends MainResourceController {
 						orgId = spot[3];
 					}
 					psiClinicSpot.setDhisId(orgId);
-
+					
 					psiClinicSpot.setDateCreated(new Date());
-					psiClinicSpot.setCreator(Context
-							.getAuthenticatedUser());
+					psiClinicSpot.setCreator(Context.getAuthenticatedUser());
 					psiClinicSpot.setUuid(UUID.randomUUID().toString());
-					Context.getService(PSIClinicSpotService.class)
-							.saveOrUpdate(psiClinicSpot);
-
+					Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
+					
 				}
 				index++;
 			}
 			msg = "Total successfully Spot uploaded: " + (index - 1);
-
-		} catch (Exception e) {
+			
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			failedMessage = "failed to process file because : " + e;
-			return new ResponseEntity<>(new Gson().toJson(msg
-					+ ", and  got error at column : " + (index + 1)
-					+ " due to " + failedMessage), HttpStatus.OK);
+			return new ResponseEntity<>(new Gson().toJson(msg + ", and  got error at column : " + (index + 1) + " due to "
+			        + failedMessage), HttpStatus.OK);
 		}
-
+		
 		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
-
+		
 	}
 	
-	
-	@RequestMapping(value = "/clinic/byClinicCode/{code}", method = RequestMethod.GET)
+	@RequestMapping(value = "/byClinicCode/{code}", method = RequestMethod.GET)
 	public ResponseEntity<String> getClinicByClinicId(@PathVariable String code) throws Exception {
 		PSIClinicManagement psiClinic = new PSIClinicManagement();
 		
-		JSONObject clinicObject  = new JSONObject();
+		JSONObject clinicObject = new JSONObject();
 		try {
 			psiClinic = Context.getService(PSIClinicManagementService.class).findByClinicId(code);
 			if (psiClinic != null) {
@@ -312,23 +323,22 @@ public class PSIClinicRestController extends MainResourceController {
 		return new ResponseEntity<String>(clinicObject.toString(), HttpStatus.OK);
 	}
 	
-	
-	@RequestMapping(value = "/clinic/type", method = RequestMethod.GET)
+	@RequestMapping(value = "/type", method = RequestMethod.GET)
 	public ResponseEntity<String> getClinicType() throws Exception {
-		List<AUHCClinicType> psiClinicTypes = new ArrayList<AUHCClinicType>();		
-		JSONArray psiClinicTypesArray  = new JSONArray();
+		List<AUHCClinicType> psiClinicTypes = new ArrayList<AUHCClinicType>();
+		JSONArray psiClinicTypesArray = new JSONArray();
 		try {
 			psiClinicTypes = Context.getService(AUHCClinicTypeService.class).getAll();
-			if (psiClinicTypes.size() != 0) {				
+			if (psiClinicTypes.size() != 0) {
 				for (AUHCClinicType auhcClinicType : psiClinicTypes) {
-					JSONObject psiClinicTypesObject  = new JSONObject();
+					JSONObject psiClinicTypesObject = new JSONObject();
 					psiClinicTypesObject.put("ctid", auhcClinicType.getCtid());
 					psiClinicTypesObject.put("clinicTypeName", auhcClinicType.getClinicTypeName());
 					psiClinicTypesObject.putOpt("uuid", auhcClinicType.getUuid());
-					psiClinicTypesObject.putOpt("dateCreated", auhcClinicType.getDateCreated());					
+					psiClinicTypesObject.putOpt("dateCreated", auhcClinicType.getDateCreated());
 					psiClinicTypesObject.putOpt("dateChanged", auhcClinicType.getDateChanged());
 					psiClinicTypesArray.put(psiClinicTypesObject);
-				}				
+				}
 			}
 		}
 		catch (Exception e) {
@@ -337,24 +347,23 @@ public class PSIClinicRestController extends MainResourceController {
 		return new ResponseEntity<String>(psiClinicTypesArray.toString(), HttpStatus.OK);
 	}
 	
-
-	@RequestMapping(value = "/clinic/servive/category", method = RequestMethod.GET)
+	@RequestMapping(value = "/servive/category", method = RequestMethod.GET)
 	public ResponseEntity<String> getClinicServiceCategory() throws Exception {
-		List<AUHCServiceCategory> clinicServiceCategories = new ArrayList<AUHCServiceCategory>();		
-		JSONArray clinicServiceCategoriesArray  = new JSONArray();
+		List<AUHCServiceCategory> clinicServiceCategories = new ArrayList<AUHCServiceCategory>();
+		JSONArray clinicServiceCategoriesArray = new JSONArray();
 		try {
 			clinicServiceCategories = Context.getService(AUHCServiceCategoryService.class).getAll();
 			
-			if (clinicServiceCategories.size() != 0) {				
+			if (clinicServiceCategories.size() != 0) {
 				for (AUHCServiceCategory auhcServiceCategory : clinicServiceCategories) {
-					JSONObject clinicServiceCategoriesObject  = new JSONObject();
+					JSONObject clinicServiceCategoriesObject = new JSONObject();
 					clinicServiceCategoriesObject.put("sctid", auhcServiceCategory.getSctid());
 					clinicServiceCategoriesObject.put("categoryName", auhcServiceCategory.getCategoryName());
 					clinicServiceCategoriesObject.putOpt("uuid", auhcServiceCategory.getUuid());
-					clinicServiceCategoriesObject.putOpt("dateCreated", auhcServiceCategory.getDateCreated());					
+					clinicServiceCategoriesObject.putOpt("dateCreated", auhcServiceCategory.getDateCreated());
 					clinicServiceCategoriesObject.putOpt("dateChanged", auhcServiceCategory.getDateChanged());
 					clinicServiceCategoriesArray.put(clinicServiceCategoriesObject);
-				}				
+				}
 			}
 		}
 		catch (Exception e) {
@@ -363,16 +372,16 @@ public class PSIClinicRestController extends MainResourceController {
 		return new ResponseEntity<String>(clinicServiceCategoriesArray.toString(), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/clinic/spot/byClinicId/{clinicId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/spot/byClinicId/{clinicId}", method = RequestMethod.GET)
 	public ResponseEntity<String> getSpotByClinicId(@PathVariable int clinicId) throws Exception {
-		List<PSIClinicSpot> clinicSpots = new ArrayList<PSIClinicSpot>();		
-		JSONArray clinicSpotsArray  = new JSONArray();
+		List<PSIClinicSpot> clinicSpots = new ArrayList<PSIClinicSpot>();
+		JSONArray clinicSpotsArray = new JSONArray();
 		try {
 			clinicSpots = Context.getService(PSIClinicSpotService.class).findByClinicId(clinicId);
 			
-			if (clinicSpots.size() != 0) {				
+			if (clinicSpots.size() != 0) {
 				for (PSIClinicSpot psiClinicSpot : clinicSpots) {
-					JSONObject clinicSpotsObject  = new JSONObject();
+					JSONObject clinicSpotsObject = new JSONObject();
 					clinicSpotsObject.put("ccsid", psiClinicSpot.getCcsid());
 					clinicSpotsObject.put("name", psiClinicSpot.getName());
 					
@@ -381,10 +390,10 @@ public class PSIClinicRestController extends MainResourceController {
 					clinicSpotsObject.put("dhisId", psiClinicSpot.getDhisId());
 					
 					clinicSpotsObject.putOpt("uuid", psiClinicSpot.getUuid());
-					clinicSpotsObject.putOpt("dateCreated", psiClinicSpot.getDateCreated());					
+					clinicSpotsObject.putOpt("dateCreated", psiClinicSpot.getDateCreated());
 					clinicSpotsObject.putOpt("dateChanged", psiClinicSpot.getDateChanged());
 					clinicSpotsArray.put(clinicSpotsObject);
-				}				
+				}
 			}
 		}
 		catch (Exception e) {
@@ -393,17 +402,16 @@ public class PSIClinicRestController extends MainResourceController {
 		return new ResponseEntity<String>(clinicSpotsArray.toString(), HttpStatus.OK);
 	}
 	
-	
-	@RequestMapping(value = "/clinic/service/byClinicId/{clinicId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/service/byClinicId/{clinicId}", method = RequestMethod.GET)
 	public ResponseEntity<String> getServiceByClinicId(@PathVariable int clinicId) throws Exception {
-		List<PSIServiceManagement> clinicServices = new ArrayList<PSIServiceManagement>();		
-		JSONArray clinicServicesArray  = new JSONArray();
+		List<PSIServiceManagement> clinicServices = new ArrayList<PSIServiceManagement>();
+		JSONArray clinicServicesArray = new JSONArray();
 		try {
 			clinicServices = Context.getService(PSIServiceManagementService.class).getAllByClinicId(clinicId);
 			
-			if (clinicServices.size() != 0) {				
+			if (clinicServices.size() != 0) {
 				for (PSIServiceManagement psiServiceManagement : clinicServices) {
-					JSONObject clinicServicesObject  = new JSONObject();
+					JSONObject clinicServicesObject = new JSONObject();
 					clinicServicesObject.put("sid", psiServiceManagement.getSid());
 					clinicServicesObject.put("name", psiServiceManagement.getName());
 					
@@ -416,7 +424,6 @@ public class PSIClinicRestController extends MainResourceController {
 					clinicServicesObject.put("field1", psiServiceManagement.getField1());
 					clinicServicesObject.put("field2", psiServiceManagement.getField2());
 					clinicServicesObject.put("field3", psiServiceManagement.getField3());
-					
 					
 					clinicServicesObject.put("eligible", psiServiceManagement.getEligible());
 					clinicServicesObject.put("ageStart", psiServiceManagement.getAgeStart());
@@ -432,15 +439,153 @@ public class PSIClinicRestController extends MainResourceController {
 					clinicServicesObject.put("gender", psiServiceManagement.getGender());
 					
 					clinicServicesObject.putOpt("uuid", psiServiceManagement.getUuid());
-					clinicServicesObject.putOpt("dateCreated", psiServiceManagement.getDateCreated());					
+					clinicServicesObject.putOpt("dateCreated", psiServiceManagement.getDateCreated());
 					clinicServicesObject.putOpt("dateChanged", psiServiceManagement.getDateChanged());
 					clinicServicesArray.put(clinicServicesObject);
-				}				
+				}
 			}
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(clinicServicesArray.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/sync/byClinicCode/{code}", method = RequestMethod.GET)
+	public ResponseEntity<String> syncClinic(@PathVariable String code) throws Exception {
+		
+		JSONObject clinicJson = psiapiServiceFactory.getAPIType("openmrs").get("", "", CLINIC_ENDPOINT + "/" + code);
+		JSONArray _clinics = new JSONArray(clinicJson);
+		List<PSIClinicManagement> clinicArray = gson.fromJson(_clinics.toString(),
+		    new TypeToken<ArrayList<PSIClinicManagement>>() {}.getType());
+		
+		PSIClinicManagement clinic = clinicArray.get(0);
+		try {
+			PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findByClinicId(
+			    code);
+			
+			psiClinicManagement.setAddress(clinic.getAddress());
+			psiClinicManagement.setCategory(clinic.getCategory());
+			psiClinicManagement.setClinicId(clinic.getClinicId());
+			psiClinicManagement.setName(clinic.getName());
+			psiClinicManagement.setDhisId(clinic.getDhisId());
+			psiClinicManagement.setDateCreated(clinic.getDateCreated());
+			psiClinicManagement.setDateChanged(clinic.getDateChanged());
+			psiClinicManagement.setCreator(Context.getAuthenticatedUser());
+			psiClinicManagement.setUuid(clinic.getUuid());
+			psiClinicManagement.setTimestamp(clinic.getTimestamp());
+			psiClinicManagement.setDivision(clinic.getName());
+			psiClinicManagement.setDivisionUuid(clinic.getUuid());
+			psiClinicManagement.setDivisionId(clinic.getId());
+			
+			psiClinicManagement.setDistrict(clinic.getName());
+			psiClinicManagement.setDistrictUuid(clinic.getUuid());
+			psiClinicManagement.setDistrictId(clinic.getId());
+			
+			psiClinicManagement.setUpazila(clinic.getName());
+			psiClinicManagement.setUpazilaUuid(clinic.getUuid());
+			psiClinicManagement.setUpazilaId(clinic.getId());
+			// if this not work then need extra method for update primary key cid
+			psiClinicManagement.setCid(clinic.getCid());
+			
+			Context.openSession();
+			Context.getService(PSIClinicManagementService.class).saveOrUpdateClinic(psiClinicManagement);
+			Context.clearSession();
+			
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/type/sync", method = RequestMethod.GET)
+	public ResponseEntity<String> syncClinicType() throws Exception {
+		
+		JSONObject clinicTypeJson = psiapiServiceFactory.getAPIType("openmrs").get("", "", CLINIC_TYPE_ENDPOINT);
+		JSONArray _clinicTypes = new JSONArray(clinicTypeJson);
+		List<AUHCClinicType> auhcClinicTypes = gson.fromJson(_clinicTypes.toString(),
+		    new TypeToken<ArrayList<AUHCClinicType>>() {}.getType());
+		
+		try {
+			for (AUHCClinicType auhcClinicType : auhcClinicTypes) {
+				Context.openSession();
+				Context.getService(AUHCClinicTypeService.class).saveOrUpdate(auhcClinicType);
+				Context.clearSession();
+			}
+			
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/serviceCategory/sync", method = RequestMethod.GET)
+	public ResponseEntity<String> syncServiceCategory() throws Exception {
+		
+		JSONObject servicecategories = psiapiServiceFactory.getAPIType("openmrs").get("", "", SERVICE_CATEGORY_ENDPOINT);
+		JSONArray _servicecategories = new JSONArray(servicecategories);
+		List<AUHCServiceCategory> auhcServiceCategories = gson.fromJson(_servicecategories.toString(),
+		    new TypeToken<ArrayList<AUHCServiceCategory>>() {}.getType());
+		
+		try {
+			for (AUHCServiceCategory auhcServiceCategory : auhcServiceCategories) {
+				Context.openSession();
+				Context.getService(AUHCServiceCategoryService.class).saveOrUpdate(auhcServiceCategory);
+				Context.clearSession();
+			}
+			
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/service/sync/{clinicId}", method = RequestMethod.GET)
+	public ResponseEntity<String> syncService(@PathVariable int clinicId) throws Exception {
+		
+		JSONObject services = psiapiServiceFactory.getAPIType("openmrs").get("", "", SERVICE_ENDPOINT + "/" + clinicId);
+		JSONArray _services = new JSONArray(services);
+		List<PSIServiceManagement> psiServiceManagements = gson.fromJson(_services.toString(),
+		    new TypeToken<ArrayList<PSIServiceManagement>>() {}.getType());
+		
+		try {
+			
+			for (PSIServiceManagement psiServiceManagement : psiServiceManagements) {
+				Context.openSession();
+				Context.getService(PSIServiceManagementService.class).saveOrUpdate(psiServiceManagement);
+				Context.clearSession();
+			}
+			
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/spot/sync/{clinicId}", method = RequestMethod.GET)
+	public ResponseEntity<String> syncSpot(@PathVariable int clinicId) throws Exception {
+		
+		JSONObject spots = psiapiServiceFactory.getAPIType("openmrs").get("", "", SPOT_ENDPOINT + "/" + clinicId);
+		JSONArray _spots = new JSONArray(spots);
+		List<PSIClinicSpot> psiClinicSpots = gson.fromJson(_spots.toString(),
+		    new TypeToken<ArrayList<PSIClinicSpot>>() {}.getType());
+		
+		try {
+			
+			for (PSIClinicSpot psiClinicSpot : psiClinicSpots) {
+				Context.openSession();
+				Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
+				Context.clearSession();
+			}
+			
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
 }
