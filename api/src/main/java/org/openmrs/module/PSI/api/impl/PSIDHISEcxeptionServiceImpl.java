@@ -37,17 +37,5 @@ public class PSIDHISEcxeptionServiceImpl extends BaseOpenmrsService implements P
 		return dao.findAllById(patientId);
 	}
 
-	@Override
-	public List<PSIDHISException> findAllFailedEncounterByStatus(int status) {
-		// TODO Auto-generated method stub
-		return dao.findAllFailedEncounterByStatus(status);
-	}
-
-	@Override
-	public PSIDHISException findAllBymarkerIdAndFormName(int markerId,
-			String formsName) {
-		// TODO Auto-generated method stub
-		return dao.findAllBymarkerIdAndFormName(markerId, formsName);
-	}
 	
 }

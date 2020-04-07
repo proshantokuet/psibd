@@ -31,7 +31,6 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 	
 	private String patientUuid;
 	
-	private String formsName;
 	
 	@Override
 	public Integer getId() {
@@ -115,14 +114,6 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 
 	public void setPatientUuid(String patientUuid) {
 		this.patientUuid = patientUuid;
-	}
-
-	public String getFormsName() {
-		return formsName;
-	}
-
-	public void setFormsName(String formsName) {
-		this.formsName = formsName;
 	}
 
 	public String getType() {

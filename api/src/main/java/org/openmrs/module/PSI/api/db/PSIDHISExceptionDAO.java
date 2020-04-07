@@ -10,10 +10,10 @@ public interface PSIDHISExceptionDAO {
 	
 	public List<PSIDHISException> findAllByStatus(int status);
 	
-	public List<PSIDHISException> findAllFailedEncounterByStatus(int status);
+	//public List<PSIDHISException> findAllFailedEncounterByStatus(int status);
 	
 	public PSIDHISException findAllById(int patientId);
 	
-	public PSIDHISException findAllBymarkerIdAndFormName(int markerId, String formsName);
+	//public PSIDHISException findAllBymarkerIdAndFormName(int markerId, String formsName);
 	
 }

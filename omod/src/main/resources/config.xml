@@ -45,6 +45,7 @@
 		auhcservicecategory.hbm.xml
 		auhcclinictype.hbm.xml
 		shndhisobselement.hbm.xml
+		shndhisencounterexception.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
