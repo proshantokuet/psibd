@@ -10,7 +10,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.velocity.runtime.directive.Parse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.Person;
@@ -27,7 +26,6 @@ import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.converter.PSIClinicUserConverter;
 import org.openmrs.module.PSI.converter.UserDataConverter;
-import org.openmrs.module.PSI.dto.ClinicUserDTO;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
@@ -41,10 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import antlr.Utils;
-
 import com.google.gson.Gson;
-import com.mchange.v2.codegen.bean.ParsedPropertyBeanDocument;
 
 @RequestMapping("/rest/v1/clinic-user/")
 @RestController

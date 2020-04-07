@@ -42,6 +42,14 @@
         href="${pageContext.request.contextPath}/module/PSI/clinicTypeList.form"><spring:message
                 code="PSI.clinicType" /></a>
     </li>
+    	<c:if test="${hasClinicPermission}">
+    <li
+        <c:if test='<%= request.getRequestURI().contains("/dhisErrVisualize") %>'>class="active"</c:if>>
+        <a
+        href="${pageContext.request.contextPath}/module/PSI/dhisErrVisualize.form"><spring:message
+                code="PSI.errorVisualize" /></a>
+    </li>
+    </c:if>
 	<%-- <li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicServiceList") %>'>class="active"</c:if>>
 		<a
