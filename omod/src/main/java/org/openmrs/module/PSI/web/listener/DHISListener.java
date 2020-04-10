@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
@@ -74,49 +75,61 @@ public class DHISListener {
 	private Map<String, String> ObserVationDHISMapping = new HashMap<String, String>();
 
 	
-	protected final Log log = LogFactory.getLog(getClass());
+	//protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
 		
-//		JSONObject getResponse = null;
-//		boolean status = true;
-//		try {
-//			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
-//			
-//		}
-//		catch (Exception e) {
-//			
-//			status = false;
-//		}
-//		if (status) {
-//			
-//			try {
-//				sendFailedPatient();
-//			}
-//			catch (Exception e) {
-//				
-//			}
-//			try {
-//				sendPatient();
-//			}
-//			catch (Exception e) {
-//				
-//			}
-//			try {
-//				sendMoneyReceipt();
-//			}
-//			catch (Exception e) {
-//				
-//			}
-//			
-//			try {
-//				sendFailedMoneyReceipt();
-//			}
-//			catch (Exception e) {
-//				
-//			}
-//		}
+		JSONObject getResponse = null;
+		boolean status = true;
+		try {
+			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
+			
+		}
+		catch (Exception e) {
+			
+			status = false;
+		}
+		if (status) {
+			
+			try {
+				//sendFailedPatient();
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				//sendPatient();
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				//sendMoneyReceipt();
+			}
+			catch (Exception e) {
+				
+			}
+			
+			try {
+				//sendFailedMoneyReceipt();
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				sendEncounter();
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				//sendEncounterFailed();
+			}
+			catch (Exception e) {
+				
+			}
+		}
 
 	}
 	
@@ -442,7 +455,7 @@ public class DHISListener {
 						}
 						
 						eventResponse = new JSONObject();
-						log.info("ADD:URL:" + URL + "getResponse:" + getResponse);
+						//log.info("ADD:URL:" + URL + "getResponse:" + getResponse);
 						if (trackedEntityInstances.length() != 0) {
 							JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 							String trackedEntityInstanceId = trackedEntityInstance.getString("trackedEntityInstance");
@@ -452,7 +465,7 @@ public class DHISListener {
 							eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
 							statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
 							String httpStatus = eventResponse.getString("httpStatus");
-							log.info("ADD:statusCode:" + statusCode + "" + eventResponse);
+							//log.info("ADD:statusCode:" + statusCode + "" + eventResponse);
 							if (statusCode == 200) {
 								JSONObject successResponse = eventResponse.getJSONObject("response");
 								JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
@@ -631,7 +644,7 @@ public class DHISListener {
 							trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 						}
 						
-						log.info("URL:" + URL + "getResponse:" + getResponse);
+						//log.info("URL:" + URL + "getResponse:" + getResponse);
 						if (trackedEntityInstances.length() != 0) {
 							JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 							String trackedEntityInstanceId = trackedEntityInstance.getString("trackedEntityInstance");
@@ -640,7 +653,7 @@ public class DHISListener {
 							
 							eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
 							statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
-							log.info("statusCode:" + statusCode + "" + eventResponse);
+							//log.info("statusCode:" + statusCode + "" + eventResponse);
 							if (statusCode == 200) {
 								JSONObject successResponse = eventResponse.getJSONObject("response");
 								JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
@@ -788,7 +801,6 @@ public class DHISListener {
 		if (response.has("importSummaries")) {
 			try {
 				JSONArray importSummaries = response.getJSONArray("importSummaries");
-				errorMessage = "has importsummaries";
 					JSONObject importsObject = importSummaries.getJSONObject(0);
 					if (importsObject.has("conflicts")) {
 						JSONArray conflictsArray = importsObject.getJSONArray("conflicts");
@@ -837,23 +849,26 @@ public class DHISListener {
 					JSONObject patientEventInformation = getDhisEventInformation(patientUuid);
 					boolean  patientEventStatus = patientEventInformation.getBoolean("patientEventStatus");
 					String orgUnit = patientEventInformation.getString("orgUnit");
-					String tackedEntityInstance = patientEventInformation.getString("tackedEntityInstance");
+					String tackedEntityInstanceId = patientEventInformation.getString("tackedEntityInstance");
 					String trackEntityInstanceUrl = patientEventInformation.getString("trackEntityInstanceUrl");
+					JSONObject trackEntityResponse = patientEventInformation.getJSONObject("trackentityIsntanceResponse");
 					if (patientEventStatus) {
-					org.json.simple.JSONArray obs = (org.json.simple.JSONArray) EncounterObj.get("observations");
+						JSONParser parser = new JSONParser();
+						org.json.simple.JSONObject jsonObsEncounter = (org.json.simple.JSONObject) parser.parse(EncounterObj.toString());
+						org.json.simple.JSONArray obs = (org.json.simple.JSONArray) jsonObsEncounter.get("observations");
 					// Converting Obs data into dhis post format
 					String IntialJsonDHISArray = DhisObsJsonDataConverter.getObservations(obs);
-					Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);
-					List<String> servicesInObservation = JsonPath.read(document, "$..service"); //extract service name
+					//Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);
+					List<String> servicesInObservation = JsonPath.read(IntialJsonDHISArray, "$..service"); //extract service name
 					//removing duplicity from list
 					Set<String> uniqueSetOfServices = new HashSet<>(servicesInObservation);
 					uniqueSetOfServices.forEach(uniqueSetOfService ->{
 						//extract service wise JSON
-						List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]"); 
+						List<String> extractServiceJSON = JsonPath.read(IntialJsonDHISArray, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]"); 
 							try {
 								JSONArray extractServiceArray = new JSONArray(extractServiceJSON);
 								// Event Metadata for posting into dhis
-								JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstance, orgUnit).get(uniqueSetOfService);
+								JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstanceId, orgUnit).get(uniqueSetOfService);
 								JSONArray dataValues = new JSONArray();
 								for (int i = 0; i < extractServiceArray.length(); i++) {
 									JSONObject serviceObject = (JSONObject) extractServiceArray.get(i);
@@ -947,7 +962,7 @@ public class DHISListener {
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 						Context.clearSession();
 						updateEncounterException(geDhisEncounterException, trackEntityInstanceUrl, eventReceordDTO,
-						    PSIConstants.CONNECTIONTIMEOUTSTATUS, "Check the trackinstance url", "No Track Entity Instances found in DHIS2 Containing the patient id provided","",encounterUUid,patientUuid,"");
+						    PSIConstants.CONNECTIONTIMEOUTSTATUS,trackEntityResponse + "", "No Track Entity Instances found in DHIS2 Containing the patient id provided","",encounterUUid,patientUuid,"");
 					}
 				} 
 				catch (Exception e) {
@@ -982,26 +997,29 @@ public class DHISListener {
 						JSONObject patientEventInformation = getDhisEventInformation(patientUuid);
 						boolean  patientEventStatus = patientEventInformation.getBoolean("patientEventStatus");
 						String orgUnit = patientEventInformation.getString("orgUnit");
-						String tackedEntityInstance = patientEventInformation.getString("tackedEntityInstance");
+						String tackedEntityInstanceId = patientEventInformation.getString("tackedEntityInstance");
 						String trackEntityInstanceUrl = patientEventInformation.getString("trackEntityInstanceUrl");
+						JSONObject trackEntityResponse = patientEventInformation.getJSONObject("trackentityIsntanceResponse");
 						if (patientEventStatus) {
-							org.json.simple.JSONArray obs = (org.json.simple.JSONArray) EncounterObj.get("observations");
+							JSONParser parser = new JSONParser();
+							org.json.simple.JSONObject jsonObsEncounter = (org.json.simple.JSONObject) parser.parse(EncounterObj.toString());
+							org.json.simple.JSONArray obs = (org.json.simple.JSONArray) jsonObsEncounter.get("observations");
 							String IntialJsonDHISArray = DhisObsJsonDataConverter.getObservations(obs);
-							Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);
+							//Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);
 							String serviceForm = shnDhisEncounterException.getFormsName();
 							Set<String> uniqueSetOfServices = new HashSet<>();
 							if (StringUtils.isEmpty(serviceForm)) {
-								List<String> servicesInObservation = JsonPath.read(document, "$..service");
+								List<String> servicesInObservation = JsonPath.read(IntialJsonDHISArray, "$..service");
 								uniqueSetOfServices.addAll(servicesInObservation);
 							}
 							else {
 								uniqueSetOfServices.add(serviceForm);
 							}
 							uniqueSetOfServices.forEach(uniqueSetOfService ->{
-								List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]");
+								List<String> extractServiceJSON = JsonPath.read(IntialJsonDHISArray, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]");
 									try {
 										JSONArray extractServiceArray = new JSONArray(extractServiceJSON);
-										JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstance, orgUnit).get(uniqueSetOfService);
+										JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstanceId, orgUnit).get(uniqueSetOfService);
 										JSONArray dataValues = new JSONArray();
 										for (int i = 0; i < extractServiceArray.length(); i++) {
 											JSONObject serviceObject = (JSONObject) extractServiceArray.get(i);
@@ -1062,7 +1080,7 @@ public class DHISListener {
 							} //loop end
 						}
 						else {
-							updateExceptionForEncounterFailed(shnDhisEncounterException,trackEntityInstanceUrl, PSIConstants.FAILEDSTATUS, "Check the trackinstance url","No Track Entity Instances found in DHIS2 Containing the patient id provided","",patientUuid,"");
+							updateExceptionForEncounterFailed(shnDhisEncounterException,trackEntityInstanceUrl, PSIConstants.FAILEDSTATUS, trackEntityResponse + "" ,"No Track Entity Instances found in DHIS2 Containing the patient id provided","",patientUuid,"");
 						}
 					 } 
 					catch (Exception e) {
@@ -1074,8 +1092,9 @@ public class DHISListener {
 	}
 	
 	private  JSONObject getDhisEventInformation(String patientUuid) throws JSONException {
-		boolean patientEventStatus = true;
 		JSONObject eventInformationObject = new JSONObject();
+		JSONObject trackentityIsntanceResponse = new JSONObject();
+		boolean patientEventStatus = true;
 		String orgUnit = "";
 		String tackedEntityInstance = "";
 		String trackEntityInstanceUrl = "";
@@ -1095,12 +1114,12 @@ public class DHISListener {
 			}
 			String uuid = DHISMapper.registrationMapper.get("uuid");
 			trackEntityInstanceUrl = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgUnit;
-			JSONObject trackentityIsntances = psiapiServiceFactory.getAPIType("dhis2").get("", "", trackEntityInstanceUrl);
+			trackentityIsntanceResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", trackEntityInstanceUrl);
 		
 		
 				JSONArray trackedEntityInstances = new JSONArray();
-				if (trackentityIsntances.has("trackedEntityInstances")) {
-					trackedEntityInstances = (JSONArray) trackentityIsntances.get("trackedEntityInstances");
+				if (trackentityIsntanceResponse.has("trackedEntityInstances")) {
+					trackedEntityInstances = (JSONArray) trackentityIsntanceResponse.get("trackedEntityInstances");
 				}
 		
 				if (trackedEntityInstances.length() != 0) {
@@ -1117,6 +1136,7 @@ public class DHISListener {
 			eventInformationObject.put("tackedEntityInstance", tackedEntityInstance);
 			eventInformationObject.put("patientEventStatus", patientEventStatus);
 			eventInformationObject.put("trackEntityInstanceUrl", trackEntityInstanceUrl);
+			eventInformationObject.put("trackentityIsntanceResponse", trackentityIsntanceResponse);
 		}
 		else {
 			patientEventStatus = true;
@@ -1124,6 +1144,7 @@ public class DHISListener {
 			eventInformationObject.put("tackedEntityInstance", tackedEntityInstance);
 			eventInformationObject.put("patientEventStatus", patientEventStatus);
 			eventInformationObject.put("trackEntityInstanceUrl", trackEntityInstanceUrl);
+			eventInformationObject.put("trackentityIsntanceResponse", trackentityIsntanceResponse);
 		}
 		return eventInformationObject;
 	}
