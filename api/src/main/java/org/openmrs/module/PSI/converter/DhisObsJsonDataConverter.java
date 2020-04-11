@@ -3,8 +3,8 @@ package org.openmrs.module.PSI.converter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.apache.commons.lang.StringUtils;
+
 import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
 
 public class DhisObsJsonDataConverter {
 
@@ -29,12 +29,13 @@ public class DhisObsJsonDataConverter {
 					String voidreason = (String) ob.get("voidReason");
 					codedConceptJsonObject.put("question", questionName);
 					codedConceptJsonObject.put("voidReason", voidreason);
-					if(isNumeric(answerValue)) {
-						codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
-					}
-					else {
-						codedConceptJsonObject.put("answer", answerValue);
-					}
+					codedConceptJsonObject.put("answer", answerValue);
+//					if(isNumeric(answerValue)) {
+//						codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
+//					}
+//					else {
+//						codedConceptJsonObject.put("answer", answerValue);
+//					}
 					codedConceptJsonObject.put("service", serviceName);
 					observations.add(codedConceptJsonObject);
 
@@ -51,12 +52,13 @@ public class DhisObsJsonDataConverter {
 						String voidreason = (String) ob.get("voidReason");
 						codedConceptJsonObject.put("question", questionName);
 						codedConceptJsonObject.put("voidReason", voidreason);
-						if(isNumeric(answerValue)) {
-							codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
-						}
-						else {
-							codedConceptJsonObject.put("answer", answerValue);
-						}
+//						if(isNumeric(answerValue)) {
+//							codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
+//						}
+//						else {
+//							codedConceptJsonObject.put("answer", answerValue);
+//						}
+						codedConceptJsonObject.put("answer", answerValue);
 						codedConceptJsonObject.put("service", serviceName);
 						observations.add(codedConceptJsonObject);
 					});
@@ -72,12 +74,13 @@ public class DhisObsJsonDataConverter {
 					String voidreason = (String) ob.get("voidReason");
 					codedConceptJsonObject.put("question", questionName);
 					codedConceptJsonObject.put("voidReason", voidreason);
-					if(isNumeric(answerValue)) {
-						codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
-					}
-					else {
-						codedConceptJsonObject.put("answer", answerValue);
-					}
+//					if(isNumeric(answerValue)) {
+//						codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
+//					}
+//					else {
+//						codedConceptJsonObject.put("answer", answerValue);
+//					}
+					codedConceptJsonObject.put("answer", answerValue);
 					codedConceptJsonObject.put("service", serviceName);
 					observations.add(codedConceptJsonObject);
 				}
@@ -92,9 +95,6 @@ public class DhisObsJsonDataConverter {
 		return observations.toString();
 	}
 	
-	public static boolean isNumeric(String str) {
-		return str.matches("[0-9.]*");
-	}
 	
 	public static Object parseDocument(String IntialJsonDHISArray){
 		 return Configuration.defaultConfiguration().jsonProvider().parse(IntialJsonDHISArray);

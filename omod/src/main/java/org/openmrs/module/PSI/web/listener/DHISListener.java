@@ -42,6 +42,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import com.google.gson.Gson;
 import com.jayway.jsonpath.JsonPath;
 
 @Service
@@ -75,7 +76,7 @@ public class DHISListener {
 	private Map<String, String> ObserVationDHISMapping = new HashMap<String, String>();
 
 	
-	//protected final Log log = LogFactory.getLog(getClass());
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
@@ -124,7 +125,7 @@ public class DHISListener {
 				
 			}
 			try {
-				//sendEncounterFailed();
+				sendEncounterFailed();
 			}
 			catch (Exception e) {
 				
@@ -858,29 +859,36 @@ public class DHISListener {
 						org.json.simple.JSONArray obs = (org.json.simple.JSONArray) jsonObsEncounter.get("observations");
 					// Converting Obs data into dhis post format
 					String IntialJsonDHISArray = DhisObsJsonDataConverter.getObservations(obs);
-					//Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);
-					List<String> servicesInObservation = JsonPath.read(IntialJsonDHISArray, "$..service"); //extract service name
+					Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);
+					List<String> servicesInObservation = JsonPath.read(document, "$..service"); //extract service name
+
 					//removing duplicity from list
 					Set<String> uniqueSetOfServices = new HashSet<>(servicesInObservation);
 					uniqueSetOfServices.forEach(uniqueSetOfService ->{
 						//extract service wise JSON
-						List<String> extractServiceJSON = JsonPath.read(IntialJsonDHISArray, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]"); 
+						List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]"); 
+
 							try {
-								JSONArray extractServiceArray = new JSONArray(extractServiceJSON);
+								String convertedJson = new Gson().toJson(extractServiceJSON);
+								JSONArray extractServiceArray = new JSONArray(convertedJson);
 								// Event Metadata for posting into dhis
 								JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstanceId, orgUnit).get(uniqueSetOfService);
 								JSONArray dataValues = new JSONArray();
 								for (int i = 0; i < extractServiceArray.length(); i++) {
-									JSONObject serviceObject = (JSONObject) extractServiceArray.get(i);
-									String field = (String) serviceObject.get("question");
-									Object value =  serviceObject.get("answer");
-									
+									JSONObject serviceObject = extractServiceArray.getJSONObject(i);
+									String field = serviceObject.getString("question");
+									String value = serviceObject.getString("answer");
 									String elementId = ObserVationDHISMapping.get(field);
 									if (!StringUtils.isEmpty(elementId)){
-									JSONObject dataValue = new JSONObject();
-									dataValue.put("dataElement", elementId);
-									dataValue.put("value", value);
-									dataValues.put(dataValue);			
+										JSONObject dataValue = new JSONObject();
+										dataValue.put("dataElement", elementId);
+										if(isNumeric(value)) {
+											dataValue.put("value", Double.parseDouble(value));
+										}
+										else {
+											dataValue.put("value", value);
+										}
+										dataValues.put(dataValue);			
 									}
 								}
 								event.put("dataValues", dataValues);
@@ -1005,33 +1013,39 @@ public class DHISListener {
 							org.json.simple.JSONObject jsonObsEncounter = (org.json.simple.JSONObject) parser.parse(EncounterObj.toString());
 							org.json.simple.JSONArray obs = (org.json.simple.JSONArray) jsonObsEncounter.get("observations");
 							String IntialJsonDHISArray = DhisObsJsonDataConverter.getObservations(obs);
-							//Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);
+							Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);
 							String serviceForm = shnDhisEncounterException.getFormsName();
 							Set<String> uniqueSetOfServices = new HashSet<>();
 							if (StringUtils.isEmpty(serviceForm)) {
-								List<String> servicesInObservation = JsonPath.read(IntialJsonDHISArray, "$..service");
+								List<String> servicesInObservation = JsonPath.read(document, "$..service");
 								uniqueSetOfServices.addAll(servicesInObservation);
 							}
 							else {
 								uniqueSetOfServices.add(serviceForm);
 							}
 							uniqueSetOfServices.forEach(uniqueSetOfService ->{
-								List<String> extractServiceJSON = JsonPath.read(IntialJsonDHISArray, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]");
+								List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]");
 									try {
-										JSONArray extractServiceArray = new JSONArray(extractServiceJSON);
+										String convertedJson = new Gson().toJson(extractServiceJSON);
+										JSONArray extractServiceArray = new JSONArray(convertedJson);
+										// Event Metadata for posting into dhis
 										JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstanceId, orgUnit).get(uniqueSetOfService);
 										JSONArray dataValues = new JSONArray();
 										for (int i = 0; i < extractServiceArray.length(); i++) {
-											JSONObject serviceObject = (JSONObject) extractServiceArray.get(i);
-											String field = (String) serviceObject.get("question");
-											Object value =  serviceObject.get("answer");
-											
+											JSONObject serviceObject = extractServiceArray.getJSONObject(i);
+											String field = serviceObject.getString("question");
+											String value = serviceObject.getString("answer");
 											String elementId = ObserVationDHISMapping.get(field);
 											if (!StringUtils.isEmpty(elementId)){
-											JSONObject dataValue = new JSONObject();
-											dataValue.put("dataElement", elementId);
-											dataValue.put("value", value);
-											dataValues.put(dataValue);			
+												JSONObject dataValue = new JSONObject();
+												dataValue.put("dataElement", elementId);
+												if(isNumeric(value)) {
+													dataValue.put("value", Double.parseDouble(value));
+												}
+												else {
+													dataValue.put("value", value);
+												}
+												dataValues.put(dataValue);			
 											}
 										}
 										event.put("dataValues", dataValues);
@@ -1191,6 +1205,10 @@ public class DHISListener {
 		Context.getService(SHNDhisEncounterExceptionService.class).saveOrUpdate(
 				shnDhisEncounterException);
 		Context.clearSession();
+	}
+	
+	public static boolean isNumeric(String str) {
+		return str.matches("[0-9.]*");
 	}
 }
 	
