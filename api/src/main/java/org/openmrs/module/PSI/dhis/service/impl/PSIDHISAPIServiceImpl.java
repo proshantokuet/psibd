@@ -3,6 +3,7 @@
  */
 package org.openmrs.module.PSI.dhis.service.impl;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.module.PSI.dhis.service.PSIAPIService;
@@ -66,10 +67,15 @@ public class PSIDHISAPIServiceImpl implements PSIAPIService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
-	public JSONObject getFromRemoteOpenMRS(String payload, String uuid, String URL)
-			throws JSONException {
+	public JSONObject getFromRemoteOpenMRS(String payload, String uuid, String URL) throws JSONException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public JSONArray getFromRemoteOpenMRSAsArray(String payload, String uuid, String URL) throws JSONException {
 		// TODO Auto-generated method stub
 		return null;
 	}

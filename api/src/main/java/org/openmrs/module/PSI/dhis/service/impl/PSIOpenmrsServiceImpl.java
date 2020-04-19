@@ -1,5 +1,6 @@
 package org.openmrs.module.PSI.dhis.service.impl;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.module.PSI.dhis.service.PSIAPIService;
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Service;
 public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	
 	private final String OPENMRS_BASE_URL = "https://localhost";
-	private final String CENTRAL_OPENMRS_BASE_URL = "https://localhost";
+	
+	private final String CENTRAL_OPENMRS_BASE_URL = "https://192.168.19.147/openmrs/ws";
 	
 	@Override
 	public JSONObject add(String payload, JSONObject jsonObject, String URL) throws JSONException {
@@ -42,12 +44,19 @@ public class PSIOpenmrsServiceImpl implements PSIAPIService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
-	public JSONObject getFromRemoteOpenMRS(String payload, String uuid, String URL)
-			throws JSONException {
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "sohel", "Sohel@123");
+	public JSONObject getFromRemoteOpenMRS(String payload, String uuid, String URL) throws JSONException {
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "sohel",
+		    "Sohel@123");
 		return new JSONObject(op.body());
+	}
+	
+	@Override
+	public JSONArray getFromRemoteOpenMRSAsArray(String payload, String uuid, String URL) throws JSONException {
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "sohel",
+		    "Sohel@123");
+		return new JSONArray(op.body());
 	}
 	
 }

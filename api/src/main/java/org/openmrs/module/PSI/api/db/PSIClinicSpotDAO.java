@@ -18,4 +18,6 @@ public interface PSIClinicSpotDAO {
 	
 	public void delete(int id);
 	
+	public int updatePrimaryKey(int oldId, int currentId);
+	
 }

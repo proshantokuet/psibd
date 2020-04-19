@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.AUHCClinicType;
 import org.openmrs.module.PSI.api.db.AUHCClinicTypeDAO;
@@ -13,6 +14,7 @@ public class HibernateAUHCClinicTypeDAO implements AUHCClinicTypeDAO {
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	private SessionFactory sessionFactory;
+	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -27,10 +29,11 @@ public class HibernateAUHCClinicTypeDAO implements AUHCClinicTypeDAO {
 	@Override
 	public AUHCClinicType saveOrUpdate(AUHCClinicType clinicType) {
 		// TODO Auto-generated method stub
+		
 		sessionFactory.getCurrentSession().saveOrUpdate(clinicType);
 		return clinicType;
 		
-//		return null;
+		//		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -38,13 +41,12 @@ public class HibernateAUHCClinicTypeDAO implements AUHCClinicTypeDAO {
 	public AUHCClinicType findByCtId(int ctid) {
 		// TODO Auto-generated method stub
 		List<AUHCClinicType> clinicType = sessionFactory.getCurrentSession()
-				.createQuery(" from AUHCClinicType where ctid = :ctid ").
-				setInteger("ctid",ctid).
-				list();
-		if(clinicType.size() == 0) return null;
+		        .createQuery(" from AUHCClinicType where ctid = :ctid ").setInteger("ctid", ctid).list();
+		if (clinicType.size() == 0)
+			return null;
 		return clinicType.get(0);
 	}
-
+	
 	@Override
 	public void deleteByCtId(int ctid) {
 		// TODO Auto-generated method stub
@@ -59,5 +61,23 @@ public class HibernateAUHCClinicTypeDAO implements AUHCClinicTypeDAO {
 		        .createQuery(" from AUHCClinicType  order by uuid desc ").list();
 		return clinicTypeList;
 	}
-
+	
+	@Override
+	public AUHCClinicType save(AUHCClinicType clinicType) {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		sessionFactory.getCurrentSession().save(clinicType);
+		return clinicType;
+	}
+	
+	@Override
+	public int updatePrimaryKey(int oldId, int currentId) {
+		String sql = "update auhc_clinic_type set ctid= :currentId where ctid= :oldId";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("currentId", currentId);
+		query.setParameter("oldId", oldId);
+		
+		return query.executeUpdate();
+	}
+	
 }

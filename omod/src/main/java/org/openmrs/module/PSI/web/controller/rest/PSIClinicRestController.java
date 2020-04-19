@@ -337,6 +337,7 @@ public class PSIClinicRestController extends MainResourceController {
 					psiClinicTypesObject.putOpt("uuid", auhcClinicType.getUuid());
 					psiClinicTypesObject.putOpt("dateCreated", auhcClinicType.getDateCreated());
 					psiClinicTypesObject.putOpt("dateChanged", auhcClinicType.getDateChanged());
+					
 					psiClinicTypesArray.put(psiClinicTypesObject);
 				}
 			}
@@ -454,16 +455,18 @@ public class PSIClinicRestController extends MainResourceController {
 	@RequestMapping(value = "/sync/byClinicCode/{code}", method = RequestMethod.GET)
 	public ResponseEntity<String> syncClinic(@PathVariable String code) throws Exception {
 		
-		JSONObject clinicJson = psiapiServiceFactory.getAPIType("openmrs").get("", "", CLINIC_ENDPOINT + "/" + code);
-		JSONArray _clinics = new JSONArray(clinicJson);
-		List<PSIClinicManagement> clinicArray = gson.fromJson(_clinics.toString(),
-		    new TypeToken<ArrayList<PSIClinicManagement>>() {}.getType());
+		JSONObject clinicJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRS("", "",
+		    CLINIC_ENDPOINT + "/" + code);
 		
-		PSIClinicManagement clinic = clinicArray.get(0);
+		//String _clinicsStr = "{\"dateChanged\":\"2019-08-28 14:03:04.0\",\"clinicId\":\"177\",\"address\":\"Bashabo SH Clinic, 43,Maddyha Bashabo, Dhaka-1214\",\"dhisId\":\"yzZ2cGq8cj9\",\"districtUuid\":\"89ceb342-3578-40a0-afe8-220aa00cd986\",\"upazila\":\"DHAKA SOUTH CITY CORPORATION\",\"uuid\":\"6faffd63-6d0e-4bcb-b234-5fe0ce5a3e9f\",\"division\":\"Dhaka\",\"districtId\":85,\"dateCreated\":\"2019-08-28 14:03:04.0\",\"upazilaId\":86,\"district\":\"DHAKA\",\"name\":\"Bashabo\",\"upazilaUuid\":\"4405a4f9-92a5-44b6-86a1-109a1b49efef\",\"divisionId\":16,\"divisionUuid\":\"6bbee4e4-daeb-4f3f-bb35-0be72f982a33\",\"category\":\"Vital\",\"cid\":27,\"timestamp\":1566979384733}";
+		PSIClinicManagement clinic = gson.fromJson(clinicJson.toString(), new TypeToken<PSIClinicManagement>() {}.getType());
+		//clinic.setCid(5);
 		try {
 			PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findByClinicId(
 			    code);
-			
+			Context.getService(PSIClinicManagementService.class).updateClinicPrimaryKey(psiClinicManagement.getCid(),
+			    clinic.getCid());
+			psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(clinic.getCid());
 			psiClinicManagement.setAddress(clinic.getAddress());
 			psiClinicManagement.setCategory(clinic.getCategory());
 			psiClinicManagement.setClinicId(clinic.getClinicId());
@@ -474,17 +477,17 @@ public class PSIClinicRestController extends MainResourceController {
 			psiClinicManagement.setCreator(Context.getAuthenticatedUser());
 			psiClinicManagement.setUuid(clinic.getUuid());
 			psiClinicManagement.setTimestamp(clinic.getTimestamp());
-			psiClinicManagement.setDivision(clinic.getName());
-			psiClinicManagement.setDivisionUuid(clinic.getUuid());
-			psiClinicManagement.setDivisionId(clinic.getId());
+			psiClinicManagement.setDivision(clinic.getDivision());
+			psiClinicManagement.setDivisionUuid(clinic.getDivisionUuid());
+			psiClinicManagement.setDivisionId(clinic.getDivisionId());
 			
-			psiClinicManagement.setDistrict(clinic.getName());
-			psiClinicManagement.setDistrictUuid(clinic.getUuid());
-			psiClinicManagement.setDistrictId(clinic.getId());
+			psiClinicManagement.setDistrict(clinic.getDistrict());
+			psiClinicManagement.setDistrictUuid(clinic.getDistrictUuid());
+			psiClinicManagement.setDistrictId(clinic.getDistrictId());
 			
-			psiClinicManagement.setUpazila(clinic.getName());
-			psiClinicManagement.setUpazilaUuid(clinic.getUuid());
-			psiClinicManagement.setUpazilaId(clinic.getId());
+			psiClinicManagement.setUpazila(clinic.getUpazila());
+			psiClinicManagement.setUpazilaUuid(clinic.getUpazilaUuid());
+			psiClinicManagement.setUpazilaId(clinic.getUpazilaId());
 			// if this not work then need extra method for update primary key cid
 			psiClinicManagement.setCid(clinic.getCid());
 			
@@ -496,67 +499,106 @@ public class PSIClinicRestController extends MainResourceController {
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
 		}
+		
 		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/type/sync", method = RequestMethod.GET)
 	public ResponseEntity<String> syncClinicType() throws Exception {
 		
-		JSONObject clinicTypeJson = psiapiServiceFactory.getAPIType("openmrs").get("", "", CLINIC_TYPE_ENDPOINT);
-		JSONArray _clinicTypes = new JSONArray(clinicTypeJson);
-		List<AUHCClinicType> auhcClinicTypes = gson.fromJson(_clinicTypes.toString(),
-		    new TypeToken<ArrayList<AUHCClinicType>>() {}.getType());
+		JSONArray clinicTypeJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "",
+		    CLINIC_TYPE_ENDPOINT);
 		
+		List<AUHCClinicType> auhcClinicTypes = gson.fromJson(clinicTypeJson.toString(),
+		    new TypeToken<ArrayList<AUHCClinicType>>() {}.getType());
 		try {
 			for (AUHCClinicType auhcClinicType : auhcClinicTypes) {
-				Context.openSession();
-				Context.getService(AUHCClinicTypeService.class).saveOrUpdate(auhcClinicType);
-				Context.clearSession();
+				int currentId = auhcClinicType.getCtid();
+				auhcClinicType.setCreator(Context.getAuthenticatedUser());
+				AUHCClinicType getType = Context.getService(AUHCClinicTypeService.class)
+				        .findByCtId(auhcClinicType.getCtid());
+				if (getType != null) {
+					Context.getService(AUHCClinicTypeService.class).saveOrUpdate(
+					    convertAUHCClinicType(getType, auhcClinicType));
+				} else {
+					auhcClinicType.setCtid(0);
+					AUHCClinicType created = Context.getService(AUHCClinicTypeService.class).saveOrUpdate(auhcClinicType);
+					Context.getService(AUHCClinicTypeService.class).updatePrimaryKey(created.getCtid(), currentId);
+					
+				}
 			}
-			
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
 		}
+		
 		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/serviceCategory/sync", method = RequestMethod.GET)
 	public ResponseEntity<String> syncServiceCategory() throws Exception {
 		
-		JSONObject servicecategories = psiapiServiceFactory.getAPIType("openmrs").get("", "", SERVICE_CATEGORY_ENDPOINT);
-		JSONArray _servicecategories = new JSONArray(servicecategories);
-		List<AUHCServiceCategory> auhcServiceCategories = gson.fromJson(_servicecategories.toString(),
-		    new TypeToken<ArrayList<AUHCServiceCategory>>() {}.getType());
+		JSONArray servicecategories = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "",
+		    SERVICE_CATEGORY_ENDPOINT);
 		
+		List<AUHCServiceCategory> auhcServiceCategories = gson.fromJson(servicecategories.toString(),
+		    new TypeToken<ArrayList<AUHCServiceCategory>>() {}.getType());
 		try {
 			for (AUHCServiceCategory auhcServiceCategory : auhcServiceCategories) {
-				Context.openSession();
-				Context.getService(AUHCServiceCategoryService.class).saveOrUpdate(auhcServiceCategory);
-				Context.clearSession();
+				
+				int currentId = auhcServiceCategory.getSctid();
+				auhcServiceCategory.setCreator(Context.getAuthenticatedUser());
+				AUHCServiceCategory getCategory = Context.getService(AUHCServiceCategoryService.class).findBySctId(
+				    auhcServiceCategory.getSctid());
+				if (getCategory != null) {
+					Context.getService(AUHCServiceCategoryService.class).saveOrUpdate(
+					    convertAUHCServiceCategory(getCategory, auhcServiceCategory));
+					
+				} else {
+					auhcServiceCategory.setSctid(0);
+					AUHCServiceCategory created = Context.getService(AUHCServiceCategoryService.class).saveOrUpdate(
+					    auhcServiceCategory);
+					Context.getService(AUHCServiceCategoryService.class).updatePrimaryKey(created.getSctid(), currentId);
+					
+				}
+				
 			}
-			
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
 		}
+		
 		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/service/sync/{clinicId}", method = RequestMethod.GET)
 	public ResponseEntity<String> syncService(@PathVariable int clinicId) throws Exception {
 		
-		JSONObject services = psiapiServiceFactory.getAPIType("openmrs").get("", "", SERVICE_ENDPOINT + "/" + clinicId);
-		JSONArray _services = new JSONArray(services);
-		List<PSIServiceManagement> psiServiceManagements = gson.fromJson(_services.toString(),
+		JSONArray services = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "",
+		    SERVICE_ENDPOINT + "/" + clinicId);
+		
+		List<PSIServiceManagement> psiServiceManagements = gson.fromJson(services.toString(),
 		    new TypeToken<ArrayList<PSIServiceManagement>>() {}.getType());
 		
 		try {
 			
 			for (PSIServiceManagement psiServiceManagement : psiServiceManagements) {
-				Context.openSession();
-				Context.getService(PSIServiceManagementService.class).saveOrUpdate(psiServiceManagement);
-				Context.clearSession();
+				int currentId = psiServiceManagement.getSid();
+				PSIServiceManagement getPsiServiceManagement = Context.getService(PSIServiceManagementService.class)
+				        .findById(currentId);
+				psiServiceManagement.setPsiClinicManagement(Context.getService(PSIClinicManagementService.class).findById(
+				    clinicId));
+				psiServiceManagement.setCreator(Context.getAuthenticatedUser());
+				
+				if (getPsiServiceManagement != null) {
+					Context.getService(PSIServiceManagementService.class).saveOrUpdate(
+					    convertPSIServiceManagement(getPsiServiceManagement, psiServiceManagement, clinicId));
+				} else {
+					psiServiceManagement.setSid(0);
+					PSIServiceManagement created = Context.getService(PSIServiceManagementService.class).saveOrUpdate(
+					    psiServiceManagement);
+					Context.getService(PSIServiceManagementService.class).updatePrimaryKey(created.getSid(), currentId);
+				}
 			}
 			
 		}
@@ -569,17 +611,29 @@ public class PSIClinicRestController extends MainResourceController {
 	@RequestMapping(value = "/spot/sync/{clinicId}", method = RequestMethod.GET)
 	public ResponseEntity<String> syncSpot(@PathVariable int clinicId) throws Exception {
 		
-		JSONObject spots = psiapiServiceFactory.getAPIType("openmrs").get("", "", SPOT_ENDPOINT + "/" + clinicId);
-		JSONArray _spots = new JSONArray(spots);
-		List<PSIClinicSpot> psiClinicSpots = gson.fromJson(_spots.toString(),
+		JSONArray spots = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "",
+		    SPOT_ENDPOINT + "/" + clinicId);
+		
+		List<PSIClinicSpot> psiClinicSpots = gson.fromJson(spots.toString(),
 		    new TypeToken<ArrayList<PSIClinicSpot>>() {}.getType());
 		
 		try {
 			
 			for (PSIClinicSpot psiClinicSpot : psiClinicSpots) {
-				Context.openSession();
-				Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
-				Context.clearSession();
+				psiClinicSpot.setCreator(Context.getAuthenticatedUser());
+				psiClinicSpot
+				        .setPsiClinicManagement(Context.getService(PSIClinicManagementService.class).findById(clinicId));
+				int currentId = psiClinicSpot.getCcsid();
+				PSIClinicSpot getPsiClinicSpot = Context.getService(PSIClinicSpotService.class).findById(currentId);
+				if (getPsiClinicSpot != null) {
+					Context.getService(PSIClinicSpotService.class).saveOrUpdate(
+					    convertPSIClinicSpot(getPsiClinicSpot, psiClinicSpot, clinicId));
+				} else {
+					psiClinicSpot.setCcsid(0);
+					PSIClinicSpot created = Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
+					Context.getService(PSIClinicSpotService.class).updatePrimaryKey(created.getCcsid(), currentId);
+				}
+				
 			}
 			
 		}
@@ -587,5 +641,84 @@ public class PSIClinicRestController extends MainResourceController {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
+	
+	private AUHCServiceCategory convertAUHCServiceCategory(AUHCServiceCategory response, AUHCServiceCategory get) {
+		response.setCategoryName(get.getCategoryName());
+		response.setDateCreated(get.getDateCreated());
+		response.setDateChanged(get.getDateChanged());
+		response.setCreator(get.getCreator());
+		response.setUuid(get.getUuid());
+		return response;
+		
+	}
+	
+	private PSIServiceManagement convertPSIServiceManagement(PSIServiceManagement response, PSIServiceManagement get,
+	                                                         int clinicId) {
+		
+		response.setName(get.getName());
+		
+		response.setCode(get.getCode());
+		response.setCategory(get.getCategory());
+		
+		response.setProvider(get.getProvider());
+		
+		response.setUnitCost(get.getUnitCost());
+		
+		response.setTimestamp(get.getTimestamp());
+		
+		response.setField1(get.getField1());
+		
+		response.setField2(get.getField2());
+		
+		response.setField3(get.getField3());
+		
+		response.setEligible(get.getEligible());
+		
+		response.setAgeStart(get.getAgeStart());
+		
+		response.setAgeEnd(get.getAgeEnd());
+		
+		response.setYearTo(get.getYearTo());
+		
+		response.setMonthTo(get.getMonthTo());
+		
+		response.setDaysTo(get.getDaysTo());
+		
+		response.setYearFrom(get.getYearFrom());
+		
+		response.setMonthFrom(get.getMonthFrom());
+		
+		response.setDaysFrom(get.getDaysFrom());
+		response.setPsiClinicManagement(Context.getService(PSIClinicManagementService.class).findById(clinicId));
+		response.setGender(get.getGender());
+		response.setDateCreated(get.getDateCreated());
+		response.setDateChanged(get.getDateChanged());
+		response.setCreator(get.getCreator());
+		response.setUuid(get.getUuid());
+		return response;
+	}
+	
+	private PSIClinicSpot convertPSIClinicSpot(PSIClinicSpot response, PSIClinicSpot get, int clinicId) {
+		
+		response.setName(get.getName());
+		response.setCode(get.getCode());
+		response.setAddress(get.getAddress());
+		response.setPsiClinicManagement(Context.getService(PSIClinicManagementService.class).findById(clinicId));
+		response.setDhisId(get.getDhisId());
+		response.setDateCreated(get.getDateCreated());
+		response.setDateChanged(get.getDateChanged());
+		response.setCreator(get.getCreator());
+		response.setUuid(get.getUuid());
+		return response;
+	}
+	
+	private AUHCClinicType convertAUHCClinicType(AUHCClinicType response, AUHCClinicType get) {
+		response.setClinicTypeName(get.getClinicTypeName());
+		response.setDateCreated(get.getDateCreated());
+		response.setDateChanged(get.getDateChanged());
+		response.setCreator(get.getCreator());
+		response.setUuid(get.getUuid());
+		return response;
 	}
 }

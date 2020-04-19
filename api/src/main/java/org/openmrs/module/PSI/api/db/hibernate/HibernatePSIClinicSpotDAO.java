@@ -5,10 +5,9 @@ package org.openmrs.module.PSI.api.db.hibernate;
 
 import java.util.List;
 
-import net.sf.ehcache.search.expression.And;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIClinicSpot;
 import org.openmrs.module.PSI.api.db.PSIClinicSpotDAO;
@@ -67,7 +66,8 @@ public class HibernatePSIClinicSpotDAO implements PSIClinicSpotDAO {
 	@Override
 	public List<PSIClinicSpot> findByClinicId(int id) {
 		List<PSIClinicSpot> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIClinicSpot where  psiClinicManagement = :clinicId order by code ASC").setInteger("clinicId", id).list();
+		        .createQuery("from PSIClinicSpot where  psiClinicManagement = :clinicId order by code ASC")
+		        .setInteger("clinicId", id).list();
 		return lists;
 	}
 	
@@ -87,13 +87,23 @@ public class HibernatePSIClinicSpotDAO implements PSIClinicSpotDAO {
 	public PSIClinicSpot findDuplicateSpot(int id, String code, int clinicCode) {
 		// TODO Auto-generated method stub
 		List<PSIClinicSpot> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIClinicSpot where code = :code and psi_clinic_management_id = :clinicCode").setString("code", code)
-		        .setInteger("clinicCode", clinicCode).list();
+		        .createQuery("from PSIClinicSpot where code = :code and psi_clinic_management_id = :clinicCode")
+		        .setString("code", code).setInteger("clinicCode", clinicCode).list();
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	public int updatePrimaryKey(int oldId, int currentId) {
+		String sql = "update psi_clinic_spot set ccsid= :currentId where ccsid= :oldId";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("currentId", currentId);
+		query.setParameter("oldId", oldId);
+		
+		return query.executeUpdate();
 	}
 	
 }

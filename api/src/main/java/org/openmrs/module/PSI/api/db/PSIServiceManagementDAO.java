@@ -26,4 +26,6 @@ public interface PSIServiceManagementDAO {
 	
 	public List<String> getCategoryList(Integer clinicId);
 	
+	public int updatePrimaryKey(int oldId, int currentId);
+	
 }

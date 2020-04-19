@@ -16,15 +16,15 @@ package org.openmrs.module.PSI.api;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.joda.time.DateTime;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Test;
+import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.utils.DateTimeTypeConverter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,6 +36,11 @@ import com.google.gson.reflect.TypeToken;
 public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 	
 	public static DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
+	
+	@Autowired
+	private PSIAPIServiceFactory psiapiServiceFactory;
+	
+	private final String CLINIC_TYPE_ENDPOINT = "/rest/v1/clinic/type";
 	
 	Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
 	        .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter()).create();
@@ -114,11 +119,18 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		/*for (int i = 0; i < 7; i = i + 2) {
 			System.out.println(i);
 		}*/
-		String preferredName = "[{\"dateChanged\":\"2019-09-03 12:03:55\",\"name\":\"test name\",\"id\":12,\"unitCost\":23}]";
-		JSONArray dd = new JSONArray(preferredName);
-		//PreferredName preName = new Gson().fromJson(dd.toString(), PreferredName.class);
 		
-		List<PreferredName> clients = gson.fromJson(dd.toString(), new TypeToken<ArrayList<PreferredName>>() {}.getType());
-		System.out.println(clients);
+		/*JSONArray clinicTypeJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "",
+		    CLINIC_TYPE_ENDPOINT);
+		List<AUHCClinicType> auhcClinicTypes = gson.fromJson(clinicTypeJson.toString(),
+		    new TypeToken<ArrayList<AUHCClinicType>>() {}.getType());
+		System.err.println(auhcClinicTypes);
+		*/
+		//List<AUHCClinicType> clients = gson.fromJson(dd.toString(), new TypeToken<ArrayList<AUHCClinicType>>() {}.getType());
+		//System.out.println(clients);
+		
+		String _clinicsStr = "{\"dateChanged\":\"2019-08-28 14:03:04.0\",\"clinicId\":\"177\",\"address\":\"Bashabo SH Clinic, 43,Maddyha Bashabo, Dhaka-1214\",\"dhisId\":\"yzZ2cGq8cj9\",\"districtUuid\":\"89ceb342-3578-40a0-afe8-220aa00cd986\",\"upazila\":\"DHAKA SOUTH CITY CORPORATION\",\"uuid\":\"6faffd63-6d0e-4bcb-b234-5fe0ce5a3e9f\",\"division\":\"Dhaka\",\"districtId\":85,\"dateCreated\":\"2019-08-28 14:03:04.0\",\"upazilaId\":86,\"district\":\"DHAKA\",\"name\":\"Bashabo\",\"upazilaUuid\":\"4405a4f9-92a5-44b6-86a1-109a1b49efef\",\"divisionId\":16,\"divisionUuid\":\"6bbee4e4-daeb-4f3f-bb35-0be72f982a33\",\"category\":\"Vital\",\"cid\":5,\"timestamp\":1566979384733}";
+		PSIClinicManagement clinicArray = gson.fromJson(_clinicsStr, new TypeToken<PSIClinicManagement>() {}.getType());
+		//System.out.println(clinicArray.toString());
 	}
 }

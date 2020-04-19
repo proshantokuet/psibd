@@ -29,4 +29,6 @@ public interface PSIServiceManagementService extends OpenmrsService {
 	
 	public List<String> getCategoryList(Integer clinicId);
 	
+	public int updatePrimaryKey(int oldId, int currentId);
+	
 }
