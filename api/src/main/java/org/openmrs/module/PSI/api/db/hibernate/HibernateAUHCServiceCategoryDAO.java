@@ -35,7 +35,7 @@ public class HibernateAUHCServiceCategoryDAO implements AUHCServiceCategoryDAO {
 		// TODO Auto-generated method stub
 		
 		List<AUHCServiceCategory> serviceCategories = sessionFactory.getCurrentSession()
-		        .createQuery("from AUHCServiceCategory  order by sctid desc ").list();
+		        .createQuery("from AUHCServiceCategory  order by sctid ASC ").list();
 		return serviceCategories;
 	}
 	

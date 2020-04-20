@@ -11,11 +11,17 @@ table.dataTable tbody th, table.dataTable tbody td {
 </style>
  <a href="${pageContext.request.contextPath}/module/PSI/addClinicType.form"><spring:message
 				code="PSI.addNewClinicType" /></a> 	
+<a class="" href="" onclick="syncClinicTypeFromGlobal()" style="margin-left: 10px;">Sync Clinic Type</a>			
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
         	<p>Clinic Type List</p>
-       	</div>					
+       	</div>	
+      <div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
+	<br />
+     <div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>				
 	<table id="table_id" class="display cell-border compact">
 	    <thead>
 	        <tr>
@@ -59,4 +65,33 @@ var $jq = jQuery.noConflict();
 $jq(document).ready( function () {
 	$jq('#table_id').DataTable();
 } );
+
+function syncClinicTypeFromGlobal() {
+	var url = "/openmrs/ws/rest/v1/clinic/type/sync";
+	var token = $jq("meta[name='_csrf']").attr("content");
+	var header = $jq("meta[name='_csrf_header']").attr("content");
+	event.preventDefault();
+	$jq("#loader_clinic_list").show();
+	$jq.ajax({
+		type:"GET",
+		contentType : "application/json",
+	    url : url,	 
+	    dataType : 'html',
+	    timeout : 100000,
+	    beforeSend: function() {	    
+	    		
+	    },
+	    success:function(data){
+			$jq("#message").html(data);
+			$jq("#loader_clinic_list").hide();
+		   if(data == "Success"){					   
+			   window.location.replace("/openmrs/module/PSI/clinicTypeList.form");
+		   }
+	    },
+	    error:function(data){
+	    	$jq("#loader_clinic_list").hide();
+	    }
+	    
+	});
+};
 </script>

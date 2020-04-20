@@ -58,7 +58,7 @@ public class HibernateAUHCClinicTypeDAO implements AUHCClinicTypeDAO {
 	public List<AUHCClinicType> getAll() {
 		// TODO Auto-generated method stub
 		List<AUHCClinicType> clinicTypeList = sessionFactory.getCurrentSession()
-		        .createQuery(" from AUHCClinicType  order by uuid desc ").list();
+		        .createQuery(" from AUHCClinicType  order by ctid ASC ").list();
 		return clinicTypeList;
 	}
 	
@@ -72,6 +72,8 @@ public class HibernateAUHCClinicTypeDAO implements AUHCClinicTypeDAO {
 	
 	@Override
 	public int updatePrimaryKey(int oldId, int currentId) {
+		log.error("i am updating with old id no" + oldId + "and new id" + currentId);
+
 		String sql = "update auhc_clinic_type set ctid= :currentId where ctid= :oldId";
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		query.setParameter("currentId", currentId);
