@@ -909,37 +909,64 @@ public class DHISListener {
 						JSONObject postEncounter = new JSONObject(value);
 						SHNDhisEncounterException getDhisEncounterExceptionforEachForms = Context.getService(SHNDhisEncounterExceptionService.class).findAllBymarkerIdAndFormName(eventReceordDTO.getId(), formsName);
 						SHNDhisEncounterException checkEncounterExistsOrNot = Context.getService(SHNDhisEncounterExceptionService.class).findEncByFormAndEncId(encounterUUid, formsName);
-						if(checkEncounterExistsOrNot != null) {
-							if(!StringUtils.isEmpty(checkEncounterExistsOrNot.getReferenceId()))
-							{   String referenceUrl = EVENTURL + "/" + checkEncounterExistsOrNot.getReferenceId();
+						JSONObject eventResponse = new JSONObject();
+						if(checkEncounterExistsOrNot != null && !StringUtils.isEmpty(checkEncounterExistsOrNot.getReferenceId())) {
+								String referenceUrl = EVENTURL + "/" + checkEncounterExistsOrNot.getReferenceId();
 								JSONObject referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
 								String status = referenceExist.getString("status");
 								if (!status.equalsIgnoreCase("ERROR")) {
-									JSONObject deleteEventObject = psiapiServiceFactory.getAPIType("dhis2").delete("", "", referenceUrl);
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").update("", postEncounter, "", referenceUrl);
+									//JSONObject deleteEventObject = psiapiServiceFactory.getAPIType("dhis2").delete("", "", referenceUrl);
 								}
-							}
+								else {
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", postEncounter, EVENTURL);
+								}
 						}
-						JSONObject eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", postEncounter, EVENTURL);
+						else{
+							eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", postEncounter, EVENTURL);
+						}
 						int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
 						if (statusCode == 200) {
 							JSONObject successResponse = eventResponse.getJSONObject("response");
-							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
-							if (importSummaries.length() != 0) {
-								JSONObject importSummariesObject = importSummaries.getJSONObject(0);
-								String referenceId = importSummariesObject.getString("reference");
-								if (getDhisEncounterExceptionforEachForms == null) {
-									SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
-									getDhisEncounterExceptionforEachForms = newDhisEncounterException;
+							if(successResponse.has("reference")) {
+								String importStatus = successResponse.getString("status");
+								if (importStatus.equalsIgnoreCase("SUCCESS")) {
+									String referenceId = successResponse.getString("reference");
+									if (getDhisEncounterExceptionforEachForms == null) {
+										SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
+										getDhisEncounterExceptionforEachForms = newDhisEncounterException;
+									}
+									updateEncounterException(getDhisEncounterExceptionforEachForms, postEncounter + "", eventReceordDTO, PSIConstants.SUCCESSSTATUS,
+											eventResponse + "", "",referenceId,encounterUUid,patientUuid,formsName);
 								}
-								updateEncounterException(getDhisEncounterExceptionforEachForms, postEncounter + "", eventReceordDTO, PSIConstants.SUCCESSSTATUS,
-										eventResponse + "", "",referenceId,encounterUUid,patientUuid,formsName);
-							} else {								
-								if (getDhisEncounterExceptionforEachForms == null) {
-									SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
-									getDhisEncounterExceptionforEachForms = newDhisEncounterException;
+								else {
+									if (getDhisEncounterExceptionforEachForms == null) {
+										SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
+										getDhisEncounterExceptionforEachForms = newDhisEncounterException;
+									}
+									updateEncounterException(getDhisEncounterExceptionforEachForms, postEncounter + "", eventReceordDTO, PSIConstants.CONNECTIONTIMEOUTSTATUS,
+											eventResponse + "", "Dhis2 returns importStatus failed while editing","",encounterUUid,patientUuid,formsName);
 								}
-								updateEncounterException(getDhisEncounterExceptionforEachForms, postEncounter + "", eventReceordDTO, PSIConstants.CONNECTIONTIMEOUTSTATUS,
-										eventResponse + "", "Dhis2 returns empty import summaries without reference id","",encounterUUid,patientUuid,formsName);
+							}
+							else {
+								JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+								if (importSummaries.length() != 0) {
+									JSONObject importSummariesObject = importSummaries.getJSONObject(0);
+									String referenceId = importSummariesObject.getString("reference");
+									if (getDhisEncounterExceptionforEachForms == null) {
+										SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
+										getDhisEncounterExceptionforEachForms = newDhisEncounterException;
+									}
+									updateEncounterException(getDhisEncounterExceptionforEachForms, postEncounter + "", eventReceordDTO, PSIConstants.SUCCESSSTATUS,
+											eventResponse + "", "",referenceId,encounterUUid,patientUuid,formsName);
+								} else {								
+									if (getDhisEncounterExceptionforEachForms == null) {
+										SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
+										getDhisEncounterExceptionforEachForms = newDhisEncounterException;
+									}
+									updateEncounterException(getDhisEncounterExceptionforEachForms, postEncounter + "", eventReceordDTO, PSIConstants.CONNECTIONTIMEOUTSTATUS,
+											eventResponse + "", "Dhis2 returns empty import summaries without reference id","",encounterUUid,patientUuid,formsName);
+								}
 							}
 						}
 						else 
@@ -1061,29 +1088,47 @@ public class DHISListener {
 								
 								String formsName = keys.getString(i); // Here's your key
 								String value = servicesToPost.getString(formsName);
+								JSONObject postEncounter = new JSONObject(value);
 								SHNDhisEncounterException checkEncounterExistsOrNot = Context.getService(SHNDhisEncounterExceptionService.class).findEncByFormAndEncId(shnDhisEncounterException.getEncounterId(), formsName);
-								if(checkEncounterExistsOrNot != null) {
-									if(!StringUtils.isEmpty(checkEncounterExistsOrNot.getReferenceId()))
-									{   String referenceUrl = EVENTURL + "/" + checkEncounterExistsOrNot.getReferenceId();
-										JSONObject referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
-										String status = referenceExist.getString("status");
-										if (!status.equalsIgnoreCase("ERROR")) {
-											JSONObject deleteEventObject = psiapiServiceFactory.getAPIType("dhis2").delete("", "", referenceUrl);
-										}
+								JSONObject eventResponse = new JSONObject();
+								if(checkEncounterExistsOrNot != null && !StringUtils.isEmpty(checkEncounterExistsOrNot.getReferenceId())) {
+									String referenceUrl = EVENTURL + "/" + checkEncounterExistsOrNot.getReferenceId();
+									JSONObject referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
+									String status = referenceExist.getString("status");
+									if (!status.equalsIgnoreCase("ERROR")) {
+										eventResponse = psiapiServiceFactory.getAPIType("dhis2").update("", postEncounter, "", referenceUrl);
+										//JSONObject deleteEventObject = psiapiServiceFactory.getAPIType("dhis2").delete("", "", referenceUrl);
+									}
+									else {
+										eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", postEncounter, EVENTURL);
 									}
 								}
-								JSONObject postEncounter = new JSONObject(value);
-								JSONObject eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", postEncounter, EVENTURL);
+								else{
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", postEncounter, EVENTURL);
+								}
 								int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
 								if (statusCode == 200) {
 									JSONObject successResponse = eventResponse.getJSONObject("response");
-									JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
-									if (importSummaries.length() != 0) {
-										JSONObject importSummariesObject = importSummaries.getJSONObject(0);
-										String referenceId = importSummariesObject.getString("reference");
-										updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.SUCCESSSTATUS,eventResponse + "","",referenceId,patientUuid,formsName);
-									} else {								
-										updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.FAILEDSTATUS,eventResponse + "","Dhis2 returns empty import summaries without reference id","",patientUuid,formsName);
+									if(successResponse.has("reference")) {
+										String importStatus = successResponse.getString("status");
+										if (importStatus.equalsIgnoreCase("SUCCESS")) { 
+											String referenceId = successResponse.getString("reference");
+											updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.SUCCESSSTATUS,eventResponse + "","",referenceId,patientUuid,formsName);
+										}
+										else {
+											updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.FAILEDSTATUS,eventResponse + "","Dhis2 returns importStatus failed while editing","",patientUuid,formsName);
+										}
+									}
+									else {
+										JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+										if (importSummaries.length() != 0) {
+											JSONObject importSummariesObject = importSummaries.getJSONObject(0);
+											String referenceId = importSummariesObject.getString("reference");
+											updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.SUCCESSSTATUS,eventResponse + "","",referenceId,patientUuid,formsName);
+										} else {								
+											updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.FAILEDSTATUS,eventResponse + "","Dhis2 returns empty import summaries without reference id","",patientUuid,formsName);
+										}
+											
 									}
 								}
 								else 
