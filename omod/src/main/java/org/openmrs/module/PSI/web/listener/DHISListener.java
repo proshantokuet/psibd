@@ -49,11 +49,11 @@ public class DHISListener {
 	
 	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149";
+	//private final String DHIS2BASEURL = "http://192.168.19.149";
 	
 	//private final String DHIS2BASEURL = "http://192.168.19.162:8080";
 	
-	//private final String DHIS2BASEURL = "http://10.100.11.3:5271";
+	private final String DHIS2BASEURL = "http://10.100.11.3:5271";
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -696,7 +696,7 @@ public class DHISListener {
 							Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 							Context.clearSession();*/
 							updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
-							    statusCode, "No Track Entity Instances found in DHIS2 Containing this URL " + URL, PSIConstants.FAILEDSTATUS);
+							    statusCode, "No Track Entity Instances found in DHIS2 Containing this URL " + URL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 						}
 					}
 					catch (Exception e) {
@@ -779,14 +779,18 @@ public class DHISListener {
 		if (response.has("importSummaries")) {
 			try {
 				JSONArray importSummaries = response.getJSONArray("importSummaries");
-				errorMessage = "has importsummaries";
 					JSONObject importsObject = importSummaries.getJSONObject(0);
 					if (importsObject.has("conflicts")) {
 						JSONArray conflictsArray = importsObject.getJSONArray("conflicts");
 						JSONObject conflictsObject = conflictsArray.getJSONObject(0);
 						String httpStatusCode = responsefull.getString("httpStatusCode");
 						errorMessage = "Http Status Code : " + httpStatusCode + " Message: " + conflictsObject.getString("value");
-				}
+					}
+					else {
+						if(importsObject.has("description")) {
+							errorMessage = importsObject.getString("description");
+						}
+					}
 			} catch (Exception e) {
 				errorMessage = e.getMessage();
 			}
