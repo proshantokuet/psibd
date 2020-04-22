@@ -7,7 +7,10 @@
 <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicSpot.form?id=${id}"><spring:message
 				code="PSI.psiClinicSpotAddNew" /></a>
 <a style="padding-left: 10px;" href="${pageContext.request.contextPath}/module/PSI/uploadPSIClinicSpot.form?id=${id}"><spring:message
-                code="PSI.psiClinicUploadCsv" /></a>  
+                code="PSI.psiClinicUploadCsv" /></a> 
+<a class="" href="" onclick="syncSpotsGlobal(${id})" style="margin-left: 10px;">Sync Spots</a> 
+<div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>			
+
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
 		<div class="note">
@@ -64,5 +67,34 @@ $jq(document).ready( function () {
        }		
 	);
 } );
+
+function syncSpotsGlobal(clinicCode) {
+	var url = "/openmrs/ws/rest/v1/clinic/spot/sync/" + clinicCode;
+	var token = $jq("meta[name='_csrf']").attr("content");
+	var header = $jq("meta[name='_csrf_header']").attr("content");
+	event.preventDefault();
+	$jq("#loader_clinic_list").show();
+	$jq.ajax({
+		type:"GET",
+		contentType : "application/json",
+	    url : url,	 
+	    dataType : 'html',
+	    timeout : 100000,
+	    beforeSend: function() {	    
+	    		
+	    },
+	    success:function(data){
+			$jq("#message").html(data);
+			$jq("#loader_clinic_list").hide();
+		   if(data == "Success"){					   
+			   window.location.replace("/openmrs/module/PSI/PSIClinicSpotList.form?id="+clinicCode);
+		   }
+	    },
+	    error:function(data){
+	    	$jq("#loader_clinic_list").hide();
+	    }
+	    
+	});
+};
 </script>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

@@ -47,9 +47,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149";
+	//private final String DHIS2BASEURL = "http://192.168.19.149";
 	
 	//private final String DHIS2BASEURL = "http://192.168.19.162:8080";
 	

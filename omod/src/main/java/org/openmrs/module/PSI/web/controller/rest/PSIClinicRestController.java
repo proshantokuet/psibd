@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -379,7 +380,8 @@ public class PSIClinicRestController extends MainResourceController {
 		JSONArray clinicSpotsArray = new JSONArray();
 		try {
 			clinicSpots = Context.getService(PSIClinicSpotService.class).findByClinicId(clinicId);
-			
+			clinicSpots.sort(Comparator.comparing(PSIClinicSpot::getCcsid));
+
 			if (clinicSpots.size() != 0) {
 				for (PSIClinicSpot psiClinicSpot : clinicSpots) {
 					JSONObject clinicSpotsObject = new JSONObject();
@@ -409,8 +411,8 @@ public class PSIClinicRestController extends MainResourceController {
 		JSONArray clinicServicesArray = new JSONArray();
 		try {
 			clinicServices = Context.getService(PSIServiceManagementService.class).getAllByClinicId(clinicId);
-			
 			if (clinicServices.size() != 0) {
+				clinicServices.sort(Comparator.comparing(PSIServiceManagement::getSid));
 				for (PSIServiceManagement psiServiceManagement : clinicServices) {
 					JSONObject clinicServicesObject = new JSONObject();
 					clinicServicesObject.put("sid", psiServiceManagement.getSid());
