@@ -291,6 +291,12 @@
 	 		update openmrs.psi_money_receipt set `is_complete` = 1 ;
 	 	</sql>
 	 </changeSet>
+	 
+	 <changeSet author="Tanvir" id="psimoneyreceipt-1.0.7">
+	 	 	<addColumn tableName="psi_money_receipt">
+			<column name="eslip_no" type="varchar(255)" />			
+		</addColumn>
+	 </changeSet>
 	
 	<changeSet id="psiserviceprovision-1.0.0" author="Proshanto">
 		<createTable tableName="psi_service_provision">
@@ -446,6 +452,24 @@
 	<changeSet id="psiuniqueidgenerator-1.0.0" author="Proshanto">
 		<createTable tableName="psi_unique_id_generator">
 			<column name="uid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>			
+			<column name="clinic_code" type="varchar(200)" />
+			<column name="generate_id" type="int(11)" />
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>		
+			
+			<column name="date_changed" type="datetime" />
+			
+			
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="shneslipnogenerate-1.0.0" author="tanvir">
+		<createTable tableName="shn_eslip_no_generate">
+			<column name="eid" type="int(11)" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>			
 			<column name="clinic_code" type="varchar(200)" />

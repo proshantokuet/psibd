@@ -171,6 +171,10 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiMoneyReceipt.setIsComplete(moneyReceipt.getInt("isComplete"));
 			}
 			
+			if (moneyReceipt.has("eslipNo")) {
+				psiMoneyReceipt.setEslipNo(moneyReceipt.getString("eslipNo"));
+			}
+			
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
 			

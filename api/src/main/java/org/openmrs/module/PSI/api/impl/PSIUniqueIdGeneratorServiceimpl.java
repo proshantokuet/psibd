@@ -2,6 +2,7 @@ package org.openmrs.module.PSI.api.impl;
 
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIUniqueIdGenerator;
+import org.openmrs.module.PSI.SHNEslipNoGenerate;
 import org.openmrs.module.PSI.api.PSIUniqueIdGeneratorService;
 import org.openmrs.module.PSI.api.db.PSIUniqueIdGeneratorDAO;
 
@@ -27,6 +28,19 @@ public class PSIUniqueIdGeneratorServiceimpl extends BaseOpenmrsService implemen
 	public PSIUniqueIdGenerator findByClinicCodeAndDate(String date, String clinicCode) {
 		// TODO Auto-generated method stub
 		return dao.findByClinicCodeAndDate(date, clinicCode);
+	}
+
+	@Override
+	public SHNEslipNoGenerate saveOrUpdate(SHNEslipNoGenerate shnEslipNoGenerate) {
+		// TODO Auto-generated method stub
+		return dao.saveOrUpdate(shnEslipNoGenerate);
+	}
+
+	@Override
+	public SHNEslipNoGenerate findEslipByClinicCodeAndDate(String date,
+			String clinicCode) {
+		// TODO Auto-generated method stub
+		return dao.findEslipByClinicCodeAndDate(date, clinicCode);
 	}
 	
 }

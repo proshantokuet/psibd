@@ -43,6 +43,8 @@ public class PSIMoneyReceiptConverter {
 		psiMoneyReceiptObject.putOpt("totalAmount", psiMoneyReceipt.getTotalAmount());
 		psiMoneyReceiptObject.putOpt("totalDiscount", psiMoneyReceipt.getTotalDiscount());
 		psiMoneyReceiptObject.putOpt("patientRegisteredDate", psiMoneyReceipt.getPatientRegisteredDate());
+		psiMoneyReceiptObject.putOpt("eslipNo", psiMoneyReceipt.getEslipNo());
+		
 		psiMoneyReceiptAndServicesObject.putOpt("moneyReceipt", psiMoneyReceiptObject);
 		
 		Set<PSIServiceProvision> psiServiceProvisions = psiMoneyReceipt.getServices();

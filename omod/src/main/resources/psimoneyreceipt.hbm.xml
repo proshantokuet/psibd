@@ -35,6 +35,7 @@
 	    <property name="totalDiscount" column="total_discount" type="float"/>
 	    <property name="patientRegisteredDate" column="patient_registered_date" type="java.util.Date"/>
 	    <property name="isComplete" column="is_complete" type="int"/>
+	    <property name="eslipNo" column="eslip_no" type="java.lang.String"/>
 	    
 	    <set name="services" cascade="all">
 	       <key>

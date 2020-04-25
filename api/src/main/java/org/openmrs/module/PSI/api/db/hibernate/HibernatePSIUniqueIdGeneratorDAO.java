@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIUniqueIdGenerator;
+import org.openmrs.module.PSI.SHNEslipNoGenerate;
 import org.openmrs.module.PSI.api.db.PSIUniqueIdGeneratorDAO;
 
 public class HibernatePSIUniqueIdGeneratorDAO implements PSIUniqueIdGeneratorDAO {
@@ -58,6 +59,30 @@ public class HibernatePSIUniqueIdGeneratorDAO implements PSIUniqueIdGeneratorDAO
 		
 		return psiUniqueIdGenerator;
 		
+	}
+
+	@Override
+	public SHNEslipNoGenerate saveOrUpdate(SHNEslipNoGenerate shnEslipNoGenerate) {
+		// TODO Auto-generated method stub
+		sessionFactory.getCurrentSession().saveOrUpdate(shnEslipNoGenerate);
+		return shnEslipNoGenerate;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNEslipNoGenerate findEslipByClinicCodeAndDate(String date,String clinicCode) {
+		SHNEslipNoGenerate shnEslipNoGenerate = new SHNEslipNoGenerate();
+		shnEslipNoGenerate.setGenerateId(0);
+		String sql = "SELECT generate_id FROM openmrs.shn_eslip_no_generate where "
+		        + " clinic_code = :clinicCode and Date(date_created) = :date order by generate_id " + " desc limit 1";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		
+		List<Integer> data = query.setString("clinicCode", clinicCode).setString("date", date).list();
+		for (Integer newslip : data) {
+			shnEslipNoGenerate.setGenerateId(newslip.intValue());
+		}
+		
+		return shnEslipNoGenerate;
 	}
 	
 }

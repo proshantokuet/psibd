@@ -44,6 +44,7 @@
 		psiclinicinwardreferral.hbm.xml
 		auhcservicecategory.hbm.xml
 		auhcclinictype.hbm.xml
+		shneslipnogenerate.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

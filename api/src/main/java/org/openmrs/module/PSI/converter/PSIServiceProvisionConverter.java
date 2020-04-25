@@ -50,6 +50,7 @@ public class PSIServiceProvisionConverter {
 		service.putOpt("dataCollector", psiServiceProvisions.getPsiMoneyReceiptId().getDataCollector());
 		service.putOpt("designation", psiServiceProvisions.getPsiMoneyReceiptId().getDesignation());
 		service.putOpt("isComplete", psiServiceProvisions.getIsComplete());
+		service.putOpt("eslipNo", psiServiceProvisions.getPsiMoneyReceiptId().getEslipNo());
 		
 		return service;
 		
