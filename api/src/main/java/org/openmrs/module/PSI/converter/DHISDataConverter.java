@@ -275,6 +275,7 @@ public class DHISDataConverter {
 		String getOthers = psiMoneyReceipt.getOthers();
 		String getCspId = psiMoneyReceipt.getCspId();
 		String getDataCollector = psiMoneyReceipt.getDataCollector();
+		String getEslipNo = psiMoneyReceipt.getEslipNo();
 		
 		event.put("trackedEntityInstance", trackedEntityInstanceId);
 		event.put("orgUnit", orgUit);
@@ -407,6 +408,11 @@ public class DHISDataConverter {
 		serviceUuId.put("dataElement", DHISMapper.ServiceProvision.get("serviceUuid"));
 		serviceUuId.put("value", serviceUuid);
 		dataValues.put(serviceUuId);
+		
+		JSONObject eslipNo = new JSONObject();
+		eslipNo.put("dataElement", DHISMapper.ServiceProvision.get("eslipNo"));
+		eslipNo.put("value", getEslipNo);
+		dataValues.put(eslipNo);
 		
 		/*JSONObject provider = new JSONObject();
 		provider.put("dataElement", "sNpMqQaWrUV");

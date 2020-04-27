@@ -6,7 +6,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.openmrs.module.PSI.PSIClinicChild;
 import org.openmrs.module.PSI.PSIUniqueIdGenerator;
+import org.openmrs.module.PSI.SHnPrescriptionMetaData;
 import org.openmrs.module.PSI.api.db.PSIUniquePatientDAO;
 
 public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
@@ -63,4 +65,11 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 		return isPatientAvailable;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHnPrescriptionMetaData> getAllPrescriptionMetaData() {
+		List<SHnPrescriptionMetaData> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from SHnPrescriptionMetaData where voided = 0 ").list();
+		return lists;
+	}
 }

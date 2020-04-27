@@ -1,6 +1,9 @@
 package org.openmrs.module.PSI.api.impl;
 
+import java.util.List;
+
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.PSI.SHnPrescriptionMetaData;
 import org.openmrs.module.PSI.api.PSIUniquePatientService;
 import org.openmrs.module.PSI.api.db.PSIUniquePatientDAO;
 
@@ -20,6 +23,12 @@ public class PSIUniquePatientServiceImpl extends BaseOpenmrsService implements P
 			String mobileNo) {
 		// TODO Auto-generated method stub
 		return dao.findPatientByUicandMobileNo(patientUic, mobileNo);
+	}
+
+	@Override
+	public List<SHnPrescriptionMetaData> getAllPrescriptionMetaData() {
+		// TODO Auto-generated method stub
+		return dao.getAllPrescriptionMetaData();
 	}
 
 }

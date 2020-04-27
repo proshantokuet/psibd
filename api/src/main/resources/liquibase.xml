@@ -485,6 +485,19 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="shnprescriptionmetadata-1.0.0" author="tanvir">
+		<createTable tableName="shn_prescription_metadata">
+			<column name="pid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>			
+			<column name="field_name" type="varchar(200)" />
+			<column name="service_name" type="varchar(200)" />			
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>	
+		</createTable>
+	</changeSet>
+	
 	<changeSet id="psiclinicspot-1.0.0" author="Proshanto">
 		<createTable tableName="psi_clinic_spot">
 			<column name="ccsid" type="int(11)" autoIncrement="true">

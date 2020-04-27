@@ -45,6 +45,7 @@
 		auhcservicecategory.hbm.xml
 		auhcclinictype.hbm.xml
 		shneslipnogenerate.hbm.xml
+		shnprescriptionmetadata.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
