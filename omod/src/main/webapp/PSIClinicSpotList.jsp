@@ -8,7 +8,11 @@
 				code="PSI.psiClinicSpotAddNew" /></a>
 <a style="padding-left: 10px;" href="${pageContext.request.contextPath}/module/PSI/uploadPSIClinicSpot.form?id=${id}"><spring:message
                 code="PSI.psiClinicUploadCsv" /></a> 
-<a class="" href="" onclick="syncSpotsGlobal(${id})" style="margin-left: 10px;">Sync Spots</a> 
+<a class="" href="" onclick="syncSpotsGlobal(${id})" style="margin-left: 10px;">Sync Spots</a>
+	  	<div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
+	<br /> 
 <div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>			
 
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">

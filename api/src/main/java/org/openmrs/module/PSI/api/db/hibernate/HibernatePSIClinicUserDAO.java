@@ -9,10 +9,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
+import org.openmrs.User;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.db.PSIClinicUserDAO;
 import org.openmrs.module.PSI.dto.UserDTO;
@@ -286,5 +288,33 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public int updatePrimaryKey(int globalPrimaryKey, int localPrimaryKey) {
+		// TODO Auto-generated method stub
+		String sql = "update psi_clinic_user set cuid = :globalkey where cuid = :localkey";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("globalkey", globalPrimaryKey);
+		query.setParameter("localkey", localPrimaryKey);
+		
+		return query.executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public User getbyUsernameIcludedRetiure(String username) {
+		Query query = sessionFactory.getCurrentSession().createQuery(
+			    "from User u where (u.username = ? or u.systemId = ?)");
+			query.setString(0, username);
+			query.setString(1, username);
+			List<User> users = query.list();
+			
+			if (users == null || users.isEmpty()) {
+				log.warn("request for username '" + username + "' not found");
+				return null;
+			}
+			
+			return users.get(0);
 	}
 }
