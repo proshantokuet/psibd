@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 import org.openmrs.module.PSI.api.db.SHNDhisObsElementDAO;
 
@@ -34,6 +35,19 @@ class HibernateSHNDhisObsElementDAO implements SHNDhisObsElementDAO {
 		// TODO Auto-generated method stub
 		List<SHNDhisObsElement> lists = sessionFactory.getCurrentSession()
 				.createQuery("from SHNDhisObsElement where voided = 0").list();
+		if (lists.size() != 0) {
+			return lists;
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement() {
+		// TODO Auto-generated method stub
+		List<SHNDhisMultipleChoiceObsElement> lists = sessionFactory.getCurrentSession()
+				.createQuery("from SHNDhisMultipleChoiceObsElement where voided = 0").list();
 		if (lists.size() != 0) {
 			return lists;
 		} else {

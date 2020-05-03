@@ -46,6 +46,7 @@
 		auhcclinictype.hbm.xml
 		shndhisobselement.hbm.xml
 		shndhisencounterexception.hbm.xml
+		shndhismultiplechoiceobselement.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

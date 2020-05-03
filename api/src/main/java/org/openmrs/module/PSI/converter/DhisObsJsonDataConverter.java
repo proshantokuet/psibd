@@ -27,9 +27,11 @@ public class DhisObsJsonDataConverter {
 					String questionName = (String) conceptJsonObject.get("name");
 					String answerValue = (String) ob.get("valueAsString");
 					String voidreason = (String) ob.get("voidReason");
+					boolean isVoided = (boolean) ob.get("voided");
 					codedConceptJsonObject.put("question", questionName);
-					codedConceptJsonObject.put("voidReason", voidreason);
 					codedConceptJsonObject.put("answer", answerValue);
+					codedConceptJsonObject.put("isVoided", isVoided);
+					codedConceptJsonObject.put("voidReason", voidreason);
 //					if(isNumeric(answerValue)) {
 //						codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
 //					}
@@ -50,8 +52,9 @@ public class DhisObsJsonDataConverter {
 						String questionName = (String) conceptJsonObject.get("name");
 						String answerValue = (String) groupMember.get("valueAsString");
 						String voidreason = (String) ob.get("voidReason");
+						boolean isVoided = (boolean) ob.get("voided");
 						codedConceptJsonObject.put("question", questionName);
-						codedConceptJsonObject.put("voidReason", voidreason);
+						
 //						if(isNumeric(answerValue)) {
 //							codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
 //						}
@@ -59,6 +62,8 @@ public class DhisObsJsonDataConverter {
 //							codedConceptJsonObject.put("answer", answerValue);
 //						}
 						codedConceptJsonObject.put("answer", answerValue);
+						codedConceptJsonObject.put("isVoided", isVoided);
+						codedConceptJsonObject.put("voidReason", voidreason);
 						codedConceptJsonObject.put("service", serviceName);
 						observations.add(codedConceptJsonObject);
 					});
@@ -72,8 +77,9 @@ public class DhisObsJsonDataConverter {
 					String questionName = (String) conceptJsonObject.get("name");
 					String answerValue = (String) ob.get("valueAsString");
 					String voidreason = (String) ob.get("voidReason");
+					boolean isVoided = (boolean) ob.get("voided");
 					codedConceptJsonObject.put("question", questionName);
-					codedConceptJsonObject.put("voidReason", voidreason);
+					
 //					if(isNumeric(answerValue)) {
 //						codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
 //					}
@@ -81,6 +87,8 @@ public class DhisObsJsonDataConverter {
 //						codedConceptJsonObject.put("answer", answerValue);
 //					}
 					codedConceptJsonObject.put("answer", answerValue);
+					codedConceptJsonObject.put("isVoided", isVoided);
+					codedConceptJsonObject.put("voidReason", voidreason);
 					codedConceptJsonObject.put("service", serviceName);
 					observations.add(codedConceptJsonObject);
 				}

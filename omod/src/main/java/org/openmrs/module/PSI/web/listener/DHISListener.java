@@ -21,6 +21,7 @@ import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNDhisEncounterException;
+import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
@@ -42,6 +43,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+
 import com.google.gson.Gson;
 import com.jayway.jsonpath.JsonPath;
 
@@ -74,6 +76,9 @@ public class DHISListener {
 	private final String GETEVENTURL = DHIS2BASEURL + "/api/events.json";
 	
 	private Map<String, String> ObserVationDHISMapping = new HashMap<String, String>();
+	
+	private Map<String, String> multipleObsDHISMapping = new HashMap<String, String>();
+
 
 	
 	protected final Log log = LogFactory.getLog(getClass());
@@ -838,6 +843,7 @@ public class DHISListener {
 		eventReceordDTOs = Context.getService(PSIDHISMarkerService.class).getEventRecordsOfEncounter(lastReadEncounter);
 		if (eventReceordDTOs.size() != 0 && eventReceordDTOs != null) {
 			mapDhisDataElementsId(); //mapping dhis element into hashmap from database
+			mapDhisMultipleDataElementsId(); //mapping dhis multiple choice element into hashmap from database
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
 				SHNDhisEncounterException geDhisEncounterException = Context.getService(SHNDhisEncounterExceptionService.class)
 						.findAllById(eventReceordDTO.getId());
@@ -866,7 +872,7 @@ public class DHISListener {
 					Set<String> uniqueSetOfServices = new HashSet<>(servicesInObservation);
 					uniqueSetOfServices.forEach(uniqueSetOfService ->{
 						//extract service wise JSON
-						List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]"); 
+						List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.isVoided == false)]"); 
 
 							try {
 								String convertedJson = new Gson().toJson(extractServiceJSON);
@@ -889,6 +895,13 @@ public class DHISListener {
 											dataValue.put("value", value);
 										}
 										dataValues.put(dataValue);			
+									}
+									String elementIdMultiple = multipleObsDHISMapping.get(value);
+									if (!StringUtils.isEmpty(elementIdMultiple)){
+										JSONObject dataValue = new JSONObject();
+										dataValue.put("dataElement", elementIdMultiple);
+										dataValue.put("value", "Yes");
+										dataValues.put(dataValue);	
 									}
 								}
 								event.put("dataValues", dataValues);
@@ -1023,6 +1036,7 @@ public class DHISListener {
 			    PSIConstants.CONNECTIONTIMEOUTSTATUS);
 			if (shnDhisEncounterExceptions.size() != 0 && shnDhisEncounterExceptions != null) {
 				mapDhisDataElementsId();
+				mapDhisMultipleDataElementsId();
 				for (SHNDhisEncounterException shnDhisEncounterException : shnDhisEncounterExceptions) {
 					try {  
 						JSONObject EncounterObj = psiapiServiceFactory.getAPIType("openmrs").get("", "", shnDhisEncounterException.getUrl());
@@ -1051,7 +1065,7 @@ public class DHISListener {
 								uniqueSetOfServices.add(serviceForm);
 							}
 							uniqueSetOfServices.forEach(uniqueSetOfService ->{
-								List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]");
+								List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.isVoided == false)]");
 									try {
 										String convertedJson = new Gson().toJson(extractServiceJSON);
 										JSONArray extractServiceArray = new JSONArray(convertedJson);
@@ -1073,6 +1087,13 @@ public class DHISListener {
 													dataValue.put("value", value);
 												}
 												dataValues.put(dataValue);			
+											}
+											String elementIdMultiple = multipleObsDHISMapping.get(value);
+											if (!StringUtils.isEmpty(elementIdMultiple)){
+												JSONObject dataValue = new JSONObject();
+												dataValue.put("dataElement", elementIdMultiple);
+												dataValue.put("value", "Yes");
+												dataValues.put(dataValue);	
 											}
 										}
 										event.put("dataValues", dataValues);
@@ -1212,6 +1233,13 @@ public class DHISListener {
 		List<SHNDhisObsElement> dhisObsElement = Context.getService(SHNDhisObsElementService.class).getAllDhisElement();
 		for (SHNDhisObsElement item : dhisObsElement) {
 			ObserVationDHISMapping.put(item.getElementName(),item.getElementDhisId());
+		}
+	}
+	
+	private void mapDhisMultipleDataElementsId() {
+		List<SHNDhisMultipleChoiceObsElement> dhisMUltipleObsElement = Context.getService(SHNDhisObsElementService.class).getAllMultipleChoiceDhisElement();
+		for (SHNDhisMultipleChoiceObsElement item : dhisMUltipleObsElement) {
+			multipleObsDHISMapping.put(item.getElementName(),item.getElementDhisId());
 		}
 	}
 	

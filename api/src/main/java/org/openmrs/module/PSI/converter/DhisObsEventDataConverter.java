@@ -25,14 +25,14 @@ public class DhisObsEventDataConverter {
 			clientHistory.put("eventDate", today);
 			serviceEvents.put("Client History", clientHistory);
 			
-			JSONObject inwardReferral = new JSONObject();
-			inwardReferral.put("trackedEntityInstance", "inwardReferral");
-			inwardReferral.put("orgUnit", "orgUnitinwardReferral");
-			inwardReferral.put("program", "programinwardReferral");
-			inwardReferral.put("programStage", "programStage inwardReferral");
-			inwardReferral.put("status", "COMPLETED");
-			inwardReferral.put("eventDate", today);
-			serviceEvents.put("Inward Referral", inwardReferral);
+			JSONObject childVaccination = new JSONObject();
+			childVaccination.put("trackedEntityInstance", trackeEntityInstance);
+			childVaccination.put("orgUnit", orgUnit);
+			childVaccination.put("program", "q2uZRqRc0UD");
+			childVaccination.put("programStage", "SoolQj07W7o");
+			childVaccination.put("status", "COMPLETED");
+			childVaccination.put("eventDate", today);
+			serviceEvents.put("Vaccination for Child", childVaccination);
 		}
 		catch (Exception e) {
 			// TODO: handle exception
