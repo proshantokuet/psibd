@@ -22,6 +22,8 @@ public class PSIMapper {
 		rolesMap.put("Doctor", "Doctor");
 		rolesMap.put("Lab Technician", "Lab Technician");
 		rolesMap.put("Paramedic", "Paramedic");
+		//rolesMap.put("Paramedic(OPD)", "Paramedic(OPD)");
+		//rolesMap.put("Paramedic(IPD)", "Paramedic(IPD)");
 		rolesMap.put("Pharmacist", "Pharmacist");
 		rolesMap.put("SuperAdmin", "SuperAdmin");
 		rolesMap.put("Admin", "Admin");
