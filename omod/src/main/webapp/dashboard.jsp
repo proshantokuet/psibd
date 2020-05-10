@@ -742,17 +742,6 @@
                         <input class="dt" id="endDateReg" name="endDateReg" type="text" required="true" />
  					</div>
  				</div>
- 				<div class="col-md-3">
- 					<div class="form-group">
-                        Gender
-                        <br />
-                        <input type="checkbox" id="male" name="male" value=""> Male
-                        <br>
-                        <input type="checkbox" id="female" name="female" value=""> Female
-                        <br>
-                        <input type="checkbox" id="others" name="others" value=""> Others
-                    </div>
- 				</div>
  				<c:if test="${showClinic eq 1}">
 	              	<div class="col-md-3">
 	               		<div class="form-group">
@@ -766,6 +755,17 @@
 						</div>                  	
 	              	</div>
               	</c:if>
+              	<div class="col-md-3">
+ 					<div class="form-group">
+                        Gender
+                        <br />
+                        <input type="checkbox" id="male" name="male" value=""> Male
+                        <br>
+                        <input type="checkbox" id="female" name="female" value=""> Female
+                        <br>
+                        <input type="checkbox" id="others" name="others" value=""> Others
+                    </div>
+ 				</div>
               	<div class="col-md-3">
                     <div class="form-group">
                         Wealth Classification
