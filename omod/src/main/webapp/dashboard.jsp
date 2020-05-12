@@ -529,6 +529,7 @@
 	            <tr>
 	                 <th>SL</th> 
 	                 <th>Slip No.</th>
+	                 <th>E-Slip No</th>
 	                 <th>Money Receipt Date</th>
 	                 <th>Patient Name</th>
 	                <th>Phone</th>
@@ -545,7 +546,8 @@
 					<c:forEach var="report" items="${ slipReport }">
 				        <tr>
 		        	 	    <td>#</td>
-		                    <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>	             
+		                    <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>
+		                    <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.eslipNo }</a></td>	             
 			            	 <td>${ report.slip_date }</td> 
 				        	 <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.patient_name }</a></td>
 				            <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.phone }</a></td>
@@ -684,6 +686,7 @@
 		           <tr>
 		                <th>SL</th> 
 		                <th>Slip No.</th>
+		                <th>E-Slip No</th>
 		                <th>Money Receipt Date</th>
 		                <th>Patient Name</th>
 		               <th>Phone</th>
@@ -703,7 +706,8 @@
 				        <tr>
 				        	
 				        	<td><%=++sl_d%></td>
-				              <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>	             
+				              <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.slip_no }</a></td>
+				              <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.eslipNo }</a></td>	             
 				        	 <td>${ report.slip_date }</td> 
 				        	 <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.patient_name }</a></td>
 				            <td><a href="/bahmni/clinical/index.html#/default/patient/e3a6a9f3-3b5c-4861-826d-ee46a4efbba2/dashboard" target="_blank">${ report.phone }</a></td>
