@@ -83,6 +83,8 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private int isComplete;
 	
+	private String eslipNo;
+	
 	private PSIClinicManagement PSIClinicManagement;
 	
 	@Override
@@ -384,6 +386,14 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 
 	public void setIsComplete(int isComplete) {
 		this.isComplete = isComplete;
+	}
+
+	public String getEslipNo() {
+		return eslipNo;
+	}
+
+	public void setEslipNo(String eslipNo) {
+		this.eslipNo = eslipNo;
 	}
 
 	@Override

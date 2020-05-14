@@ -72,6 +72,7 @@ public class DHISMapper {
 		ServiceProvision.put("session", "FzFCFM4Zr43"); // newly added
 		ServiceProvision.put("others", "otXoI3cMuJU"); // newly added
 		ServiceProvision.put("serviceUuid", "DGayB2UWV42");
+		ServiceProvision.put("eslipNo", "IchA74zTEDE");
 	}
 	
 	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();

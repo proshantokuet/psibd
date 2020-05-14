@@ -3,6 +3,7 @@ package org.openmrs.module.PSI.web.controller.rest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -14,8 +15,10 @@ import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.SHNEslipNoGenerate;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
+import org.openmrs.module.PSI.api.PSIUniqueIdGeneratorService;
 import org.openmrs.module.PSI.converter.PSIMoneyReceiptConverter;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
@@ -171,6 +174,21 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiMoneyReceipt.setIsComplete(moneyReceipt.getInt("isComplete"));
 			}
 			
+			if (moneyReceipt.has("mid")) {
+				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
+					String generatedEslip = editGeneratedEslipNo(psiMoneyReceipt.getServicePoint(), psiMoneyReceipt.getSateliteClinicId(), psiMoneyReceipt.getCspId(), psiMoneyReceipt.getEslipNo());
+					psiMoneyReceipt.setEslipNo(generatedEslip);
+				}
+				else{
+					String generatedEslip = generateEslipNo(psiMoneyReceipt.getServicePoint(), psiMoneyReceipt.getSateliteClinicId(), psiMoneyReceipt.getCspId(), psiMoneyReceipt.getClinicCode());
+					psiMoneyReceipt.setEslipNo(generatedEslip);
+				}
+			}
+			
+//			if (moneyReceipt.has("eslipNo")) {
+//				psiMoneyReceipt.setEslipNo(moneyReceipt.getString("eslipNo"));
+//			}
+//			
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
 			
@@ -321,4 +339,100 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
 		}
 	}
+	
+	private String generateEslipNo (String servicePoint, String sateliteId, String cspId, String code) {
+		Date date = Calendar.getInstance().getTime();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String today = dateFormat.format(date);
+		
+		SHNEslipNoGenerate shnEslipNoGenerate = new SHNEslipNoGenerate();
+		
+		SHNEslipNoGenerate getLastSlipNoByclinic = Context.getService(PSIUniqueIdGeneratorService.class)
+		        .findEslipByClinicCodeAndDate(today, code);
+		
+		shnEslipNoGenerate.setClinicCode(code);
+		shnEslipNoGenerate.setGenerateId(0);
+		
+		shnEslipNoGenerate.setDateCreated(new Date());
+		if (getLastSlipNoByclinic.getGenerateId() == 0) {
+			shnEslipNoGenerate.setGenerateId(0 + 1);
+		} else {
+			shnEslipNoGenerate.setGenerateId(getLastSlipNoByclinic.getGenerateId() + 1);
+		}
+		//Context.openSession();
+		SHNEslipNoGenerate afterSaveSlip = Context.getService(PSIUniqueIdGeneratorService.class).saveOrUpdate(shnEslipNoGenerate);
+		//Context.clearSession();
+		String serquenceNumber = "";
+		String serquenceNumberToString = afterSaveSlip.getGenerateId() + "";
+		if (serquenceNumberToString.length() == 1) {
+			serquenceNumber += "000" + serquenceNumberToString;
+		} else if (serquenceNumberToString.length() == 2) {
+			serquenceNumber += "00" + serquenceNumberToString;
+		} else if (serquenceNumberToString.length() == 3) {
+			serquenceNumber += "0" + serquenceNumberToString;
+		} else {
+			serquenceNumber = serquenceNumberToString;
+		}
+		
+		Calendar cal = Calendar.getInstance();
+		int day = cal.get(Calendar.DATE);
+		int month = cal.get(Calendar.MONTH) + 1;
+		String dayS = day >= 10 ? "" + day : "0" + day;
+		String monthS = month >= 10 ? "" + month : "0" + month;
+		DateFormat df = new SimpleDateFormat("yy"); // Just the year, with 2 digits
+		String year = df.format(Calendar.getInstance().getTime());
+//		String a = "value of " + servicePoint + sateliteId + cspId + code;
+//		SHNEslipNoGenerate shnEslipNoGenerateagain = new SHNEslipNoGenerate();
+//		shnEslipNoGenerateagain.setClinicCode(a);
+//		shnEslipNoGenerateagain.setGenerateId(1005);
+//		shnEslipNoGenerate.setDateCreated(new Date());
+//		Context.openSession();
+//		Context.getService(PSIUniqueIdGeneratorService.class).saveOrUpdate(shnEslipNoGenerateagain);
+//		Context.clearSession();
+		String concatenedString = "";
+		if (servicePoint.equalsIgnoreCase("Static")) {
+			concatenedString = "100";
+		}
+		else if (servicePoint.equalsIgnoreCase("Satellite")) {
+			String satId = sateliteId.length() < 2 ? "0" + sateliteId : sateliteId;
+			if (satId.length() > 2) satId = satId.substring(0,2);
+			concatenedString = "2" + satId;
+		}
+		else if(servicePoint.equalsIgnoreCase("CSP")){
+			String cspIdString = cspId.length() < 2 ? "0" + cspId : cspId;
+			if (cspIdString.length() > 2) cspIdString = cspIdString.substring(0,2);
+			concatenedString = "3" + cspIdString;
+		}
+		String eslipId = "" + year + monthS + dayS + code.substring(0, 3)+ concatenedString + serquenceNumber;
+
+		return eslipId;
+	}
+	
+	private String editGeneratedEslipNo (String servicePoint, String sateliteId, String cspId, String eslipNo) {
+		
+		String concatenedString = "";
+		String finalString = "";
+		if (servicePoint.equalsIgnoreCase("Static")) {
+			concatenedString = "100";
+			finalString = replaceAtEslip(eslipNo, 9, concatenedString);
+		}
+		else if (servicePoint.equalsIgnoreCase("Satellite")) {
+			String satId = sateliteId.length() < 2 ? "0" + sateliteId : sateliteId;
+			if (satId.length() > 2) satId = satId.substring(0,2);
+			concatenedString = "2" + satId;
+			finalString = replaceAtEslip(eslipNo, 9, concatenedString);
+		}
+		else if(servicePoint.equalsIgnoreCase("CSP")){
+			String cspIdString = cspId.length() < 2 ? "0" + cspId : cspId;
+			if (cspIdString.length() > 2) cspIdString = cspIdString.substring(0,2);
+			concatenedString = "3" + cspIdString;
+			finalString = replaceAtEslip(eslipNo, 9, concatenedString);
+		}
+		return finalString;
+	}
+	
+	private String replaceAtEslip (String eslip, int index, String replacement) {
+		return eslip.substring(0, index) + replacement+ eslip.substring(index + replacement.length());
+	}
+	
 }

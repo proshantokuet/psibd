@@ -17,6 +17,7 @@ public class PSIReportSlipTracking {
 	private String patient_uuid;
 	private String total_service_contact;
 	private int mid;
+	private String eslipNo;
 	
 	public String getDiscount() {
 		return discount;
@@ -97,6 +98,12 @@ public class PSIReportSlipTracking {
 		this.total_amount = total_amount;
 	}
 	
+	public String getEslipNo() {
+		return eslipNo;
+	}
+	public void setEslipNo(String eslipNo) {
+		this.eslipNo = eslipNo;
+	}
 	public void setSlip_link(String slip_link) {
 		this.slip_link = slip_link;
 	}

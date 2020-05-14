@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.openmrs.module.PSI.SHnPrescriptionMetaData" table="shn_prescription_metadata" lazy="false">
+        <id column="pid" name="pid" type="int">
+            <generator class="native"/>
+        </id>
+        <property name="fieldName" column="field_name" type="java.lang.String"/>
+        <property name="serviceName" column="service_name" type="java.lang.String" /> 
+		<property name="voided" column="voided" type="boolean" not-null="true"/>
+	
+    </class>
+</hibernate-mapping>

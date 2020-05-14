@@ -1,5 +1,10 @@
 package org.openmrs.module.PSI.web.controller.rest;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.SHnPrescriptionMetaData;
 import org.openmrs.module.PSI.api.PSIUniquePatientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,5 +24,17 @@ public class PSIUniquePatientRestController {
 		Boolean patientAvailabilityStatus = Context.getService(PSIUniquePatientService.class)
 		        .findPatientByUicandMobileNo(uic, mobileNo);
 		return new ResponseEntity<>(patientAvailabilityStatus.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/prescriptionMetaData", method = RequestMethod.GET)
+	public ResponseEntity<String> getMetaData() throws Exception {
+		
+		List<SHnPrescriptionMetaData> sHnPrescriptionMetaDatas = Context.getService(PSIUniquePatientService.class)
+		        .getAllPrescriptionMetaData();
+		JSONArray metadataJsonArray = new JSONArray();
+		for (SHnPrescriptionMetaData sHnPrescriptionMetaData : sHnPrescriptionMetaDatas) {
+			metadataJsonArray.put(sHnPrescriptionMetaData.getFieldName());
+		}
+		return new ResponseEntity<>(metadataJsonArray.toString(), HttpStatus.OK);
 	}
 }

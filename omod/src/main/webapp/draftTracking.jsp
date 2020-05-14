@@ -30,6 +30,7 @@
             <tr>
                  <th>SL</th> 
                  <th>Slip No.</th>
+                 <th>E-Slip No</th>
                  <th>Money Receipt Date</th>
                  <th>Patient Name</th>
                 <th>Phone</th>
@@ -49,7 +50,8 @@
 			        <tr>
 			        	
 			        	<td><%=++sl_d%></td>
-			              <td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${ report.slip_no }</a></td>	             
+			              <td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${ report.slip_no }</a></td>
+			              <td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${ report.eslipNo }</a></td>	             
 			        	 <td>${ report.slip_date }</td> 
 			        	 <td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${ report.patient_name }</a></td>
 			            <td><a href="/bahmni/clinical/index.html#/default/patient/${ report.patient_uuid }/dashboard" target="_blank">${ report.phone }</a></td>
