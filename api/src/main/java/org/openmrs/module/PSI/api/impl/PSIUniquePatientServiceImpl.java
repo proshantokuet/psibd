@@ -3,6 +3,7 @@ package org.openmrs.module.PSI.api.impl;
 import java.util.List;
 
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.PSI.SHNFormPdfDetails;
 import org.openmrs.module.PSI.SHnPrescriptionMetaData;
 import org.openmrs.module.PSI.api.PSIUniquePatientService;
 import org.openmrs.module.PSI.api.db.PSIUniquePatientDAO;
@@ -29,6 +30,20 @@ public class PSIUniquePatientServiceImpl extends BaseOpenmrsService implements P
 	public List<SHnPrescriptionMetaData> getAllPrescriptionMetaData() {
 		// TODO Auto-generated method stub
 		return dao.getAllPrescriptionMetaData();
+	}
+
+	@Override
+	public List<SHNFormPdfDetails> getDischargeInformationByVisit(
+			String patientUuid, String visitUuid) {
+		// TODO Auto-generated method stub
+		return dao.getDischargeInformationByVisit(patientUuid, visitUuid);
+	}
+
+	@Override
+	public List<SHNFormPdfDetails> getbirthInformationByVisit(
+			String patientUuid, String visitUuid) {
+		// TODO Auto-generated method stub
+		return dao.getbirthInformationByVisit(patientUuid, visitUuid);
 	}
 
 }

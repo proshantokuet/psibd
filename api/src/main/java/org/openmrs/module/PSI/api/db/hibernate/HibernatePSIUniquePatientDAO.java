@@ -1,13 +1,18 @@
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
+import org.openmrs.module.PSI.AUHCDhisErrorVisualize;
 import org.openmrs.module.PSI.PSIClinicChild;
 import org.openmrs.module.PSI.PSIUniqueIdGenerator;
+import org.openmrs.module.PSI.SHNFormPdfDetails;
 import org.openmrs.module.PSI.SHnPrescriptionMetaData;
 import org.openmrs.module.PSI.api.db.PSIUniquePatientDAO;
 
@@ -71,5 +76,78 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 		List<SHnPrescriptionMetaData> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from SHnPrescriptionMetaData where voided = 0 ").list();
 		return lists;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNFormPdfDetails> getDischargeInformationByVisit(
+			String patientUuid, String visitUuid) {
+		String dischargeQuery = ""
+				+ "SELECT "
+				+ "  obs_fscn.name as question, "
+				+ "  coalesce(o.value_numeric, o.value_text, o.value_datetime, coded_scn.name, coded_fscn.name) AS answer, "
+				+ "  v.uuid as visit_uuid "
+				+ "FROM obs o "
+				+ "  JOIN concept obs_concept ON obs_concept.concept_id=o.concept_id AND obs_concept.retired is false "
+				+ "  JOIN concept_name obs_fscn on o.concept_id=obs_fscn.concept_id AND obs_fscn.concept_name_type=\"FULLY_SPECIFIED\" AND obs_fscn.voided is false "
+				+ "  LEFT JOIN concept_name obs_scn on o.concept_id=obs_scn.concept_id AND obs_scn.concept_name_type=\"SHORT\" AND obs_scn.voided is false "
+				+ "  JOIN person p ON p.person_id = o.person_id AND p.voided is false "
+				+ "  JOIN encounter e ON o.encounter_id=e.encounter_id AND e.voided is false "
+				+ "  JOIN visit v ON v.visit_id=e.visit_id AND v.voided is false "
+				+ "  LEFT OUTER JOIN obs parent_obs ON parent_obs.obs_id=o.obs_group_id "
+				+ "  LEFT OUTER JOIN concept_name parent_cn ON parent_cn.concept_id=parent_obs.concept_id AND parent_cn.concept_name_type=\"FULLY_SPECIFIED\" "
+				+ "  LEFT JOIN concept_name coded_fscn on coded_fscn.concept_id = o.value_coded AND coded_fscn.concept_name_type=\"FULLY_SPECIFIED\" AND coded_fscn.voided is false "
+				+ "  LEFT JOIN concept_name coded_scn on coded_scn.concept_id = o.value_coded AND coded_fscn.concept_name_type=\"SHORT\" AND coded_scn.voided is false "
+				+ "WHERE o.voided is false and o.form_namespace_and_path like '%Discharge Certificate%' and p.uuid = '"+patientUuid+"' and v.uuid= '"+visitUuid+"'";
+		
+		List<SHNFormPdfDetails> report = new ArrayList<SHNFormPdfDetails>();
+		try{
+			report = sessionFactory.getCurrentSession().createSQLQuery(dischargeQuery).
+					addScalar("question",StandardBasicTypes.STRING).
+					addScalar("answer",StandardBasicTypes.STRING).
+					addScalar("visit_uuid",StandardBasicTypes.STRING).
+					setResultTransformer(new AliasToBeanResultTransformer(SHNFormPdfDetails.class)).
+					list();
+			return report;
+		}catch(Exception e){
+			return report;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNFormPdfDetails> getbirthInformationByVisit(String patientUuid, String visitUuid) {
+		String birthQuery = ""
+				+ "SELECT "
+				+ "  obs_fscn.name as question, "
+				+ "  coalesce(o.value_numeric, o.value_text, o.value_datetime, coded_scn.name, coded_fscn.name) AS answer, "
+				+ "  v.uuid as visit_uuid "
+				+ "FROM obs o "
+				+ "  JOIN concept obs_concept ON obs_concept.concept_id=o.concept_id AND obs_concept.retired is false "
+				+ "  JOIN concept_name obs_fscn on o.concept_id=obs_fscn.concept_id AND obs_fscn.concept_name_type=\"FULLY_SPECIFIED\" AND obs_fscn.voided is false "
+				+ "  LEFT JOIN concept_name obs_scn on o.concept_id=obs_scn.concept_id AND obs_scn.concept_name_type=\"SHORT\" AND obs_scn.voided is false "
+				+ "  JOIN person p ON p.person_id = o.person_id AND p.voided is false "
+				+ "  JOIN patient_identifier pi ON p.person_id = pi.patient_id AND pi.voided is false "
+				+ "  JOIN encounter e ON o.encounter_id=e.encounter_id AND e.voided is false "
+				+ "  JOIN visit v ON v.visit_id=e.visit_id AND v.voided is false "
+				+ "  LEFT OUTER JOIN obs parent_obs ON parent_obs.obs_id=o.obs_group_id "
+				+ "  LEFT OUTER JOIN concept_name parent_cn ON parent_cn.concept_id=parent_obs.concept_id AND parent_cn.concept_name_type=\"FULLY_SPECIFIED\" "
+				+ "  LEFT JOIN concept_name coded_fscn on coded_fscn.concept_id = o.value_coded AND coded_fscn.concept_name_type=\"FULLY_SPECIFIED\" AND coded_fscn.voided is false "
+				+ "  LEFT JOIN concept_name coded_scn on coded_scn.concept_id = o.value_coded AND coded_fscn.concept_name_type=\"SHORT\" AND coded_scn.voided is false "
+				+ "WHERE o.voided is false and o.form_namespace_and_path like '%Delivery%' and p.uuid = '"+patientUuid+"' and v.uuid = '"+visitUuid+"' "
+				+ "and obs_fscn.name in('Delivery Note, Delivery date and time','Baby Weight (Kg)','Sex','Newborn Length (cm)') order by o.obs_group_id ASC limit 4;";
+		
+		List<SHNFormPdfDetails> report = new ArrayList<SHNFormPdfDetails>();
+		try{
+			report = sessionFactory.getCurrentSession().createSQLQuery(birthQuery).
+					addScalar("question",StandardBasicTypes.STRING).
+					addScalar("answer",StandardBasicTypes.STRING).
+					addScalar("visit_uuid",StandardBasicTypes.STRING).
+					setResultTransformer(new AliasToBeanResultTransformer(SHNFormPdfDetails.class)).
+					list();
+			return report;
+		}catch(Exception e){
+			return report;
+		}
 	}
 }
