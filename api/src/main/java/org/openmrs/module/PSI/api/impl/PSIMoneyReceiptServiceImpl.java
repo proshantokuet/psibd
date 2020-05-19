@@ -72,5 +72,10 @@ public class PSIMoneyReceiptServiceImpl extends BaseOpenmrsService implements PS
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	@Override
+	public PSIMoneyReceipt getMoneyReceiptByESlipNo(String eslipNo) {
+		// TODO Auto-generated method stub
+		return dao.getMoneyReceiptByESlipNo(eslipNo);
+	}
 }

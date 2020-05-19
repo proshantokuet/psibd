@@ -25,4 +25,6 @@ public interface PSIMoneyReceiptDAO {
 	
 	public Boolean checkExistingMoneyReceipt(String slipNo, String date, String clinicCode);
 	
+	public PSIMoneyReceipt getMoneyReceiptByESlipNo(String eslipNo);
+	
 }

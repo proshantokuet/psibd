@@ -28,4 +28,6 @@ public interface PSIMoneyReceiptService extends OpenmrsService {
 	
 	public Boolean checkExistingMoneyReceipt(String slipNo, String date, String clinicCode);
 	
+	public PSIMoneyReceipt getMoneyReceiptByESlipNo(String eslipNo);
+	
 }

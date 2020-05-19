@@ -313,6 +313,22 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		return new ResponseEntity<String>(psiMoneyReceiptAndServicesObject.toString(), HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/geteslip/{eslipNo}", method = RequestMethod.GET)
+	public ResponseEntity<String> findByEslipNo(@PathVariable String eslipNo) throws Exception {
+		PSIMoneyReceipt psiMoneyReceipt = new PSIMoneyReceipt();
+		JSONObject psiMoneyReceiptAndServicesObject = new JSONObject();
+		try {
+			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).getMoneyReceiptByESlipNo(eslipNo);
+			if (psiMoneyReceipt != null) {
+				psiMoneyReceiptAndServicesObject = new PSIMoneyReceiptConverter().toConvert(psiMoneyReceipt);
+			}
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<String>(psiMoneyReceiptAndServicesObject.toString(), HttpStatus.OK);
+	}
+	
 	@RequestMapping(value = "/get-all-by-patient-uuid/{id}", method = RequestMethod.GET)
 	public ResponseEntity<String> getAllByPatient(@PathVariable String id) throws Exception {
 		List<PSIMoneyReceipt> psiMoneyReceipt = new ArrayList<PSIMoneyReceipt>();

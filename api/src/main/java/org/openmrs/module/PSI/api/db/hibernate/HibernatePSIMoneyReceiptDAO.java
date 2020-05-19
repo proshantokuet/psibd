@@ -115,5 +115,17 @@ public class HibernatePSIMoneyReceiptDAO implements PSIMoneyReceiptDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIMoneyReceipt getMoneyReceiptByESlipNo(String eslipNo) {
+		List<PSIMoneyReceipt> lists = sessionFactory.getCurrentSession().createQuery("from PSIMoneyReceipt where eslipNo = :eslip")
+		        .setString("eslip", eslipNo).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
 	
 }
