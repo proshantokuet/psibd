@@ -104,4 +104,10 @@ public class PSIClinicManagementServiceimpl extends BaseOpenmrsService implement
 		return dao.findLocationByNameCodeLocationTagParent(name, code, location_tag_id, parentLocation);
 	}
 	
+	@Override
+	public int updateClinicPrimaryKey(int oldId, int currentId) {
+		
+		return dao.updateClinicPrimaryKey(oldId, currentId);
+	}
+	
 }

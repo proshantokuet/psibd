@@ -2,6 +2,7 @@ package org.openmrs.module.PSI.api.impl;
 
 import java.util.List;
 
+import org.openmrs.User;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
@@ -99,6 +100,19 @@ public class PSIClinicUserServiceImpl extends BaseOpenmrsService implements PSIC
 	public UserDTO findUserByIdWithRawQuery(String userName) {
 		// TODO Auto-generated method stub
 		return dao.findUserByIdWithRawQuery(userName);
+	}
+
+	@Override
+	public int updatePrimaryKey(int globalPrimaryKey,
+			int localPrimaryKey) {
+		// TODO Auto-generated method stub
+		return dao.updatePrimaryKey(globalPrimaryKey, localPrimaryKey);
+	}
+
+	@Override
+	public User getbyUsernameIcludedRetiure(String username) {
+		// TODO Auto-generated method stub
+		return dao.getbyUsernameIcludedRetiure(username);
 	}
 	
 }

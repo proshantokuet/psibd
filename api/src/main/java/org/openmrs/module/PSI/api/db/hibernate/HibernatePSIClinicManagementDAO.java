@@ -252,4 +252,14 @@ public class HibernatePSIClinicManagementDAO implements PSIClinicManagementDAO {
 		return null;
 	}
 	
+	@Override
+	public int updateClinicPrimaryKey(int oldId, int currentId) {
+		String sql = "update openmrs.psi_clinic set cid= :currentId where cid= :oldId";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("currentId", currentId);
+		query.setParameter("oldId", oldId);
+		
+		return query.executeUpdate();
+	}
+	
 }

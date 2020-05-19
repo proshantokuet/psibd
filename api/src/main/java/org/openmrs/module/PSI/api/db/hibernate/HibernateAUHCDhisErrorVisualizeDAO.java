@@ -5,16 +5,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.record.formula.functions.Isblank;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.PSI.AUHCDhisErrorVisualize;
 import org.openmrs.module.PSI.api.db.AUHCDhisErrorVisualizeDAO;
-import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.springframework.util.StringUtils;
-
-import ca.uhn.hl7v2.util.StringUtil;
 
 public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualizeDAO{
 	
