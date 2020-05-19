@@ -54,4 +54,10 @@ public class PSIClinicSpotServiceImpl extends BaseOpenmrsService implements PSIC
 		return dao.findDuplicateSpot(id, code, clinicCode);
 	}
 	
+	@Override
+	public int updatePrimaryKey(int oldId, int currentId) {
+		// TODO Auto-generated method stub
+		return dao.updatePrimaryKey(oldId, currentId);
+	}
+	
 }

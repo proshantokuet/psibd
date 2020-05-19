@@ -38,4 +38,6 @@ public interface PSIClinicManagementDAO {
 	
 	public PSILocation findLastLocation();
 	
+	public int updateClinicPrimaryKey(int oldId, int currentId);
+	
 }

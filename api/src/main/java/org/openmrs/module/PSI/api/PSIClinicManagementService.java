@@ -41,4 +41,6 @@ public interface PSIClinicManagementService extends OpenmrsService {
 	
 	public PSILocation findLastLocation();
 	
+	public int updateClinicPrimaryKey(int oldId, int currentId);
+	
 }

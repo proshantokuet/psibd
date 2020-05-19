@@ -2,6 +2,7 @@ package org.openmrs.module.PSI.api.db;
 
 import java.util.List;
 
+import org.openmrs.User;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.dto.UserDTO;
 
@@ -34,4 +35,10 @@ public interface PSIClinicUserDAO {
 	public List<UserDTO> findUserByClinicIdWithRawQuery(int clincicId);
 	
 	public UserDTO findUserByIdWithRawQuery(String userName);
+	
+	public int updatePrimaryKey (int globalPrimaryKey, int localPrimaryKey);
+	
+	public User getbyUsernameIcludedRetiure (String username);
+
+
 }

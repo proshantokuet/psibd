@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.api.db.PSIServiceManagementDAO;
@@ -134,16 +135,24 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 		return clinics;
 		
 	}
-
+	
 	@Override
 	public List<String> getCategoryList(Integer clinicId) {
 		// TODO Auto-generated method stub
 		List<String> categoryList = new ArrayList<String>();
-		String sql = "SELECT DISTINCT(category) "+
-				" FROM psi_service_management "+
-				" where psi_clinic_management_id = "+clinicId;
-		categoryList = sessionFactory
-		        .getCurrentSession().createSQLQuery(sql).list();
+		String sql = "SELECT DISTINCT(category) " + " FROM psi_service_management " + " where psi_clinic_management_id = "
+		        + clinicId;
+		categoryList = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
 		return categoryList;
+	}
+	
+	@Override
+	public int updatePrimaryKey(int oldId, int currentId) {
+		String sql = "update psi_service_management set sid= :currentId where sid= :oldId";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("currentId", currentId);
+		query.setParameter("oldId", oldId);
+		
+		return query.executeUpdate();
 	}
 }

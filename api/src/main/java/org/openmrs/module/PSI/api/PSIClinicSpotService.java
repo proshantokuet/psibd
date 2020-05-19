@@ -21,4 +21,6 @@ public interface PSIClinicSpotService extends OpenmrsService {
 	
 	public void delete(int id);
 	
+	public int updatePrimaryKey(int oldId, int currentId);
+	
 }
