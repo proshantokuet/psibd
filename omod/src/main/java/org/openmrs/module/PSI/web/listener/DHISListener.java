@@ -878,7 +878,7 @@ public class DHISListener {
 								String convertedJson = new Gson().toJson(extractServiceJSON);
 								JSONArray extractServiceArray = new JSONArray(convertedJson);
 								// Event Metadata for posting into dhis
-								JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstanceId, orgUnit).get(uniqueSetOfService);
+								JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstanceId, orgUnit, uniqueSetOfService).get(uniqueSetOfService);
 								JSONArray dataValues = new JSONArray();
 								for (int i = 0; i < extractServiceArray.length(); i++) {
 									JSONObject serviceObject = extractServiceArray.getJSONObject(i);
@@ -1070,7 +1070,7 @@ public class DHISListener {
 										String convertedJson = new Gson().toJson(extractServiceJSON);
 										JSONArray extractServiceArray = new JSONArray(convertedJson);
 										// Event Metadata for posting into dhis
-										JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstanceId, orgUnit).get(uniqueSetOfService);
+										JSONObject event = (JSONObject) DhisObsEventDataConverter.getEventMetaDataForDhis(tackedEntityInstanceId, orgUnit, uniqueSetOfService).get(uniqueSetOfService);
 										JSONArray dataValues = new JSONArray();
 										for (int i = 0; i < extractServiceArray.length(); i++) {
 											JSONObject serviceObject = extractServiceArray.getJSONObject(i);
