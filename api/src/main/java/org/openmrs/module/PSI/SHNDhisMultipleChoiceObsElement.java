@@ -13,6 +13,9 @@ public class SHNDhisMultipleChoiceObsElement extends BaseOpenmrsData implements 
 	private String elementName;
 	
 	private String elementDhisId;
+	
+	private String formsName;
+
 
 	public int getEid() {
 		return eid;
@@ -36,6 +39,14 @@ public class SHNDhisMultipleChoiceObsElement extends BaseOpenmrsData implements 
 
 	public void setElementDhisId(String elementDhisId) {
 		this.elementDhisId = elementDhisId;
+	}
+
+	public String getFormsName() {
+		return formsName;
+	}
+
+	public void setFormsName(String formsName) {
+		this.formsName = formsName;
 	}
 
 	@Override

@@ -13,6 +13,8 @@ public class SHNDhisObsElement extends BaseOpenmrsData implements Serializable {
 	private String elementName;
 	
 	private String elementDhisId;
+	
+	private String formsName;
 
 	public int getEid() {
 		return eid;
@@ -36,6 +38,14 @@ public class SHNDhisObsElement extends BaseOpenmrsData implements Serializable {
 
 	public void setElementDhisId(String elementDhisId) {
 		this.elementDhisId = elementDhisId;
+	}
+
+	public String getFormsName() {
+		return formsName;
+	}
+
+	public void setFormsName(String formsName) {
+		this.formsName = formsName;
 	}
 
 	@Override

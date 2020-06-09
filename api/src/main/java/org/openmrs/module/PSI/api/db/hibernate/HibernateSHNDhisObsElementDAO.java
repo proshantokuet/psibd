@@ -31,28 +31,22 @@ class HibernateSHNDhisObsElementDAO implements SHNDhisObsElementDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SHNDhisObsElement> getAllDhisElement() {
+	public List<SHNDhisObsElement> getAllDhisElement(String formName) {
 		// TODO Auto-generated method stub
 		List<SHNDhisObsElement> lists = sessionFactory.getCurrentSession()
-				.createQuery("from SHNDhisObsElement where voided = 0").list();
-		if (lists.size() != 0) {
-			return lists;
-		} else {
-			return null;
-		}
+				.createQuery("from SHNDhisObsElement where voided = 0 and formsName = :formname")
+				.setString("formname", formName).list();
+        return lists;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement() {
+	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement(String formName) {
 		// TODO Auto-generated method stub
 		List<SHNDhisMultipleChoiceObsElement> lists = sessionFactory.getCurrentSession()
-				.createQuery("from SHNDhisMultipleChoiceObsElement where voided = 0").list();
-		if (lists.size() != 0) {
-			return lists;
-		} else {
-			return null;
-		}
+				.createQuery("from SHNDhisMultipleChoiceObsElement where voided = 0 and formsName = :formname")
+				.setString("formname", formName).list();
+		return lists;
 	}
 	
 }

@@ -11,7 +11,7 @@ import org.openmrs.module.PSI.SHNDhisObsElement;
 @Transactional
 public interface SHNDhisObsElementService extends OpenmrsService {
 	
-	public List<SHNDhisObsElement> getAllDhisElement();
+	public List<SHNDhisObsElement> getAllDhisElement(String formName);
 	
-	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement();
+	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement(String formName);
 }

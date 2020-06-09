@@ -8,7 +8,7 @@
         
 	    <property name="elementName" column="element_name" type="java.lang.String"/>	    
 		<property name="elementDhisId" column="element_dhisId" type="java.lang.String"/>
-	     
+	     <property name="formsName" column="form_name" type="java.lang.String"/>
 		<property name="voided" column="voided" type="boolean" not-null="true"/>
 		
 		

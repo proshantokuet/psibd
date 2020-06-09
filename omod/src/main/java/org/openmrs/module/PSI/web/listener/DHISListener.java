@@ -57,9 +57,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149";
+	//private final String DHIS2BASEURL = "http://192.168.19.149";
 	
 	//private final String DHIS2BASEURL = "http://192.168.19.162:8080";
 	
@@ -124,13 +124,13 @@ public class DHISListener {
 				
 			}
 			try {
-				sendEncounter();
+				//sendEncounter();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				sendEncounterFailed();
+				//sendEncounterFailed();
 			}
 			catch (Exception e) {
 				
@@ -842,8 +842,7 @@ public class DHISListener {
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		eventReceordDTOs = Context.getService(PSIDHISMarkerService.class).getEventRecordsOfEncounter(lastReadEncounter);
 		if (eventReceordDTOs.size() != 0 && eventReceordDTOs != null) {
-			mapDhisDataElementsId(); //mapping dhis element into hashmap from database
-			mapDhisMultipleDataElementsId(); //mapping dhis multiple choice element into hashmap from database
+			
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
 				SHNDhisEncounterException geDhisEncounterException = Context.getService(SHNDhisEncounterExceptionService.class)
 						.findAllById(eventReceordDTO.getId());
@@ -873,7 +872,8 @@ public class DHISListener {
 					uniqueSetOfServices.forEach(uniqueSetOfService ->{
 						//extract service wise JSON
 						List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.isVoided == false)]"); 
-
+						mapDhisDataElementsId(uniqueSetOfService); //mapping dhis element into hashmap from database
+						mapDhisMultipleDataElementsId(uniqueSetOfService); //mapping dhis multiple choice element into hashmap from database
 							try {
 								String convertedJson = new Gson().toJson(extractServiceJSON);
 								JSONArray extractServiceArray = new JSONArray(convertedJson);
@@ -908,6 +908,13 @@ public class DHISListener {
 								servicesToPost.put(uniqueSetOfService, event);
 							} catch (Exception e) {
 								e.printStackTrace(); //need to check the error
+								SHNDhisEncounterException getDhisEncounterExceptionforEachFormsinTryCatch = Context.getService(SHNDhisEncounterExceptionService.class).findAllBymarkerIdAndFormName(eventReceordDTO.getId(), uniqueSetOfService);
+								if (getDhisEncounterExceptionforEachFormsinTryCatch == null) {
+									SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
+									getDhisEncounterExceptionforEachFormsinTryCatch = newDhisEncounterException;
+								}
+								updateEncounterException(getDhisEncounterExceptionforEachFormsinTryCatch,"", eventReceordDTO, PSIConstants.CONNECTIONTIMEOUTSTATUS,
+										"", "Dhis2 Data Element json Parse error","",encounterUUid,patientUuid,uniqueSetOfService);
 							}
 					});
 	                 
@@ -1035,8 +1042,6 @@ public class DHISListener {
 		List<SHNDhisEncounterException> shnDhisEncounterExceptions = Context.getService(SHNDhisEncounterExceptionService.class).findAllFailedEncounterByStatus(
 			    PSIConstants.CONNECTIONTIMEOUTSTATUS);
 			if (shnDhisEncounterExceptions.size() != 0 && shnDhisEncounterExceptions != null) {
-				mapDhisDataElementsId();
-				mapDhisMultipleDataElementsId();
 				for (SHNDhisEncounterException shnDhisEncounterException : shnDhisEncounterExceptions) {
 					try {  
 						JSONObject EncounterObj = psiapiServiceFactory.getAPIType("openmrs").get("", "", shnDhisEncounterException.getUrl());
@@ -1066,6 +1071,8 @@ public class DHISListener {
 							}
 							uniqueSetOfServices.forEach(uniqueSetOfService ->{
 								List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.isVoided == false)]");
+								mapDhisDataElementsId(uniqueSetOfService); //mapping dhis element into hashmap from database
+								mapDhisMultipleDataElementsId(uniqueSetOfService); //mapping dhis multiple choice element into hashmap from database
 									try {
 										String convertedJson = new Gson().toJson(extractServiceJSON);
 										JSONArray extractServiceArray = new JSONArray(convertedJson);
@@ -1100,6 +1107,7 @@ public class DHISListener {
 										servicesToPost.put(uniqueSetOfService, event);
 									} catch (Exception e) {
 										e.printStackTrace();
+										updateExceptionForEncounterFailed(shnDhisEncounterException, "", PSIConstants.FAILEDSTATUS,"","Dhis2 Data Element json Parse error while editing","",patientUuid,uniqueSetOfService);
 									}
 							});
 		                     
@@ -1160,7 +1168,7 @@ public class DHISListener {
 							} //loop end
 						}
 						else {
-							updateExceptionForEncounterFailed(shnDhisEncounterException,trackEntityInstanceUrl, PSIConstants.FAILEDSTATUS, trackEntityResponse + "" ,"No Track Entity Instances found in DHIS2 Containing the patient id provided","",patientUuid,"");
+							updateExceptionForEncounterFailed(shnDhisEncounterException,trackEntityInstanceUrl, PSIConstants.CONNECTIONTIMEOUTSTATUS, trackEntityResponse + "" ,"No Track Entity Instances found in DHIS2 Containing the patient id provided","",patientUuid,"");
 						}
 					 } 
 					catch (Exception e) {
@@ -1229,15 +1237,17 @@ public class DHISListener {
 		return eventInformationObject;
 	}
 	
-	private void mapDhisDataElementsId() {
-		List<SHNDhisObsElement> dhisObsElement = Context.getService(SHNDhisObsElementService.class).getAllDhisElement();
+	private void mapDhisDataElementsId(String formName) {
+		ObserVationDHISMapping.clear();
+		List<SHNDhisObsElement> dhisObsElement = Context.getService(SHNDhisObsElementService.class).getAllDhisElement(formName);
 		for (SHNDhisObsElement item : dhisObsElement) {
 			ObserVationDHISMapping.put(item.getElementName(),item.getElementDhisId());
 		}
 	}
 	
-	private void mapDhisMultipleDataElementsId() {
-		List<SHNDhisMultipleChoiceObsElement> dhisMUltipleObsElement = Context.getService(SHNDhisObsElementService.class).getAllMultipleChoiceDhisElement();
+	private void mapDhisMultipleDataElementsId(String formName) {
+		multipleObsDHISMapping.clear();
+		List<SHNDhisMultipleChoiceObsElement> dhisMUltipleObsElement = Context.getService(SHNDhisObsElementService.class).getAllMultipleChoiceDhisElement(formName);
 		for (SHNDhisMultipleChoiceObsElement item : dhisMUltipleObsElement) {
 			multipleObsDHISMapping.put(item.getElementName(),item.getElementDhisId());
 		}

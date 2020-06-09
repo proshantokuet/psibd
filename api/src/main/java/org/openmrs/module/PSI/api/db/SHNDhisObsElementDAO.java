@@ -7,9 +7,9 @@ import org.openmrs.module.PSI.SHNDhisObsElement;
 
 public interface SHNDhisObsElementDAO {
 	
-	public List<SHNDhisObsElement> getAllDhisElement();
+	public List<SHNDhisObsElement> getAllDhisElement(String formName);
 	
-	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement();
+	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement(String formName);
 
 
 }

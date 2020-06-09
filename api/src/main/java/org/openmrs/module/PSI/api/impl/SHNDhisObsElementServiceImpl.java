@@ -21,15 +21,15 @@ public class SHNDhisObsElementServiceImpl extends BaseOpenmrsService implements 
 	}
 
 	@Override
-	public List<SHNDhisObsElement> getAllDhisElement() {
+	public List<SHNDhisObsElement> getAllDhisElement(String formName) {
 		// TODO Auto-generated method stub
-		return dao.getAllDhisElement();
+		return dao.getAllDhisElement(formName);
 	}
 
 	@Override
-	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement() {
+	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement(String formName) {
 		// TODO Auto-generated method stub
-		return dao.getAllMultipleChoiceDhisElement();
+		return dao.getAllMultipleChoiceDhisElement(formName);
 	}
 
 }
