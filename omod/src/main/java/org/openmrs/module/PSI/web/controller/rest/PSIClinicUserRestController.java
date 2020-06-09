@@ -182,6 +182,7 @@ public class PSIClinicUserRestController extends MainResourceController {
 					Provider provider = new Provider();
 					provider.setPerson(person);
 					provider.setIdentifier(userName);
+					provider.setUuid(clinicUserDTO.getProvider_uuid());
 					Context.getService(ProviderService.class).saveProvider(provider);
 					user = Context.getService(UserService.class).createUser(user, password);
 					log.error("user save complete" + user.getUsername());

@@ -46,6 +46,8 @@ public class UserDTO {
 	
 	private String retireStatus;
 	
+	private String provider_uuid;
+	
 	public String getRetireStatus() {
 		return retireStatus;
 	}
@@ -216,6 +218,14 @@ public class UserDTO {
 		this.orgUnit = orgUnit;
 	}
 	
+	public String getProvider_uuid() {
+		return provider_uuid;
+	}
+
+	public void setProvider_uuid(String provider_uuid) {
+		this.provider_uuid = provider_uuid;
+	}
+
 	@Override
 	public String toString() {
 		return "UserDTO [id=" + id + ", username=" + username + ", userRole=" + userRole + ", role=" + role + ", fullName="
