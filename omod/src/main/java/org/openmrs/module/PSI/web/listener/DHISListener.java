@@ -52,7 +52,7 @@ public class DHISListener {
 	//private final String DHIS2BASEURL = "http://192.168.19.149";
 	
 	//test server psi
-	private final String DHIS2BASEURL = "http://10.100.11.2:5271";
+	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
 	
 	//live dhis url
 	//private final String DHIS2BASEURL = "http://10.100.11.3:5271";

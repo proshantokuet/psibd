@@ -54,8 +54,8 @@ public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	
 	@Override
 	public JSONArray getFromRemoteOpenMRSAsArray(String payload, String uuid, String URL) throws JSONException {
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "sohel",
-		    "Sohel@123");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "admin",
+		    "test");
 		return new JSONArray(op.body());
 	}
 	
