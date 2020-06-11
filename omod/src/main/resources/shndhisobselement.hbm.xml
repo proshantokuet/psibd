@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.openmrs.module.PSI.SHNDhisObsElement" table="dhis_obs_element">
+        <id column="eid" name="eid" type="int">
+            <generator class="native"/>
+        </id> 
+        
+	    <property name="elementName" column="element_name" type="java.lang.String"/>	    
+		<property name="elementDhisId" column="element_dhisId" type="java.lang.String"/>
+	     <property name="formsName" column="form_name" type="java.lang.String"/>
+		<property name="voided" column="voided" type="boolean" not-null="true"/>
+		
+		
+	    
+    </class>
+</hibernate-mapping>

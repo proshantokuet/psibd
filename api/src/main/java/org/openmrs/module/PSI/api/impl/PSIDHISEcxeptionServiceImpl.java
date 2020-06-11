@@ -36,5 +36,6 @@ public class PSIDHISEcxeptionServiceImpl extends BaseOpenmrsService implements P
 		// TODO Auto-generated method stub
 		return dao.findAllById(patientId);
 	}
+
 	
 }

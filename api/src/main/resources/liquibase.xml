@@ -654,5 +654,66 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="dhis_obs_element-1.0.0" author="tanvir">
+		<createTable tableName="dhis_obs_element">
+			<column name="eid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>			
+			<column name="element_name" type="varchar(500)" />
+			<column name="element_dhisId" type="varchar(200)" />
+			
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="tanvir" id="dhis_obs_element-1.0.1">
+	 	<addColumn tableName="dhis_obs_element">
+			<column name="form_name" type="varchar(255)" />				
+		</addColumn>
+	 </changeSet>
+	
+	<changeSet id="dhis_mp_obs_element-1.0.0" author="tanvir">
+		<createTable tableName="dhis_mpchoice_obs_element">
+			<column name="eid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>			
+			<column name="element_name" type="varchar(500)" />
+			<column name="element_dhisId" type="varchar(200)" />
+			
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="tanvir" id="dhis_mp_obs_element-1.0.1">
+	 	<addColumn tableName="dhis_mpchoice_obs_element">
+			<column name="form_name" type="varchar(255)" />				
+		</addColumn>
+	 </changeSet>
+	
+	<changeSet id="dhis_encounter_exception-1.0.0" author="tanvir">
+		<createTable tableName="dhis_encounter_exception">
+			<column name="expId" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>	
+			<column name="mark_id" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="post_Json" type="varchar(2000)" />
+			<column name="response" type="varchar(2000)" />
+			<column name="url" type="varchar(255)" />
+			<column name="error" type="varchar(2000)" />
+			<column name="patient_uuid" type="varchar(255)" />
+			<column name="encounter_id" type="varchar(255)" />
+			<column name="forms_name" type="varchar(255)" />
+			<column name="reference_id" type="varchar(255)" />
+			<column name="status" type="int(11)" />	
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>		
+			<column name="date_changed" type="datetime" />
+		</createTable>
+	</changeSet>
 	
 </databaseChangeLog>

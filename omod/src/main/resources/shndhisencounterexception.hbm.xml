@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.openmrs.module.PSI.SHNDhisEncounterException" table="dhis_encounter_exception" lazy="false">
+        <id column="expId" name="expId" type="int">
+            <generator class="native"/>
+        </id> 
+        <property name="markId" column="mark_id" type="int"/>
+	    <property name="postJson" column="post_Json" type="java.lang.String"/>	
+	    <property name="response" column="response" type="java.lang.String"/>   
+	    <property name="url" column="url" type="java.lang.String"/>		
+	   	<property name="error" column="error" type="java.lang.String"/>
+	   	<property name="patientUuid" column="patient_uuid" type="java.lang.String"/>
+	   	<property name="encounterId" column="encounter_id" type="java.lang.String"/>
+	   	<property name="formsName" column="forms_name" type="java.lang.String"/>
+	   	<property name="referenceId" column="reference_id" type="java.lang.String"/>	
+	   	<property name="status" column="status" type="int"/>
+	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
+		<property name="dateChanged" column="date_changed" type="java.util.Date" />		
+    </class>
+</hibernate-mapping>

@@ -46,6 +46,9 @@
 		auhcclinictype.hbm.xml
 		shneslipnogenerate.hbm.xml
 		shnprescriptionmetadata.hbm.xml
+		shndhisobselement.hbm.xml
+		shndhisencounterexception.hbm.xml
+		shndhismultiplechoiceobselement.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

@@ -64,8 +64,8 @@ public class PSIDHISAPIServiceImpl implements PSIAPIService {
 	 */
 	@Override
 	public JSONObject delete(String payload, String uuid, String URL) throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+		HttpResponse op = HttpUtil.delete(URL, payload, userName, password);
+		return new JSONObject(op.body());
 	}
 	
 	@Override

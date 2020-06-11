@@ -31,6 +31,7 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 	
 	private String patientUuid;
 	
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
