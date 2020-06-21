@@ -130,7 +130,7 @@
               	</c:if>  --%>
               	<div class="col-md-3">
               		<div class="form-group">
-                  		Service Category: 
+                  		    <label for="cat">Service Category: </label> <br>
                   			<select class="form-control selcls" id="cat">
                   				<option value="" selected>Select Category</option>
 					               <c:forEach items="${services}" var="service"> 
@@ -618,9 +618,9 @@
                     <div class="form-group">
                         Wealth Classification
                         <br />
-                        <input type="checkbox" id="wlth_poor_draft" name="wlthPoorDraft" value="">Poor
+                        <input type="checkbox" id="wlth_poor_draft" name="wlthPoorDraft" value=""> Poor
                         <br>
-                        <input type="checkbox" id="wlth_pop_draft" name="wlthPopDraft" value="">Pop
+                        <input type="checkbox" id="wlth_pop_draft" name="wlthPopDraft" value=""> Pop
                         <br>
                         <input type="checkbox" id="wlth_pay_draft" name="wlthAbleToPayDraft" value=""> Able to pay
                         <br>
@@ -631,11 +631,11 @@
                     <div class="form-group">
                         Service Point
                         <br />
-                        <input type="checkbox" id="sp_satelite_draft" name="spSateliteDraft" value="">Satelite
+                        <input type="checkbox" id="sp_satelite_draft" name="spSateliteDraft" value=""> Satelite
                         <br>
-                        <input type="checkbox" id="sp_static_draft" name="spStaticDraft" value="">Static
+                        <input type="checkbox" id="sp_static_draft" name="spStaticDraft" value=""> Static
                         <br>
-                        <input type="checkbox" id="sp_csp_draft" name="spCspDraft" value="">CSP
+                        <input type="checkbox" id="sp_csp_draft" name="spCspDraft" value=""> CSP
                         <br>
                         <br>
                     </div>
@@ -774,9 +774,9 @@
                     <div class="form-group">
                         Wealth Classification
                         <br />
-                        <input type="checkbox" id="wlth_poor_reg" name="wlthPoorReg" value="">Poor
+                        <input type="checkbox" id="wlth_poor_reg" name="wlthPoorReg" value=""> Poor
                         <br>
-                        <input type="checkbox" id="wlth_pop_reg" name="wlthPopReg" value="">Pop
+                        <input type="checkbox" id="wlth_pop_reg" name="wlthPopReg" value=""> Pop
                         <br>
                         <input type="checkbox" id="wlth_pay_reg" name="wlthAbleToPayReg" value=""> Able to pay
                         <br>

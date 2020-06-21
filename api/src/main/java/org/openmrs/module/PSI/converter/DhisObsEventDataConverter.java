@@ -257,6 +257,36 @@ public class DhisObsEventDataConverter {
 				TBcasefindings.put("eventDate", today);
 				serviceEvents.put("TB Case Finding", TBcasefindings);
 				break;
+			case "Follow up":
+				JSONObject followUp = new JSONObject();
+				followUp.put("trackedEntityInstance", trackeEntityInstance);
+				followUp.put("orgUnit", orgUnit);
+				followUp.put("program", "q2uZRqRc0UD");
+				followUp.put("programStage", "TGLiXKP0nNq");
+				followUp.put("status", "COMPLETED");
+				followUp.put("eventDate", today);
+				serviceEvents.put("Follow up", followUp);
+				break;
+			case "Inward Referral":
+				JSONObject inwardReferral = new JSONObject();
+				inwardReferral.put("trackedEntityInstance", trackeEntityInstance);
+				inwardReferral.put("orgUnit", orgUnit);
+				inwardReferral.put("program", "q2uZRqRc0UD");
+				inwardReferral.put("programStage", "Ls8Ms6CxxGb");
+				inwardReferral.put("status", "COMPLETED");
+				inwardReferral.put("eventDate", today);
+				serviceEvents.put("Inward Referral", inwardReferral);
+				break;
+			case "Outward Referral":
+				JSONObject outwardReferral = new JSONObject();
+				outwardReferral.put("trackedEntityInstance", trackeEntityInstance);
+				outwardReferral.put("orgUnit", orgUnit);
+				outwardReferral.put("program", "q2uZRqRc0UD");
+				outwardReferral.put("programStage", "msbPjH4vKbz");
+				outwardReferral.put("status", "COMPLETED");
+				outwardReferral.put("eventDate", today);
+				serviceEvents.put("Outward Referral", outwardReferral);
+				break;
 			default:
 				break;
 			}

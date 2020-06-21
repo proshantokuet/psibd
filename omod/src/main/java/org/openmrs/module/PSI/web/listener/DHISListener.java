@@ -57,9 +57,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149";
+	//private final String DHIS2BASEURL = "http://192.168.19.149";
 	
 	//test server psi
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
@@ -88,56 +88,56 @@ public class DHISListener {
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
 		
-		JSONObject getResponse = null;
-		boolean status = true;
-		try {
-			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
-			
-		}
-		catch (Exception e) {
-			
-			status = false;
-		}
-		if (status) {
-			
-			try {
-				sendFailedPatient();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				sendPatient();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				sendMoneyReceipt();
-			}
-			catch (Exception e) {
-				
-			}
-			
-			try {
-				sendFailedMoneyReceipt();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				sendEncounter();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				sendEncounterFailed();
-			}
-			catch (Exception e) {
-				
-			}
-		}
+//		JSONObject getResponse = null;
+//		boolean status = true;
+//		try {
+//			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
+//			
+//		}
+//		catch (Exception e) {
+//			
+//			status = false;
+//		}
+//		if (status) {
+//			
+//			try {
+//				sendFailedPatient();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			try {
+//				sendPatient();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			try {
+//				sendMoneyReceipt();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			
+//			try {
+//				sendFailedMoneyReceipt();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			try {
+//				sendEncounter();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//			try {
+//				sendEncounterFailed();
+//			}
+//			catch (Exception e) {
+//				
+//			}
+//		}
 
 	}
 	
@@ -892,7 +892,7 @@ public class DHISListener {
 										JSONObject serviceObject = extractServiceArray.getJSONObject(i);
 										String field = serviceObject.getString("question");
 										String value = serviceObject.getString("answer");
-										String elementId = ObserVationDHISMapping.get(field);
+										String elementId = ObserVationDHISMapping.get(field.trim());
 										if (!StringUtils.isEmpty(elementId)){
 											JSONObject dataValue = new JSONObject();
 											dataValue.put("dataElement", elementId);
@@ -904,7 +904,7 @@ public class DHISListener {
 											}
 											dataValues.put(dataValue);			
 										}
-										String elementIdMultiple = multipleObsDHISMapping.get(value);
+										String elementIdMultiple = multipleObsDHISMapping.get(value.trim());
 										if (!StringUtils.isEmpty(elementIdMultiple)){
 											JSONObject dataValue = new JSONObject();
 											dataValue.put("dataElement", elementIdMultiple);
@@ -1094,7 +1094,7 @@ public class DHISListener {
 												JSONObject serviceObject = extractServiceArray.getJSONObject(i);
 												String field = serviceObject.getString("question");
 												String value = serviceObject.getString("answer");
-												String elementId = ObserVationDHISMapping.get(field);
+												String elementId = ObserVationDHISMapping.get(field.trim());
 												if (!StringUtils.isEmpty(elementId)){
 													JSONObject dataValue = new JSONObject();
 													dataValue.put("dataElement", elementId);
@@ -1106,7 +1106,7 @@ public class DHISListener {
 													}
 													dataValues.put(dataValue);			
 												}
-												String elementIdMultiple = multipleObsDHISMapping.get(value);
+												String elementIdMultiple = multipleObsDHISMapping.get(value.trim());
 												if (!StringUtils.isEmpty(elementIdMultiple)){
 													JSONObject dataValue = new JSONObject();
 													dataValue.put("dataElement", elementIdMultiple);
@@ -1255,7 +1255,7 @@ public class DHISListener {
 		ObserVationDHISMapping.clear();
 		List<SHNDhisObsElement> dhisObsElement = Context.getService(SHNDhisObsElementService.class).getAllDhisElement(formName);
 		for (SHNDhisObsElement item : dhisObsElement) {
-			ObserVationDHISMapping.put(item.getElementName(),item.getElementDhisId());
+			ObserVationDHISMapping.put(item.getElementName().trim(),item.getElementDhisId());
 		}
 	}
 	
@@ -1263,7 +1263,7 @@ public class DHISListener {
 		multipleObsDHISMapping.clear();
 		List<SHNDhisMultipleChoiceObsElement> dhisMUltipleObsElement = Context.getService(SHNDhisObsElementService.class).getAllMultipleChoiceDhisElement(formName);
 		for (SHNDhisMultipleChoiceObsElement item : dhisMUltipleObsElement) {
-			multipleObsDHISMapping.put(item.getElementName(),item.getElementDhisId());
+			multipleObsDHISMapping.put(item.getElementName().trim(),item.getElementDhisId());
 		}
 	}
 	
