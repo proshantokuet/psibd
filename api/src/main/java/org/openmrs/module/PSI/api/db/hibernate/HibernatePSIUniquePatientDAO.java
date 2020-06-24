@@ -150,4 +150,35 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 			return report;
 		}
 	}
+
+	@Override
+	public String getLastProviderName(String visitUuid) {
+		// TODO Auto-generated method stub
+		String providerQuery = ""
+				+ "SELECT Concat(pn.given_name, ' ', pn.family_name) AS fullname "
+				+ "FROM   encounter e "
+				+ "       JOIN visit v "
+				+ "         ON v.visit_id = e.visit_id "
+				+ "       JOIN encounter_provider ep "
+				+ "         ON ep.encounter_id = e.encounter_id "
+				+ "       JOIN provider p "
+				+ "         ON ep.provider_id = p.provider_id "
+				+ "       JOIN person_name pn "
+				+ "         ON pn.person_id = p.person_id "
+				+ "WHERE  v.uuid = '"+visitUuid+"' "
+				+ "ORDER  BY e.encounter_datetime DESC";
+		
+		List<String> providerList = new ArrayList<String>();
+		try{
+			providerList = sessionFactory.getCurrentSession().createSQLQuery(providerQuery).list();
+			if(providerList.size() < 1) {
+				return "No Provider Found";
+			}
+			else {
+				return providerList.get(0);
+			}
+		}catch(Exception e){
+			 return e.toString();
+		}
+	}
 }

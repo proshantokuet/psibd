@@ -16,6 +16,7 @@ public interface PSIUniquePatientService  extends OpenmrsService {
 	public List <SHNFormPdfDetails> getDischargeInformationByVisit(String patientUuid, String visitUuid);
 	
 	public List <SHNFormPdfDetails> getbirthInformationByVisit(String patientUuid, String visitUuid);
-
+	
+	public String getLastProviderName(String visitUuid);
 	
 }

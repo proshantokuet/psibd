@@ -44,6 +44,10 @@ public class DHISMapper {
 		registrationMapper.put("Gov_Card_Type", "Ph40wkLaX1T"); // newly added
 		registrationMapper.put("PreferredCallingTime", "AY39jOq51CP"); //newly added
 		
+		registrationMapper.put("MaritalStatus", "hqbmtpgPGxi"); //newly added
+		registrationMapper.put("occupation", "P24aFjXIInR"); // newly added
+		registrationMapper.put("Email", "up8u1EhMXVq"); //newly added
+		
 	}
 	
 	public static final Map<String, String> ServiceProvision = new HashMap<String, String>();
@@ -84,6 +88,8 @@ public class DHISMapper {
 		selectOptionMapper.put("MobileNoOwner", "");
 		selectOptionMapper.put("Gov_Card_Type", "");
 		selectOptionMapper.put("PreferredCallingTime", "");
+		selectOptionMapper.put("occupation", "");
+		selectOptionMapper.put("MaritalStatus", "");
 	}
 	
 	public static final Map<String, String> dateMapper = new HashMap<String, String>();

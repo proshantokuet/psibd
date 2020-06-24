@@ -46,4 +46,10 @@ public class PSIUniquePatientServiceImpl extends BaseOpenmrsService implements P
 		return dao.getbirthInformationByVisit(patientUuid, visitUuid);
 	}
 
+	@Override
+	public String getLastProviderName(String visitUuid) {
+		// TODO Auto-generated method stub
+		return dao.getLastProviderName(visitUuid);
+	}
+
 }

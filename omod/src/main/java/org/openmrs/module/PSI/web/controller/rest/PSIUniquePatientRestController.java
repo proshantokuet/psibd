@@ -62,4 +62,15 @@ public class PSIUniquePatientRestController {
 		}
 		return new ResponseEntity<>(birthJsonObject.toString(), HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/lastProviderData/{visitUuid}", method = RequestMethod.GET)
+	public ResponseEntity<String> getLastProviderData(@PathVariable String visitUuid) throws Exception {
+		
+		String lastProviderName = Context.getService(PSIUniquePatientService.class)
+		        .getLastProviderName(visitUuid);
+		JSONObject providerJsonObject = new JSONObject();
+		providerJsonObject.put("isSuccess",true);
+		providerJsonObject.put("lastVisitedProvider",lastProviderName);
+		return new ResponseEntity<>(providerJsonObject.toString(), HttpStatus.OK);
+	}
 }
