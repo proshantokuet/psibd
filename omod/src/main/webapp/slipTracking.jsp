@@ -44,7 +44,7 @@
                 <th>Service Point</th>
                 <th>Total Amount</th>
                 <th>Discount</th>
-                <th>Payable Amount</th>
+                <th>Paid Amount</th>
                 <!-- <th>Action</th>  -->
             </tr>
         </thead>

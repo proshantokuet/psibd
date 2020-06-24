@@ -537,7 +537,7 @@
 	                <th>Service Point</th>
 	                <th>Total Amount</th>
 	                <th>Discount</th>
-	                <th>Payable Amount</th>
+	                <th>Paid Amount</th>
 	              <!--   <th>Action</th> --> 
 	            </tr>
 	        </thead>
@@ -1124,7 +1124,7 @@ if(clinic !== null){
 	clinicCode = clinic.options[clinic.selectedIndex].value;
 	if(clinicCode != "0") {
 		clinicName = "";
-		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		clinicName = "of " + clinic.options[clinic.selectedIndex].text + " Clinic ID-"+clinicCode;
 	}
 }
 else {
@@ -1195,7 +1195,7 @@ $JQuery("#ServicePointWise").submit(function(event) {
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
 		clinicName = "";
-		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		clinicName = "of " + clinic.options[clinic.selectedIndex].text +" Clinic ID-"+clinicCode;
 		}
 	}else {
 		clinicCode = -1;
@@ -1608,7 +1608,7 @@ $JQuery("#slipTracking_").submit(function(event){
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
 		clinicName = "";
-		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		clinicName = "of " + clinic.options[clinic.selectedIndex].text + " Clinic ID-"+clinicCode;
 		}
 	}else {
 		clinicCode = -1;
@@ -1631,7 +1631,7 @@ $JQuery("#slipTracking_").submit(function(event){
 	url += "&dataCollector="+dataCollector+"&wlthPoor="+wlthPoor+"&wlthPop="+wlthPop+"&wlthAbleToPay="+wlthPay;
 	url += "&spSatelite="+spSatelite+"&spStatic="+spStatic+"&spCsp="+spCsp;
 	url +="&code="+clinicCode;
-	var title = "Slip wise Report "+clinicName+ " From "+startDateSlip+" To "+endDateSlip
+	var title = "Money Receipt Report "+clinicName+ " From "+startDateSlip+" To "+endDateSlip
 	$JQuery.ajax({
 		   type : "GET",
 		   contentType : "application/json",
@@ -1690,7 +1690,7 @@ $JQuery("#draftTracking_").submit(function(event){
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
 		clinicName = "";
-		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		clinicName = "of " + clinic.options[clinic.selectedIndex].text + " Clinic ID-"+clinicCode;
 		}
 	}else {
 		clinicCode = -1;
@@ -1814,7 +1814,7 @@ $JQuery("#regReport").on("submit",function(event){
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
 		clinicName = $JQuery("#clinicName").val();
-		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		clinicName = "of " + clinic.options[clinic.selectedIndex].text + " Clinic ID-"+clinicCode;
 		}
 	}else {
 		clinicCode = -1;
@@ -1890,7 +1890,7 @@ $JQuery("#visitReport").on("submit",function(event){
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 		if(clinicCode != "0") {
 		clinicName = "";
-		clinicName = "For " + clinic.options[clinic.selectedIndex].text;
+		clinicName = "of " + clinic.options[clinic.selectedIndex].text + " Clinic ID-"+clinicCode;
 		}
 	}else {
 		clinicCode = -1;

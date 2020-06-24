@@ -79,7 +79,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 	public List<PSIServiceProvision> getAllByPatient(String patientUuid) {
 		List<PSIServiceProvision> lists = new ArrayList<PSIServiceProvision>();
 		lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceProvision where patientUuid = :id  order by spid desc")
+		        .createQuery("from PSIServiceProvision where patientUuid = :id  order by psiMoneyReceiptId desc")
 		        .setString("id", patientUuid).list();
 		
 		log.error(sessionFactory.getCurrentSession()
