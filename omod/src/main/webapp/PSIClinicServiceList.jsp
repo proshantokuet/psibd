@@ -3,17 +3,16 @@
 <openmrs:require privilege="Clinic Service List" otherwise="/login.htm" />
 
 <%@ include file="template/localHeader.jsp"%>
-<p><a
-		href="${pageContext.request.contextPath}/module/PSI/addPSIClinicService.form?id=${id}"><spring:message
+<p><a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicService.form?id=${id}"><spring:message
 				code="PSI.psiservice" /></a> 
-<a class="" href="" onclick="syncServiceFromGlobal(${id})" style="margin-left: 10px;">Sync Services</a>
+<%-- <a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Services</a> --%>
 </p>
-<div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>			
+<div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:36%"></div>			
 <div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 </div>
 <br />
-<div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>
+<!-- <div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>-->
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
 		<div class="note">
@@ -76,8 +75,8 @@ $jq(document).ready( function () {
          });
 } );
 
-function syncServiceFromGlobal(clinicCode) {
-	var url = "/openmrs/ws/rest/v1/clinic/service/sync/" + clinicCode;
+function syncServiceFromGlobal(clinicId, code) {
+	var url = "/openmrs/ws/rest/v1/clinic/service/sync/" + clinicId + "/" + code;
 	var token = $jq("meta[name='_csrf']").attr("content");
 	var header = $jq("meta[name='_csrf_header']").attr("content");
 	event.preventDefault();
@@ -95,7 +94,7 @@ function syncServiceFromGlobal(clinicCode) {
 			$jq("#message").html(data);
 			$jq("#loader_clinic_list").hide();
 		   if(data == "Success"){					   
-			   window.location.replace("/openmrs/module/PSI/PSIClinicServiceList.form?id="+clinicCode);
+			   window.location.replace("/openmrs/module/PSI/PSIClinicServiceList.form?id="+clinicId);
 		   }
 	    },
 	    error:function(data){

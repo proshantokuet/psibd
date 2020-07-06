@@ -8,12 +8,12 @@
 				code="PSI.psiClinicSpotAddNew" /></a>
 <a style="padding-left: 10px;" href="${pageContext.request.contextPath}/module/PSI/uploadPSIClinicSpot.form?id=${id}"><spring:message
                 code="PSI.psiClinicUploadCsv" /></a> 
-<a class="" href="" onclick="syncSpotsGlobal(${id})" style="margin-left: 10px;">Sync Spots</a>
-	  	<div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+<%-- <a class="" href="" onclick="syncSpotsGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Spots</a> --%>
+<div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
-	</div>
+</div>
 	<br /> 
-<div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>			
+<div id="message" style="font-weight: bold;position: inherit; z-index: 1000;margin-left:37%"></div>			
 
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
@@ -72,8 +72,8 @@ $jq(document).ready( function () {
 	);
 } );
 
-function syncSpotsGlobal(clinicCode) {
-	var url = "/openmrs/ws/rest/v1/clinic/spot/sync/" + clinicCode;
+function syncSpotsGlobal(clinicId,code) {
+	var url = "/openmrs/ws/rest/v1/clinic/spot/sync/" + clinicId + "/" + code;
 	var token = $jq("meta[name='_csrf']").attr("content");
 	var header = $jq("meta[name='_csrf_header']").attr("content");
 	event.preventDefault();
@@ -91,7 +91,7 @@ function syncSpotsGlobal(clinicCode) {
 			$jq("#message").html(data);
 			$jq("#loader_clinic_list").hide();
 		   if(data == "Success"){					   
-			   window.location.replace("/openmrs/module/PSI/PSIClinicSpotList.form?id="+clinicCode);
+			   window.location.replace("/openmrs/module/PSI/PSIClinicSpotList.form?id="+clinicId);
 		   }
 	    },
 	    error:function(data){

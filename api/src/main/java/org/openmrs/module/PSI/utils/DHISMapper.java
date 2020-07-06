@@ -44,9 +44,9 @@ public class DHISMapper {
 		registrationMapper.put("Gov_Card_Type", "Ph40wkLaX1T"); // newly added
 		registrationMapper.put("PreferredCallingTime", "AY39jOq51CP"); //newly added
 		
-		registrationMapper.put("MaritalStatus", "hqbmtpgPGxi"); //newly added
-		registrationMapper.put("occupation", "P24aFjXIInR"); // newly added
-		registrationMapper.put("Email", "up8u1EhMXVq"); //newly added
+		registrationMapper.put("MaritalStatus", "BYXudrz9IES"); //newly added
+		registrationMapper.put("occupation", "dtBgIm6W3z2"); // newly added
+		registrationMapper.put("Email", "XU8WVJTcnZu"); //newly added
 		
 	}
 	

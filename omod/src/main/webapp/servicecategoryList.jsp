@@ -11,8 +11,8 @@ table.dataTable tbody th, table.dataTable tbody td {
 </style>
  <a href="${pageContext.request.contextPath}/module/PSI/addServiceCategory.form"><spring:message
 				code="PSI.addNewserviceCategory" /></a> 
-<a class="" href="" onclick="syncServiceCategoryFromGlobal()" style="margin-left: 10px;">Sync Service Category</a>			
-					
+<!-- <a class="" href="" onclick="syncServiceCategoryFromGlobal()" style="margin-left: 10px;">Sync Service Category</a>			
+ -->					
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
@@ -22,7 +22,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
 	<br />
-     <div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>					
+     <div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:42%"></div>					
 	<table id="table_id" class="display cell-border compact">
 	    <thead>
 	        <tr>

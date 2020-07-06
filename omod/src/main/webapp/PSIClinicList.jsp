@@ -22,7 +22,7 @@
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
 	<br />
-	<div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>
+	<div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:30%"></div>
 	<table id="table_id" class="display">
 	    <thead>
 	        <tr>
@@ -48,7 +48,7 @@
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicSpotList.form?id=${ clinic.cid }"/>">Spots</a>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a>
-	            <a class="btn btn-primary" onclick="syncClinicFromGlobal(${ clinic.clinicId })">Sync</a>
+	            <%-- <a class="btn btn-primary" onclick="syncClinicFromGlobal('${ clinic.clinicId }')">Sync</a> --%>
 	             
 	            </td>
 	        </tr>

@@ -11,16 +11,16 @@ table.dataTable tbody th, table.dataTable tbody td {
 </style>
  <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicUser.form?id=${id}"><spring:message
 				code="PSI.psiClinicUserAssing" /></a> 	
-<a class="" href="" onclick="syncClinicUser(${id})" style="margin-left: 10px;">Sync User</a>
+<%-- <a class="" href="" onclick="syncClinicUser(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync User</a> --%>
 <div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 	<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 </div>
 <br /> 
-<div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:38%"></div>
+<div id="message" style="font-weight: bold;position: inherit; z-index: 1000;margin-left:37%"></div>
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
-        	<p>User List of ${ name }</p>
+        	<p>User List of ${name} (${psiClinicManagement.clinicId})</p>
        	</div>					
 	<table id="table_id" class="display cell-border compact">
 	    <thead>
@@ -63,8 +63,8 @@ $jq(document).ready( function () {
 	$jq('#table_id').DataTable();
 } );
 
-function syncClinicUser(clinicCode) {
-	var url = "/openmrs/ws/rest/v1/clinic-user/syncUser/" + clinicCode;
+function syncClinicUser(clinicId,code) {
+	var url = "/openmrs/ws/rest/v1/clinic-user/syncUser/" + clinicId + "/" + code;
 	var token = $jq("meta[name='_csrf']").attr("content");
 	var header = $jq("meta[name='_csrf_header']").attr("content");
 	event.preventDefault();
@@ -82,7 +82,7 @@ function syncClinicUser(clinicCode) {
 			$jq("#message").html(data);
 			$jq("#loader_clinic_list").hide();
 		   if(data == "Success"){					   
-			   window.location.replace("/openmrs/module/PSI/PSIClinicUserList.form?id="+clinicCode);
+			   window.location.replace("/openmrs/module/PSI/PSIClinicUserList.form?id="+clinicId);
 		   }
 	    },
 	    error:function(data){

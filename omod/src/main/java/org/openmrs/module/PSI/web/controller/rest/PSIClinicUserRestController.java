@@ -61,7 +61,8 @@ public class PSIClinicUserRestController extends MainResourceController {
 	
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
-	
+	private final String CLINIC_ENDPOINT = "/rest/v1/clinic/byClinicCode";
+
 	protected final Log log = LogFactory.getLog(getClass());
 
 	Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -122,142 +123,149 @@ public class PSIClinicUserRestController extends MainResourceController {
 	}
 	
 	
-	@RequestMapping(value = "/syncUser/{id}", method = RequestMethod.GET)
-	public ResponseEntity<String> syncUser(@PathVariable int id) throws Exception {
-		log.error("Hit in the api id is " + id);
-		JSONArray userListJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "",
-				"/rest/v1/clinic-user/getUserForSync" + "/" + id);
-		log.error("api result of clinic from global" + userListJson.toString());
-		List<UserDTO> clinicUserDTOs = gson.fromJson(userListJson.toString(),
-			    new TypeToken<ArrayList<UserDTO>>() {}.getType());
-		log.error("Converting to class dto" + clinicUserDTOs.size());
-		try {
-			  for (UserDTO clinicUserDTO : clinicUserDTOs) {
-					log.error("in the loop" + clinicUserDTO.getFirstName());
-			//for (int i = 0; i < userListJson.length(); i++) {
-				//JSONObject userObject = userListJson.getJSONObject(i);
-				//Gson gson= new Gson();
-				//UserDTO clinicUserDTO = gson.fromJson(userObject.toString(),UserDTO.class);
-				String firstName = clinicUserDTO.getFirstName();
-				String lastName = clinicUserDTO.getLastName();
-				String password = "Shn@1234";
-				String userName = clinicUserDTO.getUserName();
-				String rolesNames = clinicUserDTO.getRole().trim();
-				log.error("rolesNames" + rolesNames);
-				String gender = clinicUserDTO.getGender();
-				int clinicId = id;
-				int cuid = clinicUserDTO.getCuid();
-				String email = clinicUserDTO.getEmail();
-				String mobile = clinicUserDTO.getMobile();
-				log.error("person name creation" + mobile);
-
-				PersonName personName = new PersonName();
-				personName.setGivenName(firstName);
-				personName.setFamilyName(lastName);
-				log.error("person name created" + personName.getGivenName());
-				Set<PersonName> names = new TreeSet<PersonName>();
-				names.add(personName);
-				Person person = new Person();
-				person.setNames(names);
-				person.setGender(gender);
-				log.error("person object created" + person.getNames());
-				List<String> roleList = new ArrayList<String>(Arrays.asList(rolesNames.split(",")));
-				log.error("roleList split" + roleList.toString());
-				Set<Role> roles = new HashSet<Role>();
-				for (String roleName : roleList) {
-					Role role = Context.getService(UserService.class).getRole(roleName.trim());
-					roles.add(role);
-				}
-				log.error("roles assigned" + roles.toString());
-				User user = new User();
-				user.setRoles(roles);
-				User findUser = Context.getService(PSIClinicUserService.class).getbyUsernameIcludedRetiure(userName);
-				log.error("search by username" + findUser);
-				if (findUser == null) {
-					log.error("attempt for saving" + person);
-					person = Context.getService(PersonService.class).savePerson(person);
-					log.error("person is saving" + person);
-					user.setPerson(person);
-					user.setUsername(userName);
-					Provider provider = new Provider();
-					provider.setPerson(person);
-					provider.setIdentifier(userName);
-					//provider.setUuid(clinicUserDTO.getProvider_uuid());
-					Context.getService(ProviderService.class).saveProvider(provider);
-					user = Context.getService(UserService.class).createUser(user, password);
-					log.error("user save complete" + user.getUsername());
-					PSIClinicUser pSIClinicUser = new PSIClinicUser();
-					pSIClinicUser.setUserName(user.getUsername());
-					pSIClinicUser.setEmail(email);
-					pSIClinicUser.setMobile(mobile);
-//					if (cuid != 0) {
-//						pSIClinicUser.setCuid(cuid);
-//					}
-					pSIClinicUser.setDateCreated(new Date());
-					pSIClinicUser.setCreator(Context.getAuthenticatedUser());
-					pSIClinicUser.setUuid(UUID.randomUUID().toString());
-					log.error("saving psi_clinic" + pSIClinicUser.getCuid());
-					pSIClinicUser.setPsiClinicManagementId(Context.getService(PSIClinicManagementService.class).findById(
-					    clinicId));
-					log.error("getting psi_clinic management id" + pSIClinicUser.getPsiClinicManagementId());
-					PSIClinicUser afterUpdate = Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
-					Context.getService(PSIClinicUserService.class).updatePrimaryKey(cuid, afterUpdate.getCuid());
-
-				} else {
-					log.error("i am in update" + findUser.getPerson().getPersonId());
-					boolean isRetired = clinicUserDTO.isRetired(); 
-		
-					Person personUpdate = Context.getService(PersonService.class).getPerson(findUser.getPerson().getPersonId());
-					log.error("personUpdate success" + personUpdate.getNames().toString());
-					int personNameId = personUpdate.getPersonName().getPersonNameId();
-					log.error("personNameId update" + personNameId);
-
-					PersonName personNameUpdate = Context.getService(PersonService.class).getPersonName(personNameId);
-					personNameUpdate.setGivenName(firstName);
-					personNameUpdate.setFamilyName(lastName);
-					Set<PersonName> namesUpdate = personUpdate.getNames();
-					namesUpdate.add(personNameUpdate);
-					personUpdate.setNames(namesUpdate);
-					personUpdate.setGender(gender);
-					log.error("saving updated person" + personUpdate.getNames().toString());
-					personUpdate = Context.getService(PersonService.class).savePerson(personUpdate);
-					findUser.setPerson(personUpdate);
-					findUser.setUsername(userName);
-					if (isRetired) {
-						findUser.setRetired(true);
-						findUser.setRetiredBy(Context.getAuthenticatedUser());
-						findUser.setRetireReason("reason in global");
-					}
-					else {
-						findUser.setRetired(false);
-						findUser.setRetiredBy(null);
-						findUser.setRetireReason(null);
-						findUser.setDateRetired(null);
-					}
-					findUser.setRoles(roles);
-					log.error("saving updated user" + findUser.getPerson().getPersonId());
-					findUser = Context.getService(UserService.class).saveUser(findUser);
-		
-					PSIClinicUser pSIClinicUser = new PSIClinicUser();
-					pSIClinicUser.setUserName(findUser.getUsername());
-					pSIClinicUser.setEmail(email);
-					pSIClinicUser.setMobile(mobile);
-					if (cuid != 0) {
-						pSIClinicUser.setCuid(cuid);
-					}
-					pSIClinicUser.setDateCreated(new Date());
-					pSIClinicUser.setCreator(Context.getAuthenticatedUser());
-					pSIClinicUser.setUuid(UUID.randomUUID().toString());
-					pSIClinicUser.setPsiClinicManagementId(Context.getService(PSIClinicManagementService.class).findById(clinicId));
-					Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
-				}
-			  }
-			//}
+	@RequestMapping(value = "/syncUser/{id}/{code}", method = RequestMethod.GET)
+	public ResponseEntity<String> syncUser(@PathVariable int id,@PathVariable String code) throws Exception {
+		JSONObject clinicJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRS("", "",
+			    CLINIC_ENDPOINT + "/" + code);
+		if(clinicJson.length() < 1) {
+			return new ResponseEntity<String>("No Clinic Found For This Clinic ID in Global Server", HttpStatus.OK);
 		}
-		catch (Exception e) {
-			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+		else {
+			log.error("Hit in the api id is " + id);
+			JSONArray userListJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "",
+					"/rest/v1/clinic-user/getUserForSync" + "/" + id);
+			log.error("api result of clinic from global" + userListJson.toString());
+			List<UserDTO> clinicUserDTOs = gson.fromJson(userListJson.toString(),
+				    new TypeToken<ArrayList<UserDTO>>() {}.getType());
+			log.error("Converting to class dto" + clinicUserDTOs.size());
+			try {
+				  for (UserDTO clinicUserDTO : clinicUserDTOs) {
+						log.error("in the loop" + clinicUserDTO.getFirstName());
+				//for (int i = 0; i < userListJson.length(); i++) {
+					//JSONObject userObject = userListJson.getJSONObject(i);
+					//Gson gson= new Gson();
+					//UserDTO clinicUserDTO = gson.fromJson(userObject.toString(),UserDTO.class);
+					String firstName = clinicUserDTO.getFirstName();
+					String lastName = clinicUserDTO.getLastName();
+					String password = "Shn@1234";
+					String userName = clinicUserDTO.getUserName();
+					String rolesNames = clinicUserDTO.getRole().trim();
+					log.error("rolesNames" + rolesNames);
+					String gender = clinicUserDTO.getGender();
+					int clinicId = id;
+					int cuid = clinicUserDTO.getCuid();
+					String email = clinicUserDTO.getEmail();
+					String mobile = clinicUserDTO.getMobile();
+					log.error("person name creation" + mobile);
+	
+					PersonName personName = new PersonName();
+					personName.setGivenName(firstName);
+					personName.setFamilyName(lastName);
+					log.error("person name created" + personName.getGivenName());
+					Set<PersonName> names = new TreeSet<PersonName>();
+					names.add(personName);
+					Person person = new Person();
+					person.setNames(names);
+					person.setGender(gender);
+					log.error("person object created" + person.getNames());
+					List<String> roleList = new ArrayList<String>(Arrays.asList(rolesNames.split(",")));
+					log.error("roleList split" + roleList.toString());
+					Set<Role> roles = new HashSet<Role>();
+					for (String roleName : roleList) {
+						Role role = Context.getService(UserService.class).getRole(roleName.trim());
+						roles.add(role);
+					}
+					log.error("roles assigned" + roles.toString());
+					User user = new User();
+					user.setRoles(roles);
+					User findUser = Context.getService(PSIClinicUserService.class).getbyUsernameIcludedRetiure(userName);
+					log.error("search by username" + findUser);
+					if (findUser == null) {
+						log.error("attempt for saving" + person);
+						person = Context.getService(PersonService.class).savePerson(person);
+						log.error("person is saving" + person);
+						user.setPerson(person);
+						user.setUsername(userName);
+						Provider provider = new Provider();
+						provider.setPerson(person);
+						provider.setIdentifier(userName);
+						//provider.setUuid(clinicUserDTO.getProvider_uuid());
+						Context.getService(ProviderService.class).saveProvider(provider);
+						user = Context.getService(UserService.class).createUser(user, password);
+						log.error("user save complete" + user.getUsername());
+						PSIClinicUser pSIClinicUser = new PSIClinicUser();
+						pSIClinicUser.setUserName(user.getUsername());
+						pSIClinicUser.setEmail(email);
+						pSIClinicUser.setMobile(mobile);
+	//					if (cuid != 0) {
+	//						pSIClinicUser.setCuid(cuid);
+	//					}
+						pSIClinicUser.setDateCreated(new Date());
+						pSIClinicUser.setCreator(Context.getAuthenticatedUser());
+						pSIClinicUser.setUuid(UUID.randomUUID().toString());
+						log.error("saving psi_clinic" + pSIClinicUser.getCuid());
+						pSIClinicUser.setPsiClinicManagementId(Context.getService(PSIClinicManagementService.class).findById(
+						    clinicId));
+						log.error("getting psi_clinic management id" + pSIClinicUser.getPsiClinicManagementId());
+						PSIClinicUser afterUpdate = Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
+						Context.getService(PSIClinicUserService.class).updatePrimaryKey(cuid, afterUpdate.getCuid());
+	
+					} else {
+						log.error("i am in update" + findUser.getPerson().getPersonId());
+						boolean isRetired = clinicUserDTO.isRetired(); 
+			
+						Person personUpdate = Context.getService(PersonService.class).getPerson(findUser.getPerson().getPersonId());
+						log.error("personUpdate success" + personUpdate.getNames().toString());
+						int personNameId = personUpdate.getPersonName().getPersonNameId();
+						log.error("personNameId update" + personNameId);
+	
+						PersonName personNameUpdate = Context.getService(PersonService.class).getPersonName(personNameId);
+						personNameUpdate.setGivenName(firstName);
+						personNameUpdate.setFamilyName(lastName);
+						Set<PersonName> namesUpdate = personUpdate.getNames();
+						namesUpdate.add(personNameUpdate);
+						personUpdate.setNames(namesUpdate);
+						personUpdate.setGender(gender);
+						log.error("saving updated person" + personUpdate.getNames().toString());
+						personUpdate = Context.getService(PersonService.class).savePerson(personUpdate);
+						findUser.setPerson(personUpdate);
+						findUser.setUsername(userName);
+						if (isRetired) {
+							findUser.setRetired(true);
+							findUser.setRetiredBy(Context.getAuthenticatedUser());
+							findUser.setRetireReason("reason in global");
+						}
+						else {
+							findUser.setRetired(false);
+							findUser.setRetiredBy(null);
+							findUser.setRetireReason(null);
+							findUser.setDateRetired(null);
+						}
+						findUser.setRoles(roles);
+						log.error("saving updated user" + findUser.getPerson().getPersonId());
+						findUser = Context.getService(UserService.class).saveUser(findUser);
+			
+						PSIClinicUser pSIClinicUser = new PSIClinicUser();
+						pSIClinicUser.setUserName(findUser.getUsername());
+						pSIClinicUser.setEmail(email);
+						pSIClinicUser.setMobile(mobile);
+						if (cuid != 0) {
+							pSIClinicUser.setCuid(cuid);
+						}
+						pSIClinicUser.setDateCreated(new Date());
+						pSIClinicUser.setCreator(Context.getAuthenticatedUser());
+						pSIClinicUser.setUuid(UUID.randomUUID().toString());
+						pSIClinicUser.setPsiClinicManagementId(Context.getService(PSIClinicManagementService.class).findById(clinicId));
+						Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
+					}
+				  }
+				//}
+			}
+			catch (Exception e) {
+				return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+			}
+			return new ResponseEntity<String>("Success", HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
 	
 	

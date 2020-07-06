@@ -84,6 +84,7 @@ public class PSIClinicUserManageController {
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
 		//List<PSIClinicUser> psiClinicUsers = Context.getService(PSIClinicUserService.class).findByClinicId(id);
 		model.addAttribute("name", psiClinicManagement.getName());
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
 		
 		List<UserDTO> users = Context.getService(PSIClinicUserService.class).findUserByClinicIdWithRawQuery(
 		    psiClinicManagement.getCid());
