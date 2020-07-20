@@ -606,6 +606,10 @@ public class PSIClinicRestController extends MainResourceController {
 						Context.getService(PSIServiceManagementService.class).saveOrUpdate(
 						    convertPSIServiceManagement(getPsiServiceManagement, psiServiceManagement, clinicId));
 					} else {
+						PSIServiceManagement lastServiceInfo = Context.getService(PSIServiceManagementService.class).findByClinicIdDescending();
+						if(lastServiceInfo != null) {
+							Context.getService(PSIServiceManagementService.class).updateTableAutoIncrementValue(lastServiceInfo.getSid() + 1);
+						}
 						psiServiceManagement.setSid(0);
 						PSIServiceManagement created = Context.getService(PSIServiceManagementService.class).saveOrUpdate(
 						    psiServiceManagement);

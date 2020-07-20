@@ -28,4 +28,8 @@ public interface PSIServiceManagementDAO {
 	
 	public int updatePrimaryKey(int oldId, int currentId);
 	
+	public PSIServiceManagement findByClinicIdDescending();
+	
+	public int updateTableAutoIncrementValue(int autoIncrementNo);
+	
 }

@@ -155,4 +155,22 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 		
 		return query.executeUpdate();
 	}
+
+	@Override
+	public PSIServiceManagement findByClinicIdDescending() {
+		List<PSIServiceManagement> clinics = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceManagement  order by sid desc").setMaxResults(1).list();
+		if (clinics.size() != 0) {
+			return clinics.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public int updateTableAutoIncrementValue(int autoIncrementNo) {
+		String sql = "ALTER TABLE psi_service_management AUTO_INCREMENT = :icrementalvalue";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("icrementalvalue", autoIncrementNo);	
+		return query.executeUpdate();
+	}
 }

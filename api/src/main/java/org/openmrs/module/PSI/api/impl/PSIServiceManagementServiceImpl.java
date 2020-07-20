@@ -83,5 +83,17 @@ public class PSIServiceManagementServiceImpl extends BaseOpenmrsService implemen
 		// TODO Auto-generated method stub
 		return dao.updatePrimaryKey(oldId, currentId);
 	}
+
+	@Override
+	public PSIServiceManagement findByClinicIdDescending() {
+		// TODO Auto-generated method stub
+		return dao.findByClinicIdDescending();
+	}
+
+	@Override
+	public int updateTableAutoIncrementValue(int autoIncrementNo) {
+		// TODO Auto-generated method stub
+		return dao.updateTableAutoIncrementValue(autoIncrementNo);
+	}
 	
 }

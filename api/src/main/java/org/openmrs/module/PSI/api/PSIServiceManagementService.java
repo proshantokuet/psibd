@@ -31,4 +31,8 @@ public interface PSIServiceManagementService extends OpenmrsService {
 	
 	public int updatePrimaryKey(int oldId, int currentId);
 	
+	public PSIServiceManagement findByClinicIdDescending();
+	
+	public int updateTableAutoIncrementValue(int autoIncrementNo);
+	
 }
