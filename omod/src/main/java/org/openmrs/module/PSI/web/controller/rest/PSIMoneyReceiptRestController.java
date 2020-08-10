@@ -419,6 +419,9 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			if (cspIdString.length() > 2) cspIdString = cspIdString.substring(0,2);
 			concatenedString = "3" + cspIdString;
 		}
+		else if (servicePoint.equalsIgnoreCase("Telemedicine")) {
+			concatenedString = "400";
+		}
 		String eslipId = "" + year + monthS + dayS + code.substring(0, 3)+ concatenedString + serquenceNumber;
 
 		return eslipId;
@@ -442,6 +445,10 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			String cspIdString = cspId.length() < 2 ? "0" + cspId : cspId;
 			if (cspIdString.length() > 2) cspIdString = cspIdString.substring(0,2);
 			concatenedString = "3" + cspIdString;
+			finalString = replaceAtEslip(eslipNo, 9, concatenedString);
+		}
+		else if(servicePoint.equalsIgnoreCase("Telemedicine")) {
+			concatenedString = "400";
 			finalString = replaceAtEslip(eslipNo, 9, concatenedString);
 		}
 		return finalString;
