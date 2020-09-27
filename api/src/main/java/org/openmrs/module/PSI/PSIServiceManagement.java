@@ -53,6 +53,12 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	private String gender;
 	
+	private String brandName;
+	
+	private float purchasePrice;
+	
+	private String type;
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -231,6 +237,30 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	public void setDaysFrom(int daysFrom) {
 		this.daysFrom = daysFrom;
+	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	public float getPurchasePrice() {
+		return purchasePrice;
+	}
+
+	public void setPurchasePrice(float purchasePrice) {
+		this.purchasePrice = purchasePrice;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }

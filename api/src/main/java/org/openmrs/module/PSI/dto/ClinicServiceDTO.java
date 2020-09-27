@@ -32,6 +32,16 @@ public class ClinicServiceDTO {
 	
 	private boolean voided;
 	
+	private String brandName;
+	
+	private float purchasePrice;
+	
+	private String type;
+	
+	private String clinicName;
+	
+	private long stock;
+	
 	public boolean isVoided() {
 		return voided;
 	}
@@ -151,5 +161,46 @@ public class ClinicServiceDTO {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	public float getPurchasePrice() {
+		return purchasePrice;
+	}
+
+	public void setPurchasePrice(float purchasePrice) {
+		this.purchasePrice = purchasePrice;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getClinicName() {
+		return clinicName;
+	}
+
+	public void setClinicName(String clinicName) {
+		this.clinicName = clinicName;
+	}
+
+	public long getStock() {
+		return stock;
+	}
+
+	public void setStock(long stock) {
+		this.stock = stock;
+	}
+
+
 }

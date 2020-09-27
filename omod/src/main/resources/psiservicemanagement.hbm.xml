@@ -26,7 +26,9 @@
 	    <property name="yearFrom" column="year_from" type="int"/>
 	    <property name="monthFrom" column="month_from" type="int"/>
 	    <property name="daysFrom" column="days_from" type="int"/>
-	    
+	    <property name="brandName" column="brand_name" type="java.lang.String"/>
+	    <property name="type" column="service_type" type="java.lang.String"/>
+	    <property name="purchasePrice" column="purchase_price" type="float"/>
 	    <many-to-one name="psiClinicManagement" column ="psi_clinic_management_id" class="org.openmrs.module.PSI.PSIClinicManagement"/>
 	    
 	    <property name="timestamp" column="timestamp" type="long"/>

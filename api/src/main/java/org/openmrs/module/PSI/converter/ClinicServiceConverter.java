@@ -35,7 +35,9 @@ public class ClinicServiceConverter {
 		    clinicServiceDTO.getDaysFrom());
 		psiServiceManagement.setAgeStart(ageTo);
 		psiServiceManagement.setAgeEnd(ageFrom);
-		
+		psiServiceManagement.setType(clinicServiceDTO.getType());
+		psiServiceManagement.setBrandName(clinicServiceDTO.getBrandName());
+		psiServiceManagement.setPurchasePrice(clinicServiceDTO.getPurchasePrice());
 		psiServiceManagement.setTimestamp(System.currentTimeMillis());
 		psiServiceManagement.setCreator(Context.getAuthenticatedUser());
 		psiServiceManagement.setUuid(UUID.randomUUID().toString());

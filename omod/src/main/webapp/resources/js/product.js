@@ -7,16 +7,10 @@ $JQuery("#serviceForm").submit(function(event) {
 			
 			var e = document.getElementById("category");
 			var category = e.options[e.selectedIndex].value;
-			var e1 = document.getElementById("provider");
-			var provider = e1.options[e1.selectedIndex].value;
+
 			//var clinic = document.getElementById("psiClinicManagement");
 			var clinicValue = $JQuery('input[name=psiClinicManagement]').val();
-			var yearTo = $JQuery('input[name=yearTo]').val();
-			var monthTo = $JQuery('input[name=monthTo]').val();
-			var daysTo = $JQuery('input[name=daysTo]').val();
-			var yearFrom = $JQuery('input[name=yearFrom]').val();
-			var monthFrom = $JQuery('input[name=monthFrom]').val();
-			var daysFrom = $JQuery('input[name=daysFrom]').val();
+
 			var voided = null;
 			var disableConfirmation = $JQuery('input[name=disableService]:checked').val();
 			var enableConfirmation = $JQuery('input[name=enableService]:checked').val();
@@ -29,32 +23,32 @@ $JQuery("#serviceForm").submit(function(event) {
 			if (enableConfirmation == "yes") {
 				voided = false;
 			}
-			
-			var gender = document.getElementById("gender");
-			var genderValue = gender.options[gender.selectedIndex].value;
+
 			var formData;			
 				formData = {
 			            'name': $JQuery('input[name=name]').val(),			           
 			            'code': $JQuery('input[name=code]').val(),
 			            'category': category,
-			            'provider': provider,
+			            'provider': '',
 			            'sid':  $JQuery('input[name=sid]').val(),
 			            'unitCost': $JQuery('input[name=unitCost]').val(),
 			            'psiClinicManagement': clinicValue,
-			            'yearTo': yearTo,
-			            'monthTo': monthTo,
-			            'daysTo': daysTo,
-			            'yearFrom': yearFrom,
-			            'monthFrom': monthFrom,
-			            'gender': genderValue,
-			            'daysFrom': daysFrom,
+			            'yearTo': 0,
+			            'monthTo': 0,
+			            'daysTo': 0,
+			            'yearFrom': 0,
+			            'monthFrom': 0,
+			            'gender': '',
+			            'daysFrom': 0,
 			            'voided': voided,
-			            'purchasePrice': 0,
-			            'type': 'SERVICE',
+			            'type': 'PRODUCT',
+			            'brandName': $JQuery('input[name=brandName]').val(),
+			            'purchasePrice': $JQuery('input[name=purchasePrice]').val()
 			           
 			        };			
 			
-			event.preventDefault();			
+			console.log(formData);
+			event.preventDefault();
 			$JQuery.ajax({
 				contentType : "application/json",
 				type: "POST",
@@ -70,7 +64,7 @@ $JQuery("#serviceForm").submit(function(event) {
 					$JQuery("#usernameUniqueErrorMessage").html(data);
 					$JQuery("#loading").hide();
 				   if(data == ""){					   
-					   window.location.replace("/openmrs/module/PSI/PSIClinicServiceList.form?id="+clinicValue);
+					   window.location.replace("/openmrs/module/PSI/product-list.form?id="+clinicValue);
 					   
 				   }
 				   

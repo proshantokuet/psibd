@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIServiceManagement;
+import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -34,5 +35,9 @@ public interface PSIServiceManagementService extends OpenmrsService {
 	public PSIServiceManagement findByClinicIdDescending();
 	
 	public int updateTableAutoIncrementValue(int autoIncrementNo);
+	
+	public List<ClinicServiceDTO> getProductListAll(int clinicId);
+	
+	
 	
 }

@@ -7,8 +7,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.PSI.PSIServiceManagement;
+import org.openmrs.module.PSI.SHNFormPdfDetails;
 import org.openmrs.module.PSI.api.db.PSIServiceManagementDAO;
+import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 
 public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
@@ -41,7 +45,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	@Override
 	public List<PSIServiceManagement> getAllByClinicId(int clinicId) {
 		List<PSIServiceManagement> clinics = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceManagement where psiClinicManagement=:clinicId  order by name asc ")
+		        .createQuery("from PSIServiceManagement where psiClinicManagement=:clinicId and type='SERVICE' order by name asc ")
 		        .setInteger("clinicId", clinicId).list();
 		if (clinics.size() != 0) {
 			return clinics;
@@ -172,5 +176,49 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		query.setParameter("icrementalvalue", autoIncrementNo);	
 		return query.executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ClinicServiceDTO> getProductListAll(int clinicId) {
+		
+		List<ClinicServiceDTO> clinics = new ArrayList<ClinicServiceDTO>();
+		String productListQuery = ""
+				+ "SELECT p.sid as sid, "
+				+ "       p.NAME as name, "
+				+ "       p.code, "
+				+ "       p.brand_name as brandName, "
+				+ "       p.category as category, "
+				+ "       c.NAME as clinicName, "
+				+ "       p.purchase_price as purchasePrice, "
+				+ "       p.unit_cost as unitCost, "
+				+ "       0 AS stock, "
+				+ "       p.voided "
+				+ "FROM   psi_service_management p "
+				+ "       JOIN psi_clinic c "
+				+ "         ON p.psi_clinic_management_id = c.cid "
+				+ "WHERE  p.psi_clinic_management_id = "+clinicId+"  and service_type = 'PRODUCT'";
+		
+		try{
+			log.error("Query" + productListQuery);
+			clinics = sessionFactory.getCurrentSession().createSQLQuery(productListQuery)
+					.addScalar("sid",StandardBasicTypes.INTEGER)
+					.addScalar("name",StandardBasicTypes.STRING)
+					.addScalar("code",StandardBasicTypes.STRING)
+					.addScalar("brandName",StandardBasicTypes.STRING)
+					.addScalar("category",StandardBasicTypes.STRING)
+					.addScalar("clinicName",StandardBasicTypes.STRING)
+					.addScalar("purchasePrice",StandardBasicTypes.FLOAT)
+					.addScalar("unitCost",StandardBasicTypes.FLOAT)
+					.addScalar("stock",StandardBasicTypes.LONG)
+					.addScalar("voided",StandardBasicTypes.BOOLEAN)
+					.setResultTransformer(new AliasToBeanResultTransformer(ClinicServiceDTO.class)).
+					list();
+			log.error("Query Reuslt" + clinics.size());
+			return clinics;
+		}catch(Exception e){
+			log.error(e.toString());
+			return clinics;
+		}
 	}
 }

@@ -3,6 +3,7 @@ package org.openmrs.module.PSI.api.db;
 import java.util.List;
 
 import org.openmrs.module.PSI.PSIServiceManagement;
+import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 
 public interface PSIServiceManagementDAO {
 	
@@ -31,5 +32,8 @@ public interface PSIServiceManagementDAO {
 	public PSIServiceManagement findByClinicIdDescending();
 	
 	public int updateTableAutoIncrementValue(int autoIncrementNo);
+	
+	public List<ClinicServiceDTO> getProductListAll(int clinicId);
+
 	
 }

@@ -6,6 +6,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.api.db.PSIServiceManagementDAO;
+import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 
 public class PSIServiceManagementServiceImpl extends BaseOpenmrsService implements PSIServiceManagementService {
 	
@@ -94,6 +95,12 @@ public class PSIServiceManagementServiceImpl extends BaseOpenmrsService implemen
 	public int updateTableAutoIncrementValue(int autoIncrementNo) {
 		// TODO Auto-generated method stub
 		return dao.updateTableAutoIncrementValue(autoIncrementNo);
+	}
+
+	@Override
+	public List<ClinicServiceDTO> getProductListAll(int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.getProductListAll(clinicId);
 	}
 	
 }
