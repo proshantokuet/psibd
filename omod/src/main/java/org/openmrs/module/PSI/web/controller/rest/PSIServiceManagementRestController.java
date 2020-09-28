@@ -433,4 +433,155 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 		
 	}
+	
+	@SuppressWarnings("resource")
+	@RequestMapping(value = "/product-upload", method = RequestMethod.POST)
+	public ResponseEntity<String> uploadProduct(@RequestParam MultipartFile file, HttpServletRequest request,
+	                                                  ModelMap model, @RequestParam(required = false) int id)
+	    throws Exception {
+		String msg = "";
+		String failedMessage = "";
+		if (file.isEmpty()) {
+			msg = "failed to upload file because its empty";
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
+			
+		}
+		
+		String rootPath = request.getSession().getServletContext().getRealPath("/");
+		File dir = new File(rootPath + File.separator + "uploadedfile");
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		
+		File csvFile = new File(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+		
+		try {
+			try (InputStream is = file.getInputStream();
+			        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(csvFile))) {
+				int i;
+				
+				while ((i = is.read()) != -1) {
+					stream.write(i);
+				}
+				stream.flush();
+			}
+		}
+		catch (IOException e) {
+			msg = "failed to process file because : " + e.getMessage();
+			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
+		}
+		
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		int index = 0;
+		int notUploded = 0;
+		try {
+			PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+			br = new BufferedReader(new FileReader(csvFile));
+			
+			while ((line = br.readLine()) != null) {
+				String[] service = line.split(cvsSplitBy);
+				if (index != 0) {
+					PSIServiceManagement psiServiceManagement = Context.getService(PSIServiceManagementService.class)
+					        .findByCodeAndClinicId(service[1], id);
+					if (psiServiceManagement == null) {
+						psiServiceManagement = new PSIServiceManagement();
+					}
+					String name = "";
+					if (!StringUtils.isBlank(service[0])) {
+						name = service[0];
+					}
+					psiServiceManagement.setName(name);
+					String code = "";
+					if (!StringUtils.isBlank(service[1])) {
+						code = service[1];
+					}
+					psiServiceManagement.setEligible("");
+					psiServiceManagement.setCode(code);
+					
+					String brandName = "";
+					if (!StringUtils.isBlank(service[2])) {
+						brandName = service[2];
+					}
+					psiServiceManagement.setBrandName(brandName);
+					String category = "";
+					if (!StringUtils.isBlank(service[3])) {
+						category = service[3];
+					}
+					psiServiceManagement.setCategory(category);
+
+
+					Float unitCost = 0f;
+					if (service[4] != null || !service[4].isEmpty()) {
+						unitCost = Float.parseFloat(service[4]);
+					}
+					psiServiceManagement.setUnitCost(unitCost);
+					
+					Float purchasePrice = 0f;
+					if (service[5] != null || !service[5].isEmpty()) {
+						purchasePrice = Float.parseFloat(service[5]);
+					}
+					psiServiceManagement.setPurchasePrice(purchasePrice);
+					
+					psiServiceManagement.setPsiClinicManagement(psiClinicManagement);
+					
+					String provider = "";
+					psiServiceManagement.setProvider(provider);
+					psiServiceManagement.setType("PRODUCT");
+					
+					String gender = "";
+					
+					int yearTo = 0;
+
+					int monthTo = 0;
+
+					int dayTo = 0;
+
+					int yearFrom = 0;
+
+					int monthFrom = 0;
+
+					int dayFrom = 0;
+					
+					int ageStart = ClinicServiceConverter.getDaysFromYMD(yearTo, monthTo, dayTo);
+					int ageEnd = ClinicServiceConverter.getDaysFromYMD(yearFrom, monthFrom, dayFrom);
+					if (ageStart != 0 && ageEnd == 0) {
+						ageEnd = 43800;
+					}
+					psiServiceManagement.setGender(gender);
+					
+					psiServiceManagement.setYearTo(yearTo);
+					psiServiceManagement.setYearFrom(yearFrom);
+					
+					psiServiceManagement.setMonthFrom(monthFrom);
+					psiServiceManagement.setMonthTo(monthTo);
+					
+					psiServiceManagement.setDaysFrom(dayFrom);
+					psiServiceManagement.setDaysTo(dayTo);
+					psiServiceManagement.setAgeStart(ageStart);
+					psiServiceManagement.setAgeEnd(ageEnd);
+					
+					psiServiceManagement.setDateCreated(new Date());
+					psiServiceManagement.setCreator(Context.getAuthenticatedUser());
+					psiServiceManagement.setTimestamp(System.currentTimeMillis());
+					psiServiceManagement.setUuid(UUID.randomUUID().toString());
+					Context.getService(PSIServiceManagementService.class).saveOrUpdate(psiServiceManagement);
+					
+				}
+				index++;
+			}
+			msg = "Total successfully service uploaded: " + (index - 1);
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			failedMessage = "failed to process file because : " + e;
+			return new ResponseEntity<>(new Gson().toJson(msg + ", and  got error at column : " + (index + 1) + " due to "
+			        + failedMessage), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
+		
+	}
 }

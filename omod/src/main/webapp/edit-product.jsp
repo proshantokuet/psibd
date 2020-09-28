@@ -8,7 +8,7 @@
 <openmrs:require privilege="Edit Clinic Service" otherwise="/login.htm" />
 
 <c:url var="saveUrl" value="/module/PSI/addPPSIClinicService.form" />
-<c:url var="cancelUrl" value="/module/PSI/PSIClinicServiceList.form?id=${pSIServiceManagement.psiClinicManagement.cid}" />
+<c:url var="cancelUrl" value="/module/PSI/product-list.form?id=${pSIServiceManagement.psiClinicManagement.cid}" />
 
 
 

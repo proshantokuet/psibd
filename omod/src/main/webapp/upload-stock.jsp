@@ -8,7 +8,7 @@
 <openmrs:require privilege="Upload Clinic Service" otherwise="/login.htm" />
 
 <c:url var="saveUrl" value="/module/PSI/uploadPSIClinicService.form" />
-<c:url var="cancelUrl" value="/module/PSI/product-list.form?id=${id}" />
+<c:url var="cancelUrl" value="/module/PSI/stock-invoice-list.form?id=${id}" />
 
 
 
@@ -17,7 +17,7 @@
 	<div class="form">
     	<div class="note">
     	    
-        	<p>Upload Product to ${psiClinicManagement.name } (${psiClinicManagement.clinicId })</p>
+        	<p>Upload Stock to ${psiClinicManagement.name } (${psiClinicManagement.clinicId })</p>
         	${msg}
        	</div>
 		<div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
