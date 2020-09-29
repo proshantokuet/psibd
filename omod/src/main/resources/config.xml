@@ -49,6 +49,8 @@
 		shndhisobselement.hbm.xml
 		shndhisencounterexception.hbm.xml
 		shndhismultiplechoiceobselement.hbm.xml
+		shnstock.hbm.xml
+		shnstockdetails.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
