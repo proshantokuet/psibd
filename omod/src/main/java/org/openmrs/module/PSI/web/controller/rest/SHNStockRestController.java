@@ -3,6 +3,7 @@ package org.openmrs.module.PSI.web.controller.rest;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -11,13 +12,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.SHNStockDetails;
+import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.api.SHNStockService;
+import org.openmrs.module.PSI.converter.PSIServiceManagementConverter;
+import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -111,5 +117,22 @@ public class SHNStockRestController {
 		
 		return new ResponseEntity<>(new Gson().toJson(response.toString()), HttpStatus.OK);
 		
+	}
+	
+	@RequestMapping(value = "/get-product-stock/{clinicId}/{productId}", method = RequestMethod.GET)
+	public ResponseEntity<String> getStockById(@PathVariable int clinicId,@PathVariable int productId) throws Exception {
+
+		
+		JSONObject stockJsonObject = new JSONObject();
+		try {
+			List<ClinicServiceDTO> productStock = Context.getService(PSIServiceManagementService.class).getProductListAll(clinicId,productId);
+			String stockAvailable = String.valueOf( productStock.get(0).getStock());
+			stockJsonObject.put("stock", stockAvailable);
+		}
+		catch (Exception e) {
+			stockJsonObject.put("msg", e.getMessage());
+			return new ResponseEntity<String>(stockJsonObject.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<String>(stockJsonObject.toString(), HttpStatus.OK);
 	}
 }

@@ -4,8 +4,8 @@
 	<link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/style.css">
 	<link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/jquery.dataTables.css">
+	 <link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/select2.css"> 
 	<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/bootstrap.min.js"></script>
-	
 	
 <ul id="menu">
 	<%-- <li class="first"><a

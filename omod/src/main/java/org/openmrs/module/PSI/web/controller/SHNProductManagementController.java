@@ -42,7 +42,7 @@ public class SHNProductManagementController {
 	public void pSIClinicList(HttpServletRequest request, HttpSession session, Model model,
 	                          @RequestParam(required = true) int id) {
 		model.addAttribute("productList",
-		    Context.getService(PSIServiceManagementService.class).getProductListAll(id));
+		    Context.getService(PSIServiceManagementService.class).getProductListAll(id,0));
 		model.addAttribute("id", id);
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
 		model.addAttribute("psiClinicManagement", psiClinicManagement);

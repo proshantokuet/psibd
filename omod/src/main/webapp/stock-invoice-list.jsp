@@ -43,7 +43,7 @@
 <div id="loader"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
-<p><a href="${pageContext.request.contextPath}/module/PSI/add-product.form?id=${id}">Add Stock</a> 
+<p><a href="${pageContext.request.contextPath}/module/PSI/add-stock.form?id=${id}">Add Stock</a> 
 <%-- <a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Services</a> --%>
 <a class="" href="${pageContext.request.contextPath}/module/PSI/upload-stock.form?id=${id}"  style="margin-left: 10px;">Upload Stock</a>
 </p>

@@ -33,7 +33,7 @@ public interface PSIServiceManagementDAO {
 	
 	public int updateTableAutoIncrementValue(int autoIncrementNo);
 	
-	public List<ClinicServiceDTO> getProductListAll(int clinicId);
+	public List<ClinicServiceDTO> getProductListAll(int clinicId,int productId);
 
 	
 }
