@@ -1,12 +1,17 @@
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.api.db.SHNStockDAO;
+import org.openmrs.module.PSI.dto.ClinicServiceDTO;
+import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
 
 public class HibernateSHNStockDAO implements SHNStockDAO {
 	
@@ -42,6 +47,51 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 			return lists.get(0);
 		} else {
 			return null;
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNStock> getAllStockByClinicCode(String clinincCode) {
+		List<SHNStock> stocks = new ArrayList<SHNStock>();
+		String stockSql = "select s.stkid,s.invoice_number as invoiceNumber,Date(s.recieve_date)receiveDate,s.stock_in_id as stockInId from shn_stock s where s.clinic_code = '" +clinincCode+ "'  order by s.recieve_date DESC";
+		log.error("Query" + stockSql);
+		try {
+			stocks = sessionFactory.getCurrentSession().createSQLQuery(stockSql)
+					 .addScalar("stkid",StandardBasicTypes.INTEGER)
+					 .addScalar("invoiceNumber",StandardBasicTypes.STRING)
+					 .addScalar("receiveDate",StandardBasicTypes.DATE)
+					 .addScalar("stockInId", StandardBasicTypes.STRING)
+					 .setResultTransformer(new AliasToBeanResultTransformer(SHNStock.class)).list();
+			log.error("Query Size" + stocks.size());
+			return stocks;
+		} catch (Exception e) {
+			log.error(e.toString());
+			return stocks;
+		}
+
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNStockDetailsDTO> getStockDetailsByStockId(int stockId) {
+		List<SHNStockDetailsDTO> stocks = new ArrayList<SHNStockDetailsDTO>();
+		String stockDetailsSql = "select product_id as productID,product_name as productName,debit,Date(expiry_date)as expiryDate from shn_stock_details where shn_stock_id = "+stockId+"";
+		log.error("Query" + stockDetailsSql);
+		try {
+			stocks = sessionFactory.getCurrentSession().createSQLQuery(stockDetailsSql)
+					 .addScalar("productID",StandardBasicTypes.INTEGER)
+					 .addScalar("productName",StandardBasicTypes.STRING)
+					 .addScalar("expiryDate",StandardBasicTypes.DATE)
+					 .addScalar("debit", StandardBasicTypes.INTEGER)
+					 .setResultTransformer(new AliasToBeanResultTransformer(SHNStockDetailsDTO.class)).list();
+			log.error("Query Size" + stocks.size());
+			return stocks;
+		} catch (Exception e) {
+			log.error(e.toString());
+			return stocks;
 		}
 	}
 

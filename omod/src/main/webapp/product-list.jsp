@@ -122,9 +122,9 @@ $jq(document).ready( function () {
 	var title = "Product List Of " + "${psiClinicManagement.name }" +" - "+ "(${psiClinicManagement.clinicId })";
 	$jq('#productList').DataTable({
         language: {
-            emptyTable: "no service available", //
+            emptyTable: "no product available", //
             loadingRecords: "Please wait .. ", // default Loading...
-            zeroRecords: "No matching service found"
+            zeroRecords: "No matching product found"
            },
            "order": [[ 1, "asc" ]],
 			"searching": true,

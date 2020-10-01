@@ -9,9 +9,11 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.AUHCServiceCategory;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIServiceManagement;
+import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.api.AUHCServiceCategoryService;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
+import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
@@ -28,6 +30,8 @@ public class SHNStockManagementController {
 	@RequestMapping(value = "/module/PSI/add-stock", method = RequestMethod.GET)
 	public void addPSIClinic(HttpServletRequest request, HttpSession session, Model model,
 	                         @RequestParam(required = false) int id) {
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
 		model.addAttribute("productList",
 			    Context.getService(PSIServiceManagementService.class).getProductListAll(id,0));
 		model.addAttribute("id", id);
@@ -49,11 +53,10 @@ public class SHNStockManagementController {
 	@RequestMapping(value = "/module/PSI/stock-invoice-list", method = RequestMethod.GET)
 	public void pSIClinicList(HttpServletRequest request, HttpSession session, Model model,
 	                          @RequestParam(required = true) int id) {
-		//model.addAttribute("productList",Context.getService(PSIServiceManagementService.class).getProductListAll(id));
 		model.addAttribute("id", id);
 		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
 		model.addAttribute("psiClinicManagement", psiClinicManagement);
-		
+		model.addAttribute("stockList",Context.getService(SHNStockService.class).getAllStockByClinicCode(psiClinicManagement.getClinicId()));
 		model.addAttribute("hasDashboardPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission",
@@ -67,6 +70,20 @@ public class SHNStockManagementController {
 		model.addAttribute("services",serviceCategory);
 
 		model.addAttribute("pSIServiceManagement", Context.getService(PSIServiceManagementService.class).findById(id));
+		
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+	}
+	
+	@RequestMapping(value = "/module/PSI/view-stock", method = RequestMethod.GET)
+	public void getStockDetailsByStockId(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id,@RequestParam int clinicid) {
+		
+		model.addAttribute("id", clinicid);
+		SHNStock stock = Context.getService(SHNStockService.class).findById(id);
+		model.addAttribute("invoiceNo", stock.getInvoiceNumber());
+		model.addAttribute("stockDetailsList", Context.getService(SHNStockService.class).getStockDetailsByStockId(id));
 		
 		model.addAttribute("hasDashboardPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));

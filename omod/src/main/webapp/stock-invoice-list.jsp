@@ -20,11 +20,6 @@
     color: #0e5c52;
 }
 
-.dataTables_wrapper .dataTables_filter {
-    float: left;
-    text-align: right;
-}
-
 #loader{
 	background-color:#fff;
 	 padding: 15px;
@@ -56,7 +51,7 @@
 <div id="productListDiv" class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
 		<div class="note">
-		<p>Invoice List of ${psiClinicManagement.name } (${psiClinicManagement.clinicId })</p>        	
+		<p>Stock List of ${psiClinicManagement.name } (${psiClinicManagement.clinicId })</p>        	
 		</div>	
 	</div>
 	<br />			
@@ -64,47 +59,29 @@
 	    <thead>
 	        <tr>
 	            <th>#Sl</th>
-	            <th>Date</th>
+	            <th>Recieve Date</th>
 	            <th>Invoice Number</th>
 	            <th>Stock In ID</th>
 	            <th>Action</th>	            
 	        </tr>
 	    </thead>
-<%-- 	    <tbody>
-	    	<c:forEach var="product" items="${ productList }">
+	    <tbody>
+	    	<c:forEach var="stock" items="${ stockList }">
 	        <tr>
-	        	<td>${ product.sid }</td>
-	            <td>${ product.name }</td>
-	            <td>${ product.code }</td>
-	             <td>${ product.brandName }</td>
-	            <td>${ product.category }</td>	           
-	            <td>${ product.clinicName }</td>
-	            <td>${ product.purchasePrice }</td>
-	            <td>${ product.unitCost }</td>
-	             <td>${ product.stock }</td>
-	            <c:if test="${product.voided}">
-	            <td >Inactive</td>
-	            </c:if>
-	            <c:if test="${!product.voided}">
-	            <td >Active</td>
-	            </c:if>
+	        	<td>${ stock.stkid }</td>
+	            <td>${ stock.receiveDate }</td>
+	            <td>${ stock.invoiceNumber }</td>
+	             <td>${ stock.stockInId }</td>
 	            <td>
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/edit-product.form?id=${ product.sid }"/>"> Edit</a>
-	            <a href="<c:url value="/module/PSI/deletePSIClinicService.form?id=${ service.sid }"/>"> Delete</a> 
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/view-stock.form?id=${ stock.stkid }&clinicid=${id}"/>"> View Details</a>
 	            </td>
 	        </tr>
 	       </c:forEach>
 	        
-	    </tbody> --%>
+	    </tbody> 
 	</table>
 </div>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jszip.min.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.html5.min.js"></script>
-<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/pdfmake.min.js"></script>
-<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.print.min.js"></script>
-<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/vfs_fonts.js"></script>
 <script type="text/javascript">
 
 var $jq = jQuery.noConflict();
@@ -116,30 +93,14 @@ $jq(document).ready( function () {
 	var title = "Invoice List Of " + "${psiClinicManagement.name }" +" - "+ "(${psiClinicManagement.clinicId })";
 	$jq('#stockList').DataTable({
         language: {
-            emptyTable: "no service available", //
+            emptyTable: "no stock available", //
             loadingRecords: "Please wait .. ", // default Loading...
-            zeroRecords: "No matching service found"
+            zeroRecords: "No matching stock found"
            },
            "order": [[ 1, "asc" ]],
 			"searching": true,
 			bFilter: false,
-			bInfo: false,
-			dom: 'Bfrtip',
-				   destroy: true,
-				   buttons: [
-				             {
-				                 extend: 'excelHtml5',
-				                 title: title,
-				                 text: 'Export as .xlxs'
-				             },
-				             {
-				         		extend: 'pdfHtml5',
-				         		title: title,
-				         		text: 'Export as .pdf',
-				         		orientation: 'landscape',
-				         		pageSize: 'LEGAL'
-				         	  }
-				         ]
+			bInfo: false
          });
 } );
 

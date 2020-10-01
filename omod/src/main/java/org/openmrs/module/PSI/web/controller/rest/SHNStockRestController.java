@@ -111,11 +111,11 @@ public class SHNStockRestController {
 		catch (Exception e) {
 			e.printStackTrace();
 			
-			response.put("msg", e.getMessage());
-			return new ResponseEntity<>(new Gson().toJson(response.toString()), HttpStatus.OK);
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response.toString(), HttpStatus.OK);
 		}
 		
-		return new ResponseEntity<>(new Gson().toJson(response.toString()), HttpStatus.OK);
+		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
 		
 	}
 	

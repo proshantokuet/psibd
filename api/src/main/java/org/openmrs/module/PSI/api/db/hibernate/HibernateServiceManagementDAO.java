@@ -181,13 +181,14 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ClinicServiceDTO> getProductListAll(int clinicId,int productId) {
-		String productIdString = "";
+/*		String productIdString = "";
 		if(productId != 0) {
 			productIdString = " and p.sid ="+ productId;
 		}
-		
+		*/
 		List<ClinicServiceDTO> clinics = new ArrayList<ClinicServiceDTO>();
-		String productListQuery = ""
+		String productListQuery = "CALL getProductListWithCurrentStock("+clinicId+", "+productId+")";
+		/*String productListQuery = ""
 				+ "SELECT p.sid as sid, "
 				+ "       p.NAME as name, "
 				+ "       p.code, "
@@ -203,7 +204,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 				+ "       LEFT JOIN (select s.clinic_code,s.clinic_name,CAST(SUM(sd.debit) AS UNSIGNED) as currentStock,sd.product_name,sd.product_id "
 				+ "       from shn_stock s  join shn_stock_details sd on s.stkid = sd.shn_stock_id "
 				+ "       GROUP by sd.product_id) as stock on stock.product_id = p.sid "
-				+ "       where p.psi_clinic_management_id =  "+clinicId+"  and p.service_type = \"PRODUCT\" " + productIdString +" ";
+				+ "       where p.psi_clinic_management_id =  "+clinicId+"  and p.service_type = \"PRODUCT\" " + productIdString +" ";*/
 		
 		try{
 			log.error("Query" + productListQuery);

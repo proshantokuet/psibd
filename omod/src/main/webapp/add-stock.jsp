@@ -14,11 +14,11 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <openmrs:require privilege="Clinic Service List" otherwise="/login.htm" />
-
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <%@ include file="template/localHeader.jsp"%>
 
 <link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/font-awesome.min.css">
-<c:url var="saveUrl" value="/module/PSI/addPPSIClinicService.form" />
 <c:url var="cancelUrl" value="/module/PSI/stock-invoice-list.form?id=${id}" /> 
 
 <style>
@@ -43,6 +43,7 @@
 							
 		</div>
 				<div style="display: none;" class="alert alert-success" id="serverResponseMessage" role="alert"></div>
+				<div style="display: none;" class="alert alert-danger" id="validationFailedMessage" role="alert"></div>
 					<p><span class="text-danger"> * Required Fields</span></p>
 				<div class="row">
 					<div class="col-lg-3 form-group">
@@ -67,6 +68,7 @@
 											<option value="${product.sid}_${product.name}">${product.name}</option>
 										</c:forEach>
 								</select>
+								<span id="productselectvalidation" class="text-danger"></span>
 					</div>
 					<div class="col-md-2 form-group">
 						<label for="productId">Product ID:</label>  
@@ -79,7 +81,7 @@
 					</div>
 					<div class="col-md-2 form-group">
 						<label for="quantity">Stock Added:</label><span class="text-danger"> *</span> 
-						<input type="number" min="1" oninput="this.value = Math.abs(this.value)" style="height: 39px;" class="form-control" id="quantity" >
+						<input type="number" min="1" step="1" oninput="this.value = Math.abs(this.value)" style="height: 39px;" class="form-control" id="quantity" >
 							<span id="QuantityNoValidation" class="text-danger"></span>
 					</div>
 					<div class="col-md-2 form-group">
@@ -157,73 +159,94 @@ $jq( function() {
 <script>
 jQuery(document).ready(function($) {   
 	$("#receiveDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
-	$("#expiryDate").datepicker({ dateFormat: 'yy-mm-dd', minDate: new Date });
-	$('#product').select2({dropdownAutoWidth : true});
+	$("#expiryDate").datepicker({ dateFormat: 'yy-mm-dd', minDate: new Date,changeYear: true,changeMonth: true });
+	//$('#product').select2({dropdownAutoWidth : true});
 }); 
 
-/* $('#addProductTemporaryList').delegate('.identifier', 'change', function() {
-	var $row = $(this).closest("tr");
-	var quantity = +$(this).val();
-	if(quantity < 1) {
-		$(this).val('');
-		$row.find("p:first").html("* Quantity Can not be less than 1");
+function saveStockData() {
+	if(jQuery("#invoiceNo").val() == "") {
+		jQuery("#invoiceNoValidation").html("<strong>Please fill out this field</strong>");
+		return;
 	}
-	else $row.find("p:first").html("");
-});
- */
+	jQuery("#invoiceNoValidation").html("");
+	if(jQuery("#receiveDate").val() == 0) {
+		jQuery("#receiveDateValidation").html("<strong>Please fill out this field</strong>");
+		return;
+	}
+	jQuery("#receiveDateValidation").html("");
+	
+	
+	var url = "/openmrs/ws/rest/v1/stock/save-update";
+	var token = jQuery("meta[name='_csrf']").attr("content");
+	var header = jQuery("meta[name='_csrf_header']").attr("content");
 
-/* function createStockArray() {
+
 	var stockArray = [];
-	$('#addProductTemporaryList > tbody > tr').each(function(index, tr) {
-		var stockObject = {};
-		var todayDate = new Date(), y = todayDate.getFullYear(), m = todayDate.getMonth();
-		var invoiceNo = $('#invoiceNo').val();
-		var recieveDate = $('#receiveDate').val();
-		var branchId = "${branchIdHidden}";
-		//get td of each row and insert it into cols array
-		$(this).find('td').each(function(colIndex, c) {
 
-			if(colIndex == 1) {
-				stockObject["productId"] = +$(this).find('option:selected').val();
-			}
-			if(colIndex == 2) {
-				stockObject["debit"] = +$(this).find('input[type="text"]').val();
-			}
-			
-			if(colIndex == 3) {
-    		 	if(parseInt($(this).find('input[type="number"]').val()) == 0) {
-    		 		$(this).find('input[type="number"]').val('');
-    		 	}
-				stockObject["credit"] = parseInt($(this).find('input[type="number"]').val());
-			}
-			
-			if(colIndex == 4) {
-				stockObject["expireyDate"] = $(this).find('input[type="date"]').val();
-			}
+	jQuery('#trainingList > tbody > tr').each(function(index, tr) {
+				var stockObject = {};
+				var $row = jQuery(this).closest('tr'); //get the current row
+				var productName = $row.find('td').eq(1).text();
+				var productId = $row.find('td').eq(2).text();
+				var stockAdded = $row.find('td').eq(4).text();
+				var expiryDate = $row.find('td').eq(6).text();
+				stockObject["productID"] = parseInt(productId);
+				stockObject["productName"] = productName;
+				stockObject["debit"] = parseInt(stockAdded);
+				stockObject["credit"] = 0;
+				stockObject["expiryDate"] = expiryDate;
+				stockArray.push(stockObject);
+			});
+	if(stockArray.length < 1) {
+		jQuery("#validationFailedMessage").show();
+		jQuery("#validationFailedMessage").html("<strong>* Please fill out the required fields</strong>");
+		jQuery(window).scrollTop(0);
+		 return;
+	}
+	jQuery("#validationFailedMessage").hide();
+	var formData;
 
-		});
- 		if(stockObject["productId"] == 0 || isNaN(stockObject["credit"]) || stockObject["expireyDate"] == "") {
-			$("#validationMessage").html("<strong>* Please fill out the required fields</strong>");
-			stockArray = [];
-			return false;
-		}
-		$("#validationMessage").html("");
-		stockObject["year"] = todayDate.getFullYear();
-		stockObject["month"] = todayDate.getMonth()+1;
-		stockObject["branchId"] = parseInt(branchId);
-		stockObject["status"] = "ACTIVE";
-		stockObject["sellOrPassTo"] = 0;
-		stockObject["referenceType"] = "STOCK";
-		stockObject["invoiceNumber"] = invoiceNo;
-		stockObject["receiveDate"] = recieveDate;
-		stockObject["startDate"] = $.datepicker.formatDate('yy-mm-dd', new Date(y, m, 1));
-		//insert this cols(full rows data) array into stock array
-		if(!isNaN(stockObject["credit"])) {
-			stockArray.push(stockObject);
-		 }
-	});
-	return stockArray;
-} */
+		formData = {
+			"stockId" : 0,
+			"clinicName" : "${psiClinicManagement.name }",
+			"clinicCode" : "${psiClinicManagement.clinicId }",
+			"invoiceNumber" : jQuery("#invoiceNo").val(),
+			"receiveDate" : jQuery("#receiveDate").val(),
+			"stockDetails" : stockArray
+		};
+		console.log(formData)
+		jQuery("#loading").show();
+		jQuery(window).scrollTop(0);
+		event.preventDefault();
+		jQuery.ajax({
+			contentType : "application/json",
+			type: "POST",
+	        url: url,
+	        data: JSON.stringify(formData), 
+	        dataType : 'json',
+	        
+			timeout : 100000,
+			beforeSend: function(xhr) {				    
+				 xhr.setRequestHeader(header, token);
+			},
+			success : function(data) {
+				jQuery("#serverResponseMessage").show();
+				jQuery("#serverResponseMessage").html(data.message);
+				jQuery("#loading").hide();
+			   	if(data.stockId){					   
+				   window.location.replace("/openmrs/module/PSI/stock-invoice-list.form?id=${id}");
+				   
+			   }
+			   
+			},
+			error : function(e) {
+			   
+			},
+			done : function(e) {				    
+			    console.log("DONE");				    
+			}
+		}); 
+	};
 
 jQuery("#product").change(function (event) {
 	if(jQuery("#product").val() == "") {
@@ -257,7 +280,29 @@ jQuery("#product").change(function (event) {
 });
 	
 function appendRowInTable() {
-
+	if(jQuery("#product").val() == "") {
+		jQuery("#productselectvalidation").html("<strong>Please fill out this field</strong>");
+		return;
+	}
+	jQuery("#productselectvalidation").html("");
+	var quantity = parseInt(jQuery("#quantity").val());
+	var stock = parseInt(jQuery("#currentStock").val());
+	if(quantity == 0) {
+		jQuery("#QuantityNoValidation").html("<strong>Stock can not be zero</strong>");
+		return;
+	}
+	jQuery("#QuantityNoValidation").html("");
+	if(isNaN(quantity)) {
+		jQuery("#QuantityNoValidation").html("<strong>Please fill out this field</strong>");
+		return;
+	}
+	jQuery("#QuantityNoValidation").html("");
+	if(jQuery("#expiryDate").val() == "") {
+		jQuery("#expiryDateValidation").html("<strong>Please fill out this field</strong>");
+		return;
+	}
+	jQuery("#expiryDateValidation").html("");
+	
 	var productName = jQuery("#product").val().split("_")[1];
 	var productId = jQuery("#productId").val();
 	var currentStock = jQuery("#currentStock").val();
@@ -268,10 +313,10 @@ function appendRowInTable() {
 	jQuery("#trainingList tbody").append("<tr id='rec-"+size+"'><td><span class=\"sn\">"+size+"</span>.</td><td>"+productName+"</td><td>"+productId+"</td><td>"+currentStock+"</td><td>"+stockAdded+"</td><td>"+afteAdded+"</td><td>"+expiryDate+"</td><td><a class=\"btn btn-xs delete-record\" data-id="+size+"><i class=\"fa fa-trash\"></i></a></td></tr>");
 
 	jQuery('#product').val('').trigger('change');
-	jQuery("#productId").val('');
-	jQuery("#currentStock").val('');
-	jQuery("#quantity").val('');
-	jQuery("#expiryDate").val('');
+	jQuery("#productId").val("");
+	jQuery("#currentStock").val("");
+	jQuery("#quantity").val("");
+	jQuery("#expiryDate").val("");
 	
 
 }
