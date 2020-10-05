@@ -571,7 +571,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 				}
 				index++;
 			}
-			msg = "Total successfully service uploaded: " + (index - 1);
+			msg = "Total successfully product uploaded: " + (index - 1);
 			
 		}
 		catch (Exception e) {

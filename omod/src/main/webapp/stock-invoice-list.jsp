@@ -97,7 +97,7 @@ $jq(document).ready( function () {
             loadingRecords: "Please wait .. ", // default Loading...
             zeroRecords: "No matching stock found"
            },
-           "order": [[ 1, "asc" ]],
+           "order": [[ 1, "desc" ]],
 			"searching": true,
 			bFilter: false,
 			bInfo: false

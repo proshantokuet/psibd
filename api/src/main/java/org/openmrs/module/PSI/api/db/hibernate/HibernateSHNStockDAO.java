@@ -11,6 +11,7 @@ import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.api.db.SHNStockDAO;
 import org.openmrs.module.PSI.dto.ClinicServiceDTO;
+import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
 
 public class HibernateSHNStockDAO implements SHNStockDAO {
@@ -87,6 +88,35 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 					 .addScalar("expiryDate",StandardBasicTypes.DATE)
 					 .addScalar("debit", StandardBasicTypes.INTEGER)
 					 .setResultTransformer(new AliasToBeanResultTransformer(SHNStockDetailsDTO.class)).list();
+			log.error("Query Size" + stocks.size());
+			return stocks;
+		} catch (Exception e) {
+			log.error(e.toString());
+			return stocks;
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNStockDTO> findStockByPrductIdInvoiceAndExpiryDate(int productId,
+			String invoiceNo, String expiryDate) {
+		List<SHNStockDTO> stocks = new ArrayList<SHNStockDTO>();
+		String StockHql = ""
+				+ "SELECT s.stkid          AS stockId, "
+				+ "       s.invoice_number AS invoiceNumber "
+				+ "FROM   shn_stock s "
+				+ "       JOIN shn_stock_details sd "
+				+ "         ON s.stkid = sd.shn_stock_id "
+				+ "WHERE  s.invoice_number = '"+invoiceNo+"' "
+				+ "       AND sd.product_id = "+productId+" "
+				+ "       AND Date(sd.expiry_date) = Date('"+expiryDate+"')";		
+		log.error("Query" + StockHql);
+		try {
+			stocks = sessionFactory.getCurrentSession().createSQLQuery(StockHql)
+					 .addScalar("stockId",StandardBasicTypes.INTEGER)
+					 .addScalar("invoiceNumber",StandardBasicTypes.STRING)
+					 .setResultTransformer(new AliasToBeanResultTransformer(SHNStockDTO.class)).list();
 			log.error("Query Size" + stocks.size());
 			return stocks;
 		} catch (Exception e) {

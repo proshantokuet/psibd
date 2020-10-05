@@ -46,7 +46,7 @@
 <script type="text/javascript">
 $("#productForm").submit(function(event) { 
 			$("#loading").show();
-			var url = "/openmrs/ws/rest/v1/service-management/product-upload";			
+			var url = "/openmrs/ws/rest/v1/stock/stock-upload";			
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");			
 			

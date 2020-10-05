@@ -6,6 +6,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.api.db.SHNStockDAO;
+import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
 
 public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockService {
@@ -42,6 +43,13 @@ public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockS
 	public List<SHNStockDetailsDTO> getStockDetailsByStockId(int stockId) {
 		// TODO Auto-generated method stub
 		return dao.getStockDetailsByStockId(stockId);
+	}
+
+	@Override
+	public List<SHNStockDTO> findStockByPrductIdInvoiceAndExpiryDate(int productId,
+			String invoiceNo, String expiryDate) {
+		// TODO Auto-generated method stub
+		return dao.findStockByPrductIdInvoiceAndExpiryDate(productId, invoiceNo, expiryDate);
 	}
 
 }
