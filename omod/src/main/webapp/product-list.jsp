@@ -68,10 +68,10 @@
 	            <th>Product Code</th>
 	            <th>Brand Name</th>
 	            <th>Category</th>
-	            <th>Clinic Name</th>
 	            <th>Purchase Price(Per Unit)</th>
 	            <th>MRP(Per Unit)</th>
 	            <th>Stock</th>
+	            <th>Earliest Expiry Date</th>
 	            <th>Status</th>
 	            <th>Action</th>
 	        </tr>
@@ -84,10 +84,10 @@
 	            <td>${ product.code }</td>
 	             <td>${ product.brandName }</td>
 	            <td>${ product.category }</td>	           
-	            <td>${ product.clinicName }</td>
 	            <td>${ product.purchasePrice }</td>
 	            <td>${ product.unitCost }</td>
 	             <td>${ product.stock }</td>
+	             <td>${ product.earliestExpiry }</td>
 	            <c:if test="${product.voided}">
 	            <td >Inactive</td>
 	            </c:if>

@@ -21,4 +21,6 @@ public interface SHNStockService extends OpenmrsService {
 	
 	public List<SHNStockDTO> findStockByPrductIdInvoiceAndExpiryDate(int productId, String invoiceNo, String expiryDate);
 	
+	public String updateStockByEarliestExpiryDate(String eslipNo, String clinicCode);
+	
 }

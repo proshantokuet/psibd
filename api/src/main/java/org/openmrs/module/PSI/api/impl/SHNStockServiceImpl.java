@@ -52,4 +52,10 @@ public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockS
 		return dao.findStockByPrductIdInvoiceAndExpiryDate(productId, invoiceNo, expiryDate);
 	}
 
+	@Override
+	public String updateStockByEarliestExpiryDate(String eslipNo,String clinicCode) {
+		// TODO Auto-generated method stub
+		return dao.updateStockByEarliestExpiryDate(eslipNo, clinicCode);
+	}
+
 }

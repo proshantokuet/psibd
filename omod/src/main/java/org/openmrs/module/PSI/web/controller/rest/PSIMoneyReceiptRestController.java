@@ -19,6 +19,7 @@ import org.openmrs.module.PSI.SHNEslipNoGenerate;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.PSIUniqueIdGeneratorService;
+import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.converter.PSIMoneyReceiptConverter;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
@@ -275,6 +276,10 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
 					Context.getService(PSIServiceProvisionService.class).deleteByPatientUuidAndMoneyReceiptIdNull(moneyReceipt.getString("patientUuid"));
 				}
+			}
+			if(psiMoneyReceipt.getIsComplete() == 1) {
+				
+				String updatedId = Context.getService(SHNStockService.class).updateStockByEarliestExpiryDate(psiMoneyReceipt.getEslipNo(), psiMoneyReceipt.getClinicCode());
 			}
 			
 		}

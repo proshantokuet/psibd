@@ -42,6 +42,8 @@ public class ClinicServiceDTO {
 	
 	private long stock;
 	
+	private String earliestExpiry;
+	
 	public boolean isVoided() {
 		return voided;
 	}
@@ -200,6 +202,14 @@ public class ClinicServiceDTO {
 
 	public void setStock(long stock) {
 		this.stock = stock;
+	}
+
+	public String getEarliestExpiry() {
+		return earliestExpiry;
+	}
+
+	public void setEarliestExpiry(String earliestExpiry) {
+		this.earliestExpiry = earliestExpiry;
 	}
 
 

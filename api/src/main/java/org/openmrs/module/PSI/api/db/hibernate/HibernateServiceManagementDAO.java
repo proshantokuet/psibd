@@ -219,6 +219,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 					.addScalar("unitCost",StandardBasicTypes.FLOAT)
 					.addScalar("stock",StandardBasicTypes.LONG)
 					.addScalar("voided",StandardBasicTypes.BOOLEAN)
+					.addScalar("earliestExpiry",StandardBasicTypes.STRING)
 					.setResultTransformer(new AliasToBeanResultTransformer(ClinicServiceDTO.class)).
 					list();
 			log.error("Query Reuslt" + clinics.size());

@@ -125,4 +125,28 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 		}
 	}
 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String updateStockByEarliestExpiryDate(String eslipNo,String clinicCode) {
+		List<String> updatesTockDetailsId = new ArrayList<String>();
+		String StockHql = "CALL stockUpdateByEarliestExpiryDate('"+eslipNo+"','"+clinicCode+"')";					
+		log.error("Query" + StockHql);
+		try {
+			updatesTockDetailsId = sessionFactory.getCurrentSession().createSQLQuery(StockHql).list();
+			log.error("Query size" + updatesTockDetailsId.size());
+			if(updatesTockDetailsId.size() > 0) {
+				log.error("Query result" + updatesTockDetailsId.get(0));
+				return updatesTockDetailsId.get(0);
+			}
+			else {
+				return "No Stock Updated";
+			}
+			
+		} catch (Exception e) {
+			log.error(e.toString());
+			return e.toString();
+		}
+	}
+
 }
