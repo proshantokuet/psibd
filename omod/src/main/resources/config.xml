@@ -51,6 +51,7 @@
 		shndhismultiplechoiceobselement.hbm.xml
 		shnstock.hbm.xml
 		shnstockdetails.hbm.xml
+		shnstockadjust.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

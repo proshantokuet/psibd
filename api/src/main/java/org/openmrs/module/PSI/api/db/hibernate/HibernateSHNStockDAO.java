@@ -9,8 +9,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.PSI.SHNStock;
+import org.openmrs.module.PSI.SHNStockAdjust;
 import org.openmrs.module.PSI.api.db.SHNStockDAO;
 import org.openmrs.module.PSI.dto.ClinicServiceDTO;
+import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
 
@@ -147,6 +149,34 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 			log.error(e.toString());
 			return e.toString();
 		}
+	}
+
+
+	@Override
+	public SHNStockAdjust saveOrUpdateStockAdjust(SHNStockAdjust shnStockAdjust) {
+		// TODO Auto-generated method stub
+		sessionFactory.getCurrentSession().saveOrUpdate(shnStockAdjust);
+		return shnStockAdjust;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNStockAdjust getAdjustHistoryById(int adjustId) {
+		List<SHNStockAdjust> lists = sessionFactory.getCurrentSession().createQuery("from SHNStockAdjust where adjustId = :id")
+		        .setInteger("id", adjustId).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	@Override
+	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

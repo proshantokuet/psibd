@@ -3,6 +3,8 @@ package org.openmrs.module.PSI.api.db;
 import java.util.List;
 
 import org.openmrs.module.PSI.SHNStock;
+import org.openmrs.module.PSI.SHNStockAdjust;
+import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
 
@@ -19,6 +21,12 @@ public interface SHNStockDAO {
 	public List<SHNStockDTO> findStockByPrductIdInvoiceAndExpiryDate(int productId, String invoiceNo, String expiryDate);
 	
 	public String updateStockByEarliestExpiryDate(String eslipNo, String clinicCode);
+	
+	public SHNStockAdjust saveOrUpdateStockAdjust(SHNStockAdjust shnStockAdjust);
+	
+	public SHNStockAdjust getAdjustHistoryById(int adjustId);
+
+	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId);
 
 
 

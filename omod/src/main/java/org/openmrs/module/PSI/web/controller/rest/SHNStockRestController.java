@@ -28,6 +28,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.SHNStock;
+import org.openmrs.module.PSI.SHNStockAdjust;
 import org.openmrs.module.PSI.SHNStockDetails;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
@@ -35,6 +36,7 @@ import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.converter.ClinicServiceConverter;
 import org.openmrs.module.PSI.converter.PSIServiceManagementConverter;
 import org.openmrs.module.PSI.dto.ClinicServiceDTO;
+import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
 import org.springframework.http.HttpStatus;
@@ -56,7 +58,7 @@ public class SHNStockRestController {
 	protected final Log log = LogFactory.getLog(getClass());
 	public static DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
 	@RequestMapping(value = "/save-update", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<String> newPatient(@RequestBody SHNStockDTO dto) throws Exception {
+	public ResponseEntity<String> stockSave(@RequestBody SHNStockDTO dto) throws Exception {
 		
 		JSONObject response = new JSONObject();
 		log.error("DTO" + dto);
@@ -302,6 +304,44 @@ public class SHNStockRestController {
 		}
 		
 		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value = "/adjust-save-update", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<String> stockAdjustSave(@RequestBody SHNStockAdjustDTO dto) throws Exception {
+		
+		JSONObject response = new JSONObject();
+		log.error("DTO" + dto);
+		try {
+
+			SHNStockAdjust stock = Context.getService(SHNStockService.class).getAdjustHistoryById(dto.getAdjustId());
+			if (stock == null) {
+				stock = new SHNStockAdjust();
+				stock.setDateCreated(new Date());
+			}
+			
+			stock.setProductId(dto.getProductId());
+			stock.setClinicId(dto.getClinicId());
+			stock.setClinicCode(dto.getClinicCode());
+			stock.setAdjustDate(new Date());
+			stock.setPreviousStock(dto.getPreviousStock());
+			stock.setChangedStock(dto.getChangedStock());
+			stock.setAdjustReason(dto.getAdjustReason());;
+			stock.setCreator(Context.getAuthenticatedUser());
+			
+			SHNStockAdjust responseAdjustStock =  Context.getService(SHNStockService.class).saveOrUpdateStockAdjust(stock);
+			response.put("message", "Stock Adjusted Successfully");
+			response.put("adjustId", responseAdjustStock.getAdjustId());
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
 		
 	}
 }

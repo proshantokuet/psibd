@@ -42,6 +42,7 @@
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
 							
 		</div>
+		<div class="form-content">
 				<div style="display: none;" class="alert alert-success" id="serverResponseMessage" role="alert"></div>
 				<div style="display: none;" class="alert alert-danger" id="validationFailedMessage" role="alert"></div>
 					<p><span class="text-danger"> * Required Fields</span></p>
@@ -58,7 +59,7 @@
 					</div>
 				</div>
 				<div><p><strong>Product Information:</strong></p></div>
-			
+				
 				<div class="row">
 					<div class="col-md-2 form-group">
 						<label for="productName">Product Name:</label><span class="text-danger"> *</span> 
@@ -146,8 +147,9 @@
 				<div class="text-center">
 	                <button type="submit" onclick="saveStockData()" class="btn btn-primary" value="confirm">Confirm All</button>&nbsp;<a href="${cancelUrl}">Back</a>
 	            </div>
+            </div>
    	</div>
-</div>       
+       
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/select2.js"></script>
 <!-- <script>
 var $jq = jQuery.noConflict();

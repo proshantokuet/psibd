@@ -95,8 +95,8 @@
 	            <td >Active</td>
 	            </c:if>
 	            <td>
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/edit-product.form?id=${ product.sid }"/>"> Edit</a>
-	            <%-- <a href="<c:url value="/module/PSI/deletePSIClinicService.form?id=${ service.sid }"/>"> Delete</a> --%> 
+	            <div><a class="btn btn-primary" href="<c:url value="/module/PSI/edit-product.form?id=${ product.sid }"/>"> Edit</a></div>
+	            <div style="padding-top: 5px;"><a class="btn btn-primary" href="<c:url value="/module/PSI/adjust-stock.form?id=${ product.sid }&clinicid=${id}"/>"> Adjust</a></div>
 	            </td>
 	        </tr>
 	       </c:forEach>

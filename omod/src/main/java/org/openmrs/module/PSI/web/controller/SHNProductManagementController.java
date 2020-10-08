@@ -1,6 +1,7 @@
 package org.openmrs.module.PSI.web.controller;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -11,6 +12,7 @@ import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.api.AUHCServiceCategoryService;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
+import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
@@ -79,6 +81,21 @@ public class SHNProductManagementController {
 		model.addAttribute("hasClinicPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		
+	}
+	
+	@RequestMapping(value = "/module/PSI/adjust-stock", method = RequestMethod.GET)
+	public void adjustStock(HttpServletRequest request, HttpSession session, Model model,
+	                         @RequestParam(required = false) int id,@RequestParam(required = false) int clinicid) {
+		
+		model.addAttribute("id", clinicid);
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(clinicid);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
+		List<ClinicServiceDTO> productStock = Context.getService(PSIServiceManagementService.class).getProductListAll(clinicid,id);
+		model.addAttribute("product", productStock.get(0));
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 	}
 	
 }

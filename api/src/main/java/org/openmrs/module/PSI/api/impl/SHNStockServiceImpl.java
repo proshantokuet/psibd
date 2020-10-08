@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.SHNStock;
+import org.openmrs.module.PSI.SHNStockAdjust;
 import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.api.db.SHNStockDAO;
+import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
 
@@ -56,6 +58,24 @@ public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockS
 	public String updateStockByEarliestExpiryDate(String eslipNo,String clinicCode) {
 		// TODO Auto-generated method stub
 		return dao.updateStockByEarliestExpiryDate(eslipNo, clinicCode);
+	}
+
+	@Override
+	public SHNStockAdjust saveOrUpdateStockAdjust(SHNStockAdjust shnStockAdjust) {
+		// TODO Auto-generated method stub
+		return dao.saveOrUpdateStockAdjust(shnStockAdjust);
+	}
+
+	@Override
+	public SHNStockAdjust getAdjustHistoryById(int adjustId) {
+		// TODO Auto-generated method stub
+		return dao.getAdjustHistoryById(adjustId);
+	}
+
+	@Override
+	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.getAdjustHistoryAllByClinic(clinicId);
 	}
 
 }

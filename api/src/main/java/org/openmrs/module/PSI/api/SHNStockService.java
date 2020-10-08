@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.SHNStock;
+import org.openmrs.module.PSI.SHNStockAdjust;
+import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,5 +24,11 @@ public interface SHNStockService extends OpenmrsService {
 	public List<SHNStockDTO> findStockByPrductIdInvoiceAndExpiryDate(int productId, String invoiceNo, String expiryDate);
 	
 	public String updateStockByEarliestExpiryDate(String eslipNo, String clinicCode);
+	
+	public SHNStockAdjust saveOrUpdateStockAdjust(SHNStockAdjust shnStockAdjust);
+	
+	public SHNStockAdjust getAdjustHistoryById(int adjustId);
+	
+	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId);
 	
 }
