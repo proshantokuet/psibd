@@ -24,10 +24,13 @@ public interface SHNStockDAO {
 	
 	public SHNStockAdjust saveOrUpdateStockAdjust(SHNStockAdjust shnStockAdjust);
 	
-	public SHNStockAdjust getAdjustHistoryById(int adjustId);
+	public SHNStockAdjust findAdjustById(int adjustId);
+	
+	public SHNStockAdjustDTO getAdjustHistoryById(int adjustId,int clinicId);
 
 	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId);
-
+	
+	public String adjustStockByEarliestExpiryDate(int quantity, String clinicCode, int productId);
 
 
 }

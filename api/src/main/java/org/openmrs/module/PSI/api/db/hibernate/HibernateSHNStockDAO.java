@@ -162,7 +162,105 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SHNStockAdjust getAdjustHistoryById(int adjustId) {
+	public SHNStockAdjustDTO getAdjustHistoryById(int adjustId,int clinicId) {
+		List<SHNStockAdjustDTO> stocks = new ArrayList<SHNStockAdjustDTO>();
+		String StockHql = ""
+				+ "select sa.adjust_id as adjustId,Date(sa.adjust_date) as adjustDate, "
+				+ "sa.product_id as productId, "
+				+ "psm.name as productName, "
+				+ "sa.previous_stock as previousStock, "
+				+ "sa.changed_stock as changedStock, "
+				+ "sa.adjust_reason as adjustReason "
+				+ "from shn_stock_adjust sa "
+				+ "join psi_service_management psm on sa.product_id = psm.sid and psm.service_type = 'PRODUCT' "
+				+ "where sa.clinic_id = "+clinicId+" and sa.adjust_id = "+adjustId+"";	
+		log.error("Query" + StockHql);
+		try {
+			stocks = sessionFactory.getCurrentSession().createSQLQuery(StockHql)
+					 .addScalar("adjustId",StandardBasicTypes.INTEGER)
+					 .addScalar("adjustDate",StandardBasicTypes.DATE)
+					 .addScalar("productId",StandardBasicTypes.INTEGER)
+					 .addScalar("productName",StandardBasicTypes.STRING)
+					 .addScalar("previousStock",StandardBasicTypes.INTEGER)
+					 .addScalar("changedStock",StandardBasicTypes.INTEGER)
+					 .addScalar("adjustReason",StandardBasicTypes.STRING)
+					 .setResultTransformer(new AliasToBeanResultTransformer(SHNStockAdjustDTO.class)).list();
+			log.error("Query Size" + stocks.size());
+			if(stocks.size() > 0) {
+				return stocks.get(0);
+			}
+			else return null;
+			
+		} catch (Exception e) {
+			log.error(e.toString());
+			return null;
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId) {
+		List<SHNStockAdjustDTO> stocks = new ArrayList<SHNStockAdjustDTO>();
+		String StockHql = ""
+				+ "SELECT sa.adjust_id         AS adjustId, "
+				+ "       Date(sa.adjust_date) AS adjustDate, "
+				+ "       sa.product_id        AS productId, "
+				+ "       psm.NAME             AS productName, "
+				+ "       sa.previous_stock    AS previousStock, "
+				+ "       sa.changed_stock AS changedStock, "
+				+ "       sa.adjust_reason     AS adjustReason "
+				+ "FROM   shn_stock_adjust sa "
+				+ "       JOIN psi_service_management psm "
+				+ "         ON sa.product_id = psm.sid "
+				+ "            AND psm.service_type = 'PRODUCT' "
+				+ "WHERE  sa.clinic_id = "+clinicId+"";	
+		log.error("Query" + StockHql);
+		try {
+			stocks = sessionFactory.getCurrentSession().createSQLQuery(StockHql)
+					 .addScalar("adjustId",StandardBasicTypes.INTEGER)
+					 .addScalar("adjustDate",StandardBasicTypes.DATE)
+					 .addScalar("productId",StandardBasicTypes.INTEGER)
+					 .addScalar("productName",StandardBasicTypes.STRING)
+					 .addScalar("previousStock",StandardBasicTypes.INTEGER)
+					 .addScalar("changedStock",StandardBasicTypes.INTEGER)
+					 .addScalar("adjustReason",StandardBasicTypes.STRING)
+					 .setResultTransformer(new AliasToBeanResultTransformer(SHNStockAdjustDTO.class)).list();
+			log.error("Query Size" + stocks.size());
+			return stocks;
+		} catch (Exception e) {
+			log.error(e.toString());
+			return stocks;
+		}
+	}
+
+
+	@Override
+	public String adjustStockByEarliestExpiryDate(int quantity,String clinicCode, int productId) {
+		List<String> updatesTockDetailsId = new ArrayList<String>();
+		String StockHql = "CALL adjustStockByEarliestExpiryDate("+quantity+",'"+clinicCode+"',"+productId+")";					
+		log.error("Query" + StockHql);
+		try {
+			updatesTockDetailsId = sessionFactory.getCurrentSession().createSQLQuery(StockHql).list();
+			log.error("Query size" + updatesTockDetailsId.size());
+			if(updatesTockDetailsId.size() > 0) {
+				log.error("Query result" + updatesTockDetailsId.get(0));
+				return updatesTockDetailsId.get(0);
+			}
+			else {
+				return "No Stock Updated";
+			}
+			
+		} catch (Exception e) {
+			log.error(e.toString());
+			return e.toString();
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNStockAdjust findAdjustById(int adjustId) {
 		List<SHNStockAdjust> lists = sessionFactory.getCurrentSession().createQuery("from SHNStockAdjust where adjustId = :id")
 		        .setInteger("id", adjustId).list();
 		if (lists.size() != 0) {
@@ -171,12 +269,7 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 			return null;
 		}
 	}
-
-
-	@Override
-	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+	
 
 }

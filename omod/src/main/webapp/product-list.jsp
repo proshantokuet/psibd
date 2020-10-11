@@ -44,8 +44,11 @@
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
 <p><a href="${pageContext.request.contextPath}/module/PSI/add-product.form?id=${id}">Add Product</a> 
-<%-- <a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Services</a> --%>
 <a class="" href="${pageContext.request.contextPath}/module/PSI/upload-product.form?id=${id}"  style="margin-left: 10px;">Upload Product</a>
+<a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Product</a>
+<a class="" href="${pageContext.request.contextPath}/module/PSI/adjust-history.form?id=${id}" style="margin-left: 10px;">Adjust History</a>
+
+
 </p>
 <div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:36%"></div>			
 <div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 

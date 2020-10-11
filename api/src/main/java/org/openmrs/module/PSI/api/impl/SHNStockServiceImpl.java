@@ -67,15 +67,28 @@ public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockS
 	}
 
 	@Override
-	public SHNStockAdjust getAdjustHistoryById(int adjustId) {
+	public SHNStockAdjustDTO getAdjustHistoryById(int adjustId,int clinicId) {
 		// TODO Auto-generated method stub
-		return dao.getAdjustHistoryById(adjustId);
+		return dao.getAdjustHistoryById(adjustId,clinicId);
 	}
 
 	@Override
 	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId) {
 		// TODO Auto-generated method stub
 		return dao.getAdjustHistoryAllByClinic(clinicId);
+	}
+
+	@Override
+	public String adjustStockByEarliestExpiryDate(int quantity,
+			String clinicCode, int productId) {
+		// TODO Auto-generated method stub
+		return dao.adjustStockByEarliestExpiryDate(quantity, clinicCode, productId);
+	}
+
+	@Override
+	public SHNStockAdjust findAdjustById(int adjustId) {
+		// TODO Auto-generated method stub
+		return dao.findAdjustById(adjustId);
 	}
 
 }

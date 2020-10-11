@@ -9,10 +9,13 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.AUHCServiceCategory;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIServiceManagement;
+import org.openmrs.module.PSI.SHNStockAdjust;
 import org.openmrs.module.PSI.api.AUHCServiceCategoryService;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
+import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.dto.ClinicServiceDTO;
+import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
@@ -92,6 +95,36 @@ public class SHNProductManagementController {
 		model.addAttribute("psiClinicManagement", psiClinicManagement);
 		List<ClinicServiceDTO> productStock = Context.getService(PSIServiceManagementService.class).getProductListAll(clinicid,id);
 		model.addAttribute("product", productStock.get(0));
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+	}
+	
+	@RequestMapping(value = "/module/PSI/adjust-history", method = RequestMethod.GET)
+	public void adjustHistory(HttpServletRequest request, HttpSession session, Model model,
+	                         @RequestParam(required = false) int id) {
+		
+		model.addAttribute("id", id);
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
+		List<SHNStockAdjustDTO> adjustStock = Context.getService(SHNStockService.class).getAdjustHistoryAllByClinic(id);
+		model.addAttribute("adjustStockList", adjustStock);
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+	}
+	
+	@RequestMapping(value = "/module/PSI/view-adjust-stock", method = RequestMethod.GET)
+	public void adjustHistory(HttpServletRequest request, HttpSession session, Model model,
+	                         @RequestParam(required = false) int id,@RequestParam(required = false) int clinicid) {
+		
+		model.addAttribute("id", clinicid);
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(clinicid);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
+		SHNStockAdjustDTO adjustStock = Context.getService(SHNStockService.class).getAdjustHistoryById(id,clinicid);
+		model.addAttribute("adjustStock", adjustStock);
 		model.addAttribute("hasDashboardPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission",

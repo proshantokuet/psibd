@@ -22,7 +22,8 @@
 				<div style="display: none;" class="alert alert-success" id="serverResponseMessage" role="alert"></div>
 				<div style="display: none;" class="alert alert-danger" id="validationFailedMessage" role="alert"></div>
 					
-				<div class="form-content">	
+				<div class="form-content">
+				<form id = "adjustStock">	
 				<div class="row">
 					<div class="col-lg-2 form-group">
 						<label>1. Product Name:</label> 
@@ -61,7 +62,7 @@
 						<label>5. Adjustment</label><span class="text-danger"> *</span> 
 					</div>
 					<div class="col-lg-3 form-group">
-						<input type="number" min="1" step="1" oninput="this.value = Math.abs(this.value)" style="height: 39px;" class="form-control" id="changedStock" >
+						<input type="number" min="1" step="1" oninput="this.value = Math.abs(this.value)" style="height: 39px;" class="form-control" id="changedStock" required >
 						<span class="text-danger" id="numberValidation"></span>
 					</div>
 				</div>
@@ -78,7 +79,7 @@
 						<label>7. Reason</label><span class="text-danger"> *</span> 
 					</div>
 					<div class="col-lg-3 form-group">
-						<select class="form-control" id="reason" name="reason">
+						<select class="form-control" id="reason" name="reason" required>
 										<option value="">Select Reason</option>
 										<option value="Date Expired">Date Expired</option>
 										<option value="Damaged">Damaged</option>
@@ -86,6 +87,7 @@
 										<option value="Lost">Lost</option>
 										<option value="Others">Others</option>
 								</select>
+								<span class="text-danger" id="reasonValidation"></span>
 					</div>
 				</div>
 				<div class="row" id="othersDiv" style="display:none;">
@@ -98,67 +100,52 @@
 					</div>
 				</div>				
 				<div class="text-center">
-	                <button type="submit" onclick="saveAdjustStockData()" class="btn btn-primary" value="confirm">Confirm</button>&nbsp;<a href="${cancelUrl}">Back</a>
+	                <button type="submit" onclick="return Validate()" class="btn btn-primary" value="confirm">Confirm</button>&nbsp;<a href="${cancelUrl}">Back</a>
 	            </div>
+	            </form>
 	           </div>
    	</div>     
 
 <script>
-function saveStockData() {
-	if(jQuery("#invoiceNo").val() == "") {
-		jQuery("#invoiceNoValidation").html("<strong>Please fill out this field</strong>");
+jQuery("#adjustStock").submit(function(event) { 
+/* 	if(jQuery("#changedStock").val() == "") {
+		jQuery("#numberValidation").html("<strong>Please fill out this field</strong>");
 		return;
 	}
-	jQuery("#invoiceNoValidation").html("");
-	if(jQuery("#receiveDate").val() == 0) {
-		jQuery("#receiveDateValidation").html("<strong>Please fill out this field</strong>");
+	jQuery("#numberValidation").html("");
+	if(jQuery("#reason").val() == "") {
+		jQuery("#reasonValidation").html("<strong>Please fill out this field</strong>");
 		return;
+	} */
+	jQuery("#reasonValidation").html("");
+	var reason = "";
+	if(jQuery("#reason").val() == "Others") {
+		reason = jQuery('#others').val();
 	}
-	jQuery("#receiveDateValidation").html("");
+	else {
+		reason = jQuery("#reason").val();
+	}
 	
-	
-	var url = "/openmrs/ws/rest/v1/stock/save-update";
+	var url = "/openmrs/ws/rest/v1/stock/adjust-save-update";
 	var token = jQuery("meta[name='_csrf']").attr("content");
 	var header = jQuery("meta[name='_csrf_header']").attr("content");
 
-
-	var stockArray = [];
-
-	jQuery('#trainingList > tbody > tr').each(function(index, tr) {
-				var stockObject = {};
-				var $row = jQuery(this).closest('tr'); //get the current row
-				var productName = $row.find('td').eq(1).text();
-				var productId = $row.find('td').eq(2).text();
-				var stockAdded = $row.find('td').eq(4).text();
-				var expiryDate = $row.find('td').eq(6).text();
-				stockObject["productID"] = parseInt(productId);
-				stockObject["productName"] = productName;
-				stockObject["debit"] = parseInt(stockAdded);
-				stockObject["credit"] = 0;
-				stockObject["expiryDate"] = expiryDate;
-				stockArray.push(stockObject);
-			});
-	if(stockArray.length < 1) {
-		jQuery("#validationFailedMessage").show();
-		jQuery("#validationFailedMessage").html("<strong>* Please fill out the required fields</strong>");
-		jQuery(window).scrollTop(0);
-		 return;
-	}
-	jQuery("#validationFailedMessage").hide();
 	var formData;
 
 		formData = {
-			"stockId" : 0,
-			"clinicName" : "${psiClinicManagement.name }",
+			"adjustId" : 0,
+			"productId" : ${product.sid },
+			"clinicId" : ${id},
 			"clinicCode" : "${psiClinicManagement.clinicId }",
-			"invoiceNumber" : jQuery("#invoiceNo").val(),
-			"receiveDate" : jQuery("#receiveDate").val(),
-			"stockDetails" : stockArray
+			"previousStock" : ${product.stock },
+			"changedStock" : +jQuery("#changedStock").val(),
+			"adjustReason" : reason
 		};
+		event.preventDefault();
 		console.log(formData)
 		jQuery("#loading").show();
 		jQuery(window).scrollTop(0);
-		event.preventDefault();
+
 		jQuery.ajax({
 			contentType : "application/json",
 			type: "POST",
@@ -174,8 +161,8 @@ function saveStockData() {
 				jQuery("#serverResponseMessage").show();
 				jQuery("#serverResponseMessage").html(data.message);
 				jQuery("#loading").hide();
-			   	if(data.stockId){					   
-				   window.location.replace("/openmrs/module/PSI/stock-invoice-list.form?id=${id}");
+			   	if(data.adjustId){					   
+				   window.location.replace("/openmrs/module/PSI/product-list.form?id=${id}");
 				   
 			   }
 			   
@@ -187,7 +174,7 @@ function saveStockData() {
 			    console.log("DONE");				    
 			}
 		}); 
-	};
+});
 	
 	jQuery("#reason").change(function (event) {
 		let reasonValue = jQuery('#reason').val();

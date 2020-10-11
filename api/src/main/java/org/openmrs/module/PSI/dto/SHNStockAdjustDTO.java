@@ -19,6 +19,8 @@ public class SHNStockAdjustDTO {
 	private int changedStock;
 	
 	private String adjustReason;
+	
+	private String productName;
 
 	public int getAdjustId() {
 		return adjustId;
@@ -82,6 +84,14 @@ public class SHNStockAdjustDTO {
 
 	public void setAdjustReason(String adjustReason) {
 		this.adjustReason = adjustReason;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 
 }

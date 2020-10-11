@@ -314,7 +314,7 @@ public class SHNStockRestController {
 		log.error("DTO" + dto);
 		try {
 
-			SHNStockAdjust stock = Context.getService(SHNStockService.class).getAdjustHistoryById(dto.getAdjustId());
+			SHNStockAdjust stock = Context.getService(SHNStockService.class).findAdjustById(dto.getAdjustId());
 			if (stock == null) {
 				stock = new SHNStockAdjust();
 				stock.setDateCreated(new Date());
@@ -330,8 +330,11 @@ public class SHNStockRestController {
 			stock.setCreator(Context.getAuthenticatedUser());
 			
 			SHNStockAdjust responseAdjustStock =  Context.getService(SHNStockService.class).saveOrUpdateStockAdjust(stock);
+			String updatedId = Context.getService(SHNStockService.class).adjustStockByEarliestExpiryDate(stock.getChangedStock(), stock.getClinicCode(), stock.getProductId());
+
 			response.put("message", "Stock Adjusted Successfully");
 			response.put("adjustId", responseAdjustStock.getAdjustId());
+			response.put("stock updated Id", updatedId);
 			
 		}
 		catch (Exception e) {
