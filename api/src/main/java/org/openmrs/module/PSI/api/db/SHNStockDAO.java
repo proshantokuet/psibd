@@ -7,6 +7,7 @@ import org.openmrs.module.PSI.SHNStockAdjust;
 import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
+import org.openmrs.module.PSI.dto.SHNStockReportDTO;
 
 public interface SHNStockDAO {
 	
@@ -31,6 +32,8 @@ public interface SHNStockDAO {
 	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId);
 	
 	public String adjustStockByEarliestExpiryDate(int quantity, String clinicCode, int productId);
+	
+	public List<SHNStockReportDTO> getStockReportByClinic(String clinicCode, String category, int month, int year);
 
 
 }

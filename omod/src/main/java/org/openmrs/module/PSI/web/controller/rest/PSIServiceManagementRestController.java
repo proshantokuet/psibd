@@ -242,7 +242,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 					psiServiceManagement.setDaysTo(dayTo);
 					psiServiceManagement.setAgeStart(ageStart);
 					psiServiceManagement.setAgeEnd(ageEnd);
-					
+					psiServiceManagement.setType("SERVICE");
 					psiServiceManagement.setDateCreated(new Date());
 					psiServiceManagement.setCreator(Context.getAuthenticatedUser());
 					psiServiceManagement.setTimestamp(System.currentTimeMillis());

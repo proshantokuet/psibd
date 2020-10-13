@@ -10,6 +10,7 @@ import org.openmrs.module.PSI.api.db.SHNStockDAO;
 import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
+import org.openmrs.module.PSI.dto.SHNStockReportDTO;
 
 public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockService {
 	
@@ -89,6 +90,13 @@ public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockS
 	public SHNStockAdjust findAdjustById(int adjustId) {
 		// TODO Auto-generated method stub
 		return dao.findAdjustById(adjustId);
+	}
+
+	@Override
+	public List<SHNStockReportDTO> getStockReportByClinic(String clinicCode,
+			String category, int month, int year) {
+		// TODO Auto-generated method stub
+		return dao.getStockReportByClinic(clinicCode, category, month, year);
 	}
 
 }

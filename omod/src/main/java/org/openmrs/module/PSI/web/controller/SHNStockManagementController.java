@@ -1,17 +1,21 @@
 package org.openmrs.module.PSI.web.controller;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.AUHCServiceCategory;
 import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.api.AUHCServiceCategoryService;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.dto.ClinicServiceDTO;
@@ -103,6 +107,30 @@ public class SHNStockManagementController {
 		model.addAttribute("hasClinicPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 		
+	}
+	
+	@RequestMapping(value = "/module/PSI/stock-report", method = RequestMethod.GET)
+	public void getStockReport(HttpServletRequest request, HttpSession session, Model model,
+			@RequestParam String clinicid,
+			@RequestParam String category,
+			@RequestParam String month,
+			@RequestParam String year) {
+		
+		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+			    Context.getAuthenticatedUser().getUsername());
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		String clinicCode = "0";
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		//boolean isManager = Utils.hasPrivilige(privileges, PSIConstants.ClinicManager);
+		if (isAdmin) {
+			clinicCode = clinicid;
+		} else {
+			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+		}
+		
+		model.addAttribute("stockReport", Context.getService(SHNStockService.class).getStockReportByClinic(clinicCode, category, Integer.parseInt(month), Integer.parseInt(year)));
+
+
 	}
 	
 }

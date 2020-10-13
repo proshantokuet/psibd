@@ -15,6 +15,7 @@ import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
+import org.openmrs.module.PSI.dto.SHNStockReportDTO;
 
 public class HibernateSHNStockDAO implements SHNStockDAO {
 	
@@ -267,6 +268,39 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 			return lists.get(0);
 		} else {
 			return null;
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNStockReportDTO> getStockReportByClinic(String clinicCode,
+			String category, int month, int year) {
+		List<SHNStockReportDTO> stockReport = new ArrayList<SHNStockReportDTO>();
+		String StockHql = "CALL getMonthlyStockReport('"+clinicCode+"', '"+category+"', "+month+", "+year+")";					
+		log.error("Query" + StockHql);
+		try {
+			stockReport = sessionFactory.getCurrentSession().createSQLQuery(StockHql)
+						 .addScalar("clinicname",StandardBasicTypes.STRING)
+						 .addScalar("clinic_id",StandardBasicTypes.STRING)
+						 .addScalar("productid",StandardBasicTypes.INTEGER)
+						 .addScalar("productname",StandardBasicTypes.STRING)
+						 .addScalar("category",StandardBasicTypes.STRING)
+						 .addScalar("brandname",StandardBasicTypes.STRING)
+						 .addScalar("earliestExpiry",StandardBasicTypes.STRING)
+						 .addScalar("starting_balance",StandardBasicTypes.BIG_DECIMAL)
+						 .addScalar("Sales",StandardBasicTypes.BIG_DECIMAL)
+						 .addScalar("adjust",StandardBasicTypes.BIG_DECIMAL)
+						 .addScalar("supply",StandardBasicTypes.BIG_DECIMAL)
+						 .addScalar("endBalance",StandardBasicTypes.BIG_DECIMAL)
+						 .setResultTransformer(new AliasToBeanResultTransformer(SHNStockReportDTO.class)).list();
+			log.error("Query size" + stockReport.size());
+
+			return stockReport;
+			
+		} catch (Exception e) {
+			log.error(e.toString());
+			return stockReport;
 		}
 	}
 	

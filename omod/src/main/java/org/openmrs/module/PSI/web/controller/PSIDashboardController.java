@@ -174,6 +174,7 @@ public class PSIDashboardController {
 		
 //		List<AUHCComprehensiveReport> report = new ArrayList<AUHCComprehensiveReport>();
 		model.addAttribute("compReport",null);
+		model.addAttribute("stockReport",null);
 //		SearchFilterReport comp_filter = new SearchFilterReport();
 //		comp_filter.setStart_date(today);
 //		comp_filter.setEnd_date(today);
