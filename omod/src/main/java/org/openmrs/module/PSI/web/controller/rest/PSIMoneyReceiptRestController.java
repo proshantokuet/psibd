@@ -16,11 +16,14 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNEslipNoGenerate;
+import org.openmrs.module.PSI.SHNVoidedMoneyReceiptLog;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.PSIUniqueIdGeneratorService;
 import org.openmrs.module.PSI.api.SHNStockService;
+import org.openmrs.module.PSI.api.SHNVoidedMoneyReceiptLogService;
 import org.openmrs.module.PSI.converter.PSIMoneyReceiptConverter;
+import org.openmrs.module.PSI.converter.SHNVoidedMOneyReceiptDataConverter;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.http.HttpStatus;
@@ -293,13 +296,45 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 	
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> delete(@PathVariable int id) throws Exception {
+
 		try {
+			
 			Context.getService(PSIMoneyReceiptService.class).delete(id);
+			
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
+		return new ResponseEntity<String>("Deleted Money Receipt Successfull", HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/void-money-receipt/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<String> voidMOneyReceipt(@PathVariable int id) throws Exception {
+		JSONObject deleteMoneyReceiptObject = new JSONObject();
+
+		try {
+			PSIMoneyReceipt psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(id);
+			Context.getService(PSIMoneyReceiptService.class).delete(id);
+			SHNVoidedMoneyReceiptLog shnVoidedLog = new SHNVoidedMoneyReceiptLog();
+			shnVoidedLog.setMoneyReceiptId(psiMoneyReceipt.getMid());
+			shnVoidedLog.setClinicName(psiMoneyReceipt.getClinicName());
+			shnVoidedLog.setClinicCode(psiMoneyReceipt.getClinicCode());
+			shnVoidedLog.seteSlipNo(psiMoneyReceipt.getEslipNo());
+			shnVoidedLog.setSlipNo(psiMoneyReceipt.getSlipNo());
+			shnVoidedLog.setPatientUuid(psiMoneyReceipt.getPatientUuid());
+			shnVoidedLog.setDateCreated(new Date());
+			shnVoidedLog.setCreator(Context.getAuthenticatedUser());
+			Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedLog);
+			deleteMoneyReceiptObject.put("isSuccessfull", true);
+			deleteMoneyReceiptObject.put("e-slip", psiMoneyReceipt.getEslipNo());
+			deleteMoneyReceiptObject.put("mid", psiMoneyReceipt.getMid());
+
+			
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<String>(deleteMoneyReceiptObject.toString(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
@@ -461,6 +496,24 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 	
 	private String replaceAtEslip (String eslip, int index, String replacement) {
 		return eslip.substring(0, index) + replacement+ eslip.substring(index + replacement.length());
+	}
+	
+	
+	@RequestMapping(value = "/get-voided-money-receipt/{clinicid}", method = RequestMethod.GET)
+	public ResponseEntity<String> getAllVoidedMoneyReceipt(@PathVariable String clinicid) throws Exception {
+		List<SHNVoidedMoneyReceiptLog> psiMoneyReceipt = new ArrayList<SHNVoidedMoneyReceiptLog>();
+		JSONArray psiMoneyReceiptAndServicesObject = new JSONArray();
+		try {
+			psiMoneyReceipt = Context.getService(SHNVoidedMoneyReceiptLogService.class).getAllVoidedMoneyReceiptByClinic(clinicid);
+			if(psiMoneyReceipt.size() > 0) {
+				psiMoneyReceiptAndServicesObject = new SHNVoidedMOneyReceiptDataConverter().toConvert(psiMoneyReceipt);
+
+			}
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>(psiMoneyReceiptAndServicesObject.toString(), HttpStatus.OK);
 	}
 	
 }

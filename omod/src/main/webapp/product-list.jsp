@@ -45,8 +45,9 @@
 	</div>
 <p><a href="${pageContext.request.contextPath}/module/PSI/add-product.form?id=${id}">Add Product</a> 
 <a class="" href="${pageContext.request.contextPath}/module/PSI/upload-product.form?id=${id}"  style="margin-left: 10px;">Upload Product</a>
-<a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Product</a>
-<a class="" href="${pageContext.request.contextPath}/module/PSI/adjust-history.form?id=${id}" style="margin-left: 10px;">Adjust History</a>
+<%-- <a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Product</a>
+ --%>
+ <a class="" href="${pageContext.request.contextPath}/module/PSI/adjust-history.form?id=${id}" style="margin-left: 10px;">Adjust History</a>
 
 
 </p>

@@ -82,6 +82,7 @@
     <!-- <li><a href="#tabs-5">Comprehensive Service Report</a></li> -->
     <li><a href="#tabs-5">Registration Report</a>
     <li><a href="#tabs-6">Visit Report</a>
+    <li><a href="#tabs-7">Stock Report</a>
   </ul>
   <div id="tabs-1">
   <input id="clinicName" type="hidden" value="${clinic_name}">
@@ -1022,6 +1023,114 @@
 		</div>
 	</div>
  </div>
+ <div id="tabs-7">
+  <form id="stockReportForm">
+  	<div class="form-content">
+        	<div class="row">
+            	<div class="col-md-3">
+                	<div class="form-group">                							
+						<label for="yearMonth">Date</label><span class="text-danger"> *</span><br />
+						<input type="text"	readonly name="yearMonth" id="yearMonth" class="form-control date-picker-year" required />
+						<span class="text-danger" id="dateValidation"></span>
+                  	</div>
+                  	
+             	</div>
+              	  <c:if test="${showClinic eq 1}">
+	              	<div class="col-md-3">
+	               		<div class="form-group">
+	                  		<label for="Service Code">Clinic</label><span class="text-danger"> *</span> <br />
+	                  		<select name="clinic" id="clinic_stock" class="form-control selcls">
+	                  			<option value="0">Please Select</option>
+								<c:forEach items="${clinics}" var="clinic">	                  				 
+									<option value="${clinic.clinicId}">${clinic.name}</option>						             
+								</c:forEach>
+							</select>
+							<span class="text-danger" id="clinicValidation"></span>                			
+						</div>                  	
+	              	</div>
+              	</c:if> 
+
+              	<div class="col-md-3">
+              		<div class="form-group">
+                  		    <label for="cat">Service Category: </label> <br>
+                  			<select class="form-control selcls" id="stock_category">
+                  				<option value="" selected>Select Category</option>
+					               <c:forEach items="${services}" var="service"> 
+					              	 <option value="${service.categoryName}" label="${service.categoryName}"/>					              
+					              </c:forEach>				             
+
+					         </select>	
+                   	</div>
+              	</div>
+              	<div class="col-md-3">
+               		<div class="form-group">
+               		<label for="Service Code"></label><br />
+                  		<button style="width: 120px ;margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>                  			
+					</div>
+                  	
+              	</div>
+              	
+          	</div>
+          	
+     </div>
+  </form>
+  
+    <div>
+	<div id="loading_stock_report" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
+	</div>
+	<div id="stockreportDiv">
+	<div class="form-content" id="stockReportTtile"></div>
+ 	<div style="overflow:auto;">
+		<br/>
+		 <table id="stockReportTable" class="display" border="1">
+			 	<thead>
+					<tr>
+						<th rowspan="2">Sl</th>
+						<th rowspan="2">Clinic Name</th>
+						<th rowspan="2">Clinic Code</th>
+						<th rowspan="2">Product Name</th>
+						<th rowspan="2">Category</th>
+						<th rowspan="2">Brand</th>
+						<th rowspan="2">Nearest Expiry Date</th>
+						<th id="monthHeader" colspan="5"></th>
+					</tr>
+					<tr>
+					 	<th>Start Balance</th>
+					 	<th>Sales</th>
+				 	    <th>Adjust</th>
+					 	<th>Supply</th>
+					 	<th>End Balance</th>
+					</tr>
+				</thead>
+			    <tbody>
+        <% int sl = 0; %>
+				<c:forEach var="report" items="${ stockReport }">
+					
+			        <tr>
+			        	
+			        	<td><%=++sl%></td>
+							<td>${report.clinicname }</td>
+							<td>${report.clinic_id }</td>
+							<td>${report.productname }</td>
+							<td>${report.category }</td>
+							<td>${report.brandname }</td>
+							<td>${report.earliestExpiry }</td>
+							<td>${report.starting_balance }</td>
+							<td>${report.sales }</td>
+							<td>${report.adjust }</td>
+							<td>${report.supply }</td>
+							<td>${report.endBalance }</td>
+			        </tr>
+		       </c:forEach>
+        </tbody>
+		
+		</table>
+	</div>
+	    </div>
+	
+  </div>
+  </div>
 </div>
 
   
@@ -1105,6 +1214,40 @@ $jq("#startDateVisit").on("change",function(){
 			minDate: new Date($jq("#startDateVisit").val()),
 			maxDate: new Date()
 		});
+});
+
+/* $jq(".date-picker-year").datepicker({ 
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: 'MM yy',
+    beforeShowDay:function(date){
+        return [false, ''];
+     }
+
+}); */
+
+ $jq(function() {
+	$jq('.date-picker-year').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'MM yy',
+        maxDate: new Date,
+        beforeShowDay:function(date){
+            return [false, ''];
+         },
+        onClose: function(dateText, inst) { 
+            var year = $jq("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $jq(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+            $jq("#monthHeader").html($jq(this).val());	
+           
+        }
+    });
+
+});
+
+$jq("#yearMonth").on("change",function(){
+	var selectedDate = $JQuery("#yearMonth").val();
+	$jq("#monthHeader").html(selectedDate);	
 });
 </script>
 
@@ -1598,7 +1741,30 @@ $JQuery("#reg_report").DataTable({
 	         		pageSize: 'LEGAL' 
 				}
 	         ]
+});
+
+$JQuery("#stockReportTable").DataTable({
+	   bFilter: false,
+	   "searching": true,
+    	bInfo: false,
+	   dom: 'Bfrtip',
+	   destroy: true,
+	   buttons: [
+	             {
+	                 extend: 'excelHtml5',
+	                 title: "Stock Report_"+ new Date(),
+	                 text: 'Export as .xlxs'
+	             },
+	             {
+	         		extend: 'pdfHtml5',
+	         		title: "Stock Report_"+ new Date(),
+	         		text: 'Export as .pdf',
+	         		orientation: 'landscape',
+	         		pageSize: 'LEGAL'
+		         }
+	         ]
 }); 
+
 $JQuery("#slipTracking_").submit(function(event){
 	event.preventDefault();
 	var clinic = document.getElementById("clinic_slip");
@@ -2028,6 +2194,127 @@ function submitAllDraft() {
 		   }
 	});
 }
+
+$JQuery("#stockReportForm").on("submit",function(event){
+	event.preventDefault();
+	var isadmin = "${showClinic}";
+	if(isadmin == "1") {
+		var isclinicSelected = $JQuery("#clinic_stock").val();
+		if(isclinicSelected == "0") {
+			$JQuery("#clinicValidation").html("This Field is Required");
+			return;
+		}
+		else {
+			$JQuery("#clinicValidation").html("");
+		}
+	}
+	
+	var selectedDate = $JQuery("#yearMonth").val();
+	if(selectedDate == "") {
+		$JQuery("#dateValidation").html("This Field is Required");
+		return;
+	}
+	$JQuery("#dateValidation").html("");
+	$JQuery("#loading_stock_report").show();
+	var date1 = new Date(selectedDate);
+	var month = date1.getMonth()+ 1;
+	var year = date1.getFullYear();
+/* 	const monthNames = ["January", "February", "March", "April", "May", "June",
+	                    "July", "August", "September", "October", "November", "December"
+	                  ];
+	var monthName = monthNames[date1.getMonth()]; */
+	var category = $JQuery("#stock_category").val()
+	var clinic = document.getElementById("clinic_stock");
+	var clinicCode = "";
+	var clinicName = $JQuery("#clinicName").val();
+	if(clinic !== null){		
+		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+		clinicName = "";
+		clinicName = "of " + clinic.options[clinic.selectedIndex].text + " Clinic ID-"+clinicCode;
+		}
+	}else {
+		clinicCode = -1;
+		clinicName = "of " + "${clinic_name}" + " Clinic ID-"+ "${clinic_code}";		
+	}
+	var startDate = $JQuery("#startDateVisit").val();
+
+	var url = "/openmrs/module/PSI/stock-report.form?clinicid="+clinicCode;
+	url += "&category="+category;
+	url += "&month="+month+"&year="+year;
+	
+	var title = "Stock Report "+clinicName+"  "+ selectedDate;
+	
+	$JQuery.ajax({
+		type:"GET",
+		contentType : "application/json",
+	    url : url,	 
+	    dataType : 'html',
+	    timeout : 100000,
+	    beforeSend: function() {	    
+	    		
+	    },
+	    success:function(data){
+	    	console.log(data);
+	    	$JQuery("#stockreportDiv").html(data);
+            $JQuery("#monthHeader").html(selectedDate);	
+
+	    	 $JQuery("#stockReportTable").DataTable({
+	    		   bFilter: false,
+	    		   "searching": true,
+	    	       bInfo: false,
+	    		   dom: 'Bfrtip',
+	    		   destroy: true,
+	    		   buttons: [
+	    		             {
+	    		                 extend: 'excelHtml5',
+	    		                 title: title,
+	    		                 text: 'Export as .xlxs'
+	    		             },
+				             {
+				         		extend: 'pdfHtml5',
+				         		title: title,
+				         		text: 'Export as .pdf',
+				         		orientation: 'landscape',
+				         		pageSize: 'LEGAL',
+				         		customize:function(pdfDocument){
+				         			pdfDocument.content[1].table.headerRows = 2;
+				                    var firstHeaderRow = [];
+				                    $JQuery('#stockReportTable').find("thead>tr:first-child>th").each(
+				                            function(index, element) {
+				                              var colSpan = element.getAttribute("colSpan");
+				                              firstHeaderRow.push({
+				                                text: element.innerHTML,
+				                                style: "tableHeader",
+				                                colSpan: colSpan
+				                              });
+				                              
+				                              for (var i = 0; i < colSpan - 1; i++) {
+				                                firstHeaderRow.push({});
+				                              }
+		                            });
+				                    pdfDocument.content[1].table.body.unshift(firstHeaderRow);
+				                    pdfDocument.content[1].table.body[1][0].text = "";
+				                    pdfDocument.content[1].table.body[1][1].text = "";
+				                    pdfDocument.content[1].table.body[1][2].text = "";
+				                    pdfDocument.content[1].table.body[1][3].text = "";
+				                    pdfDocument.content[1].table.body[1][4].text = "";
+				                    pdfDocument.content[1].table.body[1][5].text = "";
+				                    pdfDocument.content[1].table.body[1][6].text = "";
+				                    pdfDocument.content[1].layout = "";
+				                    
+				         		}
+					         }
+	    		         ]
+	    	}); 
+	    	$JQuery("#stockReportTtile").html(title);
+	    	$JQuery("#loading_stock_report").hide();    
+	    },
+	    error: function(data){
+	    	$JQuery("#loading_stock_report").hide();
+	    }
+	});
+});
 
 
 $JQuery("form").attr('autocomplete', 'off');

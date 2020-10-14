@@ -819,4 +819,34 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="shnvoidmoneyreceiptlog-1.0.0" author="tanvir">
+		<createTable tableName="shn_voidedmoneyreceipt_log">
+			<column name="void_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="money_receipt_id" type="int(11)" />
+			<column name="eslip_no" type="varchar(255)" />
+			<column name="slip_no" type="varchar(255)" />
+			<column name="clinic_name" type="varchar(255)" />
+			<column name="clinic_code" type="varchar(255)" />
+			<column name="patient_uuid" type="varchar(255)" />			
+		
+						
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
 </databaseChangeLog>
