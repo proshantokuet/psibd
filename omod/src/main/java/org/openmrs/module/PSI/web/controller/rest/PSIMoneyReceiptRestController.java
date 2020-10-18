@@ -314,6 +314,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			
 			PSIMoneyReceipt psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).getMoneyReceiptByESlipNo(eslip);
 			if(psiMoneyReceipt !=null) {
+				Context.getService(SHNStockService.class).deleteMoneyReceiptStockUpdate(psiMoneyReceipt.getEslipNo(), psiMoneyReceipt.getClinicCode());
 				Context.getService(PSIMoneyReceiptService.class).delete(psiMoneyReceipt.getMid());
 				return new ResponseEntity<String>("success", HttpStatus.OK);
 			}
@@ -334,25 +335,33 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 
 		try {
 			PSIMoneyReceipt psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(id);
-			Context.getService(PSIMoneyReceiptService.class).delete(id);
-			SHNVoidedMoneyReceiptLog shnVoidedLog = new SHNVoidedMoneyReceiptLog();
-			shnVoidedLog.setMoneyReceiptId(psiMoneyReceipt.getMid());
-			shnVoidedLog.setClinicName(psiMoneyReceipt.getClinicName());
-			shnVoidedLog.setClinicCode(psiMoneyReceipt.getClinicCode());
-			shnVoidedLog.seteSlipNo(psiMoneyReceipt.getEslipNo());
-			shnVoidedLog.setSlipNo(psiMoneyReceipt.getSlipNo());
-			shnVoidedLog.setPatientUuid(psiMoneyReceipt.getPatientUuid());
-			shnVoidedLog.setDateCreated(new Date());
-			shnVoidedLog.setCreator(Context.getAuthenticatedUser());
-			Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedLog);
-			deleteMoneyReceiptObject.put("isSuccessfull", true);
-			deleteMoneyReceiptObject.put("e-slip", psiMoneyReceipt.getEslipNo());
-			deleteMoneyReceiptObject.put("mid", psiMoneyReceipt.getMid());
-
-			
+			if(psiMoneyReceipt !=null) {
+				String updatedStock = Context.getService(SHNStockService.class).deleteMoneyReceiptStockUpdate(psiMoneyReceipt.getEslipNo(), psiMoneyReceipt.getClinicCode());
+				Context.getService(PSIMoneyReceiptService.class).delete(id);
+				SHNVoidedMoneyReceiptLog shnVoidedLog = new SHNVoidedMoneyReceiptLog();
+				shnVoidedLog.setMoneyReceiptId(psiMoneyReceipt.getMid());
+				shnVoidedLog.setClinicName(psiMoneyReceipt.getClinicName());
+				shnVoidedLog.setClinicCode(psiMoneyReceipt.getClinicCode());
+				shnVoidedLog.seteSlipNo(psiMoneyReceipt.getEslipNo());
+				shnVoidedLog.setSlipNo(psiMoneyReceipt.getSlipNo());
+				shnVoidedLog.setPatientUuid(psiMoneyReceipt.getPatientUuid());
+				shnVoidedLog.setDateCreated(new Date());
+				shnVoidedLog.setCreator(Context.getAuthenticatedUser());
+				Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedLog);
+				deleteMoneyReceiptObject.put("isSuccessfull", true);
+				deleteMoneyReceiptObject.put("e-slip", psiMoneyReceipt.getEslipNo());
+				deleteMoneyReceiptObject.put("updatedStock", updatedStock);
+				deleteMoneyReceiptObject.put("mid", psiMoneyReceipt.getMid());
+			}
+			else {
+				deleteMoneyReceiptObject.put("isSuccessfull", false);
+				deleteMoneyReceiptObject.put("message", "No Money Receipt Found with provided E-slip No");
+			}
 		}
 		catch (Exception e) {
-			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+			deleteMoneyReceiptObject.put("isSuccessfull", false);
+			deleteMoneyReceiptObject.put("message", e.getMessage());
+			return new ResponseEntity<String>(deleteMoneyReceiptObject.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<String>(deleteMoneyReceiptObject.toString(), HttpStatus.OK);
 	}

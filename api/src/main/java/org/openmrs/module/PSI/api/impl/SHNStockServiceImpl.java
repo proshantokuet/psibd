@@ -99,4 +99,11 @@ public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockS
 		return dao.getStockReportByClinic(clinicCode, category, month, year);
 	}
 
+	@Override
+	public String deleteMoneyReceiptStockUpdate(String eslipNo,
+			String clinicCode) {
+		// TODO Auto-generated method stub
+		return dao.deleteMoneyReceiptStockUpdate(eslipNo, clinicCode);
+	}
+
 }

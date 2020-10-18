@@ -34,6 +34,9 @@ public interface SHNStockDAO {
 	public String adjustStockByEarliestExpiryDate(int quantity, String clinicCode, int productId);
 	
 	public List<SHNStockReportDTO> getStockReportByClinic(String clinicCode, String category, int month, int year);
+	
+	public String deleteMoneyReceiptStockUpdate(String eslipNo, String clinicCode);
+
 
 
 }
