@@ -59,6 +59,12 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 	
 	private String type;
 	
+	private float discountPop;
+	
+	private float discountPoor;
+	
+	private float discountAblePay;
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -261,6 +267,30 @@ public class PSIServiceManagement extends BaseOpenmrsData implements Serializabl
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public float getDiscountPop() {
+		return discountPop;
+	}
+
+	public void setDiscountPop(float discountPop) {
+		this.discountPop = discountPop;
+	}
+
+	public float getDiscountPoor() {
+		return discountPoor;
+	}
+
+	public void setDiscountPoor(float discountPoor) {
+		this.discountPoor = discountPoor;
+	}
+
+	public float getDiscountAblePay() {
+		return discountAblePay;
+	}
+
+	public void setDiscountAblePay(float discountAblePay) {
+		this.discountAblePay = discountAblePay;
 	}
 	
 }

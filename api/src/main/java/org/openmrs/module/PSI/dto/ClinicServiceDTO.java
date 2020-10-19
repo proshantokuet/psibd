@@ -44,6 +44,12 @@ public class ClinicServiceDTO {
 	
 	private String earliestExpiry;
 	
+	private float discountPop;
+	
+	private float discountPoor;
+	
+	private float discountAblePay;
+	
 	public boolean isVoided() {
 		return voided;
 	}
@@ -210,6 +216,30 @@ public class ClinicServiceDTO {
 
 	public void setEarliestExpiry(String earliestExpiry) {
 		this.earliestExpiry = earliestExpiry;
+	}
+
+	public float getDiscountPop() {
+		return discountPop;
+	}
+
+	public void setDiscountPop(float discountPop) {
+		this.discountPop = discountPop;
+	}
+
+	public float getDiscountPoor() {
+		return discountPoor;
+	}
+
+	public void setDiscountPoor(float discountPoor) {
+		this.discountPoor = discountPoor;
+	}
+
+	public float getDiscountAblePay() {
+		return discountAblePay;
+	}
+
+	public void setDiscountAblePay(float discountAblePay) {
+		this.discountAblePay = discountAblePay;
 	}
 
 

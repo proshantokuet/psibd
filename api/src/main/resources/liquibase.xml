@@ -195,7 +195,7 @@
 			ALTER TABLE psi_service_management CHANGE age_from age_end int(11) not null;  
 		</sql>
 	</changeSet>
-		 <changeSet author="tanvir" id="psiservicemanagement-1.0.6">
+	<changeSet author="tanvir" id="psiservicemanagement-1.0.6">
 	 	<addColumn tableName="psi_service_management">
 			<column name="brand_name" type="varchar(255)" />
 			<column name="service_type" type="varchar(255)" />
@@ -204,6 +204,18 @@
 				<sql>
 			update openmrs.psi_service_management set `purchase_price` = 0 ;
 			update openmrs.psi_service_management set `service_type` = 'SERVICE' ;
+		</sql>
+	 </changeSet>
+	 <changeSet author="tanvir" id="psiservicemanagement-1.0.7">
+	 	<addColumn tableName="psi_service_management">
+			<column name="discount_pop" type="float" />
+			<column name="discount_poor" type="float" />
+			<column name="discount_pay" type="float" />
+		</addColumn>
+				<sql>
+			update openmrs.psi_service_management set `discount_pop` = 0 ;
+			update openmrs.psi_service_management set `discount_poor` = 0 ;
+			update openmrs.psi_service_management set `discount_pay` = 0 ;
 		</sql>
 	 </changeSet>
 	

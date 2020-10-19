@@ -29,6 +29,9 @@
 	    <property name="brandName" column="brand_name" type="java.lang.String"/>
 	    <property name="type" column="service_type" type="java.lang.String"/>
 	    <property name="purchasePrice" column="purchase_price" type="float"/>
+	    <property name="discountPop" column="discount_pop" type="float"/>
+	    <property name="discountPoor" column="discount_poor" type="float"/>
+	    <property name="discountAblePay" column="discount_pay" type="float"/>
 	    <many-to-one name="psiClinicManagement" column ="psi_clinic_management_id" class="org.openmrs.module.PSI.PSIClinicManagement"/>
 	    
 	    <property name="timestamp" column="timestamp" type="long"/>

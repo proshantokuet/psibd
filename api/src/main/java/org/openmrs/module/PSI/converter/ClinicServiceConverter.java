@@ -38,6 +38,9 @@ public class ClinicServiceConverter {
 		psiServiceManagement.setType(clinicServiceDTO.getType());
 		psiServiceManagement.setBrandName(clinicServiceDTO.getBrandName());
 		psiServiceManagement.setPurchasePrice(clinicServiceDTO.getPurchasePrice());
+		psiServiceManagement.setDiscountPop(clinicServiceDTO.getDiscountPop());
+		psiServiceManagement.setDiscountPoor(clinicServiceDTO.getDiscountPoor());
+		psiServiceManagement.setDiscountAblePay(clinicServiceDTO.getDiscountAblePay());
 		psiServiceManagement.setTimestamp(System.currentTimeMillis());
 		psiServiceManagement.setCreator(Context.getAuthenticatedUser());
 		psiServiceManagement.setUuid(UUID.randomUUID().toString());

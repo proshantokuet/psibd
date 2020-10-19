@@ -440,7 +440,12 @@ public class PSIClinicRestController extends MainResourceController {
 					
 					clinicServicesObject.put("daysFrom", psiServiceManagement.getDaysFrom());
 					clinicServicesObject.put("gender", psiServiceManagement.getGender());
-					
+					clinicServicesObject.put("type", psiServiceManagement.getType());
+					clinicServicesObject.put("purchasePrice", psiServiceManagement.getPurchasePrice());
+					clinicServicesObject.put("discountPop", psiServiceManagement.getDiscountPop());
+					clinicServicesObject.put("discountPoor", psiServiceManagement.getDiscountPoor());
+					clinicServicesObject.put("discountAblePay", psiServiceManagement.getDiscountAblePay());
+
 					clinicServicesObject.putOpt("uuid", psiServiceManagement.getUuid());
 					clinicServicesObject.putOpt("dateCreated", psiServiceManagement.getDateCreated());
 					clinicServicesObject.putOpt("dateChanged", psiServiceManagement.getDateChanged());

@@ -17,6 +17,11 @@ public class PSIServiceManagementConverter {
 		service.putOpt("category", psiServiceManagement.getCategory());
 		service.putOpt("provider", psiServiceManagement.getProvider());
 		service.putOpt("unitCost", psiServiceManagement.getUnitCost());
+		service.putOpt("type", psiServiceManagement.getType());
+		service.putOpt("discountPop", psiServiceManagement.getDiscountPop());
+		service.putOpt("discountPoor", psiServiceManagement.getDiscountPoor());
+		service.putOpt("discountAblePay", psiServiceManagement.getDiscountAblePay());
+
 		service.putOpt("voided", psiServiceManagement.getVoided());
 		
 		return service;

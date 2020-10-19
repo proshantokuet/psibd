@@ -51,8 +51,10 @@ $JQuery("#serviceForm").submit(function(event) {
 			            'voided': voided,
 			            'purchasePrice': 0,
 			            'type': 'SERVICE',
-			           
-			        };			
+			            'discountPop': $JQuery('input[name=discountPop]').val(),
+			            'discountPoor': $JQuery('input[name=discountPoor]').val(),
+			            'discountAblePay': $JQuery('input[name=discountAblePay]').val()
+			        };			 
 			
 			event.preventDefault();			
 			$JQuery.ajax({

@@ -225,6 +225,25 @@ public class PSIServiceManagementRestController extends MainResourceController {
 						dayFrom = Integer.parseInt(service[10]);
 					}
 					
+					float discountPop = 0;
+					
+					if (!StringUtils.isBlank(service[12])) {
+						discountPop = Float.parseFloat(service[12]);
+					}
+					
+					float discountPoor = 0;
+					
+					if (!StringUtils.isBlank(service[13])) {
+						discountPoor = Float.parseFloat(service[13]);
+					}
+					
+					float discountAbleToPay = 0;
+					
+					if (!StringUtils.isBlank(service[14])) {
+						discountAbleToPay = Float.parseFloat(service[14]);
+					}
+
+					
 					int ageStart = ClinicServiceConverter.getDaysFromYMD(yearTo, monthTo, dayTo);
 					int ageEnd = ClinicServiceConverter.getDaysFromYMD(yearFrom, monthFrom, dayFrom);
 					if (ageStart != 0 && ageEnd == 0) {
@@ -243,6 +262,9 @@ public class PSIServiceManagementRestController extends MainResourceController {
 					psiServiceManagement.setAgeStart(ageStart);
 					psiServiceManagement.setAgeEnd(ageEnd);
 					psiServiceManagement.setType("SERVICE");
+					psiServiceManagement.setDiscountPop(discountPop);
+					psiServiceManagement.setDiscountPoor(discountPoor);
+					psiServiceManagement.setDiscountAblePay(discountAbleToPay);
 					psiServiceManagement.setDateCreated(new Date());
 					psiServiceManagement.setCreator(Context.getAuthenticatedUser());
 					psiServiceManagement.setTimestamp(System.currentTimeMillis());
@@ -523,7 +545,24 @@ public class PSIServiceManagementRestController extends MainResourceController {
 						purchasePrice = Float.parseFloat(service[5]);
 					}
 					psiServiceManagement.setPurchasePrice(purchasePrice);
+					float discountPop = 0;
 					
+					if (!StringUtils.isBlank(service[6])) {
+						discountPop = Float.parseFloat(service[6]);
+					}
+					psiServiceManagement.setDiscountPop(discountPop);
+					float discountPoor = 0;
+					
+					if (!StringUtils.isBlank(service[7])) {
+						discountPoor = Float.parseFloat(service[7]);
+					}
+					psiServiceManagement.setDiscountPoor(discountPoor);
+					float discountAbleToPay = 0;
+					
+					if (!StringUtils.isBlank(service[8])) {
+						discountAbleToPay = Float.parseFloat(service[8]);
+					}
+					psiServiceManagement.setDiscountAblePay(discountAbleToPay);
 					psiServiceManagement.setPsiClinicManagement(psiClinicManagement);
 					
 					String provider = "";
