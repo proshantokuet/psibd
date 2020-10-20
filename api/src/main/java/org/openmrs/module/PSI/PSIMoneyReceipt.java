@@ -63,6 +63,8 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private Set<PSIServiceProvision> services;
 	
+	private Set<SHNMoneyReceiptPaymentLog> payments;
+
 	private long timestamp;
 	
 	private String field1;
@@ -84,6 +86,10 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	private int isComplete;
 	
 	private String eslipNo;
+	
+	private float dueAmount;
+	
+	private float overallDiscount;
 	
 	private PSIClinicManagement PSIClinicManagement;
 	
@@ -283,6 +289,14 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 		this.services = services;
 	}
 	
+	public Set<SHNMoneyReceiptPaymentLog> getPayments() {
+		return payments;
+	}
+
+	public void setPayments(Set<SHNMoneyReceiptPaymentLog> payments) {
+		this.payments = payments;
+	}
+
 	public String getReferenceId() {
 		return referenceId;
 	}
@@ -394,6 +408,22 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 
 	public void setEslipNo(String eslipNo) {
 		this.eslipNo = eslipNo;
+	}
+
+	public float getDueAmount() {
+		return dueAmount;
+	}
+
+	public void setDueAmount(float dueAmount) {
+		this.dueAmount = dueAmount;
+	}
+
+	public float getOverallDiscount() {
+		return overallDiscount;
+	}
+
+	public void setOverallDiscount(float overallDiscount) {
+		this.overallDiscount = overallDiscount;
 	}
 
 	@Override

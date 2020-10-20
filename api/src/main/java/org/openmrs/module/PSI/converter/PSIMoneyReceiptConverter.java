@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
 
 public class PSIMoneyReceiptConverter {
 	
@@ -44,6 +45,10 @@ public class PSIMoneyReceiptConverter {
 		psiMoneyReceiptObject.putOpt("totalDiscount", psiMoneyReceipt.getTotalDiscount());
 		psiMoneyReceiptObject.putOpt("patientRegisteredDate", psiMoneyReceipt.getPatientRegisteredDate());
 		psiMoneyReceiptObject.putOpt("eslipNo", psiMoneyReceipt.getEslipNo());
+		psiMoneyReceiptObject.putOpt("eslipNo", psiMoneyReceipt.getEslipNo());
+		psiMoneyReceiptObject.putOpt("overallDiscount", psiMoneyReceipt.getOverallDiscount());
+		psiMoneyReceiptObject.putOpt("dueAmount", psiMoneyReceipt.getDueAmount());
+
 		
 		psiMoneyReceiptAndServicesObject.putOpt("moneyReceipt", psiMoneyReceiptObject);
 		
@@ -68,6 +73,16 @@ public class PSIMoneyReceiptConverter {
 			services.put(service);
 		}
 		psiMoneyReceiptAndServicesObject.putOpt("services", services);
+		
+		Set<SHNMoneyReceiptPaymentLog> moneyReceiptPaymentLog = psiMoneyReceipt.getPayments();
+		JSONArray moneyReceiptPaymentLogArray = new JSONArray();
+		for (SHNMoneyReceiptPaymentLog paymentLog : moneyReceiptPaymentLog) {
+			JSONObject paymentObj = new JSONObject();
+			paymentObj.putOpt("receiveDate", paymentLog.getReceiveDate());
+			paymentObj.putOpt("receiveAmount", paymentLog.getReceiveAmount());
+			moneyReceiptPaymentLogArray.put(paymentObj);
+		}
+		psiMoneyReceiptAndServicesObject.putOpt("payments", moneyReceiptPaymentLogArray);
 		return psiMoneyReceiptAndServicesObject;
 		
 	}

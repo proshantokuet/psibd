@@ -36,12 +36,21 @@
 	    <property name="patientRegisteredDate" column="patient_registered_date" type="java.util.Date"/>
 	    <property name="isComplete" column="is_complete" type="int"/>
 	    <property name="eslipNo" column="eslip_no" type="java.lang.String"/>
+	    <property name="dueAmount" column="due_amount" type="float"/>
+	    <property name="overallDiscount" column="overall_discount" type="float"/>
 	    
 	    <set name="services" cascade="all">
 	       <key>
 	           <column name="psi_money_receipt_id" not-null="true" />
 	       </key>
 	       <one-to-many class="org.openmrs.module.PSI.PSIServiceProvision" />
+	    </set>
+	    
+	   	<set name="payments" cascade="all">
+	       <key>
+	           <column name="psi_money_receipt_id" not-null="true" />
+	       </key>
+	       <one-to-many class="org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog" />
 	    </set>
 	    
 	    <property name="field1" column="field1" type="java.lang.String"/>

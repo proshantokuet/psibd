@@ -320,6 +320,17 @@
 			<column name="eslip_no" type="varchar(255)" />			
 		</addColumn>
 	 </changeSet>
+	 
+	 <changeSet author="Tanvir" id="psimoneyreceipt-1.0.8">
+	 	<addColumn tableName="psi_money_receipt">
+			<column name="due_amount" type="float" />
+			<column name="overall_discount" type="float" />			
+		</addColumn>
+		<sql>
+	 		update openmrs.psi_money_receipt set `due_amount` = 0 ;
+	 		update openmrs.psi_money_receipt set `overall_discount` = 0 ;
+	 	</sql>
+	 </changeSet>
 	
 	<changeSet id="psiserviceprovision-1.0.0" author="Proshanto">
 		<createTable tableName="psi_service_provision">
@@ -858,6 +869,35 @@
 			<column name="voided_by" type="int(11)" />
 			<column name="date_voided" type="datetime" />
 			<column name="void_reason" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="shnmoneyreceiptpaymentLog-1.0.0" author="tanvir">
+		<createTable tableName="shn_moneyreceipt_payment_log">
+			<column name="payment_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="eslip_no" type="varchar(255)" />
+			<column name="psi_money_receipt_id" type="int(11)" />
+			
+			<column name="receive_date" type="datetime" />
+			<column name="receive_amount" type="float" />
+						
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
 		</createTable>
 	</changeSet>
 	

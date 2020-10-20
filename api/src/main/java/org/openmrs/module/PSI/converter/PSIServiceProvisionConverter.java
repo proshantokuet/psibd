@@ -51,6 +51,8 @@ public class PSIServiceProvisionConverter {
 		service.putOpt("designation", psiServiceProvisions.getPsiMoneyReceiptId().getDesignation());
 		service.putOpt("isComplete", psiServiceProvisions.getIsComplete());
 		service.putOpt("eslipNo", psiServiceProvisions.getPsiMoneyReceiptId().getEslipNo());
+		service.putOpt("overallDiscount", psiServiceProvisions.getPsiMoneyReceiptId().getOverallDiscount());
+		service.putOpt("dueAmount", psiServiceProvisions.getPsiMoneyReceiptId().getDueAmount());
 		
 		return service;
 		

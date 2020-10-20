@@ -16,6 +16,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNEslipNoGenerate;
+import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.SHNVoidedMoneyReceiptLog;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
@@ -47,6 +48,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		JSONObject requestBody = new JSONObject(jsonStr);
 		JSONObject moneyReceipt = requestBody.getJSONObject("moneyReceipt");
 		JSONArray services = requestBody.getJSONArray("services");
+		JSONArray payments = requestBody.getJSONArray("payments");
 		PSIMoneyReceipt psiMoneyReceipt = null;
 		int moneyReceiptId = 0;
 		try {
@@ -189,10 +191,14 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				}
 			}
 			
-//			if (moneyReceipt.has("eslipNo")) {
-//				psiMoneyReceipt.setEslipNo(moneyReceipt.getString("eslipNo"));
-//			}
-//			
+			if (moneyReceipt.has("dueAmount")) {
+				psiMoneyReceipt.setDueAmount(Float.parseFloat(moneyReceipt.getString("dueAmount")));
+			}
+			
+			if (moneyReceipt.has("overallDiscount")) {
+				psiMoneyReceipt.setOverallDiscount(Float.parseFloat(moneyReceipt.getString("overallDiscount")));
+			}
+			
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
 			
@@ -274,6 +280,36 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			}
 			
 			psiMoneyReceipt.setServices(serviceProvisions);
+			Set<SHNMoneyReceiptPaymentLog> paymentsList = null;
+			if (moneyReceipt.has("mid")) {
+				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
+					paymentsList = psiMoneyReceipt.getPayments();
+				}
+				else{
+					paymentsList = new HashSet<SHNMoneyReceiptPaymentLog>();
+				}
+			}
+			
+			for (int i = 0; i < payments.length(); i++) {
+				SHNMoneyReceiptPaymentLog paymentObject = new SHNMoneyReceiptPaymentLog();
+				JSONObject paymentJsonObj = payments.getJSONObject(i);
+
+				if (paymentJsonObj.has("receiveDate")) {
+
+					paymentObject.setReceiveDate(yyyyMMdd.parse(paymentJsonObj.getString("receiveDate")));
+				}
+				if (paymentJsonObj.has("receiveAmount")) {
+					paymentObject.setReceiveAmount(Float.parseFloat(paymentJsonObj.getString("receiveAmount")));
+				}
+				
+				paymentObject.setDateCreated(new Date());
+				paymentObject.setEslipNo(psiMoneyReceipt.getEslipNo());
+				paymentObject.setCreator(Context.getAuthenticatedUser());
+				paymentObject.setUuid(UUID.randomUUID().toString());
+				paymentObject.setPsiMoneyReceiptId(psiMoneyReceipt);
+				paymentsList.add(paymentObject);
+			}
+			psiMoneyReceipt.setPayments(paymentsList);
 			psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
 			if (moneyReceipt.has("mid")) {
 				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
