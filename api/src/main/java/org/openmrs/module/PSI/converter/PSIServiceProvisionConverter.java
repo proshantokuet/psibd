@@ -1,11 +1,13 @@
 package org.openmrs.module.PSI.converter;
 
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
 
 public class PSIServiceProvisionConverter {
 	
@@ -53,6 +55,18 @@ public class PSIServiceProvisionConverter {
 		service.putOpt("eslipNo", psiServiceProvisions.getPsiMoneyReceiptId().getEslipNo());
 		service.putOpt("overallDiscount", psiServiceProvisions.getPsiMoneyReceiptId().getOverallDiscount());
 		service.putOpt("dueAmount", psiServiceProvisions.getPsiMoneyReceiptId().getDueAmount());
+		service.putOpt("netPayableAfterDiscount", psiServiceProvisions.getPsiMoneyReceiptId().getTotalAmount());
+
+		
+		Set<SHNMoneyReceiptPaymentLog> moneyReceiptPaymentLog = psiServiceProvisions.getPsiMoneyReceiptId().getPayments();
+		JSONArray moneyReceiptPaymentLogArray = new JSONArray();
+		for (SHNMoneyReceiptPaymentLog paymentLog : moneyReceiptPaymentLog) {
+			JSONObject paymentObj = new JSONObject();
+			paymentObj.putOpt("receiveDate", paymentLog.getReceiveDate());
+			paymentObj.putOpt("receiveAmount", paymentLog.getReceiveAmount());
+			moneyReceiptPaymentLogArray.put(paymentObj);
+		}
+		service.putOpt("payments", moneyReceiptPaymentLogArray);
 		
 		return service;
 		
