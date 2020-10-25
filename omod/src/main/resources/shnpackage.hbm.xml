@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.openmrs.module.PSI.SHNPackage" table="shn_package" lazy="false">
+        <id column="package_id" name="packageId" type="int">
+            <generator class="native"/>
+        </id> 
+        <property name="packageName" column="package_name" type="java.lang.String"/>
+	    <property name="packageCode" column="package_code" type="java.lang.String"/>
+	    <set name="shnPackageDetails" cascade="all">
+	       <key>
+	           <column name="shn_package_id" not-null="true" />
+	       </key>
+	       <one-to-many class="org.openmrs.module.PSI.SHNPackageDetails" />
+	    </set>
+	    <property name="clinicName" column="clinic_name" type="java.lang.String"/>
+	    <property name="clinicCode" column="clinic_code" type="java.lang.String"/>
+
+	    
+	    <property name="accumulatedPrice" column="accumulated_price" type="float"/>
+	    <property name="packagePrice" column="package_price" type="float"/>
+
+	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
+		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>
+		<many-to-one name="changedBy" column="changed_by" class="org.openmrs.User" />
+		<property name="dateChanged" column="date_changed" type="java.util.Date" />
+		<property name="voided" column="voided" type="boolean" not-null="true"/>
+		<many-to-one name="voidedBy" column="voided_by" class="org.openmrs.User" />
+		<property name="dateVoided" column="date_voided" type="java.util.Date" />
+		<property name="voidReason" column="void_reason" type="java.lang.String" /> 
+		<property name="uuid" column="uuid" type="java.lang.String" not-null="true" />
+	    
+    </class>
+</hibernate-mapping>

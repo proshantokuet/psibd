@@ -54,6 +54,8 @@
 		shnstockadjust.hbm.xml
 		shnvoidedmoneyreceiptlog.hbm.xml
 		shnmoneyreceiptpaymentlog.hbm.xml
+		shnpackage.hbm.xml
+		shnpackagedetails.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

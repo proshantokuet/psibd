@@ -901,4 +901,68 @@
 		</createTable>
 	</changeSet>
 	
+	<changeSet id="shnpackage-1.0.0" author="tanvir">
+		<createTable tableName="shn_package">
+			<column name="package_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="package_name" type="varchar(255)" />
+			<column name="package_code" type="varchar(255)" />
+			<column name="clinic_name" type="varchar(255)" />
+			<column name="clinic_code" type="varchar(255)" />
+			<column name="accumulated_price" type="float" />
+			<column name="package_price" type="float" />
+			
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="shnpackagedetails-1.0.0" author="tanvir">
+		<createTable tableName="shn_package_details">
+			<column name="package_details_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="item_name" type="varchar(255)" />
+			<column name="item_code" type="varchar(255)" />					
+			
+			<column name="shn_package_id" type="int(11)" >				
+			</column>
+			<column name="item_unit_price" type="float" />
+			
+			<column name="quantity" type="int(11)" />
+			
+			<column name="item_price_in_package" type="float" />			
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+		</createTable>
+	</changeSet>
+	
 </databaseChangeLog>
