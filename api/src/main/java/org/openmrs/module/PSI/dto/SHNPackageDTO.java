@@ -14,6 +14,8 @@ public class SHNPackageDTO {
 	
 	private String clinicName;
 	
+	private int clinicId;
+	
 	private String clinicCode;
 	
 	private float accumulatedPrice;
@@ -21,6 +23,8 @@ public class SHNPackageDTO {
 	private float packagePrice;
 	
 	private Boolean voided;
+	
+	private String uuid;
 
 	public int getPackageId() {
 		return packageId;
@@ -62,6 +66,14 @@ public class SHNPackageDTO {
 		this.clinicName = clinicName;
 	}
 
+	public int getClinicId() {
+		return clinicId;
+	}
+
+	public void setClinicId(int clinicId) {
+		this.clinicId = clinicId;
+	}
+
 	public String getClinicCode() {
 		return clinicCode;
 	}
@@ -92,5 +104,13 @@ public class SHNPackageDTO {
 
 	public void setVoided(Boolean voided) {
 		this.voided = voided;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }

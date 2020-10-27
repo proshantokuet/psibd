@@ -2,28 +2,45 @@ package org.openmrs.module.PSI.web.controller.rest;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.SHNPackage;
 import org.openmrs.module.PSI.SHNPackageDetails;
 import org.openmrs.module.PSI.api.SHNPackageService;
+import org.openmrs.module.PSI.converter.SHNPackageConverter;
+import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.SHNPackageDTO;
 import org.openmrs.module.PSI.dto.SHNPackageDetailsDTO;
+import org.openmrs.module.PSI.utils.DateTimeTypeConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 @RequestMapping("/rest/v1/package")
 @RestController
 public class SHNPackageRestController {
+	
+	@Autowired
+	private PSIAPIServiceFactory psiapiServiceFactory;
+	private final String CLINIC_ENDPOINT = "/rest/v1/clinic/byClinicCode";
+	Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+	        .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter()).create();
 	protected final Log log = LogFactory.getLog(getClass());
 
 	@RequestMapping(value = "/save-update", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -56,6 +73,7 @@ public class SHNPackageRestController {
 				
 				shnPackage.setVoided(dto.getVoided());
 				shnPackage.setClinicName(dto.getClinicName());
+				shnPackage.setClinicId(dto.getClinicId());
 				shnPackage.setClinicCode(dto.getClinicCode());
 				shnPackage.setPackageName(dto.getPackageName());
 				shnPackage.setPackageCode(dto.getPackageCode());
@@ -67,7 +85,7 @@ public class SHNPackageRestController {
 				
 				Set<SHNPackageDetails> shnPackageDetailsList = new HashSet<SHNPackageDetails>();
 				for (SHNPackageDetailsDTO shnPackageDetailsDTO : packageDetailsDTOs) {
-					SHNPackageDetails shnPackageDetails = Context.getService(SHNPackageService.class).finPackageDetailsById(shnPackageDetailsDTO.getPackageDetailsId());
+					SHNPackageDetails shnPackageDetails = Context.getService(SHNPackageService.class).findPackageDetailsById(shnPackageDetailsDTO.getPackageDetailsId());
 	
 					if(shnPackageDetails ==null) {
 						shnPackageDetails = new SHNPackageDetails();
@@ -92,6 +110,9 @@ public class SHNPackageRestController {
 				shnPackage.setShnPackageDetails(shnPackageDetailsList);
 				
 				SHNPackage responsePackage =  Context.getService(SHNPackageService.class).saveOrUpdate(shnPackage);
+				if(dto.getPackageId() != 0) {
+					Context.getService(SHNPackageService.class).deletePackageHavingNullPackageId();
+				}
 				response.put("message", "Package Successfully Saved");
 				response.put("isSuccess", true);
 				response.put("packageId", responsePackage.getPackageId());
@@ -107,5 +128,20 @@ public class SHNPackageRestController {
 		
 		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
 		
+	}
+	
+	@RequestMapping(value = "/getPackageForSync/{id}", method = RequestMethod.GET)
+	public ResponseEntity<String> findUserForSync(@PathVariable int id) throws Exception {
+		JSONArray shnPackageArray = new JSONArray();
+		try {
+			List<SHNPackage> shnPackages = Context.getService(SHNPackageService.class).getAllPackageByClinicId(id);
+			if(shnPackages != null) {
+				shnPackageArray = new SHNPackageConverter().toConvert(shnPackages);
+			}
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>("", HttpStatus.OK);
+		}
+		return new ResponseEntity<String>(shnPackageArray.toString(), HttpStatus.OK);
 	}
 }

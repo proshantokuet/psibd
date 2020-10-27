@@ -24,10 +24,13 @@ import org.openmrs.LocationTag;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIServiceManagement;
+import org.openmrs.module.PSI.SHNPackage;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
+import org.openmrs.module.PSI.api.SHNPackageService;
 import org.openmrs.module.PSI.converter.ClinicServiceConverter;
 import org.openmrs.module.PSI.converter.PSIServiceManagementConverter;
+import org.openmrs.module.PSI.converter.SHNPackageAsServiceConverter;
 import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.openmrs.module.PSI.dto.PSILocation;
 import org.openmrs.module.PSI.dto.PSILocationTag;
@@ -71,14 +74,27 @@ public class PSIServiceManagementRestController extends MainResourceController {
 	public ResponseEntity<String> getAll(@PathVariable int clinicId, @PathVariable int age, @PathVariable String gender)
 	    throws Exception {
 		List<PSIServiceManagement> psiServiceManagement = new ArrayList<PSIServiceManagement>();
+		List<SHNPackage> shnPackages = new ArrayList<SHNPackage>();
+
 		
 		JSONArray psiServiceManagementArrayOject = new JSONArray();
+		JSONArray shnPackageArray = new JSONArray();
 		try {
 			psiServiceManagement = Context.getService(PSIServiceManagementService.class).getAllByClinicIdAgeGender(clinicId,
 			    age, gender);
 			if (psiServiceManagement != null) {
 				psiServiceManagementArrayOject = new PSIServiceManagementConverter().toConvert(psiServiceManagement);
 			}
+			
+			shnPackages = Context.getService(SHNPackageService.class).getAllPackageByClinicId(clinicId);
+			if(shnPackages.size() > 0) {
+				shnPackageArray = new SHNPackageAsServiceConverter().toConvert(shnPackages);
+				for (int i = 0; i < shnPackageArray.length(); i++) {
+					psiServiceManagementArrayOject.put(shnPackageArray.get(i));
+				}
+				
+			}
+			
 		}
 		catch (Exception e) {
 			

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNPackage;
 import org.openmrs.module.PSI.SHNPackageDetails;
 import org.openmrs.module.PSI.SHNStock;
@@ -45,7 +46,7 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SHNPackage> getAllPackageByClinic(String clinicCode) {
+	public List<SHNPackage> getAllPackageByClinicCode(String clinicCode) {
 		// TODO Auto-generated method stub
 		List<SHNPackage> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackage where clinicCode = :id")
 		        .setString("id", clinicCode).list();
@@ -54,7 +55,7 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SHNPackageDetails finPackageDetailsById(int packageDetailsId) {
+	public SHNPackageDetails findPackageDetailsById(int packageDetailsId) {
 		List<SHNPackageDetails> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackageDetails where packageDetailsId = :id")
 		        .setInteger("id", packageDetailsId).list();
 		if (lists.size() != 0) {
@@ -77,6 +78,42 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 		} else {
 			return null;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNPackage> getAllPackageByClinicId(int clinicId) {
+		// TODO Auto-generated method stub
+		List<SHNPackage> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackage where clinicId = :id and voided = 0 order by packageName asc")
+		        .setInteger("id", clinicId).list();
+		return lists;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void deletePackageHavingNullPackageId() {
+		List<SHNPackageDetails> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from SHNPackageDetails where shn_package_id is null").list();
+		log.error("Package Query Result" + lists.size());
+		if (lists.size() != 0) {
+			for (SHNPackageDetails shnPackageDetails : lists) {
+				int packageDetailsId = shnPackageDetails.getPackageDetailsId();
+				deletePackageDetailsById(packageDetailsId);
+			}
+		}
+		
+	}
+
+	@Override
+	public void deletePackageDetailsById(int packageDetailsId) {
+		// TODO Auto-generated method stub
+		SHNPackageDetails shnPackageDetails = findPackageDetailsById(packageDetailsId);
+		if (shnPackageDetails != null) {
+			sessionFactory.getCurrentSession().delete(shnPackageDetails);
+		} else {
+			log.error("Package is null with id" + packageDetailsId);
+		}
+		
 	}
 
 	

@@ -909,6 +909,7 @@
 			<column name="package_name" type="varchar(255)" />
 			<column name="package_code" type="varchar(255)" />
 			<column name="clinic_name" type="varchar(255)" />
+			<column name="clinic_id" type="int(11)" />
 			<column name="clinic_code" type="varchar(255)" />
 			<column name="accumulated_price" type="float" />
 			<column name="package_price" type="float" />

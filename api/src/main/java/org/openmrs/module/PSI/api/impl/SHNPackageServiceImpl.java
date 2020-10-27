@@ -33,21 +33,33 @@ public class SHNPackageServiceImpl extends BaseOpenmrsService implements SHNPack
 	}
 
 	@Override
-	public List<SHNPackage> getAllPackageByClinic(String clinicCode) {
+	public List<SHNPackage> getAllPackageByClinicCode(String clinicCode) {
 		// TODO Auto-generated method stub
-		return dao.getAllPackageByClinic(clinicCode);
+		return dao.getAllPackageByClinicCode(clinicCode);
 	}
 
 	@Override
-	public SHNPackageDetails finPackageDetailsById(int packageDetailsId) {
+	public SHNPackageDetails findPackageDetailsById(int packageDetailsId) {
 		// TODO Auto-generated method stub
-		return dao.finPackageDetailsById(packageDetailsId);
+		return dao.findPackageDetailsById(packageDetailsId);
 	}
 
 	@Override
 	public SHNPackage findbyPackageCode(String packageCode,String clinicCode,int packageId) {
 		// TODO Auto-generated method stub
 		return dao.findbyPackageCode(packageCode,clinicCode,packageId);
+	}
+
+	@Override
+	public List<SHNPackage> getAllPackageByClinicId(int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.getAllPackageByClinicId(clinicId);
+	}
+
+	@Override
+	public void deletePackageHavingNullPackageId() {
+		// TODO Auto-generated method stub
+		dao.deletePackageHavingNullPackageId();
 	}
 
 }
