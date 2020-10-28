@@ -5,10 +5,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
-import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNPackage;
 import org.openmrs.module.PSI.SHNPackageDetails;
-import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.api.db.SHNPackageDAO;
 
 public class HibernateSHNPackageDAO implements SHNPackageDAO {
@@ -91,6 +89,15 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	public List<SHNPackage> getAllPackageByClinicIdWithVoided(int clinicId) {
+		// TODO Auto-generated method stub
+		List<SHNPackage> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackage where clinicId = :id order by packageName asc")
+		        .setInteger("id", clinicId).list();
+		return lists;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public void deletePackageHavingNullPackageId() {
 		List<SHNPackageDetails> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from SHNPackageDetails where shn_package_id is null").list();
@@ -114,6 +121,30 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 			log.error("Package is null with id" + packageDetailsId);
 		}
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNPackage findPackageByUuid(String uuid) {
+		List<SHNPackage> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackage where uuid = :packageuuid")
+		        .setString("packageuuid", uuid).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNPackageDetails findPackageDetailsByUuid(String uuid) {
+		List<SHNPackageDetails> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackageDetails where uuid = :packagedetailsuuid")
+		        .setString("packagedetailsuuid", uuid).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
 	}
 
 	

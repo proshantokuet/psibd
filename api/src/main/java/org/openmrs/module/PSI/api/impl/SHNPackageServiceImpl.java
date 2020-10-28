@@ -62,4 +62,22 @@ public class SHNPackageServiceImpl extends BaseOpenmrsService implements SHNPack
 		dao.deletePackageHavingNullPackageId();
 	}
 
+	@Override
+	public SHNPackage findPackageByUuid(String uuid) {
+		// TODO Auto-generated method stub
+		return dao.findPackageByUuid(uuid);
+	}
+
+	@Override
+	public SHNPackageDetails findPackageDetailsByUuid(String uuid) {
+		// TODO Auto-generated method stub
+		return dao.findPackageDetailsByUuid(uuid);
+	}
+
+	@Override
+	public List<SHNPackage> getAllPackageByClinicIdWithVoided(int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.getAllPackageByClinicIdWithVoided(clinicId);
+	}
+
 }

@@ -13,6 +13,8 @@ public class SHNPackageDetailsDTO {
 	private int quantity;
 	
 	private float packageItemPriceInPackage;
+	
+	private String uuid;
 
 	public int getPackageDetailsId() {
 		return packageDetailsId;
@@ -60,6 +62,14 @@ public class SHNPackageDetailsDTO {
 
 	public void setPackageItemPriceInPackage(float packageItemPriceInPackage) {
 		this.packageItemPriceInPackage = packageItemPriceInPackage;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 }

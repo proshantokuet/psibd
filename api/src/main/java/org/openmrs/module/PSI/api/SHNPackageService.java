@@ -15,6 +15,8 @@ public interface SHNPackageService extends OpenmrsService {
 	public SHNPackage findById(int packageId);
 	
 	public List<SHNPackage> getAllPackageByClinicId(int clinicId);
+	
+	public List<SHNPackage> getAllPackageByClinicIdWithVoided(int clinicId);
 
 	public List<SHNPackage> getAllPackageByClinicCode(String clinicCode);
 	
@@ -22,6 +24,10 @@ public interface SHNPackageService extends OpenmrsService {
 	
 	public SHNPackage findbyPackageCode(String packageCode,String clinicCode,int packageId);
 	
+	public SHNPackage findPackageByUuid(String uuid);
+	
+	public SHNPackageDetails findPackageDetailsByUuid(String uuid);
+
 	public void deletePackageHavingNullPackageId();
 	
 }

@@ -12,12 +12,18 @@ public interface SHNPackageDAO {
 	public SHNPackage findById(int packageId);
 	
 	public List<SHNPackage> getAllPackageByClinicId(int clinicId);
+	
+	public List<SHNPackage> getAllPackageByClinicIdWithVoided(int clinicId);
 
 	public List<SHNPackage> getAllPackageByClinicCode(String clinicCode);
 	
 	public SHNPackageDetails findPackageDetailsById (int packageDetailsId);
 	
 	public SHNPackage findbyPackageCode(String packageCode,String clinicCode,int packageId);
+	
+	public SHNPackage findPackageByUuid(String uuid);
+	
+	public SHNPackageDetails findPackageDetailsByUuid(String uuid);
 	
 	public void deletePackageHavingNullPackageId();
 	

@@ -1,5 +1,6 @@
 package org.openmrs.module.PSI.web.controller.rest;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 @RequestMapping("/rest/v1/package")
 @RestController
@@ -39,6 +41,7 @@ public class SHNPackageRestController {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	private final String CLINIC_ENDPOINT = "/rest/v1/clinic/byClinicCode";
+	
 	Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
 	        .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter()).create();
 	protected final Log log = LogFactory.getLog(getClass());
@@ -90,6 +93,7 @@ public class SHNPackageRestController {
 					if(shnPackageDetails ==null) {
 						shnPackageDetails = new SHNPackageDetails();
 						shnPackageDetails.setDateCreated(new Date());
+						shnPackageDetails.setUuid(UUID.randomUUID().toString());
 					}
 					else {
 						shnPackageDetails.setChangedBy(Context.getAuthenticatedUser());
@@ -134,7 +138,7 @@ public class SHNPackageRestController {
 	public ResponseEntity<String> findUserForSync(@PathVariable int id) throws Exception {
 		JSONArray shnPackageArray = new JSONArray();
 		try {
-			List<SHNPackage> shnPackages = Context.getService(SHNPackageService.class).getAllPackageByClinicId(id);
+			List<SHNPackage> shnPackages = Context.getService(SHNPackageService.class).getAllPackageByClinicIdWithVoided(id);
 			if(shnPackages != null) {
 				shnPackageArray = new SHNPackageConverter().toConvert(shnPackages);
 			}
@@ -144,4 +148,86 @@ public class SHNPackageRestController {
 		}
 		return new ResponseEntity<String>(shnPackageArray.toString(), HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/package-sync/{clinicId}/{code}", method = RequestMethod.GET)
+	public ResponseEntity<String> syncPackage(@PathVariable int clinicId,@PathVariable String code) throws Exception {
+		JSONObject clinicJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRS("", "",
+			    CLINIC_ENDPOINT + "/" + code);
+		if(clinicJson.length() < 1) {
+			return new ResponseEntity<String>("No Clinic Found For This Clinic ID in Global Server", HttpStatus.OK);
+		}
+		else {
+			JSONArray packages = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "","/rest/v1/package/getPackageForSync" + "/" + clinicId);
+			
+			List<SHNPackageDTO> shnPackageDTOs = gson.fromJson(packages.toString(),
+			    new TypeToken<ArrayList<SHNPackageDTO>>() {}.getType());
+			
+			try {
+				
+				for (SHNPackageDTO shnPackageDTO : shnPackageDTOs) {
+
+						Set<SHNPackageDetailsDTO> packageDetailsDTOs = shnPackageDTO.getShnPackageDetails();
+						SHNPackage shnPackage = Context.getService(SHNPackageService.class).findPackageByUuid(shnPackageDTO.getUuid());
+						if (shnPackage == null) {
+							
+							shnPackage = new SHNPackage();
+							shnPackage.setUuid(shnPackageDTO.getUuid());
+							shnPackage.setDateCreated(new Date());
+						}
+						else {
+							shnPackage.setChangedBy(Context.getAuthenticatedUser());
+							shnPackage.setDateChanged(new Date());
+			
+						}
+						
+						shnPackage.setVoided(shnPackageDTO.getVoided());
+						shnPackage.setClinicName(shnPackageDTO.getClinicName());
+						shnPackage.setClinicId(shnPackageDTO.getClinicId());
+						shnPackage.setClinicCode(shnPackageDTO.getClinicCode());
+						shnPackage.setPackageName(shnPackageDTO.getPackageName());
+						shnPackage.setPackageCode(shnPackageDTO.getPackageCode());
+						shnPackage.setAccumulatedPrice(shnPackageDTO.getAccumulatedPrice());
+						shnPackage.setPackagePrice(shnPackageDTO.getPackagePrice());
+						shnPackage.setCreator(Context.getAuthenticatedUser());
+							
+						log.error("Package Object Creating Seuccess " + shnPackageDTO.getUuid());
+						
+						Set<SHNPackageDetails> shnPackageDetailsList = new HashSet<SHNPackageDetails>();
+						for (SHNPackageDetailsDTO shnPackageDetailsDTO : packageDetailsDTOs) {
+							SHNPackageDetails shnPackageDetails = Context.getService(SHNPackageService.class).findPackageDetailsByUuid(shnPackageDetailsDTO.getUuid());
+			
+							if(shnPackageDetails ==null) {
+								shnPackageDetails = new SHNPackageDetails();
+								shnPackageDetails.setDateCreated(new Date());
+								shnPackageDetails.setUuid(shnPackageDetailsDTO.getUuid());
+							}
+							else {
+								shnPackageDetails.setChangedBy(Context.getAuthenticatedUser());
+								shnPackageDetails.setDateChanged(new Date());
+								
+							}
+							shnPackageDetails.setPackageItemName(shnPackageDetailsDTO.getPackageItemName());
+							shnPackageDetails.setPackageItemCode(shnPackageDetailsDTO.getPackageItemCode());
+							shnPackageDetails.setShnPackage(shnPackage);
+							shnPackageDetails.setPackageItemUnitPrice(shnPackageDetailsDTO.getPackageItemUnitPrice());
+							shnPackageDetails.setQuantity(shnPackageDetailsDTO.getQuantity());
+							shnPackageDetails.setPackageItemPriceInPackage(shnPackageDetailsDTO.getPackageItemPriceInPackage());
+							shnPackageDetails.setCreator(Context.getAuthenticatedUser());
+							shnPackageDetails.setDateCreated(new Date());
+							shnPackageDetailsList.add(shnPackageDetails);
+						}
+			
+						shnPackage.setShnPackageDetails(shnPackageDetailsList);
+						
+						Context.getService(SHNPackageService.class).saveOrUpdate(shnPackage);
+						Context.getService(SHNPackageService.class).deletePackageHavingNullPackageId();
+				}
+			}
+			catch (Exception e) {
+				return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+			}
+			return new ResponseEntity<String>("Sync Success", HttpStatus.OK);
+		}
+	}
+	
 }

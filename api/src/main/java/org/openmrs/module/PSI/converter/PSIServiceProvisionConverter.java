@@ -56,6 +56,7 @@ public class PSIServiceProvisionConverter {
 		service.putOpt("overallDiscount", psiServiceProvisions.getPsiMoneyReceiptId().getOverallDiscount());
 		service.putOpt("dueAmount", psiServiceProvisions.getPsiMoneyReceiptId().getDueAmount());
 		service.putOpt("netPayableAfterDiscount", psiServiceProvisions.getPsiMoneyReceiptId().getTotalAmount());
+		service.putOpt("type", psiServiceProvisions.getServiceType());
 
 		
 		Set<SHNMoneyReceiptPaymentLog> moneyReceiptPaymentLog = psiServiceProvisions.getPsiMoneyReceiptId().getPayments();

@@ -36,6 +36,7 @@ public class SHNPackageConverter {
 			packageDetailsObject.putOpt("packageItemUnitPrice", packageDetails.getPackageItemUnitPrice());
 			packageDetailsObject.putOpt("quantity", packageDetails.getQuantity());
 			packageDetailsObject.putOpt("packageItemPriceInPackage", packageDetails.getPackageItemUnitPrice());
+			packageDetailsObject.putOpt("uuid", packageDetails.getUuid());
 			packageDetailsArray.put(packageDetailsObject);
 		}
 		service.putOpt("shnPackageDetails", packageDetailsArray);

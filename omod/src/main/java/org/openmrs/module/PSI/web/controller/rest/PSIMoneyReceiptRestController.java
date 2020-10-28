@@ -10,17 +10,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNEslipNoGenerate;
 import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
+import org.openmrs.module.PSI.SHNPackage;
+import org.openmrs.module.PSI.SHNPackageDetails;
 import org.openmrs.module.PSI.SHNVoidedMoneyReceiptLog;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.PSIUniqueIdGeneratorService;
+import org.openmrs.module.PSI.api.SHNPackageService;
 import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.api.SHNVoidedMoneyReceiptLogService;
 import org.openmrs.module.PSI.converter.PSIMoneyReceiptConverter;
@@ -41,13 +47,24 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 	
 	public static DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	
+	protected final Log log = LogFactory.getLog(getClass());
+
 	@RequestMapping(value = "/add-or-update", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<String> addMoneyReceipt(@RequestBody String jsonStr) throws Exception {
 		
 		JSONObject requestBody = new JSONObject(jsonStr);
 		JSONObject moneyReceipt = requestBody.getJSONObject("moneyReceipt");
-		JSONArray services = requestBody.getJSONArray("services");
+		JSONArray services = null;
+		int submitted = 0;
+		if (moneyReceipt.has("isComplete")) {
+			submitted = moneyReceipt.getInt("isComplete");
+		}
+		if(submitted == 1) {
+			services = extractPackageItems(requestBody.getJSONArray("services"));
+		}
+		else {
+			services = requestBody.getJSONArray("services");
+		}
 		JSONArray payments = requestBody.getJSONArray("payments");
 		PSIMoneyReceipt psiMoneyReceipt = null;
 		int moneyReceiptId = 0;
@@ -157,9 +174,6 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			}
 			
 			if (moneyReceipt.has("dataCollector")) {
-				
-			}
-			if (moneyReceipt.has("dataCollector")) {
 				JSONObject designationObj = new JSONObject(moneyReceipt.getString("dataCollector"));
 				psiMoneyReceipt.setDesignation(designationObj.getString("designation"));
 				psiMoneyReceipt.setDataCollector(designationObj.getString("username"));
@@ -256,6 +270,12 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				}
 				if (service.has("netPayable")) {
 					psiServiceProvision.setNetPayable(Float.parseFloat(service.getString("netPayable")));
+				}
+				if (service.has("type")) {
+					psiServiceProvision.setServiceType(service.getString("type"));
+				}
+				if (service.has("packageCode")) {
+					psiServiceProvision.setPackageCode(service.getString("packageCode"));
 				}
 				
 				if (moneyReceipt.has("moneyReceiptDate")) {
@@ -782,6 +802,12 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				if (service.has("netPayable")) {
 					psiServiceProvision.setNetPayable(Float.parseFloat(service.getString("netPayable")));
 				}
+				if (service.has("type")) {
+					psiServiceProvision.setServiceType(service.getString("type"));
+				}
+				if (service.has("packageCode")) {
+					psiServiceProvision.setPackageCode(service.getString("packageCode"));
+				}
 				
 				if (moneyReceipt.has("moneyReceiptDate")) {
 					psiServiceProvision.setMoneyReceiptDate(dateFormatTwentyFourHour.parse(moneyReceipt.getString("moneyReceiptDate")));
@@ -849,6 +875,98 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		}
 		
 		return new ResponseEntity<String>(psiMoneyReceipt.getMid() + "", HttpStatus.OK);
+	}
+	
+	
+	private JSONArray extractPackageItems(JSONArray serviceToExtract) {
+		log.error("Entering to extract message" + serviceToExtract.length()) ;
+		JSONArray extractedJsonArray = new JSONArray();
+		JSONArray arrayWithoutPackage = new JSONArray();
+
+		for (int i = 0; i < serviceToExtract.length(); i++) {
+			JSONObject service;
+			try {
+				service = serviceToExtract.getJSONObject(i);
+				log.error("get json object from first loop" + service.toString()) ;
+				if (service.has("type")) {
+					String serviceType = service.getString("type");
+					log.error("serviceType from first loop" + serviceType) ;
+					if(!serviceType.equalsIgnoreCase("PACKAGE")) {
+						arrayWithoutPackage.put(service);
+					}
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+		}
+		
+		log.error("Extract service from package" + arrayWithoutPackage.length()) ;
+		
+		for (int i = 0; i < serviceToExtract.length(); i++) {
+			JSONObject service;
+			try {
+				service = serviceToExtract.getJSONObject(i);
+				log.error("Entered seconD loop to extract" + service.toString()) ;
+				if (service.has("type")) {
+					String serviceType = service.getString("type");
+					log.error("Service  type" + serviceType) ;
+					if(serviceType.equalsIgnoreCase("PACKAGE")) {
+						if (service.has("item")) {
+							JSONObject itemObj = new JSONObject(service.getString("item"));
+							int packageID = Integer.parseInt(itemObj.getString("sid"));
+							log.error("packageID" + packageID) ;
+							int quantity = Integer.parseInt(service.getString("quantity"));
+							log.error("quantity" + quantity) ;
+							float discount = Float.parseFloat(service.getString("discount"));
+							SHNPackage shnPackage = Context.getService(SHNPackageService.class).findById(packageID);
+							Set<SHNPackageDetails> shnPackageDetailsList = shnPackage.getShnPackageDetails();
+							for (SHNPackageDetails shnPackageDetails : shnPackageDetailsList) {
+								JSONObject serviceObject = new JSONObject();
+								JSONObject itemObject = new JSONObject();
+								JSONObject codeObject = new JSONObject();
+								serviceObject.putOpt("spid", "");
+								itemObject.putOpt("name", shnPackageDetails.getPackageItemName());
+								itemObject.putOpt("category", "");
+								serviceObject.putOpt("item", itemObject);
+								serviceObject.putOpt("description", "");
+								codeObject.putOpt("code", shnPackageDetails.getPackageItemCode());
+								serviceObject.putOpt("code", codeObject);
+								serviceObject.putOpt("provider", "");
+								serviceObject.putOpt("unitCost", shnPackageDetails.getPackageItemPriceInPackage());
+								serviceObject.putOpt("quantity", shnPackageDetails.getQuantity() * quantity);
+								float totalAmount = shnPackageDetails.getPackageItemPriceInPackage() * (shnPackageDetails.getQuantity() * quantity);
+								log.error("totalAmount" + totalAmount) ;
+								serviceObject.putOpt("totalAmount", totalAmount);
+								serviceObject.putOpt("discount", discount);
+								serviceObject.putOpt("netPayable", totalAmount - discount);
+								serviceObject.putOpt("type", "PACKAGE");
+								serviceObject.putOpt("packageCode", shnPackage.getPackageCode());
+								extractedJsonArray.put(serviceObject);
+								
+								
+							}
+						}
+						
+					}
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+		}
+		log.error("Extraction done json array" + extractedJsonArray.toString()) ;
+		
+		for (int i = 0; i < extractedJsonArray.length(); i++) {
+			try {
+				arrayWithoutPackage.put(extractedJsonArray.get(i));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return arrayWithoutPackage;
+		
 	}
 	
 }

@@ -409,6 +409,12 @@
 			
 		</sql>
 	 </changeSet>
+	 	  <changeSet author="tanvir" id="psiserviceprovision-1.2.4">
+	 	<addColumn tableName="psi_service_provision">
+			<column name="service_type" type="varchar(255)" />	
+			<column name="package_code" type="varchar(255)" />	
+		</addColumn>
+	 </changeSet> 
 	
 	<changeSet id="psidhismarker-1.0.0" author="Proshanto">
 		<createTable tableName="psi_dhis_marker">
@@ -963,6 +969,7 @@
 			<column name="voided_by" type="int(11)" />
 			<column name="date_voided" type="datetime" />
 			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
 		</createTable>
 	</changeSet>
 	

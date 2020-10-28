@@ -56,6 +56,10 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	private String error;
 	
+	private String serviceType;
+	
+	private String packageCode;
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -244,6 +248,22 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 		this.error = error;
 	}
 	
+	public String getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
+
+	public String getPackageCode() {
+		return packageCode;
+	}
+
+	public void setPackageCode(String packageCode) {
+		this.packageCode = packageCode;
+	}
+
 	@Override
 	public String toString() {
 		return "PSIServiceProvision [spid=" + spid + ", item=" + item + ", description=" + description + ", dhisId="
