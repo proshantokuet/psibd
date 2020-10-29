@@ -19,8 +19,6 @@
 	    
 	    <property name="clinicCode" column="clinic_code" type="java.lang.String"/>
 
-	    
-	    <property name="accumulatedPrice" column="accumulated_price" type="float"/>
 	    <property name="packagePrice" column="package_price" type="float"/>
 
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>

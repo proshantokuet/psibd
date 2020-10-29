@@ -50,11 +50,12 @@
 	             <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicSpotList.form?id=${ clinic.cid }"/>">Spots</a>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/product-list.form?id=${ clinic.cid }"/>">Products</a>
 				<a class="btn btn-primary" href="<c:url value="/module/PSI/stock-invoice-list.form?id=${ clinic.cid }"/>">Stock</a>	            
-				<a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a>
+				<a class="btn btn-primary" href="<c:url value="/module/PSI/package-list.form?id=${ clinic.cid }"/>">Packages</a>
 	            
 	            </div>
 	            <div style="padding-top: 5px;">
 	            <a class="btn btn-primary" onclick="syncClinicFromGlobal('${ clinic.clinicId }')">Sync</a>
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a>
 	            </div>
 	             
 	            </td>

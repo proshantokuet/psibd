@@ -23,8 +23,6 @@ public class SHNPackage extends BaseOpenmrsData implements Serializable {
 	
 	private String clinicCode;
 	
-	private float accumulatedPrice;
-	
 	private float packagePrice;
 	
 	
@@ -83,14 +81,6 @@ public class SHNPackage extends BaseOpenmrsData implements Serializable {
 
 	public void setClinicCode(String clinicCode) {
 		this.clinicCode = clinicCode;
-	}
-
-	public float getAccumulatedPrice() {
-		return accumulatedPrice;
-	}
-
-	public void setAccumulatedPrice(float accumulatedPrice) {
-		this.accumulatedPrice = accumulatedPrice;
 	}
 
 	public float getPackagePrice() {

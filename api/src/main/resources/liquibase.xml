@@ -859,8 +859,7 @@
 			<column name="clinic_name" type="varchar(255)" />
 			<column name="clinic_code" type="varchar(255)" />
 			<column name="patient_uuid" type="varchar(255)" />			
-		
-						
+			<column name="clinic_id" type="int(11)" />			
 			<column name="date_created" type="datetime">
 				<constraints nullable="false" />
 			</column>
@@ -917,7 +916,6 @@
 			<column name="clinic_name" type="varchar(255)" />
 			<column name="clinic_id" type="int(11)" />
 			<column name="clinic_code" type="varchar(255)" />
-			<column name="accumulated_price" type="float" />
 			<column name="package_price" type="float" />
 			
 			
@@ -944,12 +942,10 @@
 			<column name="package_details_id" type="int(11)" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="item_name" type="varchar(255)" />
-			<column name="item_code" type="varchar(255)" />					
 			
+			<column name="service_product_id" type="int(11)" />
 			<column name="shn_package_id" type="int(11)" >				
 			</column>
-			<column name="item_unit_price" type="float" />
 			
 			<column name="quantity" type="int(11)" />
 			

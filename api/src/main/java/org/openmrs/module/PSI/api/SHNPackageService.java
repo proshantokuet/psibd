@@ -5,6 +5,7 @@ import java.util.List;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.SHNPackage;
 import org.openmrs.module.PSI.SHNPackageDetails;
+import org.openmrs.module.PSI.dto.SHNPackageReportDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -19,6 +20,8 @@ public interface SHNPackageService extends OpenmrsService {
 	public List<SHNPackage> getAllPackageByClinicIdWithVoided(int clinicId);
 
 	public List<SHNPackage> getAllPackageByClinicCode(String clinicCode);
+	
+	public List<SHNPackageReportDTO> getPackageListForViewByCLinic(int clinicId);
 	
 	public SHNPackageDetails findPackageDetailsById (int packageDetailsId);
 	

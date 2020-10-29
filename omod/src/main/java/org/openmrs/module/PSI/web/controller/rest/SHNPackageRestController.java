@@ -80,7 +80,6 @@ public class SHNPackageRestController {
 				shnPackage.setClinicCode(dto.getClinicCode());
 				shnPackage.setPackageName(dto.getPackageName());
 				shnPackage.setPackageCode(dto.getPackageCode());
-				shnPackage.setAccumulatedPrice(dto.getAccumulatedPrice());
 				shnPackage.setPackagePrice(dto.getPackagePrice());
 				shnPackage.setCreator(Context.getAuthenticatedUser());
 					
@@ -100,10 +99,8 @@ public class SHNPackageRestController {
 						shnPackageDetails.setDateChanged(new Date());
 						
 					}
-					shnPackageDetails.setPackageItemName(shnPackageDetailsDTO.getPackageItemName());
-					shnPackageDetails.setPackageItemCode(shnPackageDetailsDTO.getPackageItemCode());
+					shnPackageDetails.setServiceProductId(shnPackageDetailsDTO.getServiceProductId());
 					shnPackageDetails.setShnPackage(shnPackage);
-					shnPackageDetails.setPackageItemUnitPrice(shnPackageDetailsDTO.getPackageItemUnitPrice());
 					shnPackageDetails.setQuantity(shnPackageDetailsDTO.getQuantity());
 					shnPackageDetails.setPackageItemPriceInPackage(shnPackageDetailsDTO.getPackageItemPriceInPackage());
 					shnPackageDetails.setCreator(Context.getAuthenticatedUser());
@@ -186,7 +183,6 @@ public class SHNPackageRestController {
 						shnPackage.setClinicCode(shnPackageDTO.getClinicCode());
 						shnPackage.setPackageName(shnPackageDTO.getPackageName());
 						shnPackage.setPackageCode(shnPackageDTO.getPackageCode());
-						shnPackage.setAccumulatedPrice(shnPackageDTO.getAccumulatedPrice());
 						shnPackage.setPackagePrice(shnPackageDTO.getPackagePrice());
 						shnPackage.setCreator(Context.getAuthenticatedUser());
 							
@@ -206,10 +202,8 @@ public class SHNPackageRestController {
 								shnPackageDetails.setDateChanged(new Date());
 								
 							}
-							shnPackageDetails.setPackageItemName(shnPackageDetailsDTO.getPackageItemName());
-							shnPackageDetails.setPackageItemCode(shnPackageDetailsDTO.getPackageItemCode());
+							shnPackageDetails.setServiceProductId(shnPackageDetailsDTO.getServiceProductId());
 							shnPackageDetails.setShnPackage(shnPackage);
-							shnPackageDetails.setPackageItemUnitPrice(shnPackageDetailsDTO.getPackageItemUnitPrice());
 							shnPackageDetails.setQuantity(shnPackageDetailsDTO.getQuantity());
 							shnPackageDetails.setPackageItemPriceInPackage(shnPackageDetailsDTO.getPackageItemPriceInPackage());
 							shnPackageDetails.setCreator(Context.getAuthenticatedUser());

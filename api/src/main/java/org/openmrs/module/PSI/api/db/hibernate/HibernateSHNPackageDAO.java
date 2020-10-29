@@ -1,13 +1,19 @@
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.PSI.SHNPackage;
 import org.openmrs.module.PSI.SHNPackageDetails;
 import org.openmrs.module.PSI.api.db.SHNPackageDAO;
+import org.openmrs.module.PSI.dto.SHNPackageDTO;
+import org.openmrs.module.PSI.dto.SHNPackageReportDTO;
+import org.openmrs.module.PSI.dto.SHNStockReportDTO;
 
 public class HibernateSHNPackageDAO implements SHNPackageDAO {
 	
@@ -144,6 +150,31 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 			return lists.get(0);
 		} else {
 			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNPackageReportDTO> getPackageListForViewByCLinic(int clinicId) {
+		List<SHNPackageReportDTO> packageList = new ArrayList<SHNPackageReportDTO>();
+		String packageHql = "CALL getPackageListByClinic("+clinicId+")";					
+		log.error("Query" + packageHql);
+		try {
+			packageList = sessionFactory.getCurrentSession().createSQLQuery(packageHql)
+						 .addScalar("packageId",StandardBasicTypes.INTEGER)
+						 .addScalar("packageName",StandardBasicTypes.STRING)
+						 .addScalar("packageCode",StandardBasicTypes.STRING)
+						 .addScalar("accumulatedPrice",StandardBasicTypes.DOUBLE)
+						 .addScalar("packagePrice",StandardBasicTypes.DOUBLE)
+						 .addScalar("voided",StandardBasicTypes.BOOLEAN)
+						 .setResultTransformer(new AliasToBeanResultTransformer(SHNPackageReportDTO.class)).list();
+			log.error("Query size" + packageList.size());
+
+			return packageList;
+			
+		} catch (Exception e) {
+			log.error(e.toString());
+			return packageList;
 		}
 	}
 

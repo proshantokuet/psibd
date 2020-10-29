@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.openmrs.module.PSI.SHNPackage;
 import org.openmrs.module.PSI.SHNPackageDetails;
+import org.openmrs.module.PSI.dto.SHNPackageDTO;
+import org.openmrs.module.PSI.dto.SHNPackageReportDTO;
 
 public interface SHNPackageDAO {
 	
@@ -16,6 +18,8 @@ public interface SHNPackageDAO {
 	public List<SHNPackage> getAllPackageByClinicIdWithVoided(int clinicId);
 
 	public List<SHNPackage> getAllPackageByClinicCode(String clinicCode);
+	
+	public List<SHNPackageReportDTO> getPackageListForViewByCLinic(int clinicId);
 	
 	public SHNPackageDetails findPackageDetailsById (int packageDetailsId);
 	

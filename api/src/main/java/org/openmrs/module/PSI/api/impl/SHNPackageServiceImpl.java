@@ -7,6 +7,8 @@ import org.openmrs.module.PSI.SHNPackage;
 import org.openmrs.module.PSI.SHNPackageDetails;
 import org.openmrs.module.PSI.api.SHNPackageService;
 import org.openmrs.module.PSI.api.db.SHNPackageDAO;
+import org.openmrs.module.PSI.dto.SHNPackageDTO;
+import org.openmrs.module.PSI.dto.SHNPackageReportDTO;
 
 public class SHNPackageServiceImpl extends BaseOpenmrsService implements SHNPackageService {
 	
@@ -78,6 +80,12 @@ public class SHNPackageServiceImpl extends BaseOpenmrsService implements SHNPack
 	public List<SHNPackage> getAllPackageByClinicIdWithVoided(int clinicId) {
 		// TODO Auto-generated method stub
 		return dao.getAllPackageByClinicIdWithVoided(clinicId);
+	}
+
+	@Override
+	public List<SHNPackageReportDTO> getPackageListForViewByCLinic(int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.getPackageListForViewByCLinic(clinicId);
 	}
 
 }

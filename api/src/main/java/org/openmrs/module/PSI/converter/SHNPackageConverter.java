@@ -19,7 +19,6 @@ public class SHNPackageConverter {
 		service.putOpt("clinicName", shnPackage.getClinicName());
 		service.putOpt("clinicId", shnPackage.getClinicId());
 		service.putOpt("clinicCode", shnPackage.getClinicCode());
-		service.putOpt("accumulatedPrice", shnPackage.getAccumulatedPrice());
 		service.putOpt("packagePrice", shnPackage.getPackagePrice());
 		service.putOpt("voided", shnPackage.getVoided());
 		service.putOpt("uuid", shnPackage.getUuid());
@@ -31,11 +30,8 @@ public class SHNPackageConverter {
 		for (SHNPackageDetails packageDetails : shnPackageDetails) {
 			JSONObject packageDetailsObject = new JSONObject();
 			packageDetailsObject.putOpt("packageDetailsId", packageDetails.getPackageDetailsId());
-			packageDetailsObject.putOpt("packageItemName", packageDetails.getPackageItemName());
-			packageDetailsObject.putOpt("packageItemCode", packageDetails.getPackageItemCode());
-			packageDetailsObject.putOpt("packageItemUnitPrice", packageDetails.getPackageItemUnitPrice());
+			packageDetailsObject.putOpt("serviceProductId", packageDetails.getServiceProductId());
 			packageDetailsObject.putOpt("quantity", packageDetails.getQuantity());
-			packageDetailsObject.putOpt("packageItemPriceInPackage", packageDetails.getPackageItemUnitPrice());
 			packageDetailsObject.putOpt("uuid", packageDetails.getUuid());
 			packageDetailsArray.put(packageDetailsObject);
 		}

@@ -6,13 +6,11 @@
             <generator class="native"/>
         </id> 
         
-	    <property name="packageItemName" column="item_name" type="java.lang.String"/>
-	    <property name="packageItemCode" column="item_code" type="java.lang.String"/>
+		<property name="serviceProductId" column="service_product_id" type="int"/>
 	    <many-to-one name="shnPackage" column="shn_package_id" class="org.openmrs.module.PSI.SHNPackage"/>   
-	    <property name="packageItemUnitPrice" column="item_unit_price" type="float"/>
 	    <property name="quantity" column="quantity" type="int"/>
 	    <property name="packageItemPriceInPackage" column="item_price_in_package" type="float"/> 
-	    
+	    	    
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
 		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>
 		<many-to-one name="changedBy" column="changed_by" class="org.openmrs.User" />

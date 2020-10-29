@@ -10,13 +10,9 @@ public class SHNPackageDetails extends BaseOpenmrsData implements Serializable {
 	
 	private int packageDetailsId;
 	
-	private String packageItemName;
-	
-	private String packageItemCode;
-	
-	private SHNPackage shnPackage;
-	
-	private float packageItemUnitPrice;
+	private int serviceProductId;
+		
+	private SHNPackage shnPackage;	
 	
 	private int quantity;
 	
@@ -31,21 +27,15 @@ public class SHNPackageDetails extends BaseOpenmrsData implements Serializable {
 		this.packageDetailsId = packageDetailsId;
 	}
 
-	public String getPackageItemName() {
-		return packageItemName;
+	public int getServiceProductId() {
+		return serviceProductId;
 	}
 
-	public void setPackageItemName(String packageItemName) {
-		this.packageItemName = packageItemName;
+	public void setServiceProductId(int serviceProductId) {
+		this.serviceProductId = serviceProductId;
 	}
 
-	public String getPackageItemCode() {
-		return packageItemCode;
-	}
 
-	public void setPackageItemCode(String packageItemCode) {
-		this.packageItemCode = packageItemCode;
-	}
 
 	public SHNPackage getShnPackage() {
 		return shnPackage;
@@ -53,14 +43,6 @@ public class SHNPackageDetails extends BaseOpenmrsData implements Serializable {
 
 	public void setShnPackage(SHNPackage shnPackage) {
 		this.shnPackage = shnPackage;
-	}
-
-	public float getPackageItemUnitPrice() {
-		return packageItemUnitPrice;
-	}
-
-	public void setPackageItemUnitPrice(float packageItemUnitPrice) {
-		this.packageItemUnitPrice = packageItemUnitPrice;
 	}
 
 	public int getQuantity() {
