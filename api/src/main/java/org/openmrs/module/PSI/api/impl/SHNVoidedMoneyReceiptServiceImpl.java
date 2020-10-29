@@ -27,9 +27,9 @@ public class SHNVoidedMoneyReceiptServiceImpl extends BaseOpenmrsService impleme
 
 	@Override
 	public List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceiptByClinic(
-			String clinicCode) {
+			int clinicId) {
 		// TODO Auto-generated method stub
-		return dao.getAllVoidedMoneyReceiptByClinic(clinicCode);
+		return dao.getAllVoidedMoneyReceiptByClinic(clinicId);
 	}
 
 	

@@ -35,9 +35,9 @@ public class HibernateSHNVoidedMoneyReceiptDAO implements SHNVoidedMoneyReceiptL
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceiptByClinic(String clinicCode) {
-		List<SHNVoidedMoneyReceiptLog> lists = sessionFactory.getCurrentSession().createQuery("from SHNVoidedMoneyReceiptLog where clinicCode = :id")
-		        .setString("id", clinicCode).list();
+	public List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceiptByClinic(int clinicId) {
+		List<SHNVoidedMoneyReceiptLog> lists = sessionFactory.getCurrentSession().createQuery("from SHNVoidedMoneyReceiptLog where clinicId = :id")
+		        .setInteger("id", clinicId).list();
 		return lists;
 	}
 

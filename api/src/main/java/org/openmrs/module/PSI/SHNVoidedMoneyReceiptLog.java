@@ -21,6 +21,8 @@ public class SHNVoidedMoneyReceiptLog extends BaseOpenmrsData implements Seriali
 	private String clinicCode;
 	
 	private String patientUuid;
+	
+	private int clinicId;
 
 	public int getVoidId() {
 		return voidId;
@@ -78,6 +80,14 @@ public class SHNVoidedMoneyReceiptLog extends BaseOpenmrsData implements Seriali
 
 	public void setClinicCode(String clinicCode) {
 		this.clinicCode = clinicCode;
+	}
+
+	public int getClinicId() {
+		return clinicId;
+	}
+
+	public void setClinicId(int clinicId) {
+		this.clinicId = clinicId;
 	}
 
 	@Override

@@ -11,6 +11,6 @@ public interface SHNVoidedMoneyReceiptLogService extends OpenmrsService {
 
 	public SHNVoidedMoneyReceiptLog saveOrUpdate(SHNVoidedMoneyReceiptLog shnVoidedLog);
 	
-	List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceiptByClinic(String clinicCode);
+	List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceiptByClinic(int clinicId);
 	
 }

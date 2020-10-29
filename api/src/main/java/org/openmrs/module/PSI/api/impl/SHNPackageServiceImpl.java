@@ -45,9 +45,9 @@ public class SHNPackageServiceImpl extends BaseOpenmrsService implements SHNPack
 	}
 
 	@Override
-	public SHNPackage findbyPackageCode(String packageCode,String clinicCode,int packageId) {
+	public SHNPackage findbyPackageCode(String packageCode, int clinicId, int packageId) {
 		// TODO Auto-generated method stub
-		return dao.findbyPackageCode(packageCode,clinicCode,packageId);
+		return dao.findbyPackageCode(packageCode,clinicId,packageId);
 	}
 
 	@Override

@@ -159,7 +159,7 @@ public class SHNStockRestController {
 	
 	@SuppressWarnings("resource")
 	@RequestMapping(value = "/stock-upload", method = RequestMethod.POST)
-	public ResponseEntity<String> uploadProduct(@RequestParam MultipartFile file, HttpServletRequest request,
+	public ResponseEntity<String> uploadStock(@RequestParam MultipartFile file, HttpServletRequest request,
 	                                                  ModelMap model, @RequestParam(required = false) int id)
 	    throws Exception {
 		

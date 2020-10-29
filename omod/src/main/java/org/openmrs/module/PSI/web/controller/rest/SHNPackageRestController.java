@@ -53,7 +53,7 @@ public class SHNPackageRestController {
 		log.error("DTO" + dto);
 		try {
 			
-			SHNPackage checkShnPackage = Context.getService(SHNPackageService.class).findbyPackageCode(dto.getPackageCode(), dto.getClinicCode(), dto.getPackageId());
+			SHNPackage checkShnPackage = Context.getService(SHNPackageService.class).findbyPackageCode(dto.getPackageCode(), dto.getClinicId(), dto.getPackageId());
 			if(checkShnPackage != null) {
 				response.put("message", "Package Code Already Exist");
 				response.put("isSuccess", false);
@@ -84,7 +84,7 @@ public class SHNPackageRestController {
 				shnPackage.setPackagePrice(dto.getPackagePrice());
 				shnPackage.setCreator(Context.getAuthenticatedUser());
 					
-				log.error("Package Object Creating Seuccess " + dto.getPackageCode());
+				log.error("Package Object Creating Success " + dto.getPackageCode());
 				
 				Set<SHNPackageDetails> shnPackageDetailsList = new HashSet<SHNPackageDetails>();
 				for (SHNPackageDetailsDTO shnPackageDetailsDTO : packageDetailsDTOs) {

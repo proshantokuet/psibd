@@ -16,14 +16,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNEslipNoGenerate;
 import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.SHNPackage;
 import org.openmrs.module.PSI.SHNPackageDetails;
 import org.openmrs.module.PSI.SHNVoidedMoneyReceiptLog;
+import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
+import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.PSIUniqueIdGeneratorService;
 import org.openmrs.module.PSI.api.SHNPackageService;
@@ -392,6 +396,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		try {
 			PSIMoneyReceipt psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(id);
 			if(psiMoneyReceipt !=null) {
+				PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findByClinicId(psiMoneyReceipt.getClinicCode());
 				String updatedStock = Context.getService(SHNStockService.class).deleteMoneyReceiptStockUpdate(psiMoneyReceipt.getEslipNo(), psiMoneyReceipt.getClinicCode());
 				Context.getService(PSIMoneyReceiptService.class).delete(id);
 				SHNVoidedMoneyReceiptLog shnVoidedLog = new SHNVoidedMoneyReceiptLog();
@@ -401,6 +406,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				shnVoidedLog.seteSlipNo(psiMoneyReceipt.getEslipNo());
 				shnVoidedLog.setSlipNo(psiMoneyReceipt.getSlipNo());
 				shnVoidedLog.setPatientUuid(psiMoneyReceipt.getPatientUuid());
+				shnVoidedLog.setClinicId(psiClinicManagement.getCid());
 				shnVoidedLog.setDateCreated(new Date());
 				shnVoidedLog.setCreator(Context.getAuthenticatedUser());
 				Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedLog);
@@ -585,7 +591,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 	
 	
 	@RequestMapping(value = "/get-voided-money-receipt/{clinicid}", method = RequestMethod.GET)
-	public ResponseEntity<String> getAllVoidedMoneyReceipt(@PathVariable String clinicid) throws Exception {
+	public ResponseEntity<String> getAllVoidedMoneyReceipt(@PathVariable int clinicid) throws Exception {
 		List<SHNVoidedMoneyReceiptLog> psiMoneyReceipt = new ArrayList<SHNVoidedMoneyReceiptLog>();
 		JSONArray psiMoneyReceiptAndServicesObject = new JSONArray();
 		try {

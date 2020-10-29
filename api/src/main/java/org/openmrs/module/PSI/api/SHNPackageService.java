@@ -22,7 +22,7 @@ public interface SHNPackageService extends OpenmrsService {
 	
 	public SHNPackageDetails findPackageDetailsById (int packageDetailsId);
 	
-	public SHNPackage findbyPackageCode(String packageCode,String clinicCode,int packageId);
+	public SHNPackage findbyPackageCode(String packageCode, int clinicId, int packageId);
 	
 	public SHNPackage findPackageByUuid(String uuid);
 	

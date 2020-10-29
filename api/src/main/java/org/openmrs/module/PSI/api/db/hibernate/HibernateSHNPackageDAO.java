@@ -65,10 +65,10 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SHNPackage findbyPackageCode(String packageCode,String clinicCode,int packageId) {
-		List<SHNPackage> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackage where packageId != :id and  packageCode = :packagecode and clinicCode = :cliniccode")
+	public SHNPackage findbyPackageCode(String packageCode, int clinicId, int packageId) {
+		List<SHNPackage> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackage where packageId != :id and  packageCode = :packagecode and clinicId = :clinicid")
 		        .setString("packagecode", packageCode)
-		        .setString("cliniccode", clinicCode)
+		        .setInteger("clinicid", clinicId)
 		        .setInteger("id", packageId)
 		        .list();
 		if (lists.size() != 0) {
