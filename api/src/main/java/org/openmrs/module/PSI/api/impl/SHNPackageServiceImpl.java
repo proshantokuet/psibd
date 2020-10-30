@@ -88,4 +88,10 @@ public class SHNPackageServiceImpl extends BaseOpenmrsService implements SHNPack
 		return dao.getPackageListForViewByCLinic(clinicId);
 	}
 
+	@Override
+	public List<SHNPackageReportDTO> getPackageByPackageIdForEdit(int packageId) {
+		// TODO Auto-generated method stub
+		return dao.getPackageByPackageIdForEdit(packageId);
+	}
+
 }

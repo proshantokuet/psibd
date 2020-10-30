@@ -13,6 +13,29 @@ public class SHNPackageReportDTO  {
 	private Double packagePrice;
 	
 	private boolean voided;
+	
+	private int packageDetailsId;
+	
+	private String itemName;
+	
+	private String itemCode;
+	
+	private int itemId;
+	
+	private int quantity;
+	
+	private float totalPackagePrice;
+	
+	private float unitCost;
+	
+	private float itemsPriceInPackage;
+	
+	private String uuid;
+	
+	private Double packageDiscount;
+
+	private float unitPriceInPackage;
+
 
 	public int getPackageId() {
 		return packageId;
@@ -60,6 +83,94 @@ public class SHNPackageReportDTO  {
 
 	public void setVoided(boolean voided) {
 		this.voided = voided;
+	}
+
+	public int getPackageDetailsId() {
+		return packageDetailsId;
+	}
+
+	public void setPackageDetailsId(int packageDetailsId) {
+		this.packageDetailsId = packageDetailsId;
+	}
+
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	public String getItemCode() {
+		return itemCode;
+	}
+
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
+	}
+
+	public int getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(int itemId) {
+		this.itemId = itemId;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public float getTotalPackagePrice() {
+		return totalPackagePrice;
+	}
+
+	public void setTotalPackagePrice(float totalPackagePrice) {
+		this.totalPackagePrice = totalPackagePrice;
+	}
+
+	public float getUnitCost() {
+		return unitCost;
+	}
+
+	public void setUnitCost(float unitCost) {
+		this.unitCost = unitCost;
+	}
+
+	public float getItemsPriceInPackage() {
+		return itemsPriceInPackage;
+	}
+
+	public void setItemsPriceInPackage(float itemsPriceInPackage) {
+		this.itemsPriceInPackage = itemsPriceInPackage;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public Double getPackageDiscount() {
+		return packageDiscount;
+	}
+
+	public void setPackageDiscount(Double packageDiscount) {
+		this.packageDiscount = packageDiscount;
+	}
+
+	public float getUnitPriceInPackage() {
+		return unitPriceInPackage;
+	}
+
+	public void setUnitPriceInPackage(float unitPriceInPackage) {
+		this.unitPriceInPackage = unitPriceInPackage;
 	}
 
 

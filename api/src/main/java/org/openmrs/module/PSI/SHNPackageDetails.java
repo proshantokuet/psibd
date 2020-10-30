@@ -18,6 +18,8 @@ public class SHNPackageDetails extends BaseOpenmrsData implements Serializable {
 	
 	private float packageItemPriceInPackage;
 	
+	private float unitPriceInPackage;
+	
 
 	public int getPackageDetailsId() {
 		return packageDetailsId;
@@ -59,6 +61,14 @@ public class SHNPackageDetails extends BaseOpenmrsData implements Serializable {
 
 	public void setPackageItemPriceInPackage(float packageItemPriceInPackage) {
 		this.packageItemPriceInPackage = packageItemPriceInPackage;
+	}
+
+	public float getUnitPriceInPackage() {
+		return unitPriceInPackage;
+	}
+
+	public void setUnitPriceInPackage(float unitPriceInPackage) {
+		this.unitPriceInPackage = unitPriceInPackage;
 	}
 
 	@Override

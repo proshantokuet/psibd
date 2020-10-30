@@ -32,5 +32,8 @@ public interface SHNPackageDAO {
 	public void deletePackageHavingNullPackageId();
 	
 	public void deletePackageDetailsById(int packageDetailsId);
+	
+	public List<SHNPackageReportDTO> getPackageByPackageIdForEdit(int packageId);
+
 
 }

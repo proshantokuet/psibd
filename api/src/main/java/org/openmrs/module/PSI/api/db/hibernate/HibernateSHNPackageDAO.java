@@ -178,6 +178,40 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNPackageReportDTO> getPackageByPackageIdForEdit(int packageId) {
+		List<SHNPackageReportDTO> packageList = new ArrayList<SHNPackageReportDTO>();
+		String packageHql = "CALL getPackageByPackageId("+packageId+")";					
+		log.error("Query" + packageHql);
+		try {
+			packageList = sessionFactory.getCurrentSession().createSQLQuery(packageHql)
+						 .addScalar("packageId",StandardBasicTypes.INTEGER)
+						 .addScalar("packageName",StandardBasicTypes.STRING)
+						 .addScalar("packageCode",StandardBasicTypes.STRING)
+						 .addScalar("accumulatedPrice",StandardBasicTypes.DOUBLE)
+						 .addScalar("packageDetailsId",StandardBasicTypes.INTEGER)
+						 .addScalar("itemName",StandardBasicTypes.STRING)
+						 .addScalar("itemCode",StandardBasicTypes.STRING)
+						 .addScalar("itemId",StandardBasicTypes.INTEGER)
+						 .addScalar("totalPackagePrice",StandardBasicTypes.FLOAT)
+						 .addScalar("quantity",StandardBasicTypes.INTEGER)
+						 .addScalar("unitCost",StandardBasicTypes.FLOAT)
+						 .addScalar("itemsPriceInPackage",StandardBasicTypes.FLOAT)
+						 .addScalar("voided",StandardBasicTypes.BOOLEAN)
+						 .addScalar("uuid",StandardBasicTypes.STRING)
+						 .addScalar("unitPriceInPackage", StandardBasicTypes.FLOAT)
+						 .setResultTransformer(new AliasToBeanResultTransformer(SHNPackageReportDTO.class)).list();
+			log.error("Query size" + packageList.size());
+
+			return packageList;
+			
+		} catch (Exception e) {
+			log.error(e.toString());
+			return packageList;
+		}
+	}
+
 	
 	
 }

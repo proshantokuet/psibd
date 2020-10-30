@@ -23,6 +23,8 @@ public interface SHNPackageService extends OpenmrsService {
 	
 	public List<SHNPackageReportDTO> getPackageListForViewByCLinic(int clinicId);
 	
+	public List<SHNPackageReportDTO> getPackageByPackageIdForEdit(int packageId);
+	
 	public SHNPackageDetails findPackageDetailsById (int packageDetailsId);
 	
 	public SHNPackage findbyPackageCode(String packageCode, int clinicId, int packageId);

@@ -58,7 +58,7 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	private String serviceType;
 	
-	private String packageCode;
+	private String packageUuid;
 	
 	@Override
 	public Integer getId() {
@@ -256,12 +256,13 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 		this.serviceType = serviceType;
 	}
 
-	public String getPackageCode() {
-		return packageCode;
+
+	public String getPackageUuid() {
+		return packageUuid;
 	}
 
-	public void setPackageCode(String packageCode) {
-		this.packageCode = packageCode;
+	public void setPackageUuid(String packageUuid) {
+		this.packageUuid = packageUuid;
 	}
 
 	@Override

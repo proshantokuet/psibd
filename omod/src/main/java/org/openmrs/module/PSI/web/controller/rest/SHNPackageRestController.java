@@ -89,7 +89,7 @@ public class SHNPackageRestController {
 				for (SHNPackageDetailsDTO shnPackageDetailsDTO : packageDetailsDTOs) {
 					SHNPackageDetails shnPackageDetails = Context.getService(SHNPackageService.class).findPackageDetailsById(shnPackageDetailsDTO.getPackageDetailsId());
 	
-					if(shnPackageDetails ==null) {
+					if(shnPackageDetails == null) {
 						shnPackageDetails = new SHNPackageDetails();
 						shnPackageDetails.setDateCreated(new Date());
 						shnPackageDetails.setUuid(UUID.randomUUID().toString());
@@ -103,6 +103,7 @@ public class SHNPackageRestController {
 					shnPackageDetails.setShnPackage(shnPackage);
 					shnPackageDetails.setQuantity(shnPackageDetailsDTO.getQuantity());
 					shnPackageDetails.setPackageItemPriceInPackage(shnPackageDetailsDTO.getPackageItemPriceInPackage());
+					shnPackageDetails.setUnitPriceInPackage(shnPackageDetailsDTO.getUnitPriceInPackage());
 					shnPackageDetails.setCreator(Context.getAuthenticatedUser());
 					shnPackageDetails.setDateCreated(new Date());
 					shnPackageDetailsList.add(shnPackageDetails);
@@ -206,6 +207,7 @@ public class SHNPackageRestController {
 							shnPackageDetails.setShnPackage(shnPackage);
 							shnPackageDetails.setQuantity(shnPackageDetailsDTO.getQuantity());
 							shnPackageDetails.setPackageItemPriceInPackage(shnPackageDetailsDTO.getPackageItemPriceInPackage());
+							shnPackageDetails.setUnitPriceInPackage(shnPackageDetailsDTO.getUnitPriceInPackage());
 							shnPackageDetails.setCreator(Context.getAuthenticatedUser());
 							shnPackageDetails.setDateCreated(new Date());
 							shnPackageDetailsList.add(shnPackageDetails);

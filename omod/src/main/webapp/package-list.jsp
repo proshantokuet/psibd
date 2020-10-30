@@ -37,8 +37,7 @@
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
 <p><a href="${pageContext.request.contextPath}/module/PSI/add-package.form?id=${id}">Add Package</a> 
-<%-- <a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Services</a> --%>
-<a class="" href="${pageContext.request.contextPath}/module/PSI/upload-stock.form?id=${id}"  style="margin-left: 10px;">Sync Package</a>
+<a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Package</a>
 </p>
 <div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:36%"></div>			
 <div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
@@ -106,6 +105,35 @@ $jq(document).ready( function () {
 			bInfo: false
          });
 } );
+
+function syncServiceFromGlobal(clinicId, code) {
+	var url = "/openmrs/ws/rest/v1/package/package-sync/" + clinicId + "/" + code;
+	var token = $jq("meta[name='_csrf']").attr("content");
+	var header = $jq("meta[name='_csrf_header']").attr("content");
+	event.preventDefault();
+	$jq("#loader_clinic_list").show();
+	$jq.ajax({
+		type:"GET",
+		contentType : "application/json",
+	    url : url,	 
+	    dataType : 'html',
+	    timeout : 100000,
+	    beforeSend: function() {	    
+	    		
+	    },
+	    success:function(data){
+			$jq("#message").html(data);
+			$jq("#loader_clinic_list").hide();
+		   if(data == "Sync Success"){					   
+			   window.location.replace("/openmrs/module/PSI/package-list.form?id="+clinicId);
+		   }
+	    },
+	    error:function(data){
+	    	$jq("#loader_clinic_list").hide();
+	    }
+	    
+	});
+};
 
 </script>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

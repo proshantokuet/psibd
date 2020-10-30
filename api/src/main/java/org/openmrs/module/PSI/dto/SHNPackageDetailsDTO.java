@@ -17,6 +17,9 @@ public class SHNPackageDetailsDTO {
 	private String uuid;
 	
 	private int serviceProductId;
+	
+	private float unitPriceInPackage;
+
 
 	public int getPackageDetailsId() {
 		return packageDetailsId;
@@ -80,6 +83,14 @@ public class SHNPackageDetailsDTO {
 
 	public void setServiceProductId(int serviceProductId) {
 		this.serviceProductId = serviceProductId;
+	}
+
+	public float getUnitPriceInPackage() {
+		return unitPriceInPackage;
+	}
+
+	public void setUnitPriceInPackage(float unitPriceInPackage) {
+		this.unitPriceInPackage = unitPriceInPackage;
 	}
 
 }

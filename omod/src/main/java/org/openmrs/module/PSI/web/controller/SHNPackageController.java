@@ -56,5 +56,25 @@ public class SHNPackageController {
 		model.addAttribute("hasClinicPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 	}
+	
+	@RequestMapping(value = "/module/PSI/edit-package", method = RequestMethod.GET)
+	public void pSIClinicList(HttpServletRequest request, HttpSession session, Model model,
+	                          @RequestParam(required = true) int id,@RequestParam(required = true) int clinicid) {
+		model.addAttribute("id", clinicid);
+		model.addAttribute("packageId", id);
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(clinicid);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
+		model.addAttribute("productList",
+			    Context.getService(PSIServiceManagementService.class).getProductListAll(clinicid,0));
+		model.addAttribute("serviceList",
+			    Context.getService(PSIServiceManagementService.class).getAllByClinicId(clinicid));
+		List<SHNPackageReportDTO> packageItem = Context.getService(SHNPackageService.class).getPackageByPackageIdForEdit(id);
+		model.addAttribute("packageItem",packageItem);
+
+		model.addAttribute("hasDashboardPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+	}
 
 }

@@ -21,7 +21,7 @@
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">    	    
-        	<p>Add Package</p>
+        	<p>Edit Package</p>
         	
        	</div>
 		<span class="text-red" id="usernameUniqueErrorMessage"></span>
@@ -36,14 +36,14 @@
 				<div class="row">
 					<div class="col-lg-3 form-group">
 						<label for="invoiceNo">1.Package Name:</label><span class="text-danger"> *</span> 
-						<input type="text" style="height: 39px;" class="form-control" id="packageName">
+						<input type="text" style="height: 39px;" class="form-control" id="packageName" value="${packageItem[0].packageName}">
 						<span class="text-danger" id="packagenameValidation"></span>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-lg-3 form-group">
 						<label for="invoiceNo">2.Package Code:</label><span class="text-danger"> *</span> 
-						<input type="text" style="height: 39px;" class="form-control" id="packageCode">
+						<input type="text" style="height: 39px;" class="form-control" id="packageCode" value="${packageItem[0].packageCode}">
 						<span class="text-danger" id="packageCodeValidation"></span>
 					</div>
 				</div>
@@ -66,8 +66,25 @@
 				<div class="row">
 					<div class="col-lg-3 form-group">
 						<label for="invoiceNo">5. Package Price:</label><span class="text-danger"> *</span> 
-						<input type="text" style="height: 39px;" class="form-control" id="totalPackagePrice" readonly>
+						<input type="text" style="height: 39px;" class="form-control" id="totalPackagePrice" value="${packageItem[0].totalPackagePrice}" readonly>
 					</div>
+				</div>
+				<div class="row">
+				<c:if test="${!packageItem[0].voided}">
+				<div class="col-lg-2 form-group">
+				<label>6. Disable Package</label></div>
+				<div class="col-lg-3 form-group">
+				<input type="radio" name="voidedPackage" id="yesDisable" value="yes"> Yes
+				</div>
+				</c:if>
+				<c:if test="${packageItem[0].voided}">
+				<div class="col-lg-3 form-group">
+					<div class="form-inline form-group">
+					<label>6. Enable Package</label>
+						<input type="radio" name="voidedPackage" id="enableService" value="yes"> Yes
+					</div>
+				</div>
+				</c:if>	
 				</div>
 				<div><p><strong>Product/Service Information:</strong></p></div>
 					<div>
@@ -87,9 +104,29 @@
 							<th>Unit Price(Package)
 							<th>Amount</th>
 							<th>Action</th>
+							<th style="display:none;">PackageDetailsId</th>
 						</tr>
 					</thead>
 							<tbody id="tbl_posts_body">
+							<%int sl_v = 0;%>
+							<c:forEach var="item" items="${ packageItem }">
+							<%sl_v++;%>
+					        <tr id='rec-<%=sl_v%>'>
+					        	<td><span class="sn"><%=sl_v%></span>.</td>
+					        	<td>${ item.itemName }</td>
+					            <td>${ item.itemId }</td>
+					            <td>${ item.itemCode }</td>
+					            <td>${ item.quantity }</td>
+					            <td>${ item.unitCost }</td>
+					            <td>${ item.accumulatedPrice }</td>
+					            <td>${ item.unitPriceInPackage }</td>
+					            <td>${ item.itemsPriceInPackage }</td>
+					            <td>
+					            <a class="btn btn-xs delete-record" data-id=<%=sl_v%>><i class="fa fa-trash"></i></a>
+					            </td>
+					            <td style="display:none;">${ item.packageDetailsId }</td>
+					        </tr>
+					       </c:forEach>
 							</tbody>
 						</table>
 						
@@ -169,7 +206,7 @@
 				</div>
 		      </div>
 		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 		        <button type="button" onclick="appendRowForProductInTable()" class="btn btn-primary">Add</button>
 		      </div>
 		    </div>
@@ -244,7 +281,7 @@
 				</div>
 		      </div>
 		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 		        <button type="button" onclick="appendRowForServiceInTable()" class="btn btn-primary">Add</button>
 		      </div>
 		    </div>
@@ -312,6 +349,7 @@ jQuery('#addservicemodal').on('hidden.bs.modal', function (e) {
 	jQuery("#serviceQuantity").val("");
 	jQuery("#servicePriceinPackage").val("");
 	jQuery("#serviceUnitPriceinPackage").val("");
+
 })
 
 jQuery('#addproductmodal').delegate('#productQuantity', 'input propertychange', function (event) {
@@ -366,6 +404,7 @@ function appendRowForProductInTable() {
 	jQuery("#unitPriceproductvalidation").html("");
 	
 
+	jQuery("#priceInproductvalidation").html("");
 	var productName = jQuery("#product").val().split("_")[1];
 	var productId = jQuery("#productId").val();
 	var productCode = jQuery("#productCode").val();
@@ -380,7 +419,7 @@ function appendRowForProductInTable() {
 		return;
 	}
 	var size = jQuery('#trainingList >tbody >tr').length + 1;
-	jQuery("#trainingList tbody").append("<tr id='rec-"+size+"'><td><span class=\"sn\">"+size+"</span>.</td><td>"+productName+"</td><td>"+productId+"</td><td>"+productCode+"</td><td>"+productQuantity+"</td><td>"+unitPrice+"</td><td>"+productAmount+"</td><td>"+unitPriceinPackage+"</td><td>"+priceinPackage+"</td><td><a class=\"btn btn-xs delete-record\" data-id="+size+"><i class=\"fa fa-trash\"></i></a></td></tr>");
+	jQuery("#trainingList tbody").append("<tr id='rec-"+size+"'><td><span class=\"sn\">"+size+"</span>.</td><td>"+productName+"</td><td>"+productId+"</td><td>"+productCode+"</td><td>"+productQuantity+"</td><td>"+unitPrice+"</td><td>"+productAmount+"</td><td>"+unitPriceinPackage+"</td><td>"+priceinPackage+"</td><td><a class=\"btn btn-xs delete-record\" data-id="+size+"><i class=\"fa fa-trash\"></i></a></td><td style=\"display:none;\">0</td></tr>");
 	
 	calculateTotalPackagePrice();
 	jQuery('#addproductmodal').modal('hide');
@@ -410,6 +449,8 @@ function appendRowForServiceInTable() {
 	}
 	jQuery("#serviceUnitPriceinPackagevalidation").html("");
 	
+
+	
 	var serviceName = jQuery("#service").val().split("_")[1];
 	var serviceId = jQuery("#serviceId").val();
 	var serviceCode = jQuery("#serviceCode").val();
@@ -424,7 +465,7 @@ function appendRowForServiceInTable() {
 		return;
 	}
 	var size = jQuery('#trainingList >tbody >tr').length + 1;
-	jQuery("#trainingList tbody").append("<tr id='rec-"+size+"'><td><span class=\"sn\">"+size+"</span>.</td><td>"+serviceName+"</td><td>"+serviceId+"</td><td>"+serviceCode+"</td><td>"+serviceQuantity+"</td><td>"+serviceUnitPrice+"</td><td>"+serviceAmount+"</td><td>"+serviceUnitPriceinPackage+"</td><td>"+servicePriceinPackage+"</td><td><a class=\"btn btn-xs delete-record\" data-id="+size+"><i class=\"fa fa-trash\"></i></a></td></tr>");
+	jQuery("#trainingList tbody").append("<tr id='rec-"+size+"'><td><span class=\"sn\">"+size+"</span>.</td><td>"+serviceName+"</td><td>"+serviceId+"</td><td>"+serviceCode+"</td><td>"+serviceQuantity+"</td><td>"+serviceUnitPrice+"</td><td>"+serviceAmount+"</td><td>"+serviceUnitPriceinPackage+"</td><td>"+servicePriceinPackage+"</td><td><a class=\"btn btn-xs delete-record\" data-id="+size+"><i class=\"fa fa-trash\"></i></a></td><td style=\"display:none;\">0</td></tr>");
 	calculateTotalPackagePrice();
 	jQuery('#addservicemodal').modal('hide');
 }
@@ -472,6 +513,12 @@ function checkDuplicateServiceProduct(selectedId) {
 }
 
 function savePackageData() {
+	var Isvoided = ${packageItem[0].voided}; 
+	var isDisable = jQuery('input[name="voidedPackage"]:checked').val();
+	if(isDisable == "yes") {
+		Isvoided = !Isvoided;
+	}
+	console.log(Isvoided);
 	if(jQuery("#packageName").val() == "") {
 		jQuery("#packagenameValidation").html("<strong>Please fill out this field</strong>");
 		return;
@@ -498,7 +545,8 @@ function savePackageData() {
 				var quantity = $row.find('td').eq(4).text();
 				var unitPriceInPackage = $row.find('td').eq(7).text();
 				var packageItemPriceInPackage = $row.find('td').eq(8).text();
-				packageObject["packageDetailsId"] = 0;
+				var packageDetailsId = $row.find('td').eq(9).text();
+				packageObject["packageDetailsId"] = parseInt(packageDetailsId);;
 				packageObject["serviceProductId"] = parseInt(productId);
 				packageObject["quantity"] = parseInt(quantity);
 				packageObject["unitPriceInPackage"] = parseFloat(unitPriceInPackage);
@@ -515,13 +563,13 @@ function savePackageData() {
 	var formData;
 
 		formData = {
-			"packageId" : 0,
+			"packageId" : ${packageId},
 			"clinicName" : "${psiClinicManagement.name }",
 			"clinicCode" : "${psiClinicManagement.clinicId }",
 			"clinicId": ${id},
 			"packageName" : jQuery("#packageName").val(),
 			"packageCode": jQuery("#packageCode").val(),
-			"voided": false,
+			"voided": Isvoided,
 			"packagePrice": +jQuery("#totalPackagePrice").val(),
 			"shnPackageDetails" : packageDetails
 		};

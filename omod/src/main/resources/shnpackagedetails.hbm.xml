@@ -9,7 +9,8 @@
 		<property name="serviceProductId" column="service_product_id" type="int"/>
 	    <many-to-one name="shnPackage" column="shn_package_id" class="org.openmrs.module.PSI.SHNPackage"/>   
 	    <property name="quantity" column="quantity" type="int"/>
-	    <property name="packageItemPriceInPackage" column="item_price_in_package" type="float"/> 
+	    <property name="packageItemPriceInPackage" column="item_price_in_package" type="float"/>
+	    <property name="unitPriceInPackage" column="unit_price_in_package" type="float"/>  
 	    	    
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
 		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>

@@ -112,7 +112,7 @@
 				<div class="col-md-6">
 					<div class="form-inline form-group">
 					<label>Enable Service</label>
-						<input type="radio" name="enableService" id="enableService" value="yes"> Yes </td>
+						<input type="radio" name="enableService" id="enableService" value="yes"> Yes
 					</div>
 				</div>
 				</c:if>
