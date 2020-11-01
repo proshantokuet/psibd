@@ -762,6 +762,7 @@
 			</column>
 			<column name="clinic_name" type="varchar(255)" />
 			<column name="clinic_code" type="varchar(255)" />
+			<column name="clinic_id" type="int(11)" />
 			<column name="invoice_number" type="varchar(255)" />
 			<column name="recieve_date" type="datetime" />
 			<column name="stock_in_id" type="varchar(255)" />

@@ -34,8 +34,8 @@ public interface SHNStockService extends OpenmrsService {
 	
 	public List<SHNStockAdjustDTO> getAdjustHistoryAllByClinic(int clinicId);
 	
-	public String adjustStockByEarliestExpiryDate(int quantity, String clinicCode, int productId);
-
+	public String adjustStockByEarliestExpiryDate(int quantity, int clinicId, int productId);
+	
 	public List<SHNStockReportDTO> getStockReportByClinic(String clinicCode, String category, int month, int year);
 	
 	public String deleteMoneyReceiptStockUpdate(String eslipNo, String clinicCode);

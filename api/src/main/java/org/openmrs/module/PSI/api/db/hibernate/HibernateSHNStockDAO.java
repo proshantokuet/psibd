@@ -236,10 +236,11 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public String adjustStockByEarliestExpiryDate(int quantity,String clinicCode, int productId) {
+	public String adjustStockByEarliestExpiryDate(int quantity,int clinicId, int productId) {
 		List<String> updatesTockDetailsId = new ArrayList<String>();
-		String StockHql = "CALL adjustStockByEarliestExpiryDate("+quantity+",'"+clinicCode+"',"+productId+")";					
+		String StockHql = "CALL adjustStockByEarliestExpiryDate("+quantity+",'"+clinicId+"',"+productId+")";					
 		log.error("Query" + StockHql);
 		try {
 			updatesTockDetailsId = sessionFactory.getCurrentSession().createSQLQuery(StockHql).list();

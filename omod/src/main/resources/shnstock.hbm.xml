@@ -7,6 +7,7 @@
         </id> 
 	    <property name="clinicName" column="clinic_name" type="java.lang.String"/>
 	    <property name="clinicCode" column="clinic_code" type="java.lang.String"/>
+	    <property name="clinicId" column="clinic_id" type="int"/>
 	   	<set name="stockDetails" cascade="all">
 	       <key>
 	           <column name="shn_stock_id" not-null="true" />

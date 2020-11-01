@@ -81,9 +81,9 @@ public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockS
 
 	@Override
 	public String adjustStockByEarliestExpiryDate(int quantity,
-			String clinicCode, int productId) {
+			int clinicId, int productId) {
 		// TODO Auto-generated method stub
-		return dao.adjustStockByEarliestExpiryDate(quantity, clinicCode, productId);
+		return dao.adjustStockByEarliestExpiryDate(quantity, clinicId, productId);
 	}
 
 	@Override

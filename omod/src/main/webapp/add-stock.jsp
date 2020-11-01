@@ -212,6 +212,7 @@ function saveStockData() {
 			"stockId" : 0,
 			"clinicName" : "${psiClinicManagement.name }",
 			"clinicCode" : "${psiClinicManagement.clinicId }",
+			"clinicId":${id},
 			"invoiceNumber" : jQuery("#invoiceNo").val(),
 			"receiveDate" : jQuery("#receiveDate").val(),
 			"stockDetails" : stockArray

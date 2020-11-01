@@ -92,6 +92,7 @@ public class SHNStockRestController {
 			
 			stock.setClinicName(dto.getClinicName());
 			stock.setClinicCode(dto.getClinicCode());
+			stock.setClinicId(dto.getClinicId());
 			stock.setInvoiceNumber(dto.getInvoiceNumber());
 			stock.setReceiveDate(dto.getReceiveDate());
 			stock.setCreator(Context.getAuthenticatedUser());
@@ -245,6 +246,7 @@ public class SHNStockRestController {
 						stock.setInvoiceNumber(invoiceNo);
 						stock.setClinicName(psiServiceManagement.getPsiClinicManagement().getName());
 						stock.setClinicCode(psiServiceManagement.getPsiClinicManagement().getClinicId());
+						stock.setClinicId(psiServiceManagement.getPsiClinicManagement().getCid());
 						Date recieveDate = null;
 						if (!StringUtils.isBlank(service[7])) {
 							recieveDate = yyyyMMdd.parse(service[7]);
@@ -330,7 +332,7 @@ public class SHNStockRestController {
 			stock.setCreator(Context.getAuthenticatedUser());
 			
 			SHNStockAdjust responseAdjustStock =  Context.getService(SHNStockService.class).saveOrUpdateStockAdjust(stock);
-			String updatedId = Context.getService(SHNStockService.class).adjustStockByEarliestExpiryDate(stock.getChangedStock(), stock.getClinicCode(), stock.getProductId());
+			String updatedId = Context.getService(SHNStockService.class).adjustStockByEarliestExpiryDate(responseAdjustStock.getChangedStock(), stock.getClinicId(), responseAdjustStock.getProductId());
 
 			response.put("message", "Stock Adjusted Successfully");
 			response.put("adjustId", responseAdjustStock.getAdjustId());

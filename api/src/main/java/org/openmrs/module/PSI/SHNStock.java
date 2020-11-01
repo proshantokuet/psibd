@@ -18,6 +18,8 @@ public class SHNStock extends BaseOpenmrsData implements Serializable {
 
 	private String clinicCode;
 	
+	private int clinicId;
+	
 	private Set<SHNStockDetails> stockDetails;
 	
 	private String invoiceNumber;
@@ -48,6 +50,14 @@ public class SHNStock extends BaseOpenmrsData implements Serializable {
 
 	public void setClinicCode(String clinicCode) {
 		this.clinicCode = clinicCode;
+	}
+
+	public int getClinicId() {
+		return clinicId;
+	}
+
+	public void setClinicId(int clinicId) {
+		this.clinicId = clinicId;
 	}
 
 	public Set<SHNStockDetails> getStockDetails() {

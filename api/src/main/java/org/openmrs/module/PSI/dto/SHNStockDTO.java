@@ -14,6 +14,8 @@ public class SHNStockDTO {
 
 	private String clinicCode;
 	
+	private int clinicId;
+	
 	private Set<SHNStockDetailsDTO> stockDetails;
 	
 	private String invoiceNumber;
@@ -50,6 +52,14 @@ public class SHNStockDTO {
 
 	public void setClinicCode(String clinicCode) {
 		this.clinicCode = clinicCode;
+	}
+
+	public int getClinicId() {
+		return clinicId;
+	}
+
+	public void setClinicId(int clinicId) {
+		this.clinicId = clinicId;
 	}
 
 	public Set<SHNStockDetailsDTO> getStockDetails() {

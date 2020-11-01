@@ -212,7 +212,7 @@ jQuery("#adjustStock").submit(function(event) {
 		var currentStock = +jQuery("#currentStock").val();
 		var changedStock = +jQuery("#changedStock").val();
 		if(changedStock > currentStock) {
-			jQuery("#numberValidation").html("Changed stock can not be grater than current stock");
+			jQuery("#numberValidation").html("Changed stock can not be greater than current stock");
 			return false;
 		}
 		jQuery("#othervalidation").html("");
