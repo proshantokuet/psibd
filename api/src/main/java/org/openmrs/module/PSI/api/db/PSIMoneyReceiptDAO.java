@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.SHNRefundedMoneyReceipt;
 
 public interface PSIMoneyReceiptDAO {
 	
@@ -26,5 +27,8 @@ public interface PSIMoneyReceiptDAO {
 	public Boolean checkExistingMoneyReceipt(String slipNo, String date, String clinicCode);
 	
 	public PSIMoneyReceipt getMoneyReceiptByESlipNo(String eslipNo);
+	
+	public SHNRefundedMoneyReceipt saveOrUpdateRefund(SHNRefundedMoneyReceipt shnRefundedMoneyReceipt);
+
 	
 }

@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.SHNRefundedMoneyReceipt;
 import org.openmrs.module.PSI.api.db.PSIMoneyReceiptDAO;
 
 public class HibernatePSIMoneyReceiptDAO implements PSIMoneyReceiptDAO {
@@ -126,6 +127,13 @@ public class HibernatePSIMoneyReceiptDAO implements PSIMoneyReceiptDAO {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public SHNRefundedMoneyReceipt saveOrUpdateRefund(SHNRefundedMoneyReceipt shnRefundedMoneyReceipt) {
+		// TODO Auto-generated method stub
+		sessionFactory.getCurrentSession().saveOrUpdate(shnRefundedMoneyReceipt);
+		return shnRefundedMoneyReceipt;
 	}
 	
 }

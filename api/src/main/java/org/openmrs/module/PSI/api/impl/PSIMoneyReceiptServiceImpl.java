@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.SHNRefundedMoneyReceipt;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.db.PSIMoneyReceiptDAO;
 
@@ -77,5 +78,12 @@ public class PSIMoneyReceiptServiceImpl extends BaseOpenmrsService implements PS
 	public PSIMoneyReceipt getMoneyReceiptByESlipNo(String eslipNo) {
 		// TODO Auto-generated method stub
 		return dao.getMoneyReceiptByESlipNo(eslipNo);
+	}
+
+	@Override
+	public SHNRefundedMoneyReceipt saveOrUpdateRefund(
+			SHNRefundedMoneyReceipt shnRefundedMoneyReceipt) {
+		// TODO Auto-generated method stub
+		return dao.saveOrUpdateRefund(shnRefundedMoneyReceipt);
 	}
 }
