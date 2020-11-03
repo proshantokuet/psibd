@@ -360,8 +360,9 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				
 				if(saveToRefundtable && isSaveTORefundSucess) {
 					if(psiMoneyReceipt.getIsComplete() == 1) {
-						
-						// change stock after refund completion
+						// change stock after refunded
+						PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findByClinicId(psiMoneyReceipt.getClinicCode());
+						Context.getService(SHNStockService.class).stockUpdateAfterRefund(psiMoneyReceipt.getEslipNo(), psiClinicManagement.getClinicId(), psiClinicManagement.getCid());
 					}
 				}
 				if(!saveToRefundtable && !isSaveTORefundSucess) {
@@ -646,17 +647,23 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		JSONArray payments = requestBody.getJSONArray("payments");
 
 		PSIMoneyReceipt psiMoneyReceipt = null;
-		int moneyReceiptId = 0;
 		try {
-			
-			if (moneyReceipt.has("mid")) {
-				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
-					moneyReceiptId = Integer.parseInt(moneyReceipt.getString("mid"));
-					psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(moneyReceiptId);
-					//psiMoneyReceipt.setMid(moneyReceiptId);
-				}else{
+			boolean saveToRefundtable = false;
+			boolean isSaveTORefundSucess = false;
+			if (moneyReceipt.has("eslipNo")) {
+				String eslipNo = moneyReceipt.getString("eslipNo");
+				psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).getMoneyReceiptByESlipNo(eslipNo);
+				
+				if(psiMoneyReceipt == null) {
 					psiMoneyReceipt = new PSIMoneyReceipt();
 					psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
+				}
+				else {
+					saveToRefundtable = true;
+					log.error("saveToRefundtable " + saveToRefundtable);
+					if(saveToRefundtable) {
+						isSaveTORefundSucess = saveRefundMoneyReceiptData(psiMoneyReceipt);
+					}
 				}
 			}
 			if (moneyReceipt.has("patientName")) {
@@ -795,16 +802,22 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 
 			Set<PSIServiceProvision> serviceProvisions = new HashSet<PSIServiceProvision>();
 			for (int i = 0; i < services.length(); i++) {
-				PSIServiceProvision psiServiceProvision = new PSIServiceProvision();
+				PSIServiceProvision psiServiceProvision = null;
 				JSONObject service = services.getJSONObject(i);
-				if (service.has("spid")) {
-					if (!service.getString("spid").equalsIgnoreCase("")) {
-						psiServiceProvision = Context.getService(PSIServiceProvisionService.class).findById(Integer.parseInt(service.getString("spid")));
-						//psiServiceProvision.setSpid(Integer.parseInt(service.getString("spid")));
-					}else{
-						psiServiceProvision.setUuid(UUID.randomUUID().toString());
+				if (service.has("uuid")) {
+					String uuid = service.getString("uuid");
+					psiServiceProvision = Context.getService(PSIServiceProvisionService.class).findByUuid(uuid);
+					if(psiServiceProvision == null) {
+						psiServiceProvision = new PSIServiceProvision();
+						psiServiceProvision.setDateCreated(new Date());
+						psiServiceProvision.setUuid(uuid);
 					}
+					else {
+						psiServiceProvision.setDateChanged(new Date());
+					}
+
 				}
+
 				if (service.has("item")) {
 					JSONObject itemObj = new JSONObject(service.getString("item"));
 					psiServiceProvision.setItem(itemObj.getString("name"));
@@ -857,7 +870,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					
 				}
 				psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
-				psiServiceProvision.setDateCreated(new Date());
+				
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
 				
 				psiServiceProvision.setTimestamp(System.currentTimeMillis());
@@ -868,20 +881,21 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			}
 			
 			psiMoneyReceipt.setServices(serviceProvisions);
-			Set<SHNMoneyReceiptPaymentLog> paymentsList = null;
-			if (moneyReceipt.has("mid")) {
-				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
-					paymentsList = psiMoneyReceipt.getPayments();
-				}
-				else{
-					paymentsList = new HashSet<SHNMoneyReceiptPaymentLog>();
-				}
-			}
+			Set<SHNMoneyReceiptPaymentLog> paymentsList = new HashSet<SHNMoneyReceiptPaymentLog>();
 			
 			for (int i = 0; i < payments.length(); i++) {
-				SHNMoneyReceiptPaymentLog paymentObject = new SHNMoneyReceiptPaymentLog();
+				
+				SHNMoneyReceiptPaymentLog paymentObject = null;
 				JSONObject paymentJsonObj = payments.getJSONObject(i);
-
+				if(paymentJsonObj.has("uuid")) {
+					String uuid = paymentJsonObj.getString("uuid");
+					paymentObject = Context.getService(PSIMoneyReceiptService.class).findByByuuid(uuid);
+					if(paymentObject == null) {
+						paymentObject = new SHNMoneyReceiptPaymentLog();
+						paymentObject.setUuid(uuid);
+						paymentObject.setDateCreated(new Date());
+					}
+				}
 				if (paymentJsonObj.has("receiveDate")) {
 
 					paymentObject.setReceiveDate(yyyyMMdd.parse(paymentJsonObj.getString("receiveDate")));
@@ -889,41 +903,23 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				if (paymentJsonObj.has("receiveAmount")) {
 					paymentObject.setReceiveAmount(Float.parseFloat(paymentJsonObj.getString("receiveAmount")));
 				}
-				
-				paymentObject.setDateCreated(new Date());
 				paymentObject.setEslipNo(psiMoneyReceipt.getEslipNo());
 				paymentObject.setCreator(Context.getAuthenticatedUser());
-				paymentObject.setUuid(UUID.randomUUID().toString());
 				paymentObject.setPsiMoneyReceiptId(psiMoneyReceipt);
 				paymentsList.add(paymentObject);
 			}
 			psiMoneyReceipt.setPayments(paymentsList);
 			
-			boolean saveToRefundtable = false;
-			
-			if (moneyReceipt.has("paymentStatus")) {
-				String status = moneyReceipt.getString("paymentStatus");
-				if(status.equalsIgnoreCase("REFUND")) {
-					saveToRefundtable = true;
-				}
-			}
-			log.error("saveToRefundtable " + saveToRefundtable);
 
-			boolean isSaveTORefundSucess = false;
-			if(saveToRefundtable) {
-				isSaveTORefundSucess = saveRefundMoneyReceiptData(psiMoneyReceipt);
-			}
 			log.error("isSaveTORefundSucess " + isSaveTORefundSucess);
 			if(saveToRefundtable && isSaveTORefundSucess || !saveToRefundtable && !isSaveTORefundSucess) {
 				psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
-				if (moneyReceipt.has("mid")) {
-					if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
-						Context.getService(PSIServiceProvisionService.class).deleteByPatientUuidAndMoneyReceiptIdNull(moneyReceipt.getString("patientUuid"));
-					}
-				}
+//				if (saveToRefundtable && isSaveTORefundSucess) {
+//					Context.getService(PSIServiceProvisionService.class).deleteByPatientUuidAndMoneyReceiptIdNull(moneyReceipt.getString("patientUuid"));
+//				}
 			}
 			else{
-				return new ResponseEntity<String>("Refund Table Data Could not Be saved", HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<String>("Refund Table Data Could not Be saved".toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 		catch (Exception e) {
@@ -1028,7 +1024,15 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 
 		boolean isSaved = true;
 		try {
-			SHNRefundedMoneyReceipt shnRefundedMoneyReceipt = new SHNRefundedMoneyReceipt();
+			//SHNRefundedMoneyReceipt shnRefundedMoneyReceipt = null;
+			
+			SHNRefundedMoneyReceipt shnRefundedMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).getRefundMoneyReceiptByMid(psiMoneyReceipt.getMid());
+			
+			if(shnRefundedMoneyReceipt == null) {
+				shnRefundedMoneyReceipt = new SHNRefundedMoneyReceipt();
+				shnRefundedMoneyReceipt.setDateCreated(new Date());
+				shnRefundedMoneyReceipt.setUuid(psiMoneyReceipt.getUuid());
+			}
 			shnRefundedMoneyReceipt.setMoneyReceiptId(psiMoneyReceipt.getMid());
 			shnRefundedMoneyReceipt.setPatientName(psiMoneyReceipt.getPatientName());
 			shnRefundedMoneyReceipt.setPatientUuid(psiMoneyReceipt.getPatientUuid());
@@ -1066,16 +1070,20 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			shnRefundedMoneyReceipt.setField2(psiMoneyReceipt.getField2());
 			shnRefundedMoneyReceipt.setField3(0);
 			shnRefundedMoneyReceipt.setTimestamp(psiMoneyReceipt.getTimestamp());
-			shnRefundedMoneyReceipt.setDateCreated(new Date());
+			
 			shnRefundedMoneyReceipt.setCreator(psiMoneyReceipt.getCreator());
-			shnRefundedMoneyReceipt.setUuid(psiMoneyReceipt.getUuid());
+			
 			
 			Set<SHNRefundedMoneyReceiptDetails> moneyReceiptDetails = new HashSet<SHNRefundedMoneyReceiptDetails>();
 			
 			for (PSIServiceProvision serviceProvision : psiMoneyReceipt.getServices()) {
 				
-				SHNRefundedMoneyReceiptDetails details = new SHNRefundedMoneyReceiptDetails();
-				
+					SHNRefundedMoneyReceiptDetails details = Context.getService(PSIMoneyReceiptService.class).getRefundMoneyReceiptDetailsByServiceId(serviceProvision.getSpid());
+					if(details == null) {
+						details = new SHNRefundedMoneyReceiptDetails();
+						details.setDateCreated(new Date());
+						details.setUuid(serviceProvision.getUuid());
+					}
 					details.setServiceProvisionId(serviceProvision.getSpid());
 					details.setCategory(serviceProvision.getCategory());
 					details.setDescription(serviceProvision.getDescription());
@@ -1093,10 +1101,8 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					details.setPatientUuid(serviceProvision.getPatientUuid());
 					details.setIsComplete(serviceProvision.getIsComplete());
 					details.setIsSendToDHIS(serviceProvision.getIsSendToDHIS());
-					details.setDateCreated(new Date());
 					details.setCreator(Context.getAuthenticatedUser());
 					details.setTimestamp(serviceProvision.getTimestamp());
-					details.setUuid(serviceProvision.getUuid());
 					details.setRefundedMoneyReceiptId(shnRefundedMoneyReceipt);
 					moneyReceiptDetails.add(details);
 			}
@@ -1106,13 +1112,16 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			
 			for (SHNMoneyReceiptPaymentLog shnMoneyReceiptPaymentLog : psiMoneyReceipt.getPayments()) {
 				
-				SHNRefundedMoneyReceiptPaymentLog shnRefundedMoneyReceiptPaymentLog = new SHNRefundedMoneyReceiptPaymentLog();
+				SHNRefundedMoneyReceiptPaymentLog shnRefundedMoneyReceiptPaymentLog = Context.getService(PSIMoneyReceiptService.class).getRefunMoneyReceiptPaymentLogByUuid(shnMoneyReceiptPaymentLog.getUuid());
+				if(shnRefundedMoneyReceiptPaymentLog == null) {
+					shnRefundedMoneyReceiptPaymentLog = new SHNRefundedMoneyReceiptPaymentLog();
+					shnRefundedMoneyReceiptPaymentLog.setUuid(shnMoneyReceiptPaymentLog.getUuid());
+					shnRefundedMoneyReceiptPaymentLog.setDateCreated(new Date());
+				}
 				shnRefundedMoneyReceiptPaymentLog.setReceiveDate(shnMoneyReceiptPaymentLog.getReceiveDate());
 				shnRefundedMoneyReceiptPaymentLog.setReceiveAmount(shnMoneyReceiptPaymentLog.getReceiveAmount());
-				shnRefundedMoneyReceiptPaymentLog.setDateCreated(new Date());
 				shnRefundedMoneyReceiptPaymentLog.setEslipNo(shnMoneyReceiptPaymentLog.getEslipNo());
 				shnRefundedMoneyReceiptPaymentLog.setCreator(shnMoneyReceiptPaymentLog.getCreator());
-				shnRefundedMoneyReceiptPaymentLog.setUuid(shnMoneyReceiptPaymentLog.getUuid());
 				shnRefundedMoneyReceiptPaymentLog.setRefundedMoneyReceiptId(shnRefundedMoneyReceipt);
 				paymentsList.add(shnRefundedMoneyReceiptPaymentLog);
 			}

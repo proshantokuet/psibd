@@ -36,6 +36,9 @@ public interface SHNStockDAO {
 	public List<SHNStockReportDTO> getStockReportByClinic(String clinicCode, String category, int month, int year);
 	
 	public String deleteMoneyReceiptStockUpdate(String eslipNo, String clinicCode);
+	
+	public String stockUpdateAfterRefund(String eslipNo, String clinicCode,int clinicId);
+
 
 
 

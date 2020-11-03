@@ -71,6 +71,7 @@ public class PSIMoneyReceiptConverter {
 			service.putOpt("moneyReceiptDate", psiServiceProvision.getMoneyReceiptDate());
 			service.putOpt("type", psiServiceProvision.getServiceType());
 			service.putOpt("packageUuid", psiServiceProvision.getPackageUuid());
+			service.putOpt("uuid", psiServiceProvision.getUuid());
 			services.put(service);
 		}
 		psiMoneyReceiptAndServicesObject.putOpt("services", services);
@@ -81,6 +82,7 @@ public class PSIMoneyReceiptConverter {
 			JSONObject paymentObj = new JSONObject();
 			paymentObj.putOpt("receiveDate", paymentLog.getReceiveDate());
 			paymentObj.putOpt("receiveAmount", paymentLog.getReceiveAmount());
+			paymentObj.putOpt("uuid", paymentLog.getUuid());
 			moneyReceiptPaymentLogArray.put(paymentObj);
 		}
 		psiMoneyReceiptAndServicesObject.putOpt("payments", moneyReceiptPaymentLogArray);

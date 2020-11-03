@@ -328,6 +328,30 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 			return e.toString();
 		}
 	}
+
+
+	@Override
+	public String stockUpdateAfterRefund(String eslipNo, String clinicCode,
+			int clinicId) {
+		List<String> updatesTockDetailsId = new ArrayList<String>();
+		String StockHql = "CALL stockUpdateAfterRefund('"+eslipNo+"','"+clinicCode+"',"+clinicId+")";					
+		log.error("Query" + StockHql);
+		try {
+			updatesTockDetailsId = sessionFactory.getCurrentSession().createSQLQuery(StockHql).list();
+			log.error("Query size" + updatesTockDetailsId.size());
+			if(updatesTockDetailsId.size() > 0) {
+				log.error("Query result" + updatesTockDetailsId.get(0));
+				return updatesTockDetailsId.get(0);
+			}
+			else {
+				return "No Stock Updated";
+			}
+			
+		} catch (Exception e) {
+			log.error(e.toString());
+			return e.toString();
+		}
+	}
 	
 	
 

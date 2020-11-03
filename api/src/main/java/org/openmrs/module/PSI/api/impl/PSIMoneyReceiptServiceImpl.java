@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.SHNRefundedMoneyReceipt;
+import org.openmrs.module.PSI.SHNRefundedMoneyReceiptDetails;
+import org.openmrs.module.PSI.SHNRefundedMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.db.PSIMoneyReceiptDAO;
 
@@ -85,5 +88,31 @@ public class PSIMoneyReceiptServiceImpl extends BaseOpenmrsService implements PS
 			SHNRefundedMoneyReceipt shnRefundedMoneyReceipt) {
 		// TODO Auto-generated method stub
 		return dao.saveOrUpdateRefund(shnRefundedMoneyReceipt);
+	}
+
+	@Override
+	public SHNRefundedMoneyReceipt getRefundMoneyReceiptByMid(int mid) {
+		// TODO Auto-generated method stub
+		return dao.getRefundMoneyReceiptByMid(mid);
+	}
+
+	@Override
+	public SHNRefundedMoneyReceiptDetails getRefundMoneyReceiptDetailsByServiceId(
+			int serviceId) {
+		// TODO Auto-generated method stub
+		return dao.getRefundMoneyReceiptDetailsByServiceId(serviceId);
+	}
+
+	@Override
+	public SHNRefundedMoneyReceiptPaymentLog getRefunMoneyReceiptPaymentLogByUuid(
+			String uuid) {
+		// TODO Auto-generated method stub
+		return dao.getRefunMoneyReceiptPaymentLogByUuid(uuid);
+	}
+
+	@Override
+	public SHNMoneyReceiptPaymentLog findByByuuid(String uuid) {
+		// TODO Auto-generated method stub
+		return dao.findByByuuid(uuid);
 	}
 }

@@ -8,7 +8,10 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.SHNRefundedMoneyReceipt;
+import org.openmrs.module.PSI.SHNRefundedMoneyReceiptDetails;
+import org.openmrs.module.PSI.SHNRefundedMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.api.db.PSIMoneyReceiptDAO;
 
 public class HibernatePSIMoneyReceiptDAO implements PSIMoneyReceiptDAO {
@@ -134,6 +137,56 @@ public class HibernatePSIMoneyReceiptDAO implements PSIMoneyReceiptDAO {
 		// TODO Auto-generated method stub
 		sessionFactory.getCurrentSession().saveOrUpdate(shnRefundedMoneyReceipt);
 		return shnRefundedMoneyReceipt;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNRefundedMoneyReceipt getRefundMoneyReceiptByMid(int mid) {
+		List<SHNRefundedMoneyReceipt> lists = sessionFactory.getCurrentSession().createQuery("from SHNRefundedMoneyReceipt where moneyReceiptId = :id")
+		        .setInteger("id", mid).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNRefundedMoneyReceiptDetails getRefundMoneyReceiptDetailsByServiceId(
+			int serviceId) {
+		List<SHNRefundedMoneyReceiptDetails> lists = sessionFactory.getCurrentSession().createQuery("from SHNRefundedMoneyReceiptDetails where serviceProvisionId = :id")
+		        .setInteger("id", serviceId).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNRefundedMoneyReceiptPaymentLog getRefunMoneyReceiptPaymentLogByUuid(
+			String uuid) {
+		List<SHNRefundedMoneyReceiptPaymentLog> lists = sessionFactory.getCurrentSession().createQuery("from SHNRefundedMoneyReceiptPaymentLog where uuid = :id")
+		        .setString("id", uuid).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNMoneyReceiptPaymentLog findByByuuid(String uuid) {
+		List<SHNMoneyReceiptPaymentLog> lists = sessionFactory.getCurrentSession().createQuery("from SHNMoneyReceiptPaymentLog where uuid = :id")
+		        .setString("id", uuid).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
 	}
 	
 }

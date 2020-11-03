@@ -20,6 +20,7 @@ import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDashboardCard;
@@ -2698,9 +2699,16 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		 
 	}
 
-	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIServiceProvision findByUuid(String uuid) {
+		List<PSIServiceProvision> lists = sessionFactory.getCurrentSession().createQuery("from PSIServiceProvision where uuid = :id")
+		        .setString("id", uuid).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
 
-	
-
-	
 }

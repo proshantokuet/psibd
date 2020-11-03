@@ -31,6 +31,8 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public PSIServiceProvision findById(int id);
 	
+	public PSIServiceProvision findByUuid(String uuid);
+	
 	public List<PSIServiceProvision> getAllBetweenDateAndPatient(Date start, Date end, String patientUuid);
 	
 	public List<PSIServiceProvision> getAllByDateAndPatient(Date date, String patientUuid);

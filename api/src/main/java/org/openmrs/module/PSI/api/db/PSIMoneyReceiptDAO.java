@@ -4,7 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.SHNRefundedMoneyReceipt;
+import org.openmrs.module.PSI.SHNRefundedMoneyReceiptDetails;
+import org.openmrs.module.PSI.SHNRefundedMoneyReceiptPaymentLog;
 
 public interface PSIMoneyReceiptDAO {
 	
@@ -28,7 +31,15 @@ public interface PSIMoneyReceiptDAO {
 	
 	public PSIMoneyReceipt getMoneyReceiptByESlipNo(String eslipNo);
 	
+	public SHNMoneyReceiptPaymentLog findByByuuid(String uuid);
+
 	public SHNRefundedMoneyReceipt saveOrUpdateRefund(SHNRefundedMoneyReceipt shnRefundedMoneyReceipt);
+	
+	public SHNRefundedMoneyReceipt getRefundMoneyReceiptByMid(int mid);
+	
+	public SHNRefundedMoneyReceiptDetails getRefundMoneyReceiptDetailsByServiceId(int serviceId);
+	
+	public SHNRefundedMoneyReceiptPaymentLog getRefunMoneyReceiptPaymentLogByUuid(String uuid);
 
 	
 }
