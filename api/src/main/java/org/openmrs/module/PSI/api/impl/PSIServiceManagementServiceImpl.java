@@ -102,5 +102,12 @@ public class PSIServiceManagementServiceImpl extends BaseOpenmrsService implemen
 		// TODO Auto-generated method stub
 		return dao.getProductListAll(clinicId,productId);
 	}
+
+	@Override
+	public List<PSIServiceManagement> getAllServiceByClinicIdAndType(
+			int clinicId, String type) {
+		// TODO Auto-generated method stub
+		return dao.getAllServiceByClinicIdAndType(clinicId, type);
+	}
 	
 }

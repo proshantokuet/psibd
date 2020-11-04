@@ -45,8 +45,7 @@
 	</div>
 <p><a href="${pageContext.request.contextPath}/module/PSI/add-product.form?id=${id}">Add Product</a> 
 <a class="" href="${pageContext.request.contextPath}/module/PSI/upload-product.form?id=${id}"  style="margin-left: 10px;">Upload Product</a>
-<%-- <a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Product</a>
- --%>
+<a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Product</a>
  <a class="" href="${pageContext.request.contextPath}/module/PSI/adjust-history.form?id=${id}" style="margin-left: 10px;">Adjust History</a>
 
 
@@ -154,7 +153,7 @@ $jq(document).ready( function () {
 } );
 
 function syncServiceFromGlobal(clinicId, code) {
-	var url = "/openmrs/ws/rest/v1/clinic/service/sync/" + clinicId + "/" + code;
+	var url = "/openmrs/ws/rest/v1/clinic/product/sync/" + clinicId + "/" + code;
 	var token = $jq("meta[name='_csrf']").attr("content");
 	var header = $jq("meta[name='_csrf_header']").attr("content");
 	event.preventDefault();
@@ -172,7 +171,7 @@ function syncServiceFromGlobal(clinicId, code) {
 			$jq("#message").html(data);
 			$jq("#loader_clinic_list").hide();
 		   if(data == "Success"){					   
-			   window.location.replace("/openmrs/module/PSI/PSIClinicServiceList.form?id="+clinicId);
+			   window.location.replace("/openmrs/module/PSI/product-list.form?id="+clinicId);
 		   }
 	    },
 	    error:function(data){

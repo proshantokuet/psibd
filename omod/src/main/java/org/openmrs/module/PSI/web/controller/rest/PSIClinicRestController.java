@@ -748,4 +748,106 @@ public class PSIClinicRestController extends MainResourceController {
 		response.setUuid(get.getUuid());
 		return response;
 	}
+	
+	@RequestMapping(value = "/product/byClinicId/{clinicId}", method = RequestMethod.GET)
+	public ResponseEntity<String> getProductByClinicId(@PathVariable int clinicId) throws Exception {
+		List<PSIServiceManagement> clinicServices = new ArrayList<PSIServiceManagement>();
+		JSONArray clinicServicesArray = new JSONArray();
+		try {
+			clinicServices = Context.getService(PSIServiceManagementService.class).getAllServiceByClinicIdAndType(clinicId, "PRODUCT");
+			if (clinicServices.size() != 0) {
+				clinicServices.sort(Comparator.comparing(PSIServiceManagement::getSid));
+				for (PSIServiceManagement psiServiceManagement : clinicServices) {
+					JSONObject clinicServicesObject = new JSONObject();
+					clinicServicesObject.put("sid", psiServiceManagement.getSid());
+					clinicServicesObject.put("name", psiServiceManagement.getName());
+					
+					clinicServicesObject.put("code", psiServiceManagement.getCode());
+					clinicServicesObject.put("category", psiServiceManagement.getCategory());
+					clinicServicesObject.put("provider", psiServiceManagement.getProvider());
+					clinicServicesObject.put("unitCost", psiServiceManagement.getUnitCost());
+					
+					clinicServicesObject.put("timestamp", psiServiceManagement.getTimestamp());
+					clinicServicesObject.put("field1", psiServiceManagement.getField1());
+					clinicServicesObject.put("field2", psiServiceManagement.getField2());
+					clinicServicesObject.put("field3", psiServiceManagement.getField3());
+					
+					clinicServicesObject.put("eligible", psiServiceManagement.getEligible());
+					clinicServicesObject.put("ageStart", psiServiceManagement.getAgeStart());
+					clinicServicesObject.put("ageEnd", psiServiceManagement.getAgeEnd());
+					clinicServicesObject.put("yearTo", psiServiceManagement.getYearTo());
+					
+					clinicServicesObject.put("monthTo", psiServiceManagement.getMonthTo());
+					clinicServicesObject.put("daysTo", psiServiceManagement.getDaysTo());
+					clinicServicesObject.put("yearFrom", psiServiceManagement.getYearFrom());
+					clinicServicesObject.put("monthFrom", psiServiceManagement.getMonthFrom());
+					
+					clinicServicesObject.put("daysFrom", psiServiceManagement.getDaysFrom());
+					clinicServicesObject.put("gender", psiServiceManagement.getGender());
+					clinicServicesObject.put("type", psiServiceManagement.getType());
+					clinicServicesObject.put("brandName", psiServiceManagement.getBrandName());
+					clinicServicesObject.put("purchasePrice", psiServiceManagement.getPurchasePrice());
+					clinicServicesObject.put("discountPop", psiServiceManagement.getDiscountPop());
+					clinicServicesObject.put("discountPoor", psiServiceManagement.getDiscountPoor());
+					clinicServicesObject.put("discountAblePay", psiServiceManagement.getDiscountAblePay());
+
+					clinicServicesObject.putOpt("uuid", psiServiceManagement.getUuid());
+					clinicServicesObject.putOpt("dateCreated", psiServiceManagement.getDateCreated());
+					clinicServicesObject.putOpt("dateChanged", psiServiceManagement.getDateChanged());
+					clinicServicesArray.put(clinicServicesObject);
+				}
+			}
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>(clinicServicesArray.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/product/sync/{clinicId}/{code}", method = RequestMethod.GET)
+	public ResponseEntity<String> syncProduct(@PathVariable int clinicId,@PathVariable String code) throws Exception {
+		
+		JSONObject clinicJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRS("", "",
+			    CLINIC_ENDPOINT + "/" + code);
+		if(clinicJson.length() < 1) {
+			return new ResponseEntity<String>("No Clinic Found For This Clinic ID in Global Server", HttpStatus.OK);
+		}
+		else {		
+			JSONArray services = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "",
+					"/rest/v1/clinic/product/byClinicId" + "/" + clinicId);
+			
+			List<PSIServiceManagement> psiServiceManagements = gson.fromJson(services.toString(),
+			    new TypeToken<ArrayList<PSIServiceManagement>>() {}.getType());
+			
+			try {
+				
+				for (PSIServiceManagement psiServiceManagement : psiServiceManagements) {
+					int currentId = psiServiceManagement.getSid();
+					PSIServiceManagement getPsiServiceManagement = Context.getService(PSIServiceManagementService.class)
+					        .findById(currentId);
+					psiServiceManagement.setPsiClinicManagement(Context.getService(PSIClinicManagementService.class).findById(
+					    clinicId));
+					psiServiceManagement.setCreator(Context.getAuthenticatedUser());
+					
+					if (getPsiServiceManagement != null) {
+						Context.getService(PSIServiceManagementService.class).saveOrUpdate(
+						    convertPSIServiceManagement(getPsiServiceManagement, psiServiceManagement, clinicId));
+					} else {
+						PSIServiceManagement lastServiceInfo = Context.getService(PSIServiceManagementService.class).findByClinicIdDescending();
+						if(lastServiceInfo != null) {
+							Context.getService(PSIServiceManagementService.class).updateTableAutoIncrementValue(lastServiceInfo.getSid() + 1);
+						}
+						psiServiceManagement.setSid(0);
+						PSIServiceManagement created = Context.getService(PSIServiceManagementService.class).saveOrUpdate(
+						    psiServiceManagement);
+						Context.getService(PSIServiceManagementService.class).updatePrimaryKey(created.getSid(), currentId);
+					}
+				}				
+			}
+			catch (Exception e) {
+				return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.OK);
+			}
+			return new ResponseEntity<String>("Success", HttpStatus.OK);
+		}
+	}
 }

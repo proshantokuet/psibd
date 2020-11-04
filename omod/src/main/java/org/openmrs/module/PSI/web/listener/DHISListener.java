@@ -467,10 +467,23 @@ public class DHISListener {
 						if (trackedEntityInstances.length() != 0) {
 							JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 							String trackedEntityInstanceId = trackedEntityInstance.getString("trackedEntityInstance");
-							moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,
-							    trackedEntityInstanceId);
-							
-							eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+							moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,trackedEntityInstanceId);
+			
+							if(!StringUtils.isBlank(psiServiceProvision.getDhisId())) {
+								String referenceUrl = EVENTURL + "/" + psiServiceProvision.getDhisId();
+								JSONObject referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
+								String status = referenceExist.getString("status");
+								if (!status.equalsIgnoreCase("ERROR")) {
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").update("", moneyReceiptJson, "", referenceUrl);
+								}
+								else {
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+								}
+							}
+							else{
+								eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+							}
+								
 							statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
 							String httpStatus = eventResponse.getString("httpStatus");
 							//log.info("ADD:statusCode:" + statusCode + "" + eventResponse);
@@ -659,7 +672,20 @@ public class DHISListener {
 							moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,
 							    trackedEntityInstanceId);
 							
-							eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+							if(!StringUtils.isBlank(psiServiceProvision.getDhisId())) {
+								String referenceUrl = EVENTURL + "/" + psiServiceProvision.getDhisId();
+								JSONObject referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
+								String status = referenceExist.getString("status");
+								if (!status.equalsIgnoreCase("ERROR")) {
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").update("", moneyReceiptJson, "", referenceUrl);
+								}
+								else {
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+								}
+							}
+							else{
+								eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+							}
 							statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
 							//log.info("statusCode:" + statusCode + "" + eventResponse);
 							if (statusCode == 200) {

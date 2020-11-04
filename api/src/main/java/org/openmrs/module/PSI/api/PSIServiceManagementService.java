@@ -14,6 +14,8 @@ public interface PSIServiceManagementService extends OpenmrsService {
 	
 	public List<PSIServiceManagement> getAllByClinicId(int clinicId);
 	
+	public List<PSIServiceManagement> getAllServiceByClinicIdAndType(int clinicId, String type);
+	
 	public List<PSIServiceManagement> getAllByClinicIdAgeGender(int clinicId, int age, String gender);
 	
 	public List<PSIServiceManagement> getAll();
