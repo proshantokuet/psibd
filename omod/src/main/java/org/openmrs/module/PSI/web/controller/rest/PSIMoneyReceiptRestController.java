@@ -63,8 +63,23 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		if (moneyReceipt.has("isComplete")) {
 			submitted = moneyReceipt.getInt("isComplete");
 		}
+		log.error("is complete " + submitted);
 		if(submitted == 1) {
-			services = extractPackageItems(requestBody.getJSONArray("services"));
+			boolean shouldExtractPackage = true;
+			if (moneyReceipt.has("paymentStatus")) {
+				String status = moneyReceipt.getString("paymentStatus");
+				if(status.equalsIgnoreCase("REFUND")) {
+					shouldExtractPackage = false;
+				}
+			}
+			log.error("Check Payment Status " + shouldExtractPackage);
+			if(shouldExtractPackage) {
+				log.error("Trying to Extract packages " + shouldExtractPackage);
+				services = extractPackageItems(requestBody.getJSONArray("services"));
+			}
+			else {
+				services = requestBody.getJSONArray("services");
+			}
 		}
 		else {
 			services = requestBody.getJSONArray("services");

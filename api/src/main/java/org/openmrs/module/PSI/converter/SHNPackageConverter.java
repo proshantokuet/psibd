@@ -31,6 +31,8 @@ public class SHNPackageConverter {
 			JSONObject packageDetailsObject = new JSONObject();
 			packageDetailsObject.putOpt("packageDetailsId", packageDetails.getPackageDetailsId());
 			packageDetailsObject.putOpt("serviceProductId", packageDetails.getServiceProductId());
+			packageDetailsObject.putOpt("packageItemPriceInPackage", packageDetails.getPackageItemPriceInPackage());
+			packageDetailsObject.putOpt("unitPriceInPackage", packageDetails.getUnitPriceInPackage());
 			packageDetailsObject.putOpt("quantity", packageDetails.getQuantity());
 			packageDetailsObject.putOpt("uuid", packageDetails.getUuid());
 			packageDetailsArray.put(packageDetailsObject);
