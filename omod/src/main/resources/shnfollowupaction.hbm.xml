@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.openmrs.module.PSI.SHNFollowUpAction" table="shn_followup_action" lazy="false">
+        <id column="followup_id" name="followUpActionId" type="int">
+            <generator class="native"/>
+        </id> 
+        <property name="encounterUuid" column="encounter_uuid" type="java.lang.String"/>
+	    <property name="visitUuid" column="visit_uuid" type="java.lang.String"/>
+	    
+		<property name="valueCoded" column="value_coded" type="int"/>
+	    <property name="codedConceptName" column="coded_concept_name" type="java.lang.String"/>
+	    
+	    <property name="contactDate" column="contact_date" type="java.util.Date"/>
+	    <property name="isResponded" column="is_responded" type="boolean" not-null="true"/>
+	    <property name="respondResult" column="respond_result" type="java.lang.String"/>
+	   	<property name="valueChanged" column="value_changed" type="boolean" not-null="true"/>
+		<property name="followUpCounts" column="followup_counts" type="int"/>
+	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
+		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>
+		<many-to-one name="changedBy" column="changed_by" class="org.openmrs.User" />
+		<property name="dateChanged" column="date_changed" type="java.util.Date" />
+		<property name="voided" column="voided" type="boolean" not-null="true"/>
+		<many-to-one name="voidedBy" column="voided_by" class="org.openmrs.User" />
+		<property name="dateVoided" column="date_voided" type="java.util.Date" />
+		<property name="voidReason" column="void_reason" type="java.lang.String" /> 
+		<property name="uuid" column="uuid" type="java.lang.String" not-null="true" />
+	    
+    </class>
+</hibernate-mapping>

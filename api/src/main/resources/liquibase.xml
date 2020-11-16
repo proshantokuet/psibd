@@ -1117,5 +1117,40 @@
 		</createTable>
 	</changeSet>
 	  
-	 	  
+ <changeSet id="shn_followup_action-1.0.0" author="tanvir">
+		<createTable tableName="shn_followup_action">
+			<column name="followup_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="encounter_uuid" type="varchar(255)" />
+			<column name="visit_uuid" type="varchar(255)" />
+			<column name="value_coded" type="int(11)" />
+			<column name="coded_concept_name" type="varchar(255)" />
+			
+			<column name="contact_date" type="datetime" />
+			<column name="is_responded" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="respond_result" type="varchar(255)" />
+			<column name="value_changed" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="followup_counts" type="int(11)" />			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+		</createTable>
+	</changeSet>	 	  
 </databaseChangeLog>
