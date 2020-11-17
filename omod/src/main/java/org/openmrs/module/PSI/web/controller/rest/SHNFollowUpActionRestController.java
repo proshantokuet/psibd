@@ -31,9 +31,10 @@ public class SHNFollowUpActionRestController {
 				shnFollowUpAction.setUuid(UUID.randomUUID().toString());
 				shnFollowUpAction.setDateCreated(new Date());
 				shnFollowUpAction.setFollowUpCounts(1);
+				shnFollowUpAction.setValueChanged(false);
 			}
 			else {
-				shnFollowUpAction.setValueChanged(dto.getValueChanged());
+				shnFollowUpAction.setValueChanged(true);
 				shnFollowUpAction.setFollowUpCounts(shnFollowUpAction.getFollowUpCounts() + 1);
 			}
 			shnFollowUpAction.setEncounterUuid(dto.getEncounterUuid());
@@ -47,12 +48,13 @@ public class SHNFollowUpActionRestController {
 			shnFollowUpAction.setDateChanged(new Date());
 			SHNFollowUpAction shnFollowUpActionResult =  Context.getService(SHNFollowUpActionService.class).saveOrUpdate(shnFollowUpAction);
 			response.put("message", "Follow-Up Action Successfully Saved");
+			response.put("isSuccess", true);
 			response.put("followupId", shnFollowUpActionResult.getFollowUpActionId());
 			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			
+			response.put("isSuccess", false);
 			response.put("message", e.getMessage());
 			return new ResponseEntity<>(response.toString(), HttpStatus.OK);
 		}
@@ -82,7 +84,8 @@ public class SHNFollowUpActionRestController {
 			shnFollowUpAction.setRespondResult(dto.getRespondResult());
 			shnFollowUpAction.setCreator(Context.getAuthenticatedUser());
 			shnFollowUpAction.setValueChanged(dto.getValueChanged());
-			shnFollowUpAction.setDateChanged(new Date());
+			shnFollowUpAction.setDateChanged(dto.getDateChanged());
+			shnFollowUpAction.setFollowUpCounts(dto.getFollowUpCounts());
 
 			SHNFollowUpAction shnFollowUpActionResult =  Context.getService(SHNFollowUpActionService.class).saveOrUpdate(shnFollowUpAction);
 			response.put("message", "Follow-Up Action Successfully Saved");

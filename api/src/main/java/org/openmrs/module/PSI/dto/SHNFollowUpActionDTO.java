@@ -23,6 +23,10 @@ public class SHNFollowUpActionDTO {
 	private Boolean valueChanged;
 	
 	private String uuid;
+	
+	private Date dateChanged;
+	
+	private int followUpCounts;
 
 	public int getFollowUpActionId() {
 		return followUpActionId;
@@ -102,6 +106,22 @@ public class SHNFollowUpActionDTO {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public Date getDateChanged() {
+		return dateChanged;
+	}
+
+	public void setDateChanged(Date dateChanged) {
+		this.dateChanged = dateChanged;
+	}
+
+	public int getFollowUpCounts() {
+		return followUpCounts;
+	}
+
+	public void setFollowUpCounts(int followUpCounts) {
+		this.followUpCounts = followUpCounts;
 	}
 
 

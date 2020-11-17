@@ -8,6 +8,8 @@ import javax.servlet.http.HttpSession;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.api.SHNFollowUpActionService;
+import org.openmrs.module.PSI.dto.SHNFollowUPReportDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
@@ -24,8 +26,8 @@ public class SHNFollowUpController {
 	public void pSIClinicList(HttpServletRequest request, HttpSession session, Model model) {
 		List<PSIClinicManagement> clinics = Context.getService(PSIClinicManagementService.class).getAllClinic();
 		model.addAttribute("clinics", clinics);
-/*		List<SHNPackageReportDTO> packageList = Context.getService(SHNPackageService.class).getPackageListForViewByCLinic(id);
-		model.addAttribute("packageList",packageList);*/
+		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt();
+		model.addAttribute("followUpReport",followUpReport);
 
 		model.addAttribute("hasDashboardPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
