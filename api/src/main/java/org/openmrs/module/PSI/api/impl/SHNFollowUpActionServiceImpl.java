@@ -47,9 +47,13 @@ public class SHNFollowUpActionServiceImpl  extends BaseOpenmrsService implements
 	}
 
 	@Override
-	public List<SHNFollowUPReportDTO> getfollowUpReprt() {
+	public List<SHNFollowUPReportDTO> getfollowUpReprt(String visitStartDate,
+			String visitEnd, String followUpStartDate, String followUpEndDate,
+			String moileNo, String patientHid, String clinicCode) {
 		// TODO Auto-generated method stub
-		return dao.getfollowUpReprt();
+		return dao.getfollowUpReprt(visitStartDate, visitEnd, followUpStartDate, followUpEndDate, moileNo, patientHid, clinicCode);
 	}
+
+
 
 }

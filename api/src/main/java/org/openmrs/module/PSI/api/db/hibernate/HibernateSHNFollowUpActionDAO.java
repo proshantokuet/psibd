@@ -74,9 +74,12 @@ public class HibernateSHNFollowUpActionDAO implements SHNFollowUpActionDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SHNFollowUPReportDTO> getfollowUpReprt() {
+	public List<SHNFollowUPReportDTO> getfollowUpReprt(String visitStartDate,
+			String visitEnd, String followUpStartDate, String followUpEndDate,
+			String mobileNo, String patientHid, String clinicCode) {
+		// TODO Auto-generated method stub
 		List<SHNFollowUPReportDTO> reportFollowUp = new ArrayList<SHNFollowUPReportDTO>();
-		String packageHql = "CALL followUpReport()";					
+		String packageHql = "CALL followUpReportWithFilter('"+visitStartDate+"','"+visitEnd+"','"+followUpStartDate+"','"+followUpEndDate+"','"+mobileNo+"','"+patientHid+"','"+clinicCode+"')";					
 		log.error("Query" + packageHql);
 		try {
 			reportFollowUp = sessionFactory.getCurrentSession().createSQLQuery(packageHql)
@@ -93,6 +96,8 @@ public class HibernateSHNFollowUpActionDAO implements SHNFollowUpActionDAO {
 						 .addScalar("followUpFor",StandardBasicTypes.STRING)
 						 .addScalar("followUpDate",StandardBasicTypes.STRING)
 						 .addScalar("valueCoded",StandardBasicTypes.INTEGER)
+						 .addScalar("respondResult",StandardBasicTypes.STRING)
+						 .addScalar("followUpStatus",StandardBasicTypes.STRING)
 						 .setResultTransformer(new AliasToBeanResultTransformer(SHNFollowUPReportDTO.class)).list();
 			log.error("Query size" + reportFollowUp.size());
 

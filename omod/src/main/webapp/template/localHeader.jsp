@@ -19,6 +19,14 @@
 				code="PSI.dahboard" /></a>
 	</li>	
 	</c:if>
+	<c:if test="${hasDashboardPermission}">			
+	<li
+		<c:if test='<%= request.getRequestURI().contains("/follow-Up-dashboard") %>'>class="active"</c:if>>
+		<a
+		href="${pageContext.request.contextPath}/module/PSI/follow-Up-dashboard.form"><spring:message
+				code="PSI.shnfollowup" /></a>
+	</li>	
+	</c:if>
 	<c:if test="${hasClinicPermission}">
 	<li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicList") %>'>class="active"</c:if>>
@@ -42,14 +50,7 @@
         href="${pageContext.request.contextPath}/module/PSI/clinicTypeList.form"><spring:message
                 code="PSI.clinicType" /></a>
     </li>
-    	<c:if test="${hasDashboardPermission}">			
-	<li
-		<c:if test='<%= request.getRequestURI().contains("/follow-Up-dashboard") %>'>class="active"</c:if>>
-		<a
-		href="${pageContext.request.contextPath}/module/PSI/follow-Up-dashboard.form"><spring:message
-				code="PSI.shnfollowup" /></a>
-	</li>	
-	</c:if>
+    	
     <c:if test="${hasClinicPermission}">
     <li
         <c:if test='<%= request.getRequestURI().contains("/dhisErrVisualize") %>'>class="active"</c:if>>

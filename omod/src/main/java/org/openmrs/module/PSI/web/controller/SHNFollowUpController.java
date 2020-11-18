@@ -1,14 +1,19 @@
 package org.openmrs.module.PSI.web.controller;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.SHNFollowUpActionService;
+import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.dto.SHNFollowUPReportDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
@@ -26,12 +31,48 @@ public class SHNFollowUpController {
 	public void pSIClinicList(HttpServletRequest request, HttpSession session, Model model) {
 		List<PSIClinicManagement> clinics = Context.getService(PSIClinicManagementService.class).getAllClinic();
 		model.addAttribute("clinics", clinics);
-		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt();
+		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+			    Context.getAuthenticatedUser().getUsername());
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		String clinicCode = "0";
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		if (isAdmin) {
+			clinicCode = "0";
+		} else {
+			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+		}
+		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt("", "", "", "", "", "",clinicCode);
 		model.addAttribute("followUpReport",followUpReport);
 
 		model.addAttribute("hasDashboardPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+	}
+	
+	@RequestMapping(value = "/module/PSI/follow-Up-report", method = RequestMethod.GET)
+	public void getStockReport(HttpServletRequest request, HttpSession session, Model model,
+			@RequestParam String visitStartDate,
+			@RequestParam String visitEndDate,
+			@RequestParam String followUpStartDate,
+			@RequestParam String followUpEndDate,
+			@RequestParam String mobileNo,
+			@RequestParam String patientHid,
+			@RequestParam String clinicid) {
+		
+		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
+			    Context.getAuthenticatedUser().getUsername());
+		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
+		String clinicCode = "0";
+		boolean isAdmin = Utils.hasPrivilige(privileges, PSIConstants.AdminUser);
+		if (isAdmin) {
+			clinicCode = clinicid;
+		} else {
+			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
+		}
+		
+		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt(visitStartDate,visitEndDate,followUpStartDate,followUpEndDate,mobileNo,patientHid,clinicCode);
+		model.addAttribute("followUpReport",followUpReport);
+
 	}
 }

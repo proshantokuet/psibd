@@ -39,6 +39,10 @@ public class SHNFollowUPReportDTO {
 	private String followUpDate;
 	
 	private String identifier;
+	
+	private String clinicCode;
+	
+	private String followUpStatus;
 
 	public String getEncounterUuid() {
 		return encounterUuid;
@@ -182,5 +186,21 @@ public class SHNFollowUPReportDTO {
 
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
+	}
+
+	public String getClinicCode() {
+		return clinicCode;
+	}
+
+	public void setClinicCode(String clinicCode) {
+		this.clinicCode = clinicCode;
+	}
+
+	public String getFollowUpStatus() {
+		return followUpStatus;
+	}
+
+	public void setFollowUpStatus(String followUpStatus) {
+		this.followUpStatus = followUpStatus;
 	}
 }

@@ -38,6 +38,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 <div id="loader"> 
 	<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 </div>
+
   	<div class="form-content">
     <form:form id="patienterrorvisualize">
         	<div class="row">
@@ -45,6 +46,7 @@ table.dataTable tbody th, table.dataTable tbody td {
                 	<div class="form-group">                							
 						<label for="Service Code">Visit From</label><br />
 						<input id="visitstartDate"  name="visitstartDate" type="text" />
+						<span id="visitStartDateValidation" class="text-danger"></span>
                   	</div>
                   	
              	</div>
@@ -52,6 +54,7 @@ table.dataTable tbody th, table.dataTable tbody td {
                		<div class="form-group">
                   	<label for="Service Code">Visit To</label><br />
 						<input id="visitendDate" name="visitendDate" type="text" />
+						<span id="visitEndDateValidation" class="text-danger"></span>
 					</div>
                   	
               	</div>
@@ -59,6 +62,7 @@ table.dataTable tbody th, table.dataTable tbody td {
                 	<div class="form-group">                							
 						<label for="Service Code">Follow-Up From</label><br />
 						<input id="followupstartDate"  name="followupstartDate" type="text"/>
+						<span id="followupstartDateValidation" class="text-danger"></span>
                   	</div>
                   	
              	</div>
@@ -66,6 +70,7 @@ table.dataTable tbody th, table.dataTable tbody td {
                		<div class="form-group">
                   	<label for="Service Code">Follow-Up To</label><br />
 						<input id="followupendDate" name="followupendDate" type="text" />
+						<span id="followupendDateValidation" class="text-danger"></span>
 						<%-- <input id="clnic" type="hidden" value="${clinic}">    --%>                			
 					</div>
                   	
@@ -101,7 +106,7 @@ table.dataTable tbody th, table.dataTable tbody td {
               	<div class="col-md-2">
                		<div class="form-group">
                		<label for="Service Code"></label><br />
-                  	<button style="width: 120px; margin-top: 30px;" type="submit" class="btnSubmit">Submit</button>                  			
+                  	<button style="width: 120px; margin-top: 30px;" type="submit" onclick="searchInFollwUpUsingFilter()" class="btnSubmit">Submit</button>                  			
 					</div>
                   	
               	</div>
@@ -109,6 +114,7 @@ table.dataTable tbody th, table.dataTable tbody td {
           	</div>
           	
   </form:form>
+  <div id="tabs">
   <div id="loading_prov" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
@@ -133,42 +139,23 @@ table.dataTable tbody th, table.dataTable tbody td {
 						
 					</tr>
 				</thead>
-<%-- 				<tbody>
+				<tbody>
 					<c:forEach var="report" items="${ followUpReport }">
 						<tr>
 							<td>${ report.identifier }</td>
 							<td>${ report.patientName }</td>
 							<td>${ report.age }</td>
 							<td>${ report.contactNumber }</td>
-							<td>${ report.visitUuid }</td>
-							<td>${ report.encounterUuid }</td>
 							<td>${ report.visitType }</td>
 							<td>${ report.visitStart }</td>
 							<td>${ report.visitEnd }</td>
 							<td>${ report.followUpFor }</td>
 							<td>${ report.followUpDate }</td>
-							<td>${ report.valueCoded }</td>
-							<td>NA</td>
-							<td>NA</td>
-							<td><div style="padding-top: 5px;"><a class="btn btn-primary" href="<c:url value="/module/PSI/adjust-stock.form?id=${ product.sid }&clinicid=${id}"/>"> Adjust</a></div></td>
+							<td>${ report.followUpStatus }</td>
+							<td>${ report.respondResult }</td>
+							<td><div style="padding-top: 5px;"><a class="btn btn-primary"  onclick="openFollowUpMOdal('${report.visitUuid}','${report.encounterUuid}',${report.valueCoded},'${report.followUpFor}')"> Follow-Up</a></div></td>
 						</tr>
 					</c:forEach>
-				</tbody> --%>
-				<tbody>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>NA</td>
-							<td>NA</td>
-							<td><div style="padding-top: 5px;"><a class="btn btn-primary"  onclick="openFollowUpMOdal('Visituuid','encounteruuid',12345,'Eye Care')"> Follow-Up</a></div></td>
-						</tr>
 				</tbody>
 			</table>
 			</div>
@@ -230,6 +217,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 		  </div>
 		</div>
      </div>
+  </div>
 
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
@@ -243,6 +231,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 var $jq = jQuery.noConflict();
 $jq(window).load(function() {
 	$jq("#loader").hide();
+	$jq("#tabs").show();
 
 });
 $jq( function() {
@@ -253,8 +242,22 @@ $jq( function() {
 	$jq("#followupstartDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
 	$jq("#followupendDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
   } );
+  
+$jq("#visitstartDate").on("change",function(){
+	$jq("#visitendDate").datepicker(
+			'option',
+			{ minDate: new Date($jq("#visitstartDate").val()),
+			  maxDate: new Date()
+			});
+});
+$jq("#followupstartDate").on("change",function(){
+	$jq("#followupendDate").datepicker(
+		'option',{
+			minDate: new Date($jq("#followupstartDate").val()),
+			maxDate: new Date()
+		});
+});
 $jq(document).ready( function () {
-	//$jq('#table_id').DataTable();
 	$jq('#table_id').DataTable({
 		   bFilter: false,
 	       bInfo: false,
@@ -264,36 +267,12 @@ $jq(document).ready( function () {
 		   buttons: [
 		             {
 		                 extend: 'excelHtml5',
-		                 title: "Patient DHIS2 Sync Report",
+		                 title: "Patient Follow-Up Action Report",
 		                 text: 'Export as .xlxs'
 		             },
 		             {
 			         		extend: 'pdfHtml5',
-			         		title: "Patient DHIS2 Sync Report",
-			         		text: 'Export as .pdf',
-			         		orientation: 'landscape',
-			         		pageSize: 'LEGAL'
-				     }
-		         ]
-	});
-} );
-$jq(document).ready( function () {
-	//$jq('#table_id_moneyreceipt').DataTable();
-	$jq('#table_id_moneyreceipt').DataTable({
-		   bFilter: false,
-	       bInfo: false,
-	       "searching": true,
-		   dom: 'Bfrtip',
-		   destroy: true,
-		   buttons: [
-		             {
-		                 extend: 'excelHtml5',
-		                 title: "Money Receipt DHIS2 Sync Report",
-		                 text: 'Export as .xlxs'
-		             },
-		             {
-			         		extend: 'pdfHtml5',
-			         		title: "Money Receipt DHIS2 Sync Report",
+			         		title: "Patient Follow-Up Action Report",
 			         		text: 'Export as .pdf',
 			         		orientation: 'landscape',
 			         		pageSize: 'LEGAL'
@@ -317,6 +296,16 @@ function openFollowUpMOdal(visituuid,encounteruuid,valueCoded,conceptName) {
 	console.log($jq('#codedConceptName').val());
 }
 
+$jq('#followupModal').on('hidden.bs.modal', function (e) {
+	$jq("#visitUUid").val("");
+	$jq("#encounterUUid").val("");
+	$jq("#valueCoded").val("");
+	$jq("#codedConceptName").val("");
+	$jq("#contactDate").val("");
+	$jq("#response").val("");
+	$jq("#result").val("");
+})
+
 jQuery("#response").change(function (event) {
 	let responseValue = jQuery('#response').val();
 	if(responseValue == "1") {
@@ -328,23 +317,62 @@ jQuery("#response").change(function (event) {
 
 });
 
+function searchInFollwUpUsingFilter() {
 
-$jq("#patienterrorvisualize").on("submit",function(event){
-	event.preventDefault();
-	$jq("#loading_prov").show();
+	
+	if($jq("#visitstartDate").val() == "" && $jq("#visitendDate").val() != "") {
+		$jq("#visitStartDateValidation").html("<strong>Please fill out this field</strong>");
+		return;
+	}
+	$jq("#visitStartDateValidation").html("");
+	
+	if($jq("#visitendDate").val() == "" && $jq("#visitstartDate").val() != "") {
+		$jq("#visitEndDateValidation").html("<strong>Please fill out this field</strong>");
+		return;
+	}
+	$jq("#visitEndDateValidation").html("");
+	
+	if($jq("#followupstartDate").val() == "" && $jq("#followupendDate").val() != "") {
+		$jq("#followupstartDateValidation").html("<strong>Please fill out this field</strong>");
+		return;
+	}
+	$jq("#followupstartDateValidation").html("");
+	
+	if($jq("#followupendDate").val() == "" && $jq("#followupstartDate").val() != "") {
+		$jq("#followupendDateValidation").html("<strong>Please fill out this field</strong>");
+		return;
+	}
+	$jq("#followupendDateValidation").html("");
+	
+	var visitStartDate = $jq("#visitstartDate").val();
+	
+	var visitEndDate = $jq("#visitendDate").val();
+	
+	var followUpStartDate = $jq("#followupstartDate").val();
+
+	var followUpEndDate = $jq("#followupendDate").val();
+
+	var mobileNo = $jq("#patientContact").val();
+
+	var patientHid = $jq("#hid").val();
+ 
+	
 	var clinic = document.getElementById("clinic_patient");
 	var clinicCode;
 	var url;
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
 	}
-	if(clinicCode == "0") {
-		 url = "/openmrs/module/PSI/dhisPatientReportSyncData.form";
-	}
 	else {
-		url = "/openmrs/module/PSI/dhisPatientReportSyncData.form?clinicCode="+clinicCode;
+		clinicCode = "0";
 	}
 	
+	url = "/openmrs/module/PSI/follow-Up-report.form?visitStartDate="+visitStartDate;
+	url += "&visitEndDate="+visitEndDate+"&followUpStartDate=" +followUpStartDate;
+	url += "&followUpEndDate="+followUpEndDate+"&mobileNo=" +mobileNo;
+	url += "&patientHid=" +patientHid+"&clinicid="+ clinicCode;
+	event.preventDefault();
+	$jq("#loading_prov").show();
 	$jq.ajax({
 		type:"GET",
 		contentType : "application/json",
@@ -366,12 +394,12 @@ $jq("#patienterrorvisualize").on("submit",function(event){
 					   buttons: [
 					             {
 					                 extend: 'excelHtml5',
-					                 title: "Money Receipt DHIS2 Sync Report",
+					                 title: "Patient Follow-Up Action Report",
 					                 text: 'Export as .xlxs'
 					             },
 					             {
 						         		extend: 'pdfHtml5',
-						         		title: "Money Receipt DHIS2 Sync Report",
+						         		title: "Patient Follow-Up Action Report",
 						         		text: 'Export as .pdf',
 						         		orientation: 'landscape',
 						         		pageSize: 'LEGAL'
@@ -386,7 +414,7 @@ $jq("#patienterrorvisualize").on("submit",function(event){
 	    }
 	    
 	});
-});
+}
 
 
 function saveFollowUpActionData() {
@@ -451,8 +479,11 @@ function saveFollowUpActionData() {
 				$jq("#serverResponseMessage").show();
 				$jq("#serverResponseMessage").html(data.message);
 				$jq("#savefollowup").hide();
+				
 			   	if(data.isSuccess){					   
-				   window.location.replace("/openmrs/module/PSI/follow-Up-dashboard.form");
+			   		searchInFollwUpUsingFilter();
+			   		$jq("#serverResponseMessage").hide();
+			   		$jq('#followupModal').modal('hide');
 			   }
 			   
 			},

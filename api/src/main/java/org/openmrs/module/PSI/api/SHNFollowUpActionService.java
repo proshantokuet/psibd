@@ -18,6 +18,6 @@ public interface SHNFollowUpActionService  extends OpenmrsService {
 	
 	public SHNFollowUpAction findByCodedConceptAndEncounter (int conceptId, String encounterUuid);
 	
-	public List<SHNFollowUPReportDTO> getfollowUpReprt();
+	public List<SHNFollowUPReportDTO> getfollowUpReprt(String visitStartDate,String visitEnd,String followUpStartDate,String followUpEndDate,String moileNo,String patientHid, String clinicCode);
 	
 }
