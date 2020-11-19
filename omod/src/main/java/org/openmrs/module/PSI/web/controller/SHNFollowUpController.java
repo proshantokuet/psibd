@@ -12,9 +12,11 @@ import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
+import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.api.SHNFollowUpActionService;
 import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.dto.SHNFollowUPReportDTO;
+import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.PSI.utils.Utils;
 import org.springframework.stereotype.Controller;
@@ -41,9 +43,15 @@ public class SHNFollowUpController {
 		} else {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 		}
-		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt("", "", "", "", "", "",clinicCode);
+		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt("", "", "", "", "", "",clinicCode,"");
 		model.addAttribute("followUpReport",followUpReport);
-
+		if (psiClinicUser != null && !isAdmin) {			
+			model.addAttribute("showClinic", 0);
+		} else if (psiClinicUser != null && isAdmin) {
+			model.addAttribute("showClinic", 1);
+		} else {
+			
+		}
 		model.addAttribute("hasDashboardPermission",
 		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission",
@@ -58,7 +66,8 @@ public class SHNFollowUpController {
 			@RequestParam String followUpEndDate,
 			@RequestParam String mobileNo,
 			@RequestParam String patientHid,
-			@RequestParam String clinicid) {
+			@RequestParam String clinicid,
+			@RequestParam String patientName) {
 		
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 			    Context.getAuthenticatedUser().getUsername());
@@ -71,8 +80,9 @@ public class SHNFollowUpController {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 		}
 		
-		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt(visitStartDate,visitEndDate,followUpStartDate,followUpEndDate,mobileNo,patientHid,clinicCode);
+		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt(visitStartDate,visitEndDate,followUpStartDate,followUpEndDate,mobileNo,patientHid,clinicCode,patientName);
 		model.addAttribute("followUpReport",followUpReport);
+		
 
 	}
 }

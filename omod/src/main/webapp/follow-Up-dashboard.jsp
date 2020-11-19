@@ -78,6 +78,13 @@ table.dataTable tbody th, table.dataTable tbody td {
               	
           	</div>
           	<div class="row">
+          	<div class="col-md-3">
+                	<div class="form-group">                							
+						<label for="Service Code">Name</label><br />
+						<input id="patientName"  name="patientName" type="text"/>
+                  	</div>
+                  	
+             	</div>
         	   <div class="col-md-3">
                 	<div class="form-group">                							
 						<label for="Service Code">Mobile No</label><br />
@@ -92,6 +99,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 					</div>
                   	
               	</div>
+              	<c:if test="${showClinic eq 1}">
 	              	<div class="col-md-3">
 	               		<div class="form-group">
 	                  		<label for="Service Code">Clinic</label> <br />
@@ -103,6 +111,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 							</select>                			
 						</div>                  	
 	              	</div>
+	              	</c:if> 
               	<div class="col-md-2">
                		<div class="form-group">
                		<label for="Service Code"></label><br />
@@ -355,6 +364,8 @@ function searchInFollwUpUsingFilter() {
 	var mobileNo = $jq("#patientContact").val();
 
 	var patientHid = $jq("#hid").val();
+	
+	var patientName = $jq('#patientName').val();
  
 	
 	var clinic = document.getElementById("clinic_patient");
@@ -370,7 +381,7 @@ function searchInFollwUpUsingFilter() {
 	url = "/openmrs/module/PSI/follow-Up-report.form?visitStartDate="+visitStartDate;
 	url += "&visitEndDate="+visitEndDate+"&followUpStartDate=" +followUpStartDate;
 	url += "&followUpEndDate="+followUpEndDate+"&mobileNo=" +mobileNo;
-	url += "&patientHid=" +patientHid+"&clinicid="+ clinicCode;
+	url += "&patientHid=" +patientHid+"&clinicid="+ clinicCode + "&patientName=" + patientName;
 	event.preventDefault();
 	$jq("#loading_prov").show();
 	$jq.ajax({

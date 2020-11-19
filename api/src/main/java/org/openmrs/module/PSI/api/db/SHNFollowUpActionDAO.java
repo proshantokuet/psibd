@@ -17,6 +17,5 @@ public interface SHNFollowUpActionDAO {
 	
 	public List<SHNFollowUpAction> getAllFollowUPAction();
 	
-	public List<SHNFollowUPReportDTO> getfollowUpReprt(String visitStartDate,String visitEnd,String followUpStartDate,String followUpEndDate,String moileNo,String patientHid, String clinicCode);
-
+	public List<SHNFollowUPReportDTO> getfollowUpReprt(String visitStartDate,String visitEnd,String followUpStartDate,String followUpEndDate,String moileNo,String patientHid, String clinicCode,String patientName);
 }
