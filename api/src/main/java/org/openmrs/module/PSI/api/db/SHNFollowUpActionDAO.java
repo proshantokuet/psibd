@@ -11,9 +11,11 @@ public interface SHNFollowUpActionDAO {
 	
 	public SHNFollowUpAction findById(int id);
 	
-	public SHNFollowUpAction findByUuid (String uuid);
+	public SHNFollowUpAction findByUuidAndEncounter (String uuid, String encounterUuid);
 	
 	public SHNFollowUpAction findByCodedConceptAndEncounter (int conceptId, String encounterUuid);
+	
+	public List<SHNFollowUpAction> getAllFollowUPAction();
 	
 	public List<SHNFollowUPReportDTO> getfollowUpReprt(String visitStartDate,String visitEnd,String followUpStartDate,String followUpEndDate,String moileNo,String patientHid, String clinicCode);
 

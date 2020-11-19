@@ -1152,5 +1152,10 @@
 			<column name="void_reason" type="varchar(255)" />
 			<column name="uuid" type="varchar(255)" />
 		</createTable>
-	</changeSet>	 	  
+	</changeSet>
+	<changeSet author="tanvir" id="shn_followup_action-1.0.1">
+	 	<addColumn tableName="shn_followup_action">
+			<column name="last_timestamp" type="datetime" />				
+		</addColumn>
+	 </changeSet>	 	  
 </databaseChangeLog>

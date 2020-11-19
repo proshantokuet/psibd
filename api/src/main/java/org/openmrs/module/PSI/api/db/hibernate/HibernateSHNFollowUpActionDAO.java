@@ -49,9 +49,9 @@ public class HibernateSHNFollowUpActionDAO implements SHNFollowUpActionDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SHNFollowUpAction findByUuid(String uuid) {
-		List<SHNFollowUpAction> lists = sessionFactory.getCurrentSession().createQuery("from SHNFollowUpAction where uuid = :id")
-		        .setString("id", uuid).list();
+	public SHNFollowUpAction findByUuidAndEncounter(String uuid, String encounterUuid) {
+		List<SHNFollowUpAction> lists = sessionFactory.getCurrentSession().createQuery("from SHNFollowUpAction where uuid = :id and encounterUuid = :encounterid")
+		        .setString("id", uuid).setString("encounterid", encounterUuid).list();
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {
@@ -107,6 +107,13 @@ public class HibernateSHNFollowUpActionDAO implements SHNFollowUpActionDAO {
 			log.error(e.toString());
 			return reportFollowUp;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNFollowUpAction> getAllFollowUPAction() {
+		List<SHNFollowUpAction> lists = sessionFactory.getCurrentSession().createQuery("from SHNFollowUpAction").list();
+		return lists;
 	}
 
 }

@@ -27,6 +27,11 @@ public class SHNFollowUpActionDTO {
 	private Date dateChanged;
 	
 	private int followUpCounts;
+	
+	private String contactDateWithTimeStamp;
+
+	private String dateChangedWithTimestamp;
+
 
 	public int getFollowUpActionId() {
 		return followUpActionId;
@@ -122,6 +127,22 @@ public class SHNFollowUpActionDTO {
 
 	public void setFollowUpCounts(int followUpCounts) {
 		this.followUpCounts = followUpCounts;
+	}
+
+	public String getContactDateWithTimeStamp() {
+		return contactDateWithTimeStamp;
+	}
+
+	public void setContactDateWithTimeStamp(String contactDateWithTimeStamp) {
+		this.contactDateWithTimeStamp = contactDateWithTimeStamp;
+	}
+
+	public String getDateChangedWithTimestamp() {
+		return dateChangedWithTimestamp;
+	}
+
+	public void setDateChangedWithTimestamp(String dateChangedWithTimestamp) {
+		this.dateChangedWithTimestamp = dateChangedWithTimestamp;
 	}
 
 

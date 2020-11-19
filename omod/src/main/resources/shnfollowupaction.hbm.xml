@@ -12,6 +12,7 @@
 	    <property name="codedConceptName" column="coded_concept_name" type="java.lang.String"/>
 	    
 	    <property name="contactDate" column="contact_date" type="java.util.Date"/>
+	    <property name="lastTimeStamp" column="last_timestamp" type="java.util.Date"/>
 	    <property name="isResponded" column="is_responded" type="boolean" not-null="true"/>
 	    <property name="respondResult" column="respond_result" type="java.lang.String"/>
 	   	<property name="valueChanged" column="value_changed" type="boolean" not-null="true"/>

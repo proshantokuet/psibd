@@ -480,10 +480,10 @@ function saveFollowUpActionData() {
 				$jq("#serverResponseMessage").html(data.message);
 				$jq("#savefollowup").hide();
 				
-			   	if(data.isSuccess){					   
-			   		searchInFollwUpUsingFilter();
+			   	if(data.isSuccess){
 			   		$jq("#serverResponseMessage").hide();
 			   		$jq('#followupModal').modal('hide');
+			   		searchInFollwUpUsingFilter();
 			   }
 			   
 			},

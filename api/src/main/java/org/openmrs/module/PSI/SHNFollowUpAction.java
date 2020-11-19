@@ -21,6 +21,8 @@ public class SHNFollowUpAction extends BaseOpenmrsData implements Serializable {
 	
 	private Date contactDate;
 	
+	private Date lastTimeStamp;
+	
 	private Boolean isResponded;
 	
 	private String respondResult;
@@ -78,6 +80,14 @@ public class SHNFollowUpAction extends BaseOpenmrsData implements Serializable {
 
 	public void setContactDate(Date contactDate) {
 		this.contactDate = contactDate;
+	}
+
+	public Date getLastTimeStamp() {
+		return lastTimeStamp;
+	}
+
+	public void setLastTimeStamp(Date lastTimeStamp) {
+		this.lastTimeStamp = lastTimeStamp;
 	}
 
 	public Boolean getIsResponded() {

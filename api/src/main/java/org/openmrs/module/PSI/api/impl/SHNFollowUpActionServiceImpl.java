@@ -33,10 +33,13 @@ public class SHNFollowUpActionServiceImpl  extends BaseOpenmrsService implements
 		return dao.findById(id);
 	}
 
+
+
 	@Override
-	public SHNFollowUpAction findByUuid(String uuid) {
+	public SHNFollowUpAction findByUuidAndEncounter(String uuid,
+			String encounterUuid) {
 		// TODO Auto-generated method stub
-		return dao.findByUuid(uuid);
+		return dao.findByUuidAndEncounter(uuid, encounterUuid);
 	}
 
 	@Override
@@ -52,6 +55,12 @@ public class SHNFollowUpActionServiceImpl  extends BaseOpenmrsService implements
 			String moileNo, String patientHid, String clinicCode) {
 		// TODO Auto-generated method stub
 		return dao.getfollowUpReprt(visitStartDate, visitEnd, followUpStartDate, followUpEndDate, moileNo, patientHid, clinicCode);
+	}
+
+	@Override
+	public List<SHNFollowUpAction> getAllFollowUPAction() {
+		// TODO Auto-generated method stub
+		return dao.getAllFollowUPAction();
 	}
 
 
