@@ -5,6 +5,7 @@ import java.util.List;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.SHNStockAdjust;
+import org.openmrs.module.PSI.SHNStockDetails;
 import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.api.db.SHNStockDAO;
 import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
@@ -111,6 +112,36 @@ public class SHNStockServiceImpl extends BaseOpenmrsService implements SHNStockS
 			int clinicId) {
 		// TODO Auto-generated method stub
 		return dao.stockUpdateAfterRefund(eslipNo, clinicCode, clinicId);
+	}
+
+	@Override
+	public List<SHNStock> getAllStockByClinicIdForSync(int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.getAllStockByClinicIdForSync(clinicId);
+	}
+
+	@Override
+	public List<SHNStockAdjust> getAllAdjustHistoryForSync(int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.getAllAdjustHistoryForSync(clinicId);
+	}
+
+	@Override
+	public SHNStock findStockByUuidAndClinicId(String uuid, int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.findStockByUuidAndClinicId(uuid, clinicId);
+	}
+
+	@Override
+	public SHNStockDetails findStockDetailsByUuid(String uuid) {
+		// TODO Auto-generated method stub
+		return dao.findStockDetailsByUuid(uuid);
+	}
+
+	@Override
+	public SHNStockAdjust findAdjustByUuidAndCLinicId(String uuid, int clinicId) {
+		// TODO Auto-generated method stub
+		return dao.findAdjustByUuidAndCLinicId(uuid, clinicId);
 	}
 
 }

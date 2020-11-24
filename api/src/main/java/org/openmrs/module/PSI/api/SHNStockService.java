@@ -5,6 +5,7 @@ import java.util.List;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.SHNStockAdjust;
+import org.openmrs.module.PSI.SHNStockDetails;
 import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
 import org.openmrs.module.PSI.dto.SHNStockDetailsDTO;
@@ -41,6 +42,15 @@ public interface SHNStockService extends OpenmrsService {
 	public String deleteMoneyReceiptStockUpdate(String eslipNo, String clinicCode);
 	
 	public String stockUpdateAfterRefund(String eslipNo, String clinicCode,int clinicId);
+	
+	public List<SHNStock> getAllStockByClinicIdForSync(int clinicId);
+	
+	public List<SHNStockAdjust> getAllAdjustHistoryForSync(int clinicId);
+	
+	public SHNStock findStockByUuidAndClinicId(String uuid, int clinicId);
+	
+	public SHNStockDetails findStockDetailsByUuid(String uuid);
 
+	public SHNStockAdjust findAdjustByUuidAndCLinicId(String uuid, int clinicId);
 
 }

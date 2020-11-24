@@ -17,21 +17,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNDhisEncounterException;
 import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
+import org.openmrs.module.PSI.SHNStock;
+import org.openmrs.module.PSI.SHNStockAdjust;
+import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.SHNDhisEncounterExceptionService;
 import org.openmrs.module.PSI.api.SHNDhisObsElementService;
+import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.converter.DhisObsEventDataConverter;
 import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
+import org.openmrs.module.PSI.converter.SHNStockAdjustDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.module.PSI.dto.UserDTO;
@@ -57,9 +63,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149";
+	//private final String DHIS2BASEURL = "http://192.168.19.149";
 	
 	//test server psi
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
@@ -90,37 +96,37 @@ public class DHISListener {
 		
 		JSONObject getResponse = null;
 		boolean status = true;
-		try {
+/*		try {
 			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
 			
 		}
 		catch (Exception e) {
 			
 			status = false;
-		}
+		}*/
 		if (status) {
 			
 			try {
-				sendFailedPatient();
+				//sendFailedPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				sendPatient();
+				//sendPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				sendMoneyReceipt();
+				//sendMoneyReceipt();
 			}
 			catch (Exception e) {
 				
 			}
 			
 			try {
-				sendFailedMoneyReceipt();
+				//sendFailedMoneyReceipt();
 			}
 			catch (Exception e) {
 				
@@ -133,6 +139,18 @@ public class DHISListener {
 			}
 			try {
 				//sendEncounterFailed();
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				sendStockDataInGLobalServer();
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				sendAdjustStockDataInGLobalServer();
 			}
 			catch (Exception e) {
 				
@@ -1383,5 +1401,64 @@ public class DHISListener {
 	public static boolean isNumeric(String str) {
 		return str.matches("[0-9.]*");
 	}
+	
+	public void sendStockDataInGLobalServer() {
+		List<PSIClinicManagement> clinic = Context.getService(PSIClinicManagementService.class).getAllClinic();
+		if(clinic.size() > 0) {
+			PSIClinicManagement singleClinic = clinic.get(0);
+			log.error("Stock Clinic primary key "+ singleClinic.getCid());
+			List<SHNStock> getStockList = Context.getService(SHNStockService.class).getAllStockByClinicIdForSync(singleClinic.getCid());
+			log.error("getStockList Size "+ getStockList.size());
+			try {
+				log.error("ENtering in try catch "+ getStockList.size());
+				String stockUrl = "/openmrs/ws/rest/v1/stock/getstock/get-converted-data/" + singleClinic.getCid();
+				JSONArray stockJsonArray = psiapiServiceFactory.getAPIType("openmrs").getJsonArray("", "", stockUrl);
+				log.error("stockJsonArray Size "+ stockJsonArray.length());
+				for (int i = 0; i < stockJsonArray.length(); i++) {
+					log.error("ENtering in loop "+ stockJsonArray.length());
+					JSONObject stockJsonObeject = stockJsonArray.getJSONObject(i);
+					log.error("stockJsonObeject "+ stockJsonObeject.toString());
+					String url = "/rest/v1/stock/save-update-inGlobal";
+					JSONObject Stock = psiapiServiceFactory.getAPIType("openmrs").postInRemoteOpenMRS("", stockJsonObeject, url);
+					log.error("response"+ Stock.toString());
+				}
+			} catch (JSONException e) {
+				log.error("Exception Happened "+ getStockList.size());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				log.error("Error in stock "+ e.getMessage().toString());
+			}
+
+			log.error("Leaving try catch "+ getStockList.size());
+		}
+		
+	}
+	
+	public void sendAdjustStockDataInGLobalServer() {
+		List<PSIClinicManagement> clinic = Context.getService(PSIClinicManagementService.class).getAllClinic();
+		if(clinic.size() > 0) {
+			PSIClinicManagement singleClinic = clinic.get(0);
+			log.error("Clinic ID Adjust "+ singleClinic.getClinicId());
+			List<SHNStockAdjust> getStockList = Context.getService(SHNStockService.class).getAllAdjustHistoryForSync(singleClinic.getCid());
+			log.error("getAdjustStockList Size "+ getStockList.size());
+			try {
+				JSONArray stockJsonArray = new SHNStockAdjustDataConverter().toConvert(getStockList);
+				for (int i = 0; i < stockJsonArray.length(); i++) {
+					JSONObject stockJsonObeject = stockJsonArray.getJSONObject(i);
+					log.error("Adjust Json Object"+ stockJsonObeject.toString());
+					String url = "/rest/v1/stock/adjust-save-update-in-global";
+					JSONObject Stock = psiapiServiceFactory.getAPIType("openmrs").postInRemoteOpenMRS("", stockJsonObeject, url);
+					log.error("response"+ Stock.toString());
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			
+		}
+		
+	}
+
 }
 	

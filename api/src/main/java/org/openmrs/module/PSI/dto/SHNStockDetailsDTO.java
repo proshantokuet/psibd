@@ -15,6 +15,10 @@ public class SHNStockDetailsDTO {
 	private int productID;
 	
 	private String productName;
+	
+	private String uuid;
+	
+	private String expiryDateForSync;
 
 	public int getStockDetailsId() {
 		return stockDetailsId;
@@ -62,6 +66,22 @@ public class SHNStockDetailsDTO {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getExpiryDateForSync() {
+		return expiryDateForSync;
+	}
+
+	public void setExpiryDateForSync(String expiryDateForSync) {
+		this.expiryDateForSync = expiryDateForSync;
 	}
 
 }

@@ -20,4 +20,10 @@ public interface PSIAPIService {
 	
 	public JSONArray getFromRemoteOpenMRSAsArray(String payload, String uuid, String URL) throws JSONException;
 	
+	public JSONArray getJsonArray(String payload, String uuid, String URL) throws JSONException;
+
+	
+	public JSONObject postInRemoteOpenMRS(String payload, JSONObject jsonObject, String URL) throws JSONException;
+
+	
 }

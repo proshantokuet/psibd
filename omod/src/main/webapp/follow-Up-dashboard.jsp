@@ -115,7 +115,7 @@ table.dataTable tbody th, table.dataTable tbody td {
               	<div class="col-md-2">
                		<div class="form-group">
                		<label for="Service Code"></label><br />
-                  	<button style="width: 120px; margin-top: 30px;" type="submit" onclick="searchInFollwUpUsingFilter()" class="btnSubmit">Submit</button>                  			
+                  	<button style="width: 120px; margin-top: 30px;" type="button" onclick="searchInFollwUpUsingFilter()" class="btnSubmit">Submit</button>                  			
 					</div>
                   	
               	</div>

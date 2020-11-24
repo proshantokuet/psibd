@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
@@ -35,6 +36,7 @@ import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.converter.ClinicServiceConverter;
 import org.openmrs.module.PSI.converter.PSIServiceManagementConverter;
+import org.openmrs.module.PSI.converter.SHNStockDataConverter;
 import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
 import org.openmrs.module.PSI.dto.SHNStockDTO;
@@ -109,6 +111,7 @@ public class SHNStockRestController {
 				stockDetails.setProductName(stockDetailsDTO.getProductName());
 				stockDetails.setCreator(Context.getAuthenticatedUser());
 				stockDetails.setDateCreated(new Date());
+				stockDetails.setUuid(UUID.randomUUID().toString());
 				boolean duplicate = false;
 				for (SHNStockDetails shnStockDetails : _stockDetails) {
 
@@ -259,7 +262,7 @@ public class SHNStockRestController {
 					SHNStockDetails stockDetails = new SHNStockDetails();
 					int debit = 0;
 					if (!StringUtils.isBlank(service[6])) {
-						debit = Integer.parseInt(service[6]) ;
+						debit = Math.abs(Integer.parseInt(service[6])) ;
 					}
 					stockDetails.setDebit(debit);
 					stockDetails.setCredit(0);
@@ -273,6 +276,7 @@ public class SHNStockRestController {
 					stockDetails.setProductName(psiServiceManagement.getName());
 					stockDetails.setCreator(Context.getAuthenticatedUser());
 					stockDetails.setDateCreated(new Date());
+					stockDetails.setUuid(UUID.randomUUID().toString());
 					boolean duplicate = false;
 					for (SHNStockDetails shnStockDetails : _stockDetails) {
 
@@ -330,7 +334,7 @@ public class SHNStockRestController {
 			stock.setChangedStock(dto.getChangedStock());
 			stock.setAdjustReason(dto.getAdjustReason());;
 			stock.setCreator(Context.getAuthenticatedUser());
-			
+			stock.setUuid(UUID.randomUUID().toString());
 			SHNStockAdjust responseAdjustStock =  Context.getService(SHNStockService.class).saveOrUpdateStockAdjust(stock);
 			String updatedId = Context.getService(SHNStockService.class).adjustStockByEarliestExpiryDate(responseAdjustStock.getChangedStock(), stock.getClinicId(), responseAdjustStock.getProductId());
 
@@ -348,5 +352,120 @@ public class SHNStockRestController {
 		
 		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
 		
+	}
+	
+	@RequestMapping(value = "/save-update-inGlobal", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<String> stockSaveInGlobal(@RequestBody SHNStockDTO dto) throws Exception {
+		
+		DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		JSONObject response = new JSONObject();
+		log.error("DTO" + dto);
+		try {
+
+			Set<SHNStockDetailsDTO> stockDetailsDTOs = dto.getStockDetails();
+			SHNStock stock = Context.getService(SHNStockService.class).findStockByUuidAndClinicId(dto.getUuid(), dto.getClinicId());
+			if (stock == null) {
+				stock = new SHNStock();
+				stock.setUuid(dto.getUuid());
+				stock.setStockInId(dto.getStockInId());
+				stock.setDateCreated(new Date());
+			}
+			stock.setClinicName(dto.getClinicName());
+			stock.setClinicCode(dto.getClinicCode());
+			stock.setClinicId(dto.getClinicId());
+			stock.setInvoiceNumber(dto.getInvoiceNumber());
+			stock.setReceiveDate(dateFormatTwentyFourHour.parse(dto.getReceiveDateForSync()));
+			stock.setCreator(Context.getAuthenticatedUser());
+				
+			log.error("STOCK Object Creating Seuccess " + dto.getClinicName());
+			Set<SHNStockDetails> _stockDetails = new HashSet<>();
+			for (SHNStockDetailsDTO stockDetailsDTO : stockDetailsDTOs) {
+				SHNStockDetails stockDetails = Context.getService(SHNStockService.class).findStockDetailsByUuid(stockDetailsDTO.getUuid());
+				if(stockDetails == null) {
+					stockDetails = new SHNStockDetails();
+					stockDetails.setUuid(stockDetailsDTO.getUuid());
+				}
+				stockDetails.setDebit(stockDetailsDTO.getDebit());
+				stockDetails.setCredit(stockDetailsDTO.getCredit());
+				stockDetails.setExpiryDate(dateFormatTwentyFourHour.parse(stockDetailsDTO.getExpiryDateForSync()));
+				stockDetails.setStockId(stock);
+				stockDetails.setProductID(stockDetailsDTO.getProductID());
+				stockDetails.setProductName(stockDetailsDTO.getProductName());
+				stockDetails.setCreator(Context.getAuthenticatedUser());
+				stockDetails.setDateCreated(new Date());
+				_stockDetails.add(stockDetails);
+			}
+
+			stock.setStockDetails(_stockDetails);
+			
+			SHNStock responseStock =  Context.getService(SHNStockService.class).saveOrUpdate(stock);
+			response.put("message", "Stock Successfully Saved");
+			response.put("stockId", responseStock.getStkid());
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value = "/adjust-save-update-in-global", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<String> stockAdjustSaveInGlobal(@RequestBody SHNStockAdjustDTO dto) throws Exception {
+		DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		JSONObject response = new JSONObject();
+		log.error("DTO" + dto);
+		try {
+
+			SHNStockAdjust stock = Context.getService(SHNStockService.class).findAdjustByUuidAndCLinicId(dto.getUuid(), dto.getClinicId());
+			if (stock == null) {
+				stock = new SHNStockAdjust();
+				stock.setDateCreated(new Date());
+				stock.setUuid(dto.getUuid());
+			}
+			
+			stock.setProductId(dto.getProductId());
+			stock.setClinicId(dto.getClinicId());
+			stock.setClinicCode(dto.getClinicCode());
+			stock.setAdjustDate(dateFormatTwentyFourHour.parse(dto.getAdjustDateForSync()));
+			stock.setPreviousStock(dto.getPreviousStock());
+			stock.setChangedStock(dto.getChangedStock());
+			stock.setAdjustReason(dto.getAdjustReason());;
+			stock.setCreator(Context.getAuthenticatedUser());
+			
+			SHNStockAdjust responseAdjustStock =  Context.getService(SHNStockService.class).saveOrUpdateStockAdjust(stock);
+			response.put("message", "Stock Adjusted Successfully");
+			response.put("adjustId", responseAdjustStock.getAdjustId());
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value = "/getstock/get-converted-data/{clinicId}", method = RequestMethod.GET)
+	public ResponseEntity<String> convertMethod(@PathVariable int clinicId) throws Exception {
+		
+		JSONObject stockJsonObject = new JSONObject();
+		JSONArray stockJsonArray = new JSONArray();
+		try {
+			List<SHNStock> getStockList = Context.getService(SHNStockService.class).getAllStockByClinicIdForSync(clinicId);
+			 stockJsonArray = new SHNStockDataConverter().toConvert(getStockList);
+		}
+		catch (Exception e) {
+			stockJsonObject.put("msg", e.getMessage());
+			return new ResponseEntity<String>(stockJsonArray.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<String>(stockJsonArray.toString(), HttpStatus.OK);
 	}
 }

@@ -13,7 +13,7 @@ public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	
 	private final String OPENMRS_BASE_URL = "https://localhost";
 	//private final String CENTRAL_OPENMRS_BASE_URL = "https://localhost/openmrs/ws";
-	private final String CENTRAL_OPENMRS_BASE_URL = "https://192.168.19.147/openmrs/ws";
+	private final String CENTRAL_OPENMRS_BASE_URL = "https://192.168.19.159/openmrs/ws";
 	
 	@Override
 	public JSONObject add(String payload, JSONObject jsonObject, String URL) throws JSONException {
@@ -56,6 +56,21 @@ public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	public JSONArray getFromRemoteOpenMRSAsArray(String payload, String uuid, String URL) throws JSONException {
 		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "admin",
 		    "test");
+		return new JSONArray(op.body());
+	}
+
+	@Override
+	public JSONObject postInRemoteOpenMRS(String payload,
+			JSONObject jsonObject, String URL) throws JSONException {
+		// TODO Auto-generated method stub
+		HttpResponse op = HttpUtil.post(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, jsonObject.toString(), "admin", "test");
+		return new JSONObject(op.body());
+	}
+
+	@Override
+	public JSONArray getJsonArray(String payload, String uuid, String URL)
+			throws JSONException {
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + URL, payload, "admin","test");
 		return new JSONArray(op.body());
 	}
 	

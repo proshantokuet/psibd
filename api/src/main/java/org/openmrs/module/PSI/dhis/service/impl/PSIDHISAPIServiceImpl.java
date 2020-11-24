@@ -79,5 +79,19 @@ public class PSIDHISAPIServiceImpl implements PSIAPIService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public JSONObject postInRemoteOpenMRS(String payload,
+			JSONObject jsonObject, String URL) throws JSONException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JSONArray getJsonArray(String payload, String uuid, String URL)
+			throws JSONException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

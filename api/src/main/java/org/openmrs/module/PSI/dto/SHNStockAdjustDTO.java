@@ -21,6 +21,10 @@ public class SHNStockAdjustDTO {
 	private String adjustReason;
 	
 	private String productName;
+	
+	private String uuid;
+	
+	private String adjustDateForSync;
 
 	public int getAdjustId() {
 		return adjustId;
@@ -92,6 +96,22 @@ public class SHNStockAdjustDTO {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getAdjustDateForSync() {
+		return adjustDateForSync;
+	}
+
+	public void setAdjustDateForSync(String adjustDateForSync) {
+		this.adjustDateForSync = adjustDateForSync;
 	}
 
 }

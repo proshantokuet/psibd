@@ -10,6 +10,7 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.SHNStockAdjust;
+import org.openmrs.module.PSI.SHNStockDetails;
 import org.openmrs.module.PSI.api.db.SHNStockDAO;
 import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.openmrs.module.PSI.dto.SHNStockAdjustDTO;
@@ -350,6 +351,64 @@ public class HibernateSHNStockDAO implements SHNStockDAO {
 		} catch (Exception e) {
 			log.error(e.toString());
 			return e.toString();
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNStock> getAllStockByClinicIdForSync(int clinicId) {
+		// TODO Auto-generated method stub
+		List<SHNStock> lists = sessionFactory.getCurrentSession().createQuery("from SHNStock where clinicId = :id")
+		        .setInteger("id", clinicId).list();
+			return lists;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNStockAdjust> getAllAdjustHistoryForSync(int clinicId) {
+		List<SHNStockAdjust> lists = sessionFactory.getCurrentSession().createQuery("from SHNStockAdjust where clinicId = :id")
+		        .setInteger("id", clinicId).list();
+		return lists;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNStock findStockByUuidAndClinicId(String uuid, int clinicId) {
+		List<SHNStock> lists = sessionFactory.getCurrentSession().createQuery("from SHNStock where clinicId = :id and uuid = :uUid")
+		        .setInteger("id", clinicId).setString("uUid", uuid).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNStockDetails findStockDetailsByUuid(String uuid) {
+		List<SHNStockDetails> lists = sessionFactory.getCurrentSession().createQuery("from SHNStockDetails where uuid = :uUid")
+		        .setString("uUid", uuid).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNStockAdjust findAdjustByUuidAndCLinicId(String uuid, int clinicId) {
+		List<SHNStockAdjust> lists = sessionFactory.getCurrentSession().createQuery("from SHNStockAdjust where clinicId = :id and uuid = :uUid")
+		        .setInteger("id", clinicId).setString("uUid", uuid).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
 		}
 	}
 	

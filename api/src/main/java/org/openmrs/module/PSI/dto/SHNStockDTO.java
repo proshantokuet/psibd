@@ -21,6 +21,10 @@ public class SHNStockDTO {
 	private String invoiceNumber;
 	
 	private Date receiveDate;
+	
+	private String uuid;
+	
+	private String receiveDateForSync;
 
 	public int getStockId() {
 		return stockId;
@@ -84,6 +88,22 @@ public class SHNStockDTO {
 
 	public void setReceiveDate(Date receiveDate) {
 		this.receiveDate = receiveDate;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getReceiveDateForSync() {
+		return receiveDateForSync;
+	}
+
+	public void setReceiveDateForSync(String receiveDateForSync) {
+		this.receiveDateForSync = receiveDateForSync;
 	}
 
 }
