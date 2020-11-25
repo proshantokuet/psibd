@@ -62,6 +62,7 @@ $("#uploadSpotCSVForm").submit(function(event) {
 					 xhr.setRequestHeader(header, token);
 				},
 				success : function(data) {
+					$("#file").val(null);
 				   $("#msg").html(data);
 				   $("#loading").hide();
 				   if(data == ""){					   
@@ -71,7 +72,7 @@ $("#uploadSpotCSVForm").submit(function(event) {
 				   
 				},
 				error : function(e) {
-				   
+					$("#file").val(null);
 				},
 				done : function(e) {				    
 				    console.log("DONE");				    
