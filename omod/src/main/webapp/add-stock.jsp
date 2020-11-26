@@ -162,7 +162,7 @@ $jq( function() {
 jQuery(document).ready(function($) {   
 	$("#receiveDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
 	$("#expiryDate").datepicker({ dateFormat: 'yy-mm-dd', minDate: new Date,changeYear: true,changeMonth: true });
-	$('#product').select2({dropdownAutoWidth : true});
+	$('#product').select2();
 }); 
 
 function saveStockData() {
