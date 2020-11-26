@@ -36,9 +36,9 @@
 <div id="loader" style="display: none;"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
-<p><a href="${pageContext.request.contextPath}/module/PSI/add-package.form?id=${id}">Add Package</a> 
+<p><a href="${pageContext.request.contextPath}/module/PSI/add-package.form?id=${id}">Add Package</a>
 <a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Package</a>
-</p>
+ </p>
 <div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:36%"></div>			
 <div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
@@ -79,8 +79,8 @@
 	            <td >Active</td>
 	            </c:if>
 	            <td>
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/edit-package.form?id=${ packageProduct.packageId }&clinicid=${id}"/>"> Edit</a>
-	            </td>
+<%-- 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/edit-package.form?id=${ packageProduct.packageId }&clinicid=${id}"/>"> Edit</a>
+ --%>	            </td>
 	        </tr>
 	       </c:forEach>
 	        

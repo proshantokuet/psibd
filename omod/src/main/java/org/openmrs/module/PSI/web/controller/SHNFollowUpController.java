@@ -47,8 +47,11 @@ public class SHNFollowUpController {
 		model.addAttribute("followUpReport",followUpReport);
 		if (psiClinicUser != null && !isAdmin) {			
 			model.addAttribute("showClinic", 0);
+			model.addAttribute("clinicInfo", psiClinicUser.getPsiClinicManagementId().getName() + " Clinic ID-" + psiClinicUser.getPsiClinicManagementId().getClinicId());
+			
 		} else if (psiClinicUser != null && isAdmin) {
 			model.addAttribute("showClinic", 1);
+			model.addAttribute("clinicInfo", "All");
 		} else {
 			
 		}

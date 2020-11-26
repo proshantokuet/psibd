@@ -23,7 +23,7 @@
 
 <style>
 .select2-container--default .select2-selection--single {
-    width: 185px !important;
+    width: 190px !important;
     height: 39px !important;
 }
 .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -162,7 +162,7 @@ $jq( function() {
 jQuery(document).ready(function($) {   
 	$("#receiveDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
 	$("#expiryDate").datepicker({ dateFormat: 'yy-mm-dd', minDate: new Date,changeYear: true,changeMonth: true });
-	//$('#product').select2({dropdownAutoWidth : true});
+	$('#product').select2({dropdownAutoWidth : true});
 }); 
 
 function saveStockData() {

@@ -1226,24 +1226,74 @@ $jq("#startDateVisit").on("change",function(){
 
 }); */
 
- $jq(function() {
+/*   $jq(function() {
 	$jq('.date-picker-year').datepicker({
         changeMonth: true,
         changeYear: true,
         dateFormat: 'MM yy',
         maxDate: new Date,
+        showButtonPanel: true,
+        closeText: "Ok",
         beforeShowDay:function(date){
             return [false, ''];
          },
+         onClose: function(dateText, inst) { 
+            var year = $jq("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $jq(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+            $jq("#monthHeader").html($jq(this).val());	
+           
+        } 
+    });
+
+});  */
+
+$jq(function() {
+	$jq('.date-picker-year').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'MM yy',
+        maxDate: new Date,
+        showButtonPanel: true
+    }).focus(function() {
+        var thisCalendar = $jq(this);
+        //$jq('.ui-datepicker-calendar').detach();
+        $jq('.ui-datepicker-close').click(function() {
+            var month = $jq("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $jq("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            thisCalendar.datepicker('setDate', new Date(year, month, 1));
+    		$jq(".ui-datepicker-calendar").hide();
+    		$jq(".ui-datepicker-current").hide();
+            $jq("#monthHeader").html(thisCalendar.val());	
+        });
+    });
+	$jq(".date-picker-year").focus(function () {
+		$jq(".ui-datepicker-calendar").hide();
+		$jq(".ui-datepicker-current").hide();
+    });
+
+});
+
+
+/* $jq(function() {
+	$jq('.date-picker-year').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'MM yy',
+        maxDate: new Date,
+        showButtonPanel: true,
         onClose: function(dateText, inst) { 
             var year = $jq("#ui-datepicker-div .ui-datepicker-year :selected").val();
             $jq(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
             $jq("#monthHeader").html($jq(this).val());	
            
-        }
+        } 
+    });
+	$jq(".date-picker-year").focus(function () {
+		$jq(".ui-datepicker-calendar").hide();
+		$jq(".ui-datepicker-current").hide();
     });
 
-});
+}); */
 
 $jq("#yearMonth").on("change",function(){
 	var selectedDate = $JQuery("#yearMonth").val();

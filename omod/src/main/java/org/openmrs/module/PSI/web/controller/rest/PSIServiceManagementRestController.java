@@ -552,31 +552,31 @@ public class PSIServiceManagementRestController extends MainResourceController {
 
 					Float unitCost = 0f;
 					if (service[4] != null || !service[4].isEmpty()) {
-						unitCost = Float.parseFloat(service[4]);
+						unitCost = Math.abs(Float.parseFloat(service[4]));
 					}
 					psiServiceManagement.setUnitCost(unitCost);
 					
 					Float purchasePrice = 0f;
 					if (service[5] != null || !service[5].isEmpty()) {
-						purchasePrice = Float.parseFloat(service[5]);
+						purchasePrice = Math.abs(Float.parseFloat(service[5]));
 					}
 					psiServiceManagement.setPurchasePrice(purchasePrice);
 					float discountPop = 0;
 					
 					if (!StringUtils.isBlank(service[6])) {
-						discountPop = Float.parseFloat(service[6]);
+						discountPop = Math.abs(Float.parseFloat(service[6]));
 					}
 					psiServiceManagement.setDiscountPop(discountPop);
 					float discountPoor = 0;
 					
 					if (!StringUtils.isBlank(service[7])) {
-						discountPoor = Float.parseFloat(service[7]);
+						discountPoor = Math.abs(Float.parseFloat(service[7]));
 					}
 					psiServiceManagement.setDiscountPoor(discountPoor);
 					float discountAbleToPay = 0;
 					
 					if (!StringUtils.isBlank(service[8])) {
-						discountAbleToPay = Float.parseFloat(service[8]);
+						discountAbleToPay = Math.abs(Float.parseFloat(service[8]));
 					}
 					psiServiceManagement.setDiscountAblePay(discountAbleToPay);
 					psiServiceManagement.setPsiClinicManagement(psiClinicManagement);

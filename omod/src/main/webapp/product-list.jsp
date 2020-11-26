@@ -43,7 +43,7 @@
 <div id="loader"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
-<p><a href="${pageContext.request.contextPath}/module/PSI/add-product.form?id=${id}">Add Product</a> 
+<p><a href="${pageContext.request.contextPath}/module/PSI/add-product.form?id=${id}">Add Product</a>
 <a class="" href="${pageContext.request.contextPath}/module/PSI/upload-product.form?id=${id}"  style="margin-left: 10px;">Upload Product</a>
 <a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Product</a>
  <a class="" href="${pageContext.request.contextPath}/module/PSI/adjust-history.form?id=${id}" style="margin-left: 10px;">Adjust History</a>
@@ -138,11 +138,17 @@ $jq(document).ready( function () {
 				   buttons: [
 				             {
 				                 extend: 'excelHtml5',
+				                 exportOptions: {
+				                     columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+				                 },
 				                 title: title,
 				                 text: 'Export as .xlxs'
 				             },
 				             {
 				         		extend: 'pdfHtml5',
+				         		exportOptions: {
+				                     columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+				                },
 				         		title: title,
 				         		text: 'Export as .pdf',
 				         		orientation: 'landscape',

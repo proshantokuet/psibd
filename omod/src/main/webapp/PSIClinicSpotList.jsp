@@ -4,12 +4,12 @@
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="Clinic Spot List" otherwise="/login.htm" />
 
-<a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicSpot.form?id=${id}"><spring:message
+<%--  <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicSpot.form?id=${id}"><spring:message
 				code="PSI.psiClinicSpotAddNew" /></a>
 <a style="padding-left: 10px;" href="${pageContext.request.contextPath}/module/PSI/uploadPSIClinicSpot.form?id=${id}"><spring:message
-                code="PSI.psiClinicUploadCsv" /></a> 
-<%-- <a class="" href="" onclick="syncSpotsGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Spots</a> --%>
-<div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
+                code="PSI.psiClinicUploadCsv" /></a> --%>
+<a class="" href="" onclick="syncSpotsGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Spots</a>
+ <div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 </div>
 	<br /> 
@@ -44,7 +44,7 @@
 	             <td>${ spot.address }</td>
 	            <td>${ spot.dhisId }</td>	           
 	            <td> 	            
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicSpot.form?id=${ spot.ccsid }"/>"> Edit</a>
+	            <%-- <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicSpot.form?id=${ spot.ccsid }"/>"> Edit</a> --%>
 	             
 	            </td>
 	        </tr>

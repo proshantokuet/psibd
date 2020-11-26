@@ -9,10 +9,10 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 </style>
- <a href="${pageContext.request.contextPath}/module/PSI/addClinicType.form"><spring:message
-				code="PSI.addNewClinicType" /></a> 	
-<!-- <a class="" href="" onclick="syncClinicTypeFromGlobal()" style="margin-left: 10px;">Sync Clinic Type</a>			
- --><div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
+<%-- <a href="${pageContext.request.contextPath}/module/PSI/addClinicType.form"><spring:message
+				code="PSI.addNewClinicType" /></a>  --%>
+ <a class="" href="" onclick="syncClinicTypeFromGlobal()" style="margin-left: 10px;">Sync Clinic Type</a>			
+ <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
         	<p>Clinic Type List</p>
@@ -50,7 +50,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 	        	<td>${clinic_type.ctid }</td>
 	        	<td>${clinic_type.clinicTypeName }</td>
 	        	<td>
-	        		 <a class="btn btn-primary" href="<c:url value="/module/PSI/editClinicType.form?ctid=${ clinic_type.ctid }"/>"> Edit</a> 
+	        		<%-- <a class="btn btn-primary" href="<c:url value="/module/PSI/editClinicType.form?ctid=${ clinic_type.ctid }"/>"> Edit</a> --%> 
 	        	</td>
 	        </tr>
 	       </c:forEach>

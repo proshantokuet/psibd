@@ -1,6 +1,8 @@
 var $JQuery = jQuery.noConflict();
 $JQuery("#serviceForm").submit(function(event) { 
 	$JQuery("#loading").show();
+	$JQuery("#usernameUniqueSuccessMessage").hide();
+	$JQuery("#usernameUniqueErrorMessage").hide();
 			var url = "/openmrs/ws/rest/v1/service-management/save";			
 			var token = $JQuery("meta[name='_csrf']").attr("content");
 			var header = $JQuery("meta[name='_csrf_header']").attr("content");			
@@ -64,11 +66,15 @@ $JQuery("#serviceForm").submit(function(event) {
 					 xhr.setRequestHeader(header, token);
 				},
 				success : function(data) {
-					$JQuery("#usernameUniqueErrorMessage").html(data);
-					$JQuery("#loading").hide();
-				   if(data == ""){					   
+				   $JQuery("#loading").hide();
+				   if(data == ""){	
+						$JQuery("#usernameUniqueSuccessMessage").html("Product Successfully Saved");
+						$JQuery("#usernameUniqueSuccessMessage").show();
 					   window.location.replace("/openmrs/module/PSI/product-list.form?id="+clinicValue);
-					   
+				   }
+				   else {
+						$JQuery("#usernameUniqueErrorMessage").html(data);
+						$JQuery("#usernameUniqueErrorMessage").show();
 				   }
 				   
 				},

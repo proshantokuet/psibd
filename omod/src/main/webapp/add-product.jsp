@@ -18,7 +18,8 @@
         	<p>Add Product</p>
         	
        	</div>
-		<span class="text-red" id="usernameUniqueErrorMessage"></span>
+       	<div id="usernameUniqueErrorMessage" style="display: none;" class="alert alert-danger" role="alert"></div>
+		<div class="alert alert-success" style="display: none;" role="alert" id="usernameUniqueSuccessMessage"></div>
 		 <div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
 							
@@ -61,26 +62,26 @@
               		
               		<div class="form-group">
                   	Unit Cost:
-                  		<form:input style="height: 39px;" path="unitCost" class="form-control" required="required" min="0"/>
+                  		<form:input type="number" style="height: 39px;" path="unitCost" class="form-control" required="required" min="0"/>
                   	</div> 
               	</div>
               	
               	<div class="col-md-6">               		
                   	<div class="form-group">
                   		Purchase price:
-                  		<form:input style="height: 39px;" path="purchasePrice" class="form-control"  min="0"/>
+                  		<form:input type="number" style="height: 39px;" path="purchasePrice" class="form-control"  min="0"/>
                   	</div> 
               	</div>
               	<div class="col-md-6">
               		
                   	<div class="form-group">
                   	Discount (%) for Poor:
-                  		<form:input style="height: 39px;" path="discountPoor" class="form-control" required="required" min="0"/>
+                  		<form:input type="number" style="height: 39px;" path="discountPoor" class="form-control" required="required" min="0"/>
                    	 	
                   	</div>  
                   	<div class="form-group">
                   	Discount (%) for Able to Pay:
-                  		<form:input style="height: 39px;" path="discountAblePay" class="form-control" required="required" min="0"/>
+                  		<form:input type="number" style="height: 39px;" path="discountAblePay" class="form-control" required="required" min="0"/>
                    	 	
                   	</div>          		
                   	
@@ -89,7 +90,7 @@
               		
               		<div class="form-group">
                   	Discount (%) for PoP:
-                  		<form:input style="height: 39px;" path="discountPop" class="form-control" required="required" min="0"/>
+                  		<form:input type="number" style="height: 39px;" path="discountPop" class="form-control" required="required" min="0"/>
                    	 	
                   	</div> 
               	</div>

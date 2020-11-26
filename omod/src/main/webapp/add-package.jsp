@@ -10,11 +10,7 @@
 
 <style>
 .select2-container--default .select2-selection--single {
-    width: 185px !important;
     height: 39px !important;
-}
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    left: 165px !important;
 }
 </style>
 
@@ -112,7 +108,7 @@
 		      </div>
 		      <div class="modal-body">
 		       <div class="row">
-					<div class="col-lg-12 form-group">
+					<div class="col-lg-8 form-group">
 						<label for="invoiceNo">1. Product:</label><span class="text-danger"> *</span> 
 						<select class="form-control role-multiple" id="product" style="height: 39px;" name="product">
 										<option value="">Select Product</option>
@@ -187,7 +183,7 @@
 		      </div>
 		      <div class="modal-body">
 		       <div class="row">
-					<div class="col-lg-12 form-group">
+					<div class="col-lg-8 form-group">
 						<label for="invoiceNo">1. Service:</label><span class="text-danger"> *</span> 
 						<select class="form-control role-multiple" id="service" style="height: 39px;" name="product">
 										<option value="">Select Service</option>
@@ -261,6 +257,12 @@ $jq( function() {
   } );
 </script> -->
 <script>
+
+jQuery(document).ready(function($) {   
+	$('#service').select2({dropdownAutoWidth : true});
+	$('#product').select2({dropdownAutoWidth : true});
+}); 
+
 function closemodal() {
 	jQuery('#exampleModalCenter').modal('hide');
 
@@ -283,7 +285,8 @@ jQuery('#addproductmodal').on('hidden.bs.modal', function (e) {
 	jQuery("#productCode").val("");
 	jQuery("#unitPrice").val("");
 	jQuery("#productId").val("");
-	jQuery("#product").val("");
+	//jQuery("#product").val("");
+	jQuery('#product').val('').trigger('change');
 	jQuery("#productAmount").val("");
 	jQuery("#productQuantity").val("");
 	jQuery("#priceinPackage").val("");
@@ -307,7 +310,8 @@ jQuery('#addservicemodal').on('hidden.bs.modal', function (e) {
 	jQuery("#serviceCode").val("");
 	jQuery("#serviceUnitPrice").val("");
 	jQuery("#serviceId").val("");
-	jQuery("#service").val("");
+	//jQuery("#service").val("");
+	jQuery('#service').val('').trigger('change');
 	jQuery("#serviceAmount").val("");
 	jQuery("#serviceQuantity").val("");
 	jQuery("#servicePriceinPackage").val("");

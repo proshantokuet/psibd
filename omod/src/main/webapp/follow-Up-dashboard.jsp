@@ -267,6 +267,7 @@ $jq("#followupstartDate").on("change",function(){
 		});
 });
 $jq(document).ready( function () {
+	var titleHeader = "${clinicInfo}";
 	$jq('#table_id').DataTable({
 		   bFilter: false,
 	       bInfo: false,
@@ -276,12 +277,18 @@ $jq(document).ready( function () {
 		   buttons: [
 		             {
 		                 extend: 'excelHtml5',
-		                 title: "Patient Follow-Up Action Report",
+		                 exportOptions: {
+		                     columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+		                 },
+		                 title: "Patient Follow-Up Action Report of " + titleHeader,
 		                 text: 'Export as .xlxs'
 		             },
 		             {
 			         		extend: 'pdfHtml5',
-			         		title: "Patient Follow-Up Action Report",
+			                exportOptions: {
+			                     columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+			                 },
+			                 title: "Patient Follow-Up Action Report of " + titleHeader,
 			         		text: 'Export as .pdf',
 			         		orientation: 'landscape',
 			         		pageSize: 'LEGAL'
@@ -371,12 +378,20 @@ function searchInFollwUpUsingFilter() {
 	var clinic = document.getElementById("clinic_patient");
 	var clinicCode;
 	var url;
+	var clinicName = "${clinicInfo}";
 	if(clinic !== null){		
 		clinicCode = clinic.options[clinic.selectedIndex].value;
+		if(clinicCode != "0") {
+			clinicName = "";
+			clinicName = "" + clinic.options[clinic.selectedIndex].text + " Clinic ID-"+clinicCode;
+			}
 	}
 	else {
 		clinicCode = "0";
+		clinicName = "${clinicInfo}";
 	}
+	
+	var title = "Patient Follow-Up Action Report of "+ clinicName;
 	
 	url = "/openmrs/module/PSI/follow-Up-report.form?visitStartDate="+visitStartDate;
 	url += "&visitEndDate="+visitEndDate+"&followUpStartDate=" +followUpStartDate;
@@ -405,12 +420,18 @@ function searchInFollwUpUsingFilter() {
 					   buttons: [
 					             {
 					                 extend: 'excelHtml5',
-					                 title: "Patient Follow-Up Action Report",
+					                 exportOptions: {
+					                     columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
+					                 },
+					                 title: title,
 					                 text: 'Export as .xlxs'
 					             },
 					             {
 						         		extend: 'pdfHtml5',
-						         		title: "Patient Follow-Up Action Report",
+						                exportOptions: {
+						                     columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10]
+						                 },
+						         		title: title,
 						         		text: 'Export as .pdf',
 						         		orientation: 'landscape',
 						         		pageSize: 'LEGAL'

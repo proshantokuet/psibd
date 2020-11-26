@@ -31,7 +31,7 @@
             	<div class="col-md-6">
                 	<div class="form-group">                							
 						File
-						<input id="file" style="height: 39px;"  type="file" name="file" class="form-control" required="required"/>	
+						<input id="file" style="height: 39px;" accept=".csv"  type="file" name="file" class="form-control" required="required"/>	
 						
                   	</div>                  	
              	</div>
