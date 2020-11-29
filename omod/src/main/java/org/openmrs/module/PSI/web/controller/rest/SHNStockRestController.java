@@ -207,6 +207,7 @@ public class SHNStockRestController {
 		try {
 			br = new BufferedReader(new FileReader(csvFile));
 			SHNStock stock = null;
+			boolean hasDIfferentInvoice = false;
 			Set<SHNStockDetails> _stockDetails = new HashSet<>();
 			while ((line = br.readLine()) != null) {
 				String[] service = line.split(cvsSplitBy);
@@ -258,7 +259,18 @@ public class SHNStockRestController {
 						stock.setCreator(Context.getAuthenticatedUser());
 					}
 					log.error(" trying to create stockdetails " + _stockDetails.size());
-
+					
+					if(stock !=null) {
+						String invoiceNo = "";
+						if (!StringUtils.isBlank(service[1])) {
+							invoiceNo = service[1];
+						}
+						if(!stock.getInvoiceNumber().equalsIgnoreCase(invoiceNo)) {
+							hasDIfferentInvoice = true;
+							break;
+						}
+					}
+					
 					SHNStockDetails stockDetails = new SHNStockDetails();
 					int debit = 0;
 					if (!StringUtils.isBlank(service[6])) {
@@ -295,11 +307,16 @@ public class SHNStockRestController {
 				
 			}
 			log.error(" Adding stock details list array  " + _stockDetails.size());
+			if(!hasDIfferentInvoice) {
 			if(_stockDetails.size() > 0) {
 			stock.setStockDetails(_stockDetails);
 			Context.getService(SHNStockService.class).saveOrUpdate(stock);
 			}
 			msg = "Total successfully stock uploaded: " + (_stockDetails.size());
+			}
+			else {
+				msg = "Uploaded file has different invoice number.Please upload the stocks with same invoice number.Total successfully stock uploaded: 0";
+			}
 			
 		}
 		catch (Exception e) {
