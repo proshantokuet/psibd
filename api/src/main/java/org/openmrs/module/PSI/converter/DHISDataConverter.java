@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.dto.SHNHistoricalDataDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
 import org.springframework.stereotype.Component;
 
@@ -428,4 +429,178 @@ public class DHISDataConverter {
 		return event;
 		
 	}
+	
+	public static JSONObject toConvertDhisHistoricalData(SHNHistoricalDataDTO shnHistoricalDataDTO)
+		    throws JSONException {
+			JSONObject event = new JSONObject();
+
+			
+			event.put("orgUnit", "oIzIrO0I5qu");
+			event.put("program", DHISMapper.historicalDataMapper.get("program"));
+			event.put("status", "COMPLETED");
+			Date date = Calendar.getInstance().getTime();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String today = dateFormat.format(date);
+			event.put("eventDate", today);
+			
+			JSONArray dataValues = new JSONArray();
+			
+			JSONObject adoloscent = new JSONObject();
+			adoloscent.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Adolescent"));
+			adoloscent.put("value", shnHistoricalDataDTO.getHdAdolescent());
+			dataValues.put(adoloscent);
+			
+			JSONObject hdAgeDay = new JSONObject();
+			hdAgeDay.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Age_day"));
+			hdAgeDay.put("value", shnHistoricalDataDTO.getHdAge_day());
+			dataValues.put(hdAgeDay);
+			
+			JSONObject hdAgeMonth = new JSONObject();
+			hdAgeMonth.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Age_month"));
+			hdAgeMonth.put("value", shnHistoricalDataDTO.getHdAge_month());
+			dataValues.put(hdAgeMonth);
+			
+			JSONObject gethdageYear = new JSONObject();
+			gethdageYear.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Age_year"));
+			gethdageYear.put("value", shnHistoricalDataDTO.getHdAge_year());
+			dataValues.put(gethdageYear);
+			
+			JSONObject hdBkNo = new JSONObject();
+			hdBkNo.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Bkno"));
+			hdBkNo.put("value", shnHistoricalDataDTO.getHdBkno());
+			dataValues.put(hdBkNo);
+			
+			JSONObject hdCard = new JSONObject();
+			hdCard.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Card"));
+			hdCard.put("value", shnHistoricalDataDTO.getHdCard());
+			dataValues.put(hdCard);
+			
+			JSONObject hdClinicId = new JSONObject();
+			hdClinicId.put("dataElement", DHISMapper.historicalDataMapper.get("HD-ClinicId"));
+			hdClinicId.put("value", shnHistoricalDataDTO.getHdClinicId());
+			dataValues.put(hdClinicId);
+			
+			JSONObject hdCompId = new JSONObject();
+			hdCompId.put("dataElement", DHISMapper.historicalDataMapper.get("HD-compId"));
+			hdCompId.put("value", shnHistoricalDataDTO.getHdCompId());
+			dataValues.put(hdCompId);
+			
+			JSONObject hdcomp_id = new JSONObject();
+			hdcomp_id.put("dataElement", DHISMapper.historicalDataMapper.get("HD-comp_id"));
+			hdcomp_id.put("value", shnHistoricalDataDTO.getHdComp_id());
+			dataValues.put(hdcomp_id);
+			
+			
+			JSONObject cspId = new JSONObject();
+			cspId.put("dataElement", DHISMapper.historicalDataMapper.get("HD-CSPID"));
+			cspId.put("value", shnHistoricalDataDTO.getHdCspId());
+			dataValues.put(cspId);
+			
+			JSONObject hdCustomerId = new JSONObject();
+			hdCustomerId.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Customer_id"));
+			hdCustomerId.put("value", shnHistoricalDataDTO.getHdCustomer_id());
+			dataValues.put(hdCustomerId);
+			
+			JSONObject customerName = new JSONObject();
+			customerName.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Customer_name"));
+			customerName.put("value", shnHistoricalDataDTO.getHdCustomer_name());
+			dataValues.put(customerName);
+			
+			JSONObject hdDay = new JSONObject();
+			hdDay.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Day"));
+			hdDay.put("value", shnHistoricalDataDTO.getHdDay());
+			dataValues.put(hdDay);
+			
+			JSONObject hdDtk = new JSONObject();
+			hdDtk.put("dataElement", DHISMapper.historicalDataMapper.get("HD-DTK"));
+			hdDtk.put("value", shnHistoricalDataDTO.getHdDtk());
+			dataValues.put(hdDtk);
+			
+			JSONObject hdIdNo = new JSONObject();
+			hdIdNo.put("dataElement", DHISMapper.historicalDataMapper.get("HD-idno"));
+			hdIdNo.put("value", shnHistoricalDataDTO.getHdidno());
+			dataValues.put(hdIdNo);
+			
+			JSONObject kkNo = new JSONObject();
+			kkNo.put("dataElement", DHISMapper.historicalDataMapper.get("HD-kkno"));
+			kkNo.put("value", shnHistoricalDataDTO.getHdkkno());
+			dataValues.put(kkNo);
+			
+			JSONObject hdMobileNo = new JSONObject();
+			hdMobileNo.put("dataElement", DHISMapper.historicalDataMapper.get("HD-MoblieNo"));
+			hdMobileNo.put("value", shnHistoricalDataDTO.getHdMoblieno());
+			dataValues.put(hdMobileNo);
+			
+			JSONObject hdMonth = new JSONObject();
+			hdMonth.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Month"));
+			hdMonth.put("value", shnHistoricalDataDTO.getHdMonth());
+			dataValues.put(hdMonth);
+			
+			JSONObject hdNgoId = new JSONObject();
+			hdNgoId.put("dataElement", DHISMapper.historicalDataMapper.get("HD-NGOId"));
+			hdNgoId.put("value", shnHistoricalDataDTO.getHdNgoid());
+			dataValues.put(hdNgoId);
+			
+			JSONObject hdPtype = new JSONObject();
+			cspId.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Ptype"));
+			cspId.put("value", shnHistoricalDataDTO.getHdPtype());
+			dataValues.put(hdPtype);
+			
+			JSONObject hdQuantity = new JSONObject();
+			hdQuantity.put("dataElement", DHISMapper.historicalDataMapper.get("HD-QTY"));
+			hdQuantity.put("value", shnHistoricalDataDTO.getHdQty());
+			dataValues.put(hdQuantity);
+			
+			JSONObject hdSateliteId = new JSONObject();
+			hdSateliteId.put("dataElement", DHISMapper.historicalDataMapper.get("HD-SatelliteId"));
+			hdSateliteId.put("value", shnHistoricalDataDTO.getHdSatelliteId());
+			dataValues.put(hdSateliteId);
+			
+			JSONObject HdServiceCode = new JSONObject();
+			HdServiceCode.put("dataElement", DHISMapper.historicalDataMapper.get("HD-ServiceCode"));
+			HdServiceCode.put("value", shnHistoricalDataDTO.getHdServiceCode());
+			dataValues.put(HdServiceCode);
+			
+			JSONObject sessionHd = new JSONObject();
+			sessionHd.put("dataElement", DHISMapper.historicalDataMapper.get("HD-session"));
+			sessionHd.put("value", shnHistoricalDataDTO.getHdsession());
+			dataValues.put(sessionHd);
+			
+			JSONObject sex = new JSONObject();
+			sessionHd.put("dataElement", DHISMapper.historicalDataMapper.get("HD-sex"));
+			sessionHd.put("value", shnHistoricalDataDTO.getHdsex());
+			dataValues.put(sex);
+			
+			JSONObject hdTaka = new JSONObject();
+			hdTaka.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Taka"));
+			hdTaka.put("value", shnHistoricalDataDTO.getHdTaka());
+			dataValues.put(hdTaka);
+			
+			JSONObject teamId = new JSONObject();
+			teamId.put("dataElement", DHISMapper.historicalDataMapper.get("HD-teamId"));
+			teamId.put("value", shnHistoricalDataDTO.getHdteamId());
+			dataValues.put(teamId);
+			
+			JSONObject voucherNo = new JSONObject();
+			voucherNo.put("dataElement", DHISMapper.historicalDataMapper.get("HD-voucherno"));
+			voucherNo.put("value", shnHistoricalDataDTO.getHdvoucherno());
+			dataValues.put(voucherNo);
+			
+			JSONObject wtq = new JSONObject();
+			wtq.put("dataElement", DHISMapper.historicalDataMapper.get("HD-WtQ"));
+			wtq.put("value", shnHistoricalDataDTO.getHdWtq());
+			dataValues.put(wtq);
+			
+			JSONObject hdYear = new JSONObject();
+			hdYear.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Year"));
+			hdYear.put("value", shnHistoricalDataDTO.getHdYear());
+			dataValues.put(hdYear);
+			
+			
+			
+			event.put("dataValues", dataValues);
+			
+			return event;
+			
+		}
 }

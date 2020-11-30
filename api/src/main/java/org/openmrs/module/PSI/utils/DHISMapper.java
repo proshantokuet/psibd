@@ -104,4 +104,39 @@ public class DHISMapper {
 		dateMapper.put("RegistrationDate", "");
 	}
 	
+	public static final Map<String, String> historicalDataMapper = new HashMap<String, String>();
+	static {
+		historicalDataMapper.put("program", "xCSBjHIx2PH");
+		historicalDataMapper.put("HD-Adolescent", "RSOg2EReloc");
+		historicalDataMapper.put("HD-Age_day", "mhL8AhExWBM");
+		historicalDataMapper.put("HD-Age_month", "x57unwS748X");
+		historicalDataMapper.put("HD-Age_year", "jnlQ04ITipO");
+		historicalDataMapper.put("HD-Bkno", "bNbJJnlQ1y4");
+		historicalDataMapper.put("HD-Card", "v42sy4tiLrX");
+		historicalDataMapper.put("HD-ClinicId", "LbLoXkGgYTi");// newly added
+		historicalDataMapper.put("HD-compId", "xMwt55z6WDv"); // newly added
+		historicalDataMapper.put("HD-comp_id", "Gy4CqhaqVmH");
+		historicalDataMapper.put("HD-CSPID", "esZJi6o7al3");
+		historicalDataMapper.put("HD-Customer_id", "BLbpLZ6iPA1");
+		historicalDataMapper.put("HD-Customer_name", "rPuFgTml2jI");
+		historicalDataMapper.put("HD-Day", "N9gaEdO2Dee");
+		historicalDataMapper.put("HD-DTK", "kNdZKuFCil1");
+		historicalDataMapper.put("HD-idno", "JkoTUEsGV06");
+		historicalDataMapper.put("HD-kkno", "OeuGspPakcb");
+		historicalDataMapper.put("HD-MoblieNo", "c6X0MyzchrR");
+		historicalDataMapper.put("HD-Month", "OK0zTD3MxUa");
+		historicalDataMapper.put("HD-NGOId", "THBKbeFFeAO");
+		historicalDataMapper.put("HD-Ptype", "san642Fj24b");
+		historicalDataMapper.put("HD-QTY", "d1xRTZhOZkR"); // newly added
+		historicalDataMapper.put("HD-SatelliteId", "QP0aDk0peRH"); // newly added
+		historicalDataMapper.put("HD-ServiceCode", "VlsYK1ehjix");
+		historicalDataMapper.put("HD-session", "kNUb0Cdnk2J");
+		historicalDataMapper.put("HD-sex", "bhPWMR8FHNq");
+		historicalDataMapper.put("HD-Taka", "tkG5R1MlRY4");
+		historicalDataMapper.put("HD-teamId", "hUOP0StDyef");
+		historicalDataMapper.put("HD-voucherno", "bEWdNURznGS");
+		historicalDataMapper.put("HD-WtQ", "wOP0JnWPaJl");
+		historicalDataMapper.put("HD-Year", "ACKxZ8Dmq8k");
+	}
+	
 }

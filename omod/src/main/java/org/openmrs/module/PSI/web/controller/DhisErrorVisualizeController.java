@@ -107,4 +107,13 @@ public class DhisErrorVisualizeController {
 		model.addAttribute("sync_failed", splitAggVal[2]);	
 		model.addAttribute("transferredServiceContact", splitAggVal[1]);
 	}
+	
+	@RequestMapping(value = "/module/PSI/dhis-data-upload", method = RequestMethod.GET)
+	public void dhisHistoricalDataUpload(HttpServletRequest request, HttpSession session, Model model) {
+		
+		model.addAttribute("hasDashboardPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+		model.addAttribute("hasClinicPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+	}
 }

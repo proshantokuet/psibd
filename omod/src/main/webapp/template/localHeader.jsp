@@ -59,6 +59,14 @@
                 code="PSI.errorVisualize" /></a>
     </li>
     </c:if>
+    <c:if test="${hasClinicPermission}">
+    <li
+        <c:if test='<%= request.getRequestURI().contains("/dhis-data-upload") %>'>class="active"</c:if>>
+        <a
+        href="${pageContext.request.contextPath}/module/PSI/dhis-data-upload.form"><spring:message
+                code="PSI.dhisDataUpload" /></a>
+    </li>
+    </c:if>
 	<%-- <li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicServiceList") %>'>class="active"</c:if>>
 		<a
