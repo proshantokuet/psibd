@@ -430,12 +430,11 @@ public class DHISDataConverter {
 		
 	}
 	
-	public static JSONObject toConvertDhisHistoricalData(SHNHistoricalDataDTO shnHistoricalDataDTO)
+	public static JSONObject toConvertDhisHistoricalData(SHNHistoricalDataDTO shnHistoricalDataDTO, String orgUnit)
 		    throws JSONException {
 			JSONObject event = new JSONObject();
-
-			
-			event.put("orgUnit", "oIzIrO0I5qu");
+			//event.put("orgUnit", "oIzIrO0I5qu");
+			event.put("orgUnit", orgUnit);
 			event.put("program", DHISMapper.historicalDataMapper.get("program"));
 			event.put("status", "COMPLETED");
 			Date date = Calendar.getInstance().getTime();
@@ -542,8 +541,8 @@ public class DHISDataConverter {
 			dataValues.put(hdNgoId);
 			
 			JSONObject hdPtype = new JSONObject();
-			cspId.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Ptype"));
-			cspId.put("value", shnHistoricalDataDTO.getHdPtype());
+			hdPtype.put("dataElement", DHISMapper.historicalDataMapper.get("HD-Ptype"));
+			hdPtype.put("value", shnHistoricalDataDTO.getHdPtype());
 			dataValues.put(hdPtype);
 			
 			JSONObject hdQuantity = new JSONObject();
@@ -567,8 +566,8 @@ public class DHISDataConverter {
 			dataValues.put(sessionHd);
 			
 			JSONObject sex = new JSONObject();
-			sessionHd.put("dataElement", DHISMapper.historicalDataMapper.get("HD-sex"));
-			sessionHd.put("value", shnHistoricalDataDTO.getHdsex());
+			sex.put("dataElement", DHISMapper.historicalDataMapper.get("HD-sex"));
+			sex.put("value", shnHistoricalDataDTO.getHdsex());
 			dataValues.put(sex);
 			
 			JSONObject hdTaka = new JSONObject();

@@ -54,7 +54,8 @@
 	            
 	            </div>
 	            <div style="padding-top: 5px;">
-	            <a class="btn btn-primary" onclick="syncClinicFromGlobal('${ clinic.clinicId }')">Sync</a>
+	            <%-- <a class="btn btn-primary" onclick="syncClinicFromGlobal('${ clinic.clinicId }')">Sync</a> --%>
+	            <a class="btn btn-primary" href="<c:url value="/module/PSI/dhis-data-upload.form?id=${clinic.cid}"/>">Data Upload Dhis2</a>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a>
 	            </div>
 	             

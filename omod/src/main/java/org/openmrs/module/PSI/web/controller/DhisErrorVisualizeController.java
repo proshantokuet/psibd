@@ -109,8 +109,10 @@ public class DhisErrorVisualizeController {
 	}
 	
 	@RequestMapping(value = "/module/PSI/dhis-data-upload", method = RequestMethod.GET)
-	public void dhisHistoricalDataUpload(HttpServletRequest request, HttpSession session, Model model) {
-		
+	public void dhisHistoricalDataUpload(HttpServletRequest request, HttpSession session, Model model, @RequestParam int id) {
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+		model.addAttribute("psiClinicManagement", psiClinicManagement);
+		model.addAttribute("id", id);
 		model.addAttribute("hasDashboardPermission",
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
 		model.addAttribute("hasClinicPermission",

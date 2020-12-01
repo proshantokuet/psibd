@@ -6,13 +6,12 @@
     <!-- default header name is X-CSRF-TOKEN -->
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <openmrs:require privilege="dashboard" otherwise="/login.htm" />
-
+<c:url var="cancelUrl" value="/module/PSI/PSIClinicList.form?id=${id}" />
 
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
-    	    
-        	<p>Dhis2 Historical Data Upload</p>
+        	<p>Dhis2 Historical Data Upload for ${psiClinicManagement.name } (${psiClinicManagement.clinicId }) </p>
         	
        	</div>
 		<div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
@@ -30,9 +29,9 @@
 						
                   	</div>                  	
              	</div>
-                	
+                	<input type="hidden" name="id" value="${id}" />  
           	</div>
-          	<button type="submit" class="btnSubmit">Submit</button>
+          	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Back</a>
       	</div>
       	</form>
    	</div>
@@ -47,7 +46,7 @@ $("#productForm").submit(function(event) {
 			
 			var formData = new FormData();
 			formData.append('file', $('#file')[0].files[0]);
-			//formData.append('id', $('input[name=id]').val());
+			formData.append('id', $('input[name=id]').val());
 			
 			event.preventDefault();			
 			$.ajax({
@@ -58,7 +57,7 @@ $("#productForm").submit(function(event) {
 		        dataType : 'json',
 		        processData: false,
 		        contentType: false,
-				timeout : 100000,
+				timeout : 10000000,
 				beforeSend: function(xhr) {				    
 					 xhr.setRequestHeader(header, token);
 				},

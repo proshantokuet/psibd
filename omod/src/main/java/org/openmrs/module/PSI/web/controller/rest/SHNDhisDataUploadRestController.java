@@ -7,15 +7,23 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.PSIClinicManagement;
+import org.openmrs.module.PSI.PSIClinicUser;
+import org.openmrs.module.PSI.api.PSIClinicManagementService;
+import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.SHNHistoricalDataDTO;
+import org.openmrs.module.PSI.utils.PSIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,15 +42,20 @@ public class SHNDhisDataUploadRestController {
 	
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
+	
 	protected final Log log = LogFactory.getLog(getClass());
+	
+	private final String DHIS2BASEURL = "http://192.168.19.149";
 
+	private final String EVENTURL = DHIS2BASEURL + "/api/events";
 	
 	@SuppressWarnings("resource")
 	@RequestMapping(value = "/historical-data", method = RequestMethod.POST)
 	public ResponseEntity<String> uploadProduct(@RequestParam MultipartFile file, HttpServletRequest request,
-	                                                  ModelMap model)
+	                                                  ModelMap model,@RequestParam(required = false) int id)
 	    throws Exception {
-		
+		PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findById(id);
+		String clinicOrgUnit = psiClinicManagement.getDhisId();
 		JSONObject historicalJsonData = null;
 		String msg = "";
 		String failedMessage = "";
@@ -268,26 +281,94 @@ public class SHNDhisDataUploadRestController {
 					}
 					shnHistoricalDataUpload.setHdDtk(DTK);
 					
-					historicalJsonData = DHISDataConverter.toConvertDhisHistoricalData(shnHistoricalDataUpload);
-					
-					
-					
+					historicalJsonData = DHISDataConverter.toConvertDhisHistoricalData(shnHistoricalDataUpload, clinicOrgUnit);
+					JSONObject eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", historicalJsonData, EVENTURL);
+					int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
+					//log.info("statusCode:" + statusCode + "" + eventResponse);
+					if (statusCode == 200) {
+						JSONObject successResponse = eventResponse.getJSONObject("response");
+						log.error("successResponse" + successResponse.toString());
+						if(successResponse.has("reference")) {
+							log.error("successResponse has reference" + successResponse.toString());
+							String importStatus = successResponse.getString("status");
+							if (importStatus.equalsIgnoreCase("SUCCESS")) {
+								log.error("response has SUCCESS" + importStatus);
+								String referenceId = successResponse.getString("reference");
+							}
+							else {
+								log.error("response has not SUCCESS" + importStatus);
+								msg = "Dhis2 returns empty import summaries without reference id" + ", Got an error at column : " + (index + 1) + ". ";
+								break;
+							}
+						}
+						else {
+							log.error("Coudnot find reference in response" + successResponse.toString());
+							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+							if (importSummaries.length() != 0) {
+								JSONObject importSummary = importSummaries.getJSONObject(0);
+								String referenceId = importSummary.getString("reference");
+							} else {
+								String errorDetails = errorMessageCreation(eventResponse);
+								msg = errorDetails + ", Got an error at column : " + (index + 1) + ". ";
+								break;
+							}
+						}
+					}
+					else {
+						String errorDetails = errorMessageCreation(eventResponse);
+						msg = errorDetails + ", Got an error at column : " + (index + 1) + ". ";
+						break;
+					}
 				}
+				
 				index++;
 			}
 			//msg = "Total successfully product uploaded: " + (index - 1);
-			msg = historicalJsonData.toString();
+			msg = msg + " Total successfully Data uploaded: " + (index - 1);
 			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			failedMessage = "failed to process file because : " + e;
+			failedMessage = "failed to process file because : " + e.getMessage().toString();
 			return new ResponseEntity<>(new Gson().toJson(msg + ", and  got error at column : " + (index + 1) + " due to "
 			        + failedMessage), HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
 		
+	}
+	
+	
+	private String errorMessageCreation(JSONObject responsefull) {
+		JSONObject response = new JSONObject();
+		String errorMessage = "";
+		try {
+			 response = responsefull.getJSONObject("response");
+		} catch (Exception e) {
+			errorMessage = e.toString();
+		}
+		
+		if (response.has("importSummaries")) {
+			try {
+				JSONArray importSummaries = response.getJSONArray("importSummaries");
+					JSONObject importsObject = importSummaries.getJSONObject(0);
+					if (importsObject.has("conflicts")) {
+						JSONArray conflictsArray = importsObject.getJSONArray("conflicts");
+						JSONObject conflictsObject = conflictsArray.getJSONObject(0);
+						String httpStatusCode = responsefull.getString("httpStatusCode");
+						errorMessage = "Http Status Code : " + httpStatusCode + " Message: " + conflictsObject.getString("value");
+					}
+					else {
+						if(importsObject.has("description")) {
+							errorMessage = importsObject.getString("description");
+						}
+					}
+			} catch (Exception e) {
+				errorMessage = e.getMessage();
+			}
+
+		}
+		return errorMessage;
 	}
 
 }
