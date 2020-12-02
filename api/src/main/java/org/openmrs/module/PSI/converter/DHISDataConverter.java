@@ -448,7 +448,9 @@ public class DHISDataConverter {
 		 
 		LocalDate moneyReceiptLocalDate = LocalDate.of(yearMoney,monthMoney, dayMoney);  //Birth date
 		Period period = Period.between(birthday, moneyReceiptLocalDate);
-		ageMoneyReceipt.put("value", Integer.toString(period.getYears()));
+		String ageStringFormat = Integer.toString(period.getYears()) + " Y " + Integer.toString(period.getMonths()) + " M " +  Integer.toString(period.getDays()) + " D";
+		//ageMoneyReceipt.put("value", Integer.toString(period.getYears()));
+		ageMoneyReceipt.put("value", ageStringFormat);
 		dataValues.put(ageMoneyReceipt);
 		
 		return event;
