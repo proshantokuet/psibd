@@ -2,6 +2,8 @@ package org.openmrs.module.PSI.converter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -268,6 +270,7 @@ public class DHISDataConverter {
 		String getServicePoint = psiMoneyReceipt.getServicePoint();
 		String getSateliteClinicId = psiMoneyReceipt.getSateliteClinicId();
 		Date getServiceDate = psiMoneyReceipt.getMoneyReceiptDate();
+		Date birthDate = psiMoneyReceipt.getDob();
 		String getTeamNo = psiMoneyReceipt.getTeamNo();
 		String getSlipNo = psiMoneyReceipt.getSlipNo();
 		String getreferenceId = psiMoneyReceipt.getReferenceId();
@@ -425,6 +428,28 @@ public class DHISDataConverter {
 		netPayableAmount.put("value", psiServiceProvision.getNetPayable());
 		dataValues.put(netPayableAmount);
 		event.put("dataValues", dataValues);
+		
+		JSONObject ageMoneyReceipt = new JSONObject();
+		ageMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("age"));
+		
+		 Calendar cal = Calendar.getInstance();
+		 cal.setTime(birthDate);
+		 int year = cal.get(Calendar.YEAR);
+		 int month = cal.get(Calendar.MONTH);
+		 int day = cal.get(Calendar.DAY_OF_MONTH);
+		 
+		 LocalDate birthday = LocalDate.of(year,month, day);  //Birth date
+		
+		 Calendar calMoneyReceipt = Calendar.getInstance();
+		 calMoneyReceipt.setTime(getServiceDate);
+		 int yearMoney = calMoneyReceipt.get(Calendar.YEAR);
+		 int monthMoney = calMoneyReceipt.get(Calendar.MONTH);
+		 int dayMoney = calMoneyReceipt.get(Calendar.DAY_OF_MONTH);
+		 
+		LocalDate moneyReceiptLocalDate = LocalDate.of(yearMoney,monthMoney, dayMoney);  //Birth date
+		Period period = Period.between(birthday, moneyReceiptLocalDate);
+		ageMoneyReceipt.put("value", Integer.toString(period.getYears()));
+		dataValues.put(ageMoneyReceipt);
 		
 		return event;
 		
