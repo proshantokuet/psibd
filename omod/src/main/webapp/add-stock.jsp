@@ -92,7 +92,7 @@
 					</div>
 					<div class="col-md-2 form-group">
 						<div style="padding-top: 30px;">
-						<button type="button" onclick="appendRowInTable()" class="btn btn-info" value="confirm">Add Product</button>
+						<button type="button" onclick="appendRowInTable()" class="btn btn-info" value="confirm">Add Stock</button>
 						</div>
 					</div>
 				</div>

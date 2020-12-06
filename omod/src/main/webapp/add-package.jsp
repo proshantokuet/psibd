@@ -45,7 +45,7 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-3 form-group">
-					<label for="invoiceNo">3. Product :</label><span class="text-danger"> *</span>
+					<label for="invoiceNo">3. Product :</label>
 					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addproductmodal">
 					  Add Product
 					</button>
@@ -53,7 +53,7 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-3 form-group">
-					<label for="invoiceNo">4. Service :</label><span class="text-danger"> *</span>
+					<label for="invoiceNo">4. Service :</label>
 					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addservicemodal">
 					  Add Service
 					</button>
