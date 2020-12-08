@@ -60,6 +60,7 @@
 		shnrefundedmoneyreceiptdetails.hbm.xml
 		shnrefundedmoneyreceiptpaymentlog.hbm.xml
 		shnfollowupaction.hbm.xml
+		shndhisindicatordetails.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

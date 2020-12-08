@@ -472,7 +472,7 @@ function saveFollowUpActionData() {
 		}
 	}
 	if(response == "0") {
-		result = "Didn't Response";
+		result = "Didn't Respond";
 		isresponded = false;
 	}
 	$jq("#resultselectionvalidation").html("");

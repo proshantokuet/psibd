@@ -759,6 +759,13 @@
 			<column name="date_changed" type="datetime" />
 		</createTable>
 	</changeSet>
+	<changeSet id="dhis_encounter_exception-1.0.1" author="tanvir">
+		<sql>
+			ALTER TABLE dhis_encounter_exception CHANGE post_Json post_Json mediumtext;
+			ALTER TABLE dhis_encounter_exception CHANGE response response mediumtext; 
+			ALTER TABLE dhis_encounter_exception CHANGE error error mediumtext;  
+		</sql>
+	</changeSet>
 	<changeSet id="shnstock-1.0.0" author="tanvir">
 		<createTable tableName="shn_stock">
 			<column name="stkid" type="int(11)" autoIncrement="true">
@@ -1165,5 +1172,25 @@
 	 	<addColumn tableName="shn_followup_action">
 			<column name="last_timestamp" type="datetime" />				
 		</addColumn>
-	 </changeSet>	 	  
+	 </changeSet>
+	 
+	<changeSet id="dhis_indicator_details-1.0.0" author="tanvir">
+		<createTable tableName="dhis_indicator_details">
+			<column name="indicator_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>	
+			
+			<column name="post_Json" type="mediumtext" />
+			<column name="response" type="mediumtext" />
+			<column name="url" type="varchar(255)" />
+			<column name="error" type="mediumtext" />
+			<column name="indicator_type" type="varchar(200)" />
+			<column name="reference_id" type="varchar(255)" />
+			<column name="status" type="int(11)" />	
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>		
+			<column name="date_changed" type="datetime" />
+		</createTable>
+	</changeSet>	 	  
 </databaseChangeLog>
