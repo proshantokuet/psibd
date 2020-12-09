@@ -20,6 +20,7 @@ import org.openmrs.module.PSI.converter.SHNPackageConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.SHNPackageDTO;
 import org.openmrs.module.PSI.dto.SHNPackageDetailsDTO;
+import org.openmrs.module.PSI.dto.SHNPackageReportDTO;
 import org.openmrs.module.PSI.utils.DateTimeTypeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -130,6 +131,50 @@ public class SHNPackageRestController {
 		
 		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
 		
+	}
+	
+	@RequestMapping(value = "/getStockStatusFromPackage/{clinicId}/{quantity}/{packageId}", method = RequestMethod.GET)
+	public ResponseEntity<String> findUserForSync(@PathVariable int clinicId,@PathVariable int quantity,@PathVariable int packageId) throws Exception {
+		JSONObject packageJsonObject = new  JSONObject();
+		boolean flag = false;
+		try {
+			List<SHNPackageReportDTO> shnPackageDto = Context.getService(SHNPackageService.class).getstockStatusFromPackage(clinicId, quantity, packageId);
+			if(shnPackageDto.size() > 0) {
+				for (SHNPackageReportDTO shnPackageReportDTO : shnPackageDto) {
+					if(shnPackageReportDTO.getIsStockExceed() == 0) {
+						flag = true;
+					}
+				}
+				packageJsonObject.put("exceedStock", flag);
+			}
+		}
+		catch (Exception e) {
+			packageJsonObject.put("exceedStock", true);
+			packageJsonObject.put("message", e.getMessage());
+			return new ResponseEntity<String>(packageJsonObject.toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>(packageJsonObject.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getItemsFromPackage/{packageId}", method = RequestMethod.GET)
+	public ResponseEntity<String> getItemsForPackage(@PathVariable int packageId) throws Exception {
+		JSONArray shnPackageArray = new JSONArray();
+		try {
+			List<SHNPackageReportDTO> shnPackageDto = Context.getService(SHNPackageService.class).getPackageByPackageIdForEdit(packageId);
+			if(shnPackageDto.size() > 0) {
+				for (SHNPackageReportDTO shnPackageReportDTO : shnPackageDto) {
+					JSONObject packageJsonObject = new JSONObject();
+					packageJsonObject.put("itemCode", shnPackageReportDTO.getItemCode());
+					packageJsonObject.put("itemName", shnPackageReportDTO.getItemName());
+					packageJsonObject.put("itemId", shnPackageReportDTO.getItemId());
+					shnPackageArray.put(packageJsonObject);
+				}
+			}
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(shnPackageArray.toString(), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>(shnPackageArray.toString(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/getPackageForSync/{id}", method = RequestMethod.GET)

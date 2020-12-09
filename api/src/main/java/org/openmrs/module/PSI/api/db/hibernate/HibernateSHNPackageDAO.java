@@ -212,6 +212,32 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SHNPackageReportDTO> getstockStatusFromPackage(int clinicId,int quantity, int packageId) {
+		List<SHNPackageReportDTO> packageList = new ArrayList<SHNPackageReportDTO>();
+		String packageHql = "CALL getstockStatusFromPackage("+clinicId+","+quantity+","+packageId+")";					
+		log.error("Query" + packageHql);
+		try {
+			packageList = sessionFactory.getCurrentSession().createSQLQuery(packageHql)
+
+						 .addScalar("packageCode",StandardBasicTypes.STRING)
+						 .addScalar("itemName",StandardBasicTypes.STRING)
+						 .addScalar("itemCode",StandardBasicTypes.STRING)
+						 .addScalar("itemId",StandardBasicTypes.INTEGER)
+						 .addScalar("quantity",StandardBasicTypes.INTEGER)
+						 .addScalar("isStockExceed",StandardBasicTypes.LONG)
+						 .setResultTransformer(new AliasToBeanResultTransformer(SHNPackageReportDTO.class)).list();
+			log.error("Query size" + packageList.size());
+
+			return packageList;
+			
+		} catch (Exception e) {
+			log.error(e.toString());
+			return packageList;
+		}
+	}
+
 	
 	
 }

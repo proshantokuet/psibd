@@ -19,7 +19,7 @@
 				code="PSI.dahboard" /></a>
 	</li>	
 	</c:if>
-	<c:if test="${hasDashboardPermission}">			
+	<c:if test="${hasFollowUpPermission}">			
 	<li
 		<c:if test='<%= request.getRequestURI().contains("/follow-Up-dashboard") %>'>class="active"</c:if>>
 		<a

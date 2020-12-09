@@ -35,5 +35,5 @@ public interface SHNPackageDAO {
 	
 	public List<SHNPackageReportDTO> getPackageByPackageIdForEdit(int packageId);
 
-
+	public List<SHNPackageReportDTO> getstockStatusFromPackage(int clinicId, int quantity, int packageId);
 }

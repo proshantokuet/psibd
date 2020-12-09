@@ -55,10 +55,8 @@ public class SHNFollowUpController {
 		} else {
 			
 		}
-		model.addAttribute("hasDashboardPermission",
-		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
-		model.addAttribute("hasClinicPermission",
-		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		model.addAttribute("hasFollowUpPermission",
+		    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.followUp));
 	}
 	
 	@RequestMapping(value = "/module/PSI/follow-Up-report", method = RequestMethod.GET)

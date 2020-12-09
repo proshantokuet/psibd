@@ -130,7 +130,7 @@ class HibernateSHNDhisObsElementDAO implements SHNDhisObsElementDAO {
 	@Override
 	public SHNDhisIndicatorDetails getDhisIndicatorByType(String indicatorType) {
 		// TODO Auto-generated method stub
-		List<SHNDhisIndicatorDetails> lists = sessionFactory.getCurrentSession().createQuery("from SHNFollowUpAction where indicatorType = :id")
+		List<SHNDhisIndicatorDetails> lists = sessionFactory.getCurrentSession().createQuery("from SHNDhisIndicatorDetails where indicatorType = :id")
 		        .setString("id", indicatorType).list();
 		if (lists.size() != 0) {
 			return lists.get(0);

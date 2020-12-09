@@ -22,6 +22,7 @@ import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNDhisEncounterException;
+import org.openmrs.module.PSI.SHNDhisIndicatorDetails;
 import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 import org.openmrs.module.PSI.SHNStock;
@@ -40,6 +41,7 @@ import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
 import org.openmrs.module.PSI.converter.SHNStockAdjustDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
+import org.openmrs.module.PSI.dto.ShnIndicatorDetailsDTO;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
 import org.openmrs.module.PSI.utils.PSIConstants;
@@ -63,9 +65,9 @@ public class DHISListener {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
+	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	//private final String DHIS2BASEURL = "http://192.168.19.149";
+	private final String DHIS2BASEURL = "http://192.168.19.149";
 	
 	//test server psi
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
@@ -96,14 +98,14 @@ public class DHISListener {
 		
 		JSONObject getResponse = null;
 		boolean status = true;
-/*		try {
+		try {
 			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
 			
 		}
 		catch (Exception e) {
 			
 			status = false;
-		}*/
+		}
 		if (status) {
 			
 			try {
@@ -144,13 +146,19 @@ public class DHISListener {
 				
 			}
 			try {
-				sendStockDataInGLobalServer();
+				//sendIndicatorDataToDhis();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				sendAdjustStockDataInGLobalServer();
+				//sendStockDataInGLobalServer();
+			}
+			catch (Exception e) {
+				
+			}
+			try {
+				//sendAdjustStockDataInGLobalServer();
 			}
 			catch (Exception e) {
 				
@@ -1457,7 +1465,137 @@ public class DHISListener {
 
 			
 		}
+		 
+	}
+	
+	public void sendIndicatorDataToDhis() {
 		
+		SHNDhisIndicatorDetails shnDhisIndicatorDetails = null;
+		
+		try {
+			int calculateCountOfFpConraceptiveMethod = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpConraceptiveMethod();
+			log.error("calculateCountOfFpConraceptiveMethod" + calculateCountOfFpConraceptiveMethod);
+	
+			int calculateCountOfFphypertensionAndDiabetic = Context.getService(SHNDhisObsElementService.class).calculateCountOfFphypertensionAndDiabetic();
+			log.error("calculateCountOfFphypertensionAndDiabetic" + calculateCountOfFphypertensionAndDiabetic);
+			
+			int calculateCountOfFpPermanentMethod = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpPermanentMethod();
+			log.error("calculateCountOfFpPermanentMethod" + calculateCountOfFpPermanentMethod);
+			
+			int calculateCountOfFpAncTakenAtleastOne = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpAncTakenAtleastOne();
+			log.error("calculateCountOfFpAncTakenAtleastOne" + calculateCountOfFpAncTakenAtleastOne);
+			
+			int calculatePercentageOfFp = Context.getService(SHNDhisObsElementService.class).calculatePercentageOfFp();
+			log.error("calculatePercentageOfFp" + calculatePercentageOfFp);
+			
+			int getCompletedAncFullCountFromMoneyReceipt = Context.getService(SHNDhisObsElementService.class).getCompletedAncFullCountFromMoneyReceipt();
+			log.error("getCompletedAncFullCountFromMoneyReceipt" + getCompletedAncFullCountFromMoneyReceipt);
+			
+			ShnIndicatorDetailsDTO shnIndicatorDetailsDTO = new ShnIndicatorDetailsDTO();
+			
+			shnIndicatorDetailsDTO.setFpContraceptiveMethod(calculateCountOfFpConraceptiveMethod);
+			shnIndicatorDetailsDTO.setFpHypertensionAndDiabetic(calculateCountOfFphypertensionAndDiabetic);
+			shnIndicatorDetailsDTO.setFpPermanentMethod(calculateCountOfFpPermanentMethod);
+			shnIndicatorDetailsDTO.setFpAncTakenAtleastOne(calculateCountOfFpAncTakenAtleastOne);
+			shnIndicatorDetailsDTO.setCalculatePercentageOfFp(calculatePercentageOfFp);
+			shnIndicatorDetailsDTO.setCalculateAncAllTakenFullCount(getCompletedAncFullCountFromMoneyReceipt);
+			
+			JSONObject indicatorData = DHISDataConverter.toConvertDhisIndicatorData(shnIndicatorDetailsDTO);
+			JSONObject eventResponse = new JSONObject();
+			shnDhisIndicatorDetails = Context.getService(SHNDhisObsElementService.class).getDhisIndicatorByType("INDICATOR");
+			if(shnDhisIndicatorDetails != null && !StringUtils.isBlank(shnDhisIndicatorDetails.getReferenceId())) {
+					String referenceUrl = EVENTURL + "/" + shnDhisIndicatorDetails.getReferenceId();
+					JSONObject referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
+					String status = referenceExist.getString("status");
+					if (!status.equalsIgnoreCase("ERROR")) {
+						eventResponse = psiapiServiceFactory.getAPIType("dhis2").update("", indicatorData, "", referenceUrl);
+					}
+					else {
+						eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", indicatorData, EVENTURL);
+					}
+			}
+			else{
+				eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", indicatorData, EVENTURL);
+			}
+	
+			int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
+			//log.info("statusCode:" + statusCode + "" + eventResponse);
+			if (statusCode == 200) {
+				JSONObject successResponse = eventResponse.getJSONObject("response");
+				log.error("successResponse" + successResponse.toString());
+				if(successResponse.has("reference")) {
+					log.error("successResponse has reference" + successResponse.toString());
+					String importStatus = successResponse.getString("status");
+					if (importStatus.equalsIgnoreCase("SUCCESS")) {
+						log.error("response has SUCCESS" + importStatus);
+						String referenceId = successResponse.getString("reference");
+						if(shnDhisIndicatorDetails == null) {
+							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
+						}
+						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.SUCCESSSTATUS,eventResponse.toString(),"",referenceId);
+					}
+					else {
+						log.error("response has not SUCCESS" + importStatus);
+						if(shnDhisIndicatorDetails == null) {
+							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
+						}
+						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.FAILEDSTATUS,eventResponse.toString(),"Dhis2 returns empty import summaries without reference id","");
+					}
+				}
+				else {
+					log.error("Coudnot find reference in response" + successResponse.toString());
+					JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+					if (importSummaries.length() != 0) {
+						JSONObject importSummary = importSummaries.getJSONObject(0);
+						String referenceId = importSummary.getString("reference");
+						if(shnDhisIndicatorDetails == null) {
+							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
+						}
+						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.SUCCESSSTATUS,eventResponse.toString(),"",referenceId);
+	
+					} else {
+						String errorDetails = errorMessageCreation(eventResponse);
+						if(shnDhisIndicatorDetails == null) {
+							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
+						}
+						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.FAILEDSTATUS,eventResponse.toString(),errorDetails,"");
+					}
+				}
+			}
+			else {
+				String errorDetails = errorMessageCreation(eventResponse);
+				if(shnDhisIndicatorDetails == null) {
+					shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
+				}
+				updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.FAILEDSTATUS,eventResponse.toString(),errorDetails,"");
+			}
+			
+		}
+		catch (Exception ex) {
+			if(shnDhisIndicatorDetails == null) {
+				shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
+			}
+			updateIndicatorDetailsStatus(shnDhisIndicatorDetails,"Internal Error Occured",EVENTURL,PSIConstants.FAILEDSTATUS,"Check Error Message for Details",ex.getMessage(),"");
+		}
+	}
+	
+	
+	private void updateIndicatorDetailsStatus(SHNDhisIndicatorDetails shnDhisIndicatorDetails,
+			String postJson,String url, int status,
+			String response, String error,String referenceId) {
+		Context.openSession();
+
+		shnDhisIndicatorDetails.setError(error);
+		shnDhisIndicatorDetails.setPostJson(postJson.toString());
+		shnDhisIndicatorDetails.setUrl(url);
+		shnDhisIndicatorDetails.setStatus(status);
+		shnDhisIndicatorDetails.setResponse(response.toString());
+		shnDhisIndicatorDetails.setDateCreated(new Date());
+		shnDhisIndicatorDetails.setIndicatorType("INDICATOR");
+		shnDhisIndicatorDetails.setReferenceId(referenceId);
+
+		Context.getService(SHNDhisObsElementService.class).saveOrupdate(shnDhisIndicatorDetails);
+		Context.clearSession();
 	}
 
 }

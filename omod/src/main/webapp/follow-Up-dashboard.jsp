@@ -3,7 +3,7 @@
 <%@ include file="template/localHeader.jsp"%>
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<openmrs:require privilege="dashboard" otherwise="/login.htm" />
+<openmrs:require privilege="Has access to follow-up dashboard" otherwise="/login.htm" />
 <style>
 .dataTables_wrapper .dt-buttons {
   float:none;  
@@ -249,7 +249,7 @@ $jq( function() {
   } );
 $jq( function() {
 	$jq("#followupstartDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
-	$jq("#followupendDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
+	$jq("#followupendDate").datepicker({ dateFormat: 'yy-mm-dd', minDate: new Date});
   } );
   
 $jq("#visitstartDate").on("change",function(){
@@ -262,8 +262,7 @@ $jq("#visitstartDate").on("change",function(){
 $jq("#followupstartDate").on("change",function(){
 	$jq("#followupendDate").datepicker(
 		'option',{
-			minDate: new Date($jq("#followupstartDate").val()),
-			maxDate: new Date()
+			minDate: new Date($jq("#followupstartDate").val())
 		});
 });
 $jq(document).ready( function () {

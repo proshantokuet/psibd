@@ -32,6 +32,8 @@ public class PSIConstants {
 	
 	public static final String Dashboard = "dashboard";
 	
+	public static final String followUp = "Has access to follow-up dashboard";
+	
 	public static final String ClinicList = "Clinic List";
 	
 	public static final String DefaultPassword = "Admin@AdminAdmin@123";

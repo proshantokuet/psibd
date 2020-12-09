@@ -36,7 +36,9 @@ public class SHNPackageReportDTO  {
 
 	private float unitPriceInPackage;
 
+	private long isStockExceed;
 
+	
 	public int getPackageId() {
 		return packageId;
 	}
@@ -171,6 +173,14 @@ public class SHNPackageReportDTO  {
 
 	public void setUnitPriceInPackage(float unitPriceInPackage) {
 		this.unitPriceInPackage = unitPriceInPackage;
+	}
+
+	public long getIsStockExceed() {
+		return isStockExceed;
+	}
+
+	public void setIsStockExceed(long isStockExceed) {
+		this.isStockExceed = isStockExceed;
 	}
 
 

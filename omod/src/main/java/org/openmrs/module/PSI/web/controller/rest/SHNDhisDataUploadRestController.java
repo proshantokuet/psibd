@@ -45,7 +45,9 @@ public class SHNDhisDataUploadRestController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149";
+	//private final String DHIS2BASEURL = "http://192.168.19.149";
+	
+	private final String DHIS2BASEURL = "http://10.100.11.2:5271";
 
 	private final String EVENTURL = DHIS2BASEURL + "/api/events";
 	

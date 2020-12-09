@@ -35,4 +35,6 @@ public interface SHNPackageService extends OpenmrsService {
 
 	public void deletePackageHavingNullPackageId();
 	
+	public List<SHNPackageReportDTO> getstockStatusFromPackage(int clinicId, int quantity, int packageId);
+	
 }

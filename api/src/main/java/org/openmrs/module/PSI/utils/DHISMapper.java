@@ -84,7 +84,7 @@ public class DHISMapper {
 		ServiceProvision.put("others", "otXoI3cMuJU"); // newly added
 		ServiceProvision.put("serviceUuid", "DGayB2UWV42");
 		ServiceProvision.put("eslipNo", "IchA74zTEDE");
-		ServiceProvision.put("age", "Po8XMVt2qlH");
+		ServiceProvision.put("age", "qbCQtRpciiR");
 	}
 	
 	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();
@@ -138,6 +138,18 @@ public class DHISMapper {
 		historicalDataMapper.put("HD-voucherno", "bEWdNURznGS");
 		historicalDataMapper.put("HD-WtQ", "wOP0JnWPaJl");
 		historicalDataMapper.put("HD-Year", "ACKxZ8Dmq8k");
+	}
+	
+	public static final Map<String, String> indicatorDataMapper = new HashMap<String, String>();
+	static {
+		indicatorDataMapper.put("program", "q2uZRqRc0UD");
+		indicatorDataMapper.put("fpContraceptiveMethod", "G24k0h6G8eP");
+		indicatorDataMapper.put("fpHypertensionAndDiabetic", "uaiGi7k8NJw");
+		indicatorDataMapper.put("fpPermanentMethod", "QPUJWEfTQnz");
+		indicatorDataMapper.put("calculateAncAllTakenFullCount", "CAr4amKsXnY");
+		indicatorDataMapper.put("fpAncTakenAtleastOne", "BaNcrsDMgWC");
+		indicatorDataMapper.put("calculatePercentageOfFp", "rrAourIs2NT");
+
 	}
 	
 }
