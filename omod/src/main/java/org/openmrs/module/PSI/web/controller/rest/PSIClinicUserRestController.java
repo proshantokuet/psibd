@@ -239,19 +239,30 @@ public class PSIClinicUserRestController extends MainResourceController {
 						findUser.setRoles(roles);
 						log.error("saving updated user" + findUser.getPerson().getPersonId());
 						findUser = Context.getService(UserService.class).saveUser(findUser);
-			
-						PSIClinicUser pSIClinicUser = new PSIClinicUser();
-						pSIClinicUser.setUserName(findUser.getUsername());
-						pSIClinicUser.setEmail(email);
-						pSIClinicUser.setMobile(mobile);
-						if (cuid != 0) {
-							pSIClinicUser.setCuid(cuid);
+						
+						PSIClinicUser pSIClinicUser = Context.getService(PSIClinicUserService.class).findById(cuid);
+						if(pSIClinicUser == null) {
+							pSIClinicUser = new PSIClinicUser();
+							pSIClinicUser.setUserName(user.getUsername());
+							pSIClinicUser.setEmail(email);
+							pSIClinicUser.setMobile(mobile);
+							pSIClinicUser.setDateCreated(new Date());
+							pSIClinicUser.setCreator(Context.getAuthenticatedUser());
+							pSIClinicUser.setUuid(UUID.randomUUID().toString());
+							log.error("saving psi_clinic" + pSIClinicUser.getCuid());
+							pSIClinicUser.setPsiClinicManagementId(Context.getService(PSIClinicManagementService.class).findById(
+							    clinicId));
+							log.error("getting psi_clinic management id" + pSIClinicUser.getPsiClinicManagementId());
+							PSIClinicUser afterUpdate = Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
+							Context.getService(PSIClinicUserService.class).updatePrimaryKey(cuid, afterUpdate.getCuid());
 						}
-						pSIClinicUser.setDateCreated(new Date());
-						pSIClinicUser.setCreator(Context.getAuthenticatedUser());
-						pSIClinicUser.setUuid(UUID.randomUUID().toString());
-						pSIClinicUser.setPsiClinicManagementId(Context.getService(PSIClinicManagementService.class).findById(clinicId));
-						Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
+						else {
+							pSIClinicUser.setUserName(findUser.getUsername());
+							pSIClinicUser.setEmail(email);
+							pSIClinicUser.setMobile(mobile);
+							pSIClinicUser.setPsiClinicManagementId(Context.getService(PSIClinicManagementService.class).findById(clinicId));
+							Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
+						}
 					}
 				  }
 				//}

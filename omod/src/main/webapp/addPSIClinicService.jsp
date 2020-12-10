@@ -80,14 +80,14 @@
               		
               		<div class="form-group">
                   	Unit Cost:
-                  		<form:input style="height: 39px;" path="unitCost" class="form-control" required="required" min="0"/>
+                  		<form:input type="number" style="height: 39px;" path="unitCost" class="form-control" required="required" min="0"/>
                    	 	
                   	</div> 
 
                   	
                   	<div class="form-group">
                   	Discount (%) for Poor:
-                  		<form:input style="height: 39px;" path="discountPoor" class="form-control" required="required" min="0"/>
+                  		<form:input type="number" style="height: 39px;" path="discountPoor" class="form-control" required="required" min="0" max="100"/>
                    	 	
                   	</div>           		
                   	
@@ -96,14 +96,14 @@
               		
               		<div class="form-group">
                   	Discount (%) for PoP:
-                  		<form:input style="height: 39px;" path="discountPop" class="form-control" required="required" min="0"/>
+                  		<form:input type="number" style="height: 39px;" path="discountPop" class="form-control" required="required" min="0" max="100"/>
                    	 	
                   	</div> 
 
                   	
                   	<div class="form-group">
                   	Discount (%) for Able to Pay:
-                  		<form:input style="height: 39px;" path="discountAblePay" class="form-control" required="required" min="0"/>
+                  		<form:input type="number" style="height: 39px;" path="discountAblePay" class="form-control" required="required" min="0" max="100"/>
                    	 	
                   	</div>            		
                   	

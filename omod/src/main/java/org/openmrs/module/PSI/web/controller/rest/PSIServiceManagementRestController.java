@@ -244,19 +244,28 @@ public class PSIServiceManagementRestController extends MainResourceController {
 					float discountPop = 0;
 					
 					if (!StringUtils.isBlank(service[12])) {
-						discountPop = Float.parseFloat(service[12]);
+						discountPop = Math.abs(Float.parseFloat(service[12]));
+						if(discountPop > 100) {
+							discountPop = 100;
+						}
 					}
 					
 					float discountPoor = 0;
 					
 					if (!StringUtils.isBlank(service[13])) {
-						discountPoor = Float.parseFloat(service[13]);
+						discountPoor = Math.abs(Float.parseFloat(service[13]));
+						if(discountPoor > 100) {
+							discountPoor = 100;
+						}
 					}
 					
 					float discountAbleToPay = 0;
 					
 					if (!StringUtils.isBlank(service[14])) {
-						discountAbleToPay = Float.parseFloat(service[14]);
+						discountAbleToPay = Math.abs(Float.parseFloat(service[14]));
+						if(discountAbleToPay > 100) {
+							discountAbleToPay = 100;
+						}
 					}
 
 					
@@ -565,18 +574,27 @@ public class PSIServiceManagementRestController extends MainResourceController {
 					
 					if (!StringUtils.isBlank(service[6])) {
 						discountPop = Math.abs(Float.parseFloat(service[6]));
+						if(discountPop > 100) {
+							discountPop = 100;
+						}
 					}
 					psiServiceManagement.setDiscountPop(discountPop);
 					float discountPoor = 0;
 					
 					if (!StringUtils.isBlank(service[7])) {
 						discountPoor = Math.abs(Float.parseFloat(service[7]));
+						if(discountPoor > 100) {
+							discountPoor = 100;
+						}
 					}
 					psiServiceManagement.setDiscountPoor(discountPoor);
 					float discountAbleToPay = 0;
 					
 					if (!StringUtils.isBlank(service[8])) {
 						discountAbleToPay = Math.abs(Float.parseFloat(service[8]));
+						if(discountAbleToPay > 100) {
+							discountAbleToPay = 100;
+						}
 					}
 					psiServiceManagement.setDiscountAblePay(discountAbleToPay);
 					psiServiceManagement.setPsiClinicManagement(psiClinicManagement);
