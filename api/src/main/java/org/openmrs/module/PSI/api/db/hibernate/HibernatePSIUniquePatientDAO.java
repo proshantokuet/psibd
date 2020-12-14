@@ -9,6 +9,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
+import org.openmrs.Concept;
 import org.openmrs.module.PSI.AUHCDhisErrorVisualize;
 import org.openmrs.module.PSI.PSIClinicChild;
 import org.openmrs.module.PSI.PSIUniqueIdGenerator;
@@ -180,5 +181,13 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 		}catch(Exception e){
 			 return e.toString();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Concept> getconceptListGreaterthanCurrentConcept(int conceptId) {
+		List<Concept> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from Concept where conceptId > :conceptid order by conceptId ASC").setInteger("conceptid", conceptId).list();
+		return lists;
 	}
 }

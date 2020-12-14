@@ -2,6 +2,7 @@ package org.openmrs.module.PSI.api;
 
 import java.util.List;
 
+import org.openmrs.Concept;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.PSI.PSIClinicChild;
 import org.openmrs.module.PSI.SHNFormPdfDetails;
@@ -18,5 +19,7 @@ public interface PSIUniquePatientService  extends OpenmrsService {
 	public List <SHNFormPdfDetails> getbirthInformationByVisit(String patientUuid, String visitUuid);
 	
 	public String getLastProviderName(String visitUuid);
+	
+	public List<Concept> getconceptListGreaterthanCurrentConcept(int conceptId);
 	
 }
