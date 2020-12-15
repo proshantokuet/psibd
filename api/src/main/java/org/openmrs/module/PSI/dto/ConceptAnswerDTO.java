@@ -6,6 +6,8 @@ public class ConceptAnswerDTO {
 	
 	//private SHNConceptDTO answerConcept;
 	
+	private Integer conceptId;
+	
 	private Integer answerConceptId;
 	
 	private SHNConceptDrugDTO answerDrug;
@@ -52,5 +54,13 @@ public class ConceptAnswerDTO {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public Integer getConceptId() {
+		return conceptId;
+	}
+
+	public void setConceptId(Integer conceptId) {
+		this.conceptId = conceptId;
 	}
 }

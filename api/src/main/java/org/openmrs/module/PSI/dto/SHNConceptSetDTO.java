@@ -6,6 +6,8 @@ public class SHNConceptSetDTO {
 		
 	//private SHNConceptDTO conceptSet; // parent concept that uses this set
 	
+	private Integer conceptId;
+	
 	private Integer parentConceptSet;
 	
 	private Double sortWeight;
@@ -42,6 +44,14 @@ public class SHNConceptSetDTO {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public Integer getConceptId() {
+		return conceptId;
+	}
+
+	public void setConceptId(Integer conceptId) {
+		this.conceptId = conceptId;
 	}
 	
 }

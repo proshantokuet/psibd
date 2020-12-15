@@ -44,7 +44,7 @@ public class SHNConceptDataConverter {
 			conceptNameObject.putOpt("locale", conceptName.getLocale());
 			conceptNameObject.putOpt("conceptNameType", conceptName.getConceptNameType());
 			conceptNameObject.putOpt("localePreferred", conceptName.getLocalePreferred());
-			conceptNameObject.putOpt("voided", conceptName.getLocalePreferred());
+			conceptNameObject.putOpt("voided", conceptName.getVoided());
 			conceptNameObject.putOpt("uuid", conceptName.getUuid());
 			conceptNamesArray.put(conceptNameObject);
 		}
@@ -54,6 +54,7 @@ public class SHNConceptDataConverter {
 		for (ConceptAnswer conceptAnswer : conceptObejct.getAnswers()) {
 			JSONObject conceptAnswerObject = new JSONObject();
 			conceptAnswerObject.putOpt("conceptAnswerId", conceptAnswer.getConceptAnswerId());
+			conceptAnswerObject.putOpt("conceptId", conceptAnswer.getConcept().getConceptId());
 			conceptAnswerObject.putOpt("answerConceptId", conceptAnswer.getAnswerConcept().getConceptId());
 			conceptAnswerObject.putOpt("sortWeight", conceptAnswer.getSortWeight());
 			conceptAnswerObject.putOpt("uuid", conceptAnswer.getUuid());
@@ -77,6 +78,7 @@ public class SHNConceptDataConverter {
 		for (ConceptSet conceptSet : conceptObejct.getConceptSets()) {
 			JSONObject conceptSetObject = new JSONObject();
 			conceptSetObject.putOpt("conceptSetId", conceptSet.getConceptSetId());
+			conceptSetObject.putOpt("conceptId", conceptSet.getConcept().getConceptId());
 			conceptSetObject.putOpt("parentConceptSet", conceptSet.getConceptSet().getConceptId());
 			conceptSetObject.putOpt("sortWeight", conceptSet.getSortWeight());
 			conceptSetObject.putOpt("uuid", conceptSet.getUuid());
