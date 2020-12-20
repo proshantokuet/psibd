@@ -39,7 +39,7 @@ public class SHNConceptDataConverter {
 		JSONArray conceptNamesArray = new JSONArray();
 		for (ConceptName conceptName : conceptObejct.getNames()) {
 			JSONObject conceptNameObject = new JSONObject();
-			conceptNameObject.putOpt("conceptNameId", conceptName.getConceptNameId());
+			//conceptNameObject.putOpt("conceptNameId", conceptName.getConceptNameId());
 			conceptNameObject.putOpt("name", conceptName.getName());
 			conceptNameObject.putOpt("locale", conceptName.getLocale());
 			conceptNameObject.putOpt("conceptNameType", conceptName.getConceptNameType());

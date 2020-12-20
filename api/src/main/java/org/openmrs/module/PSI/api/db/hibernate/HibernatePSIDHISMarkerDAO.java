@@ -93,4 +93,24 @@ public class HibernatePSIDHISMarkerDAO implements PSIDHISMarkerDAO {
 		}
 		return eventReceordDTOs;
 	}
+
+	@Override
+	public List<EventReceordDTO> getEventRecordsOfDrug(int id) {
+		List<Object[]> data = null;
+		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
+		
+		String sql = "SELECT id,object FROM openmrs.event_records where title= :title and id > :id  order by id asc";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		
+		data = query.setString("title", "drug").setInteger("id", id).list();
+		
+		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+			EventReceordDTO eventReceordDTO = new EventReceordDTO();
+			Object[] objects = (Object[]) iterator.next();
+			eventReceordDTO.setId(Integer.parseInt(objects[0].toString()));
+			eventReceordDTO.setUrl(objects[1].toString());
+			eventReceordDTOs.add(eventReceordDTO);
+		}
+		return eventReceordDTOs;
+	}
 }

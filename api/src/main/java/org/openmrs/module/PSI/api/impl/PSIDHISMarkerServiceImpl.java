@@ -43,5 +43,11 @@ public class PSIDHISMarkerServiceImpl extends BaseOpenmrsService implements PSID
 		// TODO Auto-generated method stub
 		return dao.getEventRecordsOfEncounter(id);
 	}
+
+	@Override
+	public List<EventReceordDTO> getEventRecordsOfDrug(int id) {
+		// TODO Auto-generated method stub
+		return dao.getEventRecordsOfDrug(id);
+	}
 	
 }
