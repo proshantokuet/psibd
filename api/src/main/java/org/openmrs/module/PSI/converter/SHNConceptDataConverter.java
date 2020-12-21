@@ -9,13 +9,14 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.ConceptSet;
 
 public class SHNConceptDataConverter {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 
-	public JSONObject toConvert(Concept conceptObejct) throws JSONException {
+	public JSONObject toConvert(Concept conceptObejct,ConceptNumeric conceptNumeric) throws JSONException {
 		log.error("ENtering to create concept with id" + conceptObejct.getConceptId());
 		JSONObject shnConceptDataObject = new JSONObject();
 		shnConceptDataObject.putOpt("conceptId", conceptObejct.getConceptId());
@@ -23,7 +24,18 @@ public class SHNConceptDataConverter {
 		shnConceptDataObject.putOpt("retireReason", conceptObejct.getRetireReason());
 		shnConceptDataObject.putOpt("set", conceptObejct.getSet());
 		shnConceptDataObject.putOpt("uuid", conceptObejct.getUuid());
-		
+		shnConceptDataObject.putOpt("isNumeric", conceptObejct.isNumeric());
+		if(conceptObejct.isNumeric()) {
+			shnConceptDataObject.putOpt("hiAbsolute", conceptNumeric.getHiAbsolute());
+			shnConceptDataObject.putOpt("hiCritical", conceptNumeric.getHiCritical());
+			shnConceptDataObject.putOpt("hiNormal", conceptNumeric.getHiNormal());
+			shnConceptDataObject.putOpt("lowAbsolute", conceptNumeric.getLowAbsolute());
+			shnConceptDataObject.putOpt("lowCritical", conceptNumeric.getLowCritical());
+			shnConceptDataObject.putOpt("lowNormal", conceptNumeric.getLowNormal());
+			shnConceptDataObject.putOpt("units", conceptNumeric.getUnits());
+			shnConceptDataObject.putOpt("allowDecimal", conceptNumeric.getAllowDecimal());
+			shnConceptDataObject.putOpt("displayPrecision", conceptNumeric.getDisplayPrecision());
+		}
 		JSONObject dataTypeObject = new JSONObject();
 		dataTypeObject.putOpt("conceptDatatypeId", conceptObejct.getDatatype().getConceptDatatypeId());
 		dataTypeObject.putOpt("hl7Abbreviation", conceptObejct.getDatatype().getHl7Abbreviation());

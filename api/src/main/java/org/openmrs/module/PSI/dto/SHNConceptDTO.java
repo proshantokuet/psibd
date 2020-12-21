@@ -25,6 +25,26 @@ public class SHNConceptDTO {
 	private Collection<ConceptDescriptionDTO> descriptions;
 	
 	private String uuid;
+	
+	private boolean isNumeric;
+	
+	private Double hiAbsolute;
+	
+	private Double hiCritical;
+	
+	private Double hiNormal;
+	
+	private Double lowAbsolute;
+	
+	private Double lowCritical;
+	
+	private Double lowNormal;
+	
+	private String units;
+	
+	private Boolean allowDecimal;
+	
+	private Integer displayPrecision;
 
 	public Integer getConceptId() {
 		return conceptId;
@@ -113,5 +133,86 @@ public class SHNConceptDTO {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
+
+	public boolean isNumeric() {
+		return isNumeric;
+	}
+
+	public void setNumeric(boolean isNumeric) {
+		this.isNumeric = isNumeric;
+	}
+
+	public Double getHiAbsolute() {
+		return hiAbsolute;
+	}
+
+	public void setHiAbsolute(Double hiAbsolute) {
+		this.hiAbsolute = hiAbsolute;
+	}
+
+	public Double getHiCritical() {
+		return hiCritical;
+	}
+
+	public void setHiCritical(Double hiCritical) {
+		this.hiCritical = hiCritical;
+	}
+
+	public Double getHiNormal() {
+		return hiNormal;
+	}
+
+	public void setHiNormal(Double hiNormal) {
+		this.hiNormal = hiNormal;
+	}
+
+	public Double getLowAbsolute() {
+		return lowAbsolute;
+	}
+
+	public void setLowAbsolute(Double lowAbsolute) {
+		this.lowAbsolute = lowAbsolute;
+	}
+
+	public Double getLowCritical() {
+		return lowCritical;
+	}
+
+	public void setLowCritical(Double lowCritical) {
+		this.lowCritical = lowCritical;
+	}
+
+	public Double getLowNormal() {
+		return lowNormal;
+	}
+
+	public void setLowNormal(Double lowNormal) {
+		this.lowNormal = lowNormal;
+	}
+
+	public String getUnits() {
+		return units;
+	}
+
+	public void setUnits(String units) {
+		this.units = units;
+	}
+
+	public Boolean getAllowDecimal() {
+		return allowDecimal;
+	}
+
+	public void setAllowDecimal(Boolean allowDecimal) {
+		this.allowDecimal = allowDecimal;
+	}
+
+	public Integer getDisplayPrecision() {
+		return displayPrecision;
+	}
+
+	public void setDisplayPrecision(Integer displayPrecision) {
+		this.displayPrecision = displayPrecision;
+	}
+
 
 }

@@ -20,6 +20,7 @@ import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.ConceptSet;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptNameType;
@@ -37,6 +38,7 @@ import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.module.PSI.dto.SHNConceptDTO;
 import org.openmrs.module.PSI.dto.SHNConceptNameDTO;
 import org.openmrs.module.PSI.dto.SHNConceptSetDTO;
+import org.openmrs.module.PSI.dto.SHNDrugDTO;
 import org.openmrs.module.PSI.utils.DateTimeTypeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -66,10 +68,11 @@ public class SHNConceptSyncRestController {
 		List<Concept> getConceptId =  Context.getService(PSIUniquePatientService.class).getconceptListGreaterthanCurrentConcept(conceptId);
 		for (Concept concept : getConceptId) {
 			Concept conceptGet = Context.getService(ConceptService.class).getConcept(concept.getConceptId());
+			ConceptNumeric conceptNumeric = Context.getService(ConceptService.class).getConceptNumeric(concept.getConceptId());
 			log.error("Concept ID " + conceptGet.getConceptId());
 			if(conceptGet != null) {
 				JSONObject conceptJsonObject = new JSONObject();
-				conceptJsonObject = new SHNConceptDataConverter().toConvert(conceptGet);
+				conceptJsonObject = new SHNConceptDataConverter().toConvert(conceptGet,conceptNumeric);
 				 conceptIdList.put(conceptJsonObject);
 			}
 		}
@@ -80,6 +83,7 @@ public class SHNConceptSyncRestController {
 	public ResponseEntity<String> syncAndSaveConcept() throws Exception {
 		try {
 			int lastReadPatient = 4897;
+			boolean isNewAdd = false;
 			PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Concept");
 			if (getlastReadEntry == null) {
 				PSIDHISMarker psidhisMarker = new PSIDHISMarker();
@@ -104,7 +108,6 @@ public class SHNConceptSyncRestController {
 			for (SHNConceptDTO conceptDTO : shnConceptDto) {
 				log.error("Entering  loop" + conceptDTO.getConceptId());
 				Concept individualCopncept = Context.getService(ConceptService.class).getConcept(conceptDTO.getConceptId());
-				
 				if(individualCopncept == null) {
 					log.error("Concept is null " + conceptDTO.getConceptId());
 					individualCopncept = new Concept();
@@ -112,8 +115,8 @@ public class SHNConceptSyncRestController {
 					individualCopncept.setCreator(Context.getAuthenticatedUser());
 					individualCopncept.setDateCreated(new Date());
 					individualCopncept.setUuid(conceptDTO.getUuid());
+					isNewAdd = true;
 				}
-				
 				individualCopncept.setRetired(conceptDTO.getRetired());
 				individualCopncept.setRetireReason(conceptDTO.getRetireReason());
 				log.error("goint to fetch concept datatype" + conceptDTO.getConceptId());
@@ -124,7 +127,6 @@ public class SHNConceptSyncRestController {
 				ConceptClass conceptClass = Context.getService(ConceptService.class).getConceptClass(conceptDTO.getConceptClass().getConceptClassId());
 				individualCopncept.setConceptClass(conceptClass);
 				individualCopncept.setSet(conceptDTO.getSet());
-
 				log.error("concept obj creation complete" + conceptDTO.getConceptId());
 				Collection<ConceptName> listConceptNames = new HashSet<ConceptName>();
 				for (SHNConceptNameDTO conceptNameDto : conceptDTO.getNames()) {
@@ -148,7 +150,8 @@ public class SHNConceptSyncRestController {
 					listConceptNames.add(individualConceptName);
 				}
 				log.error("listConceptNames" + listConceptNames.size());
-				if(individualCopncept.getConceptId() != null) {
+				log.error("concept id" + individualCopncept.getConceptId());
+				if(!isNewAdd) {
 				log.error("In update names" + individualCopncept.getConceptId());
 				individualCopncept.getNames().clear();
 				individualCopncept.getNames().addAll(listConceptNames);
@@ -156,6 +159,7 @@ public class SHNConceptSyncRestController {
 				else {
 					individualCopncept.setNames(listConceptNames);
 				}
+				log.error("listConceptNames after adding to list" + individualCopncept.getNames().size());
 				Collection<ConceptAnswer> listConceptAnswer = new HashSet<ConceptAnswer>();
 				for (ConceptAnswerDTO conceptAnswerDto : conceptDTO.getAnswers()) {
 					log.error("Entering to execute answer concept" + conceptAnswerDto.getConceptId());
@@ -198,7 +202,7 @@ public class SHNConceptSyncRestController {
 					listConceptAnswer.add(individualConceptAnswer);
 				}
 				log.error("listConceptAnswer" + listConceptAnswer.size());
-				if(individualCopncept.getConceptId() != null) {
+				if(!isNewAdd) {
 					individualCopncept.getAnswers().clear();
 					individualCopncept.getAnswers().addAll(listConceptAnswer);
 				}
@@ -225,7 +229,7 @@ public class SHNConceptSyncRestController {
 					listConceptSet.add(individualConceptSet);
 				}
 				log.error("listConceptSet" + listConceptSet.size());
-				if(individualCopncept.getConceptId() != null) {
+				if(!isNewAdd) {
 					individualCopncept.getConceptSets().clear();
 					individualCopncept.getConceptSets().addAll(listConceptSet);
 				}
@@ -250,16 +254,35 @@ public class SHNConceptSyncRestController {
 					listConceptDescription.add(individualConceptDescription);
 				}
 				log.error("listConceptDescription" + listConceptDescription.size());
-				if(individualCopncept.getConceptId() != null) {
+				if(!isNewAdd) {
 					individualCopncept.getDescriptions().clear();
 					individualCopncept.getDescriptions().addAll(listConceptDescription);
 				}
 				else {
 					individualCopncept.setDescriptions(listConceptDescription);
 				}
-				
 				log.error("GOing to save concept");
+				
+
 				Concept conceptSave = Context.getService(ConceptService.class).saveConcept(individualCopncept);
+				if(conceptDTO.isNumeric()) {
+					log.error("GOing to save numeric concept");
+					ConceptNumeric conceptNumeric = Context.getService(ConceptService.class).getConceptNumeric(conceptSave.getConceptId());
+					if(conceptNumeric == null) {
+						 conceptNumeric = new ConceptNumeric(conceptSave);
+					}
+					conceptNumeric.setAllowDecimal(conceptDTO.getAllowDecimal());
+					conceptNumeric.setHiAbsolute(conceptDTO.getHiAbsolute());
+					conceptNumeric.setHiCritical(conceptDTO.getHiCritical());
+					conceptNumeric.setHiNormal(conceptDTO.getHiNormal());
+					conceptNumeric.setLowAbsolute(conceptDTO.getLowAbsolute());
+					conceptNumeric.setLowCritical(conceptDTO.getLowCritical());
+					conceptNumeric.setLowNormal(conceptDTO.getLowNormal());
+					conceptNumeric.setUnits(conceptDTO.getUnits());
+					conceptNumeric.setDisplayPrecision(conceptDTO.getDisplayPrecision());
+					Context.getService(ConceptService.class).saveConcept(conceptNumeric);
+				}
+				log.error("Saved  numeric concept");
 				responseConceptId = responseConceptId + " " +  conceptSave.getConceptId();
 				getlastReadEntry.setLastPatientId(conceptSave.getConceptId());
 				Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
@@ -288,6 +311,68 @@ public class SHNConceptSyncRestController {
 			}
 		}
 		return new ResponseEntity<>(drugList.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/save-drug", method = RequestMethod.GET)
+	public ResponseEntity<String> saveDrugviaSync() throws Exception {
+		try {
+			int lastReadPatient = 2343;
+			PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Drug");
+			if (getlastReadEntry == null) {
+				PSIDHISMarker psidhisMarker = new PSIDHISMarker();
+				psidhisMarker.setType("Drug");
+				psidhisMarker.setTimestamp(0l);
+				psidhisMarker.setLastPatientId(2343);
+				psidhisMarker.setDateCreated(new Date());
+				psidhisMarker.setUuid(UUID.randomUUID().toString());
+				psidhisMarker.setVoided(false);
+				Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
+			} else {
+				lastReadPatient = getlastReadEntry.getLastPatientId();
+			}
+			String responseConceptId = "";
+			log.error("ENtering save api" + lastReadPatient);
+			String conceptSyncUrl = "/rest/v1/sync/concept-data/drug/" + lastReadPatient;
+			JSONArray conceptSyncJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "", conceptSyncUrl);
+			log.error("conceptSyncJson Array" + conceptSyncJson.toString());
+			List<SHNDrugDTO> shnDrugDtos = gson.fromJson(conceptSyncJson.toString(),
+				    new TypeToken<ArrayList<SHNDrugDTO>>() {}.getType());
+			log.error("Fetching Concept Data" + shnDrugDtos.size());
+			for (SHNDrugDTO shnDrugDTO  : shnDrugDtos) {
+				log.error("Entering  loop" + shnDrugDTO.getDrugId());
+				
+				Drug getDrug = Context.getService(ConceptService.class).getDrugByUuid(shnDrugDTO.getUuid());
+				
+				if(getDrug == null) {
+					getDrug = new Drug();
+					
+					getDrug.setCreator(Context.getAuthenticatedUser());
+					getDrug.setDateCreated(new Date());
+					getDrug.setUuid(shnDrugDTO.getUuid());
+				}
+				getDrug.setName(shnDrugDTO.getName());
+				getDrug.setCombination(shnDrugDTO.getCombination());
+				Concept dosageConcept = Context.getService(ConceptService.class).getConceptByUuid(shnDrugDTO.getDosageFrom());
+				getDrug.setDosageForm(dosageConcept);
+				getDrug.setMaximumDailyDose(Double.parseDouble(shnDrugDTO.getMaximumDailyDose()));
+				getDrug.setMinimumDailyDose(Double.parseDouble(shnDrugDTO.getMinimumDailyDose()));
+				getDrug.setStrength(shnDrugDTO.getStrength());
+				Concept conceptDrug = Context.getService(ConceptService.class).getConceptByUuid(shnDrugDTO.getConcept());
+				getDrug.setConcept(conceptDrug);
+				getDrug.setRetired(shnDrugDTO.getRetired());
+				getDrug.setRetireReason(shnDrugDTO.getRetireReason());
+				
+				Drug saveDrug = Context.getService(ConceptService.class).saveDrug(getDrug);
+				responseConceptId = responseConceptId + " " +  saveDrug.getDrugId();
+				getlastReadEntry.setLastPatientId(Integer.parseInt(shnDrugDTO.getEventId()));
+				Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+			}
+			
+			return new ResponseEntity<>("Sync Successfull with Drug IDs" + responseConceptId, HttpStatus.OK);
+		
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage().toString(), HttpStatus.OK);
+		}
 	}
 	
 }

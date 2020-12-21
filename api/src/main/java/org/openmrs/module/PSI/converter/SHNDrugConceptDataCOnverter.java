@@ -18,6 +18,8 @@ public class SHNDrugConceptDataCOnverter {
 		shnDrugDataObject.putOpt("combination", drugObject.getCombination());
 		shnDrugDataObject.putOpt("strength", drugObject.getStrength());
 		shnDrugDataObject.putOpt("eventId", eventId);
+		shnDrugDataObject.putOpt("retired", drugObject.getRetired());
+		shnDrugDataObject.putOpt("retireReason", drugObject.getRetireReason());
 		return shnDrugDataObject;
 	}
 }

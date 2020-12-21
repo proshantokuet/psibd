@@ -18,9 +18,15 @@ public class SHNDrugDTO {
 	
 	private String concept;
 	
-	private boolean combination;
+	private Boolean combination;
 	
 	private String strength;
+	
+	private Boolean retired;
+	
+	private String retireReason;
+	
+	private String eventId;
 
 	public int getDrugId() {
 		return drugId;
@@ -86,11 +92,11 @@ public class SHNDrugDTO {
 		this.concept = concept;
 	}
 
-	public boolean isCombination() {
+	public Boolean getCombination() {
 		return combination;
 	}
 
-	public void setCombination(boolean combination) {
+	public void setCombination(Boolean combination) {
 		this.combination = combination;
 	}
 
@@ -101,5 +107,30 @@ public class SHNDrugDTO {
 	public void setStrength(String strength) {
 		this.strength = strength;
 	}
+
+	public Boolean getRetired() {
+		return retired;
+	}
+
+	public void setRetired(Boolean retired) {
+		this.retired = retired;
+	}
+
+	public String getRetireReason() {
+		return retireReason;
+	}
+
+	public void setRetireReason(String retireReason) {
+		this.retireReason = retireReason;
+	}
+
+	public String getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(String eventId) {
+		this.eventId = eventId;
+	}
+
 
 }
