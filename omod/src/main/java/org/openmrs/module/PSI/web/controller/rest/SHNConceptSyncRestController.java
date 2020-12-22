@@ -62,20 +62,37 @@ public class SHNConceptSyncRestController {
 	        .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter()).create();
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	@RequestMapping(value = "/concept-data/{conceptId}", method = RequestMethod.GET)
-	public ResponseEntity<String> syncConcept(@PathVariable int conceptId) throws Exception {
+	@RequestMapping(value = "/concept-data/{eventId}", method = RequestMethod.GET)
+	public ResponseEntity<String> syncConcept(@PathVariable int eventId) throws Exception {
 		JSONArray conceptIdList = new JSONArray();
-		List<Concept> getConceptId =  Context.getService(PSIUniquePatientService.class).getconceptListGreaterthanCurrentConcept(conceptId);
-		for (Concept concept : getConceptId) {
-			Concept conceptGet = Context.getService(ConceptService.class).getConcept(concept.getConceptId());
-			ConceptNumeric conceptNumeric = Context.getService(ConceptService.class).getConceptNumeric(concept.getConceptId());
+		List<EventReceordDTO> eventRecord =  Context.getService(PSIDHISMarkerService.class).getEventRecordsOfConcept(eventId);
+		for (EventReceordDTO eventReceordDTO : eventRecord) {
+			log.error("Entering single event " + eventReceordDTO.getId());
+			String conceptUuid = eventReceordDTO.getUrl().split("/|\\?")[6];
+			Concept conceptGet = Context.getService(ConceptService.class).getConceptByUuid(conceptUuid);
+			ConceptNumeric conceptNumeric = null;
+			if(conceptGet != null) {
+				 conceptNumeric = Context.getService(ConceptService.class).getConceptNumeric(conceptGet.getConceptId());
+			}
+			
 			log.error("Concept ID " + conceptGet.getConceptId());
 			if(conceptGet != null) {
 				JSONObject conceptJsonObject = new JSONObject();
-				conceptJsonObject = new SHNConceptDataConverter().toConvert(conceptGet,conceptNumeric);
+				conceptJsonObject = new SHNConceptDataConverter().toConvert(conceptGet,conceptNumeric,eventReceordDTO.getId());
 				 conceptIdList.put(conceptJsonObject);
 			}
 		}
+		//List<Concept> getConceptId =  Context.getService(PSIUniquePatientService.class).getconceptListGreaterthanCurrentConcept(conceptId);
+//		for (Concept concept : getConceptId) {
+//			Concept conceptGet = Context.getService(ConceptService.class).getConcept(concept.getConceptId());
+//			ConceptNumeric conceptNumeric = Context.getService(ConceptService.class).getConceptNumeric(concept.getConceptId());
+//			log.error("Concept ID " + conceptGet.getConceptId());
+//			if(conceptGet != null) {
+//				JSONObject conceptJsonObject = new JSONObject();
+//				conceptJsonObject = new SHNConceptDataConverter().toConvert(conceptGet,conceptNumeric);
+//				 conceptIdList.put(conceptJsonObject);
+//			}
+//		}
 		return new ResponseEntity<>(conceptIdList.toString(), HttpStatus.OK);
 	}
 	
@@ -284,11 +301,16 @@ public class SHNConceptSyncRestController {
 				}
 				log.error("Saved  numeric concept");
 				responseConceptId = responseConceptId + " " +  conceptSave.getConceptId();
-				getlastReadEntry.setLastPatientId(conceptSave.getConceptId());
+				getlastReadEntry.setLastPatientId(conceptDTO.getEventId());
 				Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 			}
+			if(shnConceptDto.size() < 1) {
+				return new ResponseEntity<>("Concept is up-to-date with Global Server", HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity<>("Sync Successfull with concept IDs" + responseConceptId, HttpStatus.OK);
+			}
 			
-			return new ResponseEntity<>("Sync Successfull with concept IDs" + responseConceptId, HttpStatus.OK);
 		
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage().toString(), HttpStatus.OK);
@@ -367,8 +389,13 @@ public class SHNConceptSyncRestController {
 				getlastReadEntry.setLastPatientId(Integer.parseInt(shnDrugDTO.getEventId()));
 				Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 			}
+			if(shnDrugDtos.size() < 1) {
+				return new ResponseEntity<>("Drug is up-to-date with Global Server", HttpStatus.OK);
+			}
+			else {
+				return new ResponseEntity<>("Sync Successfull with Drug IDs" + responseConceptId, HttpStatus.OK);
+			}
 			
-			return new ResponseEntity<>("Sync Successfull with Drug IDs" + responseConceptId, HttpStatus.OK);
 		
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage().toString(), HttpStatus.OK);

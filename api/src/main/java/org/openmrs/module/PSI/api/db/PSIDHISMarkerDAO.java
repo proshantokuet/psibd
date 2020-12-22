@@ -16,4 +16,6 @@ public interface PSIDHISMarkerDAO {
 	public List<EventReceordDTO> getEventRecordsOfEncounter(int id);
 	
 	public List<EventReceordDTO> getEventRecordsOfDrug(int id);
+	
+	public List<EventReceordDTO> getEventRecordsOfConcept(int id);
 }

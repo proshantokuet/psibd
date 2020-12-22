@@ -45,6 +45,8 @@ public class SHNConceptDTO {
 	private Boolean allowDecimal;
 	
 	private Integer displayPrecision;
+	
+	private Integer eventId;
 
 	public Integer getConceptId() {
 		return conceptId;
@@ -212,6 +214,14 @@ public class SHNConceptDTO {
 
 	public void setDisplayPrecision(Integer displayPrecision) {
 		this.displayPrecision = displayPrecision;
+	}
+
+	public Integer getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(Integer eventId) {
+		this.eventId = eventId;
 	}
 
 

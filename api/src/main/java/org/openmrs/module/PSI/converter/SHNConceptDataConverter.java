@@ -16,7 +16,7 @@ public class SHNConceptDataConverter {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 
-	public JSONObject toConvert(Concept conceptObejct,ConceptNumeric conceptNumeric) throws JSONException {
+	public JSONObject toConvert(Concept conceptObejct,ConceptNumeric conceptNumeric, int eventId) throws JSONException {
 		log.error("ENtering to create concept with id" + conceptObejct.getConceptId());
 		JSONObject shnConceptDataObject = new JSONObject();
 		shnConceptDataObject.putOpt("conceptId", conceptObejct.getConceptId());
@@ -25,6 +25,7 @@ public class SHNConceptDataConverter {
 		shnConceptDataObject.putOpt("set", conceptObejct.getSet());
 		shnConceptDataObject.putOpt("uuid", conceptObejct.getUuid());
 		shnConceptDataObject.putOpt("isNumeric", conceptObejct.isNumeric());
+		shnConceptDataObject.putOpt("eventId", eventId);
 		if(conceptObejct.isNumeric()) {
 			shnConceptDataObject.putOpt("hiAbsolute", conceptNumeric.getHiAbsolute());
 			shnConceptDataObject.putOpt("hiCritical", conceptNumeric.getHiCritical());

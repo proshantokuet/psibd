@@ -59,6 +59,14 @@
                 code="PSI.errorVisualize" /></a>
     </li>
     </c:if>
+    <c:if test="${hasDashboardPermission}">
+    <li
+        <c:if test='<%= request.getRequestURI().contains("/conceptSync") %>'>class="active"</c:if>>
+        <a
+        href="${pageContext.request.contextPath}/module/PSI/conceptSync.form"><spring:message
+                code="PSI.conceptsync" /></a>
+    </li>
+    </c:if>
     <%-- <c:if test="${hasClinicPermission}">
     <li
         <c:if test='<%= request.getRequestURI().contains("/dhis-data-upload") %>'>class="active"</c:if>>
