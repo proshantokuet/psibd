@@ -430,8 +430,7 @@ public class DHISDataConverter {
 		dataValues.put(netPayableAmount);
 		event.put("dataValues", dataValues);
 		
-		JSONObject ageMoneyReceipt = new JSONObject();
-		ageMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("age"));
+
 		
 		 Calendar cal = Calendar.getInstance();
 		 cal.setTime(birthDate);
@@ -439,7 +438,7 @@ public class DHISDataConverter {
 		 int month = cal.get(Calendar.MONTH);
 		 int day = cal.get(Calendar.DAY_OF_MONTH);
 		 
-		 LocalDate birthday = LocalDate.of(year,month, day);  //Birth date
+		 LocalDate birthday = LocalDate.of(year,month+1, day);  //Birth date
 		
 		 Calendar calMoneyReceipt = Calendar.getInstance();
 		 calMoneyReceipt.setTime(getServiceDate);
@@ -447,12 +446,25 @@ public class DHISDataConverter {
 		 int monthMoney = calMoneyReceipt.get(Calendar.MONTH);
 		 int dayMoney = calMoneyReceipt.get(Calendar.DAY_OF_MONTH);
 		 
-		LocalDate moneyReceiptLocalDate = LocalDate.of(yearMoney,monthMoney, dayMoney);  //Birth date
+		LocalDate moneyReceiptLocalDate = LocalDate.of(yearMoney,monthMoney+1, dayMoney);  //Birth date
 		Period period = Period.between(birthday, moneyReceiptLocalDate);
-		String ageStringFormat = Integer.toString(period.getYears()) + " Y " + Integer.toString(period.getMonths()) + " M " +  Integer.toString(period.getDays()) + " D";
+		//String ageStringFormat = Integer.toString(period.getYears()) + " Y " + Integer.toString(period.getMonths()) + " M " +  Integer.toString(period.getDays()) + " D";
 		//ageMoneyReceipt.put("value", Integer.toString(period.getYears()));
-		ageMoneyReceipt.put("value", ageStringFormat);
-		dataValues.put(ageMoneyReceipt);
+		
+		JSONObject ageInYearsMoneyReceipt = new JSONObject();
+		ageInYearsMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInYear"));
+		ageInYearsMoneyReceipt.put("value", period.getYears());
+		dataValues.put(ageInYearsMoneyReceipt);
+		
+		JSONObject ageInMonthMoneyReceipt = new JSONObject();
+		ageInMonthMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInMonth"));
+		ageInMonthMoneyReceipt.put("value", period.getMonths());
+		dataValues.put(ageInMonthMoneyReceipt);
+		
+		JSONObject ageInYearMoneyReceipt = new JSONObject();
+		ageInYearMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInDay"));
+		ageInYearMoneyReceipt.put("value", period.getDays());
+		dataValues.put(ageInYearMoneyReceipt);
 		
 		return event;
 		
@@ -635,6 +647,7 @@ public class DHISDataConverter {
 	public static JSONObject toConvertDhisIndicatorData(ShnIndicatorDetailsDTO shnIndicatorDetailsDTO)
 		    throws JSONException {
 			JSONObject event = new JSONObject();
+			event.put("trackedEntityInstance", "NpKZqkyYZFk");
 			event.put("orgUnit", "cyBOiz4GPdX");
 			event.put("program", DHISMapper.indicatorDataMapper.get("program"));
 			event.put("programStage", "kqTAymIelcm");

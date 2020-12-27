@@ -52,4 +52,11 @@ public class PSIUniquePatientServiceImpl extends BaseOpenmrsService implements P
 		return dao.getLastProviderName(visitUuid);
 	}
 
+	@Override
+	public Boolean findPatientByUicandMobileNoWhileEdit(String patientUic,
+			String mobileNo, String patientUuid) {
+		// TODO Auto-generated method stub
+		return dao.findPatientByUicandMobileNoWhileEdit(patientUic, mobileNo, patientUuid);
+	}
+
 }

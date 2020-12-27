@@ -181,4 +181,40 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 			 return e.toString();
 		}
 	}
+
+	@Override
+	public Boolean findPatientByUicandMobileNoWhileEdit(String patientUic,
+			String mobileNo, String patientUuid) {
+		Boolean isPatientAvailable = false;
+		String sql = ""
+				+ "SELECT temp1.pat_id, "
+				+ "       temp1.mobileno, "
+				+ "       temp2.pa_id, "
+				+ "       temp2.uic , "
+				+ "       p.uuid "
+				+ "FROM   (SELECT pat.person_attribute_type_id as pat_id, "
+				+ "               pat.value AS mobileNo, "
+				+ "               pat.person_id as pat_person_id "
+				+ "        FROM   person_attribute pat "
+				+ "        WHERE  pat.person_attribute_type_id = 42) AS temp1 "
+				+ "       JOIN (SELECT pa.person_attribute_type_id as pa_id, "
+				+ "                    pa.value AS UIC, "
+				+ "                    pa.person_id as pa_person_id "
+				+ "             FROM   person_attribute pa "
+				+ "             WHERE  pa.person_attribute_type_id = 34) AS temp2 "
+				+ "         ON temp1.pat_person_id = temp2.pa_person_id "
+				+ "         JOIN person p on p.person_id = temp2.pa_person_id "
+				+ "WHERE  temp1.mobileno = '"+mobileNo+"' "
+				+ "       AND temp2.uic = '"+patientUic+"' "
+				+ "      AND p.uuid NOT IN('"+patientUuid+"');";
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		
+		List<Object[]> data = query.list();
+		
+		if (data.size() > 0) {
+			isPatientAvailable = true;
+		}
+
+		return isPatientAvailable;
+	}
 }

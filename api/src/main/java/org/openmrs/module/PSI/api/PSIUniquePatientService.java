@@ -11,6 +11,8 @@ public interface PSIUniquePatientService  extends OpenmrsService {
 	
 	public Boolean findPatientByUicandMobileNo(String patientUic, String mobileNo);
 	
+	public Boolean findPatientByUicandMobileNoWhileEdit(String patientUic, String mobileNo,String patientUuid);
+	
 	public List<SHnPrescriptionMetaData> getAllPrescriptionMetaData();
 	
 	public List <SHNFormPdfDetails> getDischargeInformationByVisit(String patientUuid, String visitUuid);

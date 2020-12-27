@@ -84,7 +84,10 @@ public class DHISMapper {
 		ServiceProvision.put("others", "otXoI3cMuJU"); // newly added
 		ServiceProvision.put("serviceUuid", "DGayB2UWV42");
 		ServiceProvision.put("eslipNo", "IchA74zTEDE");
-		ServiceProvision.put("age", "qbCQtRpciiR");
+		//ServiceProvision.put("age", "qbCQtRpciiR");
+		ServiceProvision.put("ageInYear", "mQyXon2EA8i");
+		ServiceProvision.put("ageInMonth", "G6mlgrPBaeT");
+		ServiceProvision.put("ageInDay", "u2Q57fSFOnN");
 	}
 	
 	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();

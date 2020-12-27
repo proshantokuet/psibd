@@ -27,6 +27,14 @@ public class PSIUniquePatientRestController {
 		return new ResponseEntity<>(patientAvailabilityStatus.toString(), HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/{uic}/{mobileNo}/{patientUuid}", method = RequestMethod.GET)
+	public ResponseEntity<String> findPatientByUuidMobileandUic(@PathVariable String uic, @PathVariable String mobileNo,@PathVariable String patientUuid) throws Exception {
+		
+		Boolean patientAvailabilityStatus = Context.getService(PSIUniquePatientService.class)
+		        .findPatientByUicandMobileNoWhileEdit(uic, mobileNo,patientUuid);
+		return new ResponseEntity<>(patientAvailabilityStatus.toString(), HttpStatus.OK);
+	}
+	
 	@RequestMapping(value = "/prescriptionMetaData", method = RequestMethod.GET)
 	public ResponseEntity<String> getMetaData() throws Exception {
 		
