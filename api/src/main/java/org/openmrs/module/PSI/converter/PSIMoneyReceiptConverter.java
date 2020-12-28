@@ -41,6 +41,7 @@ public class PSIMoneyReceiptConverter {
 		psiMoneyReceiptObject.putOpt("orgUnit", psiMoneyReceipt.getOrgUnit());
 		psiMoneyReceiptObject.putOpt("designation", psiMoneyReceipt.getDesignation());
 		psiMoneyReceiptObject.putOpt("dataCollector", psiMoneyReceipt.getDataCollector());
+		psiMoneyReceiptObject.putOpt("getDataCollectorFullname", psiMoneyReceipt.getDataCollectorFullname());
 		psiMoneyReceiptObject.putOpt("totalAmount", psiMoneyReceipt.getTotalAmount());
 		psiMoneyReceiptObject.putOpt("totalDiscount", psiMoneyReceipt.getTotalDiscount());
 		psiMoneyReceiptObject.putOpt("patientRegisteredDate", psiMoneyReceipt.getPatientRegisteredDate());

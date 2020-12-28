@@ -91,6 +91,8 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 	
 	private float overallDiscount;
 	
+	private String dataCollectorFullname;
+	
 	private PSIClinicManagement PSIClinicManagement;
 	
 	@Override
@@ -424,6 +426,14 @@ public class PSIMoneyReceipt extends BaseOpenmrsData implements Serializable {
 
 	public void setOverallDiscount(float overallDiscount) {
 		this.overallDiscount = overallDiscount;
+	}
+
+	public String getDataCollectorFullname() {
+		return dataCollectorFullname;
+	}
+
+	public void setDataCollectorFullname(String dataCollectorFullname) {
+		this.dataCollectorFullname = dataCollectorFullname;
 	}
 
 	@Override

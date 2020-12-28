@@ -6,8 +6,14 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmrs.PersonName;
+import org.openmrs.User;
+import org.openmrs.api.PersonService;
+import org.openmrs.api.UserService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
+import org.openmrs.module.PSI.api.PSIClinicUserService;
 
 public class PSIServiceProvisionConverter {
 	
@@ -50,6 +56,7 @@ public class PSIServiceProvisionConverter {
 		service.putOpt("other", psiServiceProvisions.getPsiMoneyReceiptId().getOthers());
 		service.putOpt("cspId", psiServiceProvisions.getPsiMoneyReceiptId().getCspId());
 		service.putOpt("dataCollector", psiServiceProvisions.getPsiMoneyReceiptId().getDataCollector());
+		service.putOpt("getDataCollectorFullname", psiServiceProvisions.getPsiMoneyReceiptId().getDataCollectorFullname());
 		service.putOpt("designation", psiServiceProvisions.getPsiMoneyReceiptId().getDesignation());
 		service.putOpt("isComplete", psiServiceProvisions.getIsComplete());
 		service.putOpt("eslipNo", psiServiceProvisions.getPsiMoneyReceiptId().getEslipNo());
@@ -76,6 +83,11 @@ public class PSIServiceProvisionConverter {
 	public JSONArray toConvert(List<PSIServiceProvision> psiServiceProvisions) throws JSONException {
 		JSONArray moneyReceipts = new JSONArray();
 		for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
+			User findUser = Context.getService(PSIClinicUserService.class).getbyUsernameIcludedRetiure(psiServiceProvision.getPsiMoneyReceiptId().getDataCollector());
+			//User findUser = Context.getService(UserService.class).getUserByUsername(psiServiceProvision.getPsiMoneyReceiptId().getDataCollector());
+			int personNameId = findUser.getPersonName().getPersonNameId();
+			PersonName personName = Context.getService(PersonService.class).getPersonName(personNameId);
+			psiServiceProvision.getPsiMoneyReceiptId().setDataCollectorFullname(personName.getFullName());
 			moneyReceipts.put(toConvert(psiServiceProvision));
 		}
 		return moneyReceipts;

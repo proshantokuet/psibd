@@ -350,7 +350,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 
 				if (paymentJsonObj.has("receiveDate")) {
 
-					paymentObject.setReceiveDate(yyyyMMdd.parse(paymentJsonObj.getString("receiveDate")));
+					paymentObject.setReceiveDate(dateFormatTwentyFourHour.parse(paymentJsonObj.getString("receiveDate")));
 				}
 				if (paymentJsonObj.has("receiveAmount")) {
 					paymentObject.setReceiveAmount(Float.parseFloat(paymentJsonObj.getString("receiveAmount")));
@@ -913,7 +913,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				}
 				if (paymentJsonObj.has("receiveDate")) {
 
-					paymentObject.setReceiveDate(yyyyMMdd.parse(paymentJsonObj.getString("receiveDate")));
+					paymentObject.setReceiveDate(dateFormatTwentyFourHour.parse(paymentJsonObj.getString("receiveDate")));
 				}
 				if (paymentJsonObj.has("receiveAmount")) {
 					paymentObject.setReceiveAmount(Float.parseFloat(paymentJsonObj.getString("receiveAmount")));

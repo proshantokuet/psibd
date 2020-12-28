@@ -10,12 +10,12 @@
     border-color: #387c7c;
 }
 </style>
-<a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
-				code="PSI.psiClinicAddNew" /></a> 
+<%-- <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
+				code="PSI.psiClinicAddNew" /></a>  --%>
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
 		<div class="note">
-		<p>Community Clinic List</p>        	
+		<p>Clinic List</p>        	
 		</div>	
 	</div>
 	  	<div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
@@ -54,8 +54,8 @@
 	            
 	            </div>
 	            <div style="padding-top: 5px;">
-	            <%-- <a class="btn btn-primary" onclick="syncClinicFromGlobal('${ clinic.clinicId }')">Sync</a> --%>
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/dhis-data-upload.form?id=${clinic.cid}"/>">Data Upload Dhis2</a>
+	            <a class="btn btn-primary" onclick="syncClinicFromGlobal('${ clinic.clinicId }')">Sync</a>
+	            <%-- <a class="btn btn-primary" href="<c:url value="/module/PSI/dhis-data-upload.form?id=${clinic.cid}"/>">Data Upload Dhis2</a> --%>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a>
 	            </div>
 	             

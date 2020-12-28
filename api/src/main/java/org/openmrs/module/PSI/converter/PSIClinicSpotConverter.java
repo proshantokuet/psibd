@@ -15,6 +15,7 @@ public class PSIClinicSpotConverter {
 		psiClinicSpotObject.putOpt("ccsid", psiClinicSpot.getCcsid());
 		psiClinicSpotObject.putOpt("name", psiClinicSpot.getName());
 		psiClinicSpotObject.putOpt("code", psiClinicSpot.getCode());
+		psiClinicSpotObject.putOpt("sortId", Integer.parseInt(psiClinicSpot.getCode()));
 		psiClinicSpotObject.putOpt("address", psiClinicSpot.getAddress());
 		psiClinicSpotObject.putOpt("dhisId", psiClinicSpot.getDhisId());
 		psiClinicSpotObject.putOpt("psiClinicManagement", psiClinicSpot.getPsiClinicManagement());
