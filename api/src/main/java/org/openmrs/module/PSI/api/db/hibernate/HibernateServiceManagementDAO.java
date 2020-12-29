@@ -243,4 +243,18 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 			return clinics;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIServiceManagement findProductByCodeAndClinicId(String code,int clinicId) {
+		// TODO Auto-generated method stub
+		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIServiceManagement where code = :code and  psiClinicManagement=:clinicId and type = 'PRODUCT' ")
+		        .setString("code", code).setInteger("clinicId", clinicId).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
 }

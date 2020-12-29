@@ -531,7 +531,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 				String[] service = line.split(cvsSplitBy);
 				if (index != 0) {
 					PSIServiceManagement psiServiceManagement = Context.getService(PSIServiceManagementService.class)
-					        .findByCodeAndClinicId(service[1], id);
+					        .findProductByCodeAndClinicId(service[1], id);
 					if (psiServiceManagement == null) {
 						psiServiceManagement = new PSIServiceManagement();
 					}

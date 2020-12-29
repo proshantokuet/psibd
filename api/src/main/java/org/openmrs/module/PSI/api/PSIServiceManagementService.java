@@ -40,6 +40,8 @@ public interface PSIServiceManagementService extends OpenmrsService {
 	
 	public List<ClinicServiceDTO> getProductListAll(int clinicId,int productId);
 	
+	public PSIServiceManagement findProductByCodeAndClinicId(String code, int clinicId);
+	
 	
 	
 }
