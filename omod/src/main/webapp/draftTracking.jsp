@@ -40,6 +40,10 @@
                 <th>Total Amount</th>
                 <th>Discount</th>
                 <th>Payable Amount</th>
+                <th>Receive Amount</th>
+                <th>Due Amount</th>
+                
+
                <!--  <th>Action</th>  -->
             </tr>
         </thead>
@@ -61,6 +65,9 @@
 			            <td>${ report.total_amount }</td>
 			            <td>${ report.discount }</td>
 			            <td>${ report.net_payable }</td>
+			            <td>${ report.receiveAmount }</td>
+			            <td>${ report.dueAmount }</td>
+			            
 			            <%-- <td>${ report.slip_link }</td> --%>  
 			        </tr>
 		       </c:forEach>

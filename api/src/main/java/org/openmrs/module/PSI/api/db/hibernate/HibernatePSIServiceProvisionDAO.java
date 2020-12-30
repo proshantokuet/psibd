@@ -644,10 +644,14 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String sql = "select p.psi_money_receipt_id as mid,m.eslip_no as eslipNo,COUNT(p.psi_money_receipt_id) as total_service_contact,p.spid as sl,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
-				"sum(p.total_amount) as total_amount,ROUND(sum(p.discount),2) as discount,ROUND(sum(p.net_payable),2) as net_payable, "+
-				" p.patient_uuid as patient_uuid "+
+				"sum(p.total_amount) as total_amount,ROUND(m.total_discount, 2) as discount,ROUND(m.total_amount, 2) as net_payable, "+
+				" p.patient_uuid as patient_uuid, "+
+				"m.due_amount as dueAmount, "+
+				"COALESCE(paymentTable.receiveAmount,0) as receiveAmount "+
 				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				"on p.psi_money_receipt_id = m.mid "+
+				" LEFT JOIN (select sum(mpl.receive_amount)as receiveAmount,mpl.psi_money_receipt_id as id from shn_moneyreceipt_payment_log mpl group by mpl.psi_money_receipt_id) as paymentTable "+
+				"on p.psi_money_receipt_id = paymentTable.id "+
 				"where m.is_complete = 0 ";
 		
 		sql += wh;
@@ -669,6 +673,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				addScalar("discount",StandardBasicTypes.STRING).
 				addScalar("net_payable",StandardBasicTypes.STRING).
 				addScalar("patient_uuid",StandardBasicTypes.STRING).
+				addScalar("dueAmount",StandardBasicTypes.STRING).
+				addScalar("receiveAmount",StandardBasicTypes.STRING).
 				setResultTransformer(new AliasToBeanResultTransformer(AUHCDraftTrackingReport.class)).
 				list();
 			log.error(sql);

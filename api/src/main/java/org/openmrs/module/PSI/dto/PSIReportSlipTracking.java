@@ -18,6 +18,8 @@ public class PSIReportSlipTracking {
 	private String total_service_contact;
 	private int mid;
 	private String eslipNo;
+	private String dueAmount;
+	private String receiveAmount;
 	
 	public String getDiscount() {
 		return discount;
@@ -103,6 +105,18 @@ public class PSIReportSlipTracking {
 	}
 	public void setEslipNo(String eslipNo) {
 		this.eslipNo = eslipNo;
+	}
+	public String getDueAmount() {
+		return dueAmount;
+	}
+	public void setDueAmount(String dueAmount) {
+		this.dueAmount = dueAmount;
+	}
+	public String getReceiveAmount() {
+		return receiveAmount;
+	}
+	public void setReceiveAmount(String receiveAmount) {
+		this.receiveAmount = receiveAmount;
 	}
 	public void setSlip_link(String slip_link) {
 		this.slip_link = slip_link;
