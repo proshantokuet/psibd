@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -83,7 +84,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 			HeaderFooterPageEvent event = new HeaderFooterPageEvent();
 			writer.setPageEvent(event);
 			document.open();
-			PdfPTable patientInformtionTable = new PdfPTable(40);
+			PdfPTable patientInformtionTable = new PdfPTable(88);
 			patientInformtionTable.setWidthPercentage(100);
 			addPatientRows(patientInformtionTable);
 			document.add(patientInformtionTable);
@@ -123,14 +124,13 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private void addPatientRows(PdfPTable table){
 		
-
 		String clinicName = "Clinic Name: ";
 		
 		PdfPCell patientCell = new PdfPCell(new Paragraph(new Phrase(clinicName, paraFont)));
 		//patientCell.setExtraParagraphSpace(2);
 		patientCell.disableBorderSide(Rectangle.RIGHT);
 		//patientCell.disableBorderSide(Rectangle.BOTTOM);
-		patientCell.setColspan(6);
+		patientCell.setColspan(15);
 		patientCell.setLeading(3, 1);
 		table.addCell(patientCell);
 		
@@ -139,7 +139,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		PdfPCell patientCellAnswer = new PdfPCell(new Paragraph(new Phrase(clinicNameAnswer, textFont)));
 		//patientCellAnswer.setExtraParagraphSpace(2);
 		patientCellAnswer.disableBorderSide(Rectangle.LEFT);
-		patientCellAnswer.setColspan(8);
+		patientCellAnswer.setColspan(15);
 		patientCellAnswer.disableBorderSide(Rectangle.RIGHT);
 		//patientCellAnswer.disableBorderSide(Rectangle.BOTTOM);
 		patientCellAnswer.setLeading(3, 1);
@@ -153,7 +153,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		clinicIdCell.disableBorderSide(Rectangle.RIGHT);
 		//clinicIdCell.disableBorderSide(Rectangle.BOTTOM);
 		clinicIdCell.setLeading(3, 1);
-		clinicIdCell.setColspan(5);
+		clinicIdCell.setColspan(10);
 		table.addCell(clinicIdCell);
 		
 		String clinicIdAnswer = "000";
@@ -164,7 +164,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		clinicIdCellAnswer.disableBorderSide(Rectangle.RIGHT);
 		//clinicIdCellAnswer.disableBorderSide(Rectangle.BOTTOM);
 		clinicIdCellAnswer.setLeading(3, 1);
-		clinicIdCellAnswer.setColspan(3);
+		clinicIdCellAnswer.setColspan(5);
 		table.addCell(clinicIdCellAnswer);
 		
 		
@@ -176,7 +176,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		satelliteCLinicCell.disableBorderSide(Rectangle.RIGHT);
 		//satelliteCLinicCell.disableBorderSide(Rectangle.BOTTOM);
 		satelliteCLinicCell.setLeading(3, 1);
-		satelliteCLinicCell.setColspan(8);
+		satelliteCLinicCell.setColspan(19);
 		table.addCell(satelliteCLinicCell);
 		
 		String sateliteClinicIdAnswer = "10";
@@ -187,7 +187,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		sateliteClinicIdAnswerCell.disableBorderSide(Rectangle.RIGHT);
 		//sateliteClinicIdAnswerCell.disableBorderSide(Rectangle.BOTTOM);
 		sateliteClinicIdAnswerCell.setLeading(3, 1);
-		sateliteClinicIdAnswerCell.setColspan(2);
+		sateliteClinicIdAnswerCell.setColspan(5);
 		table.addCell(sateliteClinicIdAnswerCell);
 		
 		String teamNo = "Team No: ";
@@ -198,7 +198,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		teamNoCell.disableBorderSide(Rectangle.RIGHT);
 		//teamNoCell.disableBorderSide(Rectangle.BOTTOM);
 		teamNoCell.setLeading(3, 1);
-		teamNoCell.setColspan(5);
+		teamNoCell.setColspan(11);
 		table.addCell(teamNoCell);
 		
 		String teamNoAnswer = "10";
@@ -208,16 +208,16 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		teamNoCellAnswer.disableBorderSide(Rectangle.LEFT);
 		//teamNoCellAnswer.disableBorderSide(Rectangle.BOTTOM);
 		teamNoCellAnswer.setLeading(3, 1);
-		teamNoCellAnswer.setColspan(3);
+		teamNoCellAnswer.setColspan(8);
 		table.addCell(teamNoCellAnswer);
 		
-
+		
 		
 		PdfPCell blankRow = new PdfPCell(new Phrase("\n"));
 		blankRow.setFixedHeight(5f);
 		blankRow.disableBorderSide(Rectangle.TOP);
 		blankRow.disableBorderSide(Rectangle.BOTTOM);
-		blankRow.setColspan(40);
+		blankRow.setColspan(88);
 		table.addCell(blankRow);
 		
 		PdfPCell name1 = new PdfPCell(new Paragraph(new Phrase("1. Name: ", textFont)));
@@ -226,7 +226,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		name1.disableBorderSide(Rectangle.TOP);
 		name1.disableBorderSide(Rectangle.BOTTOM);
 		name1.setLeading(3, 1);
-		name1.setColspan(5);
+		name1.setColspan(15);
 		table.addCell(name1);
 		
 		PdfPCell name2 = new PdfPCell(new Paragraph(new Phrase("Nasibul shanto", textFont)));
@@ -236,7 +236,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		name2.disableBorderSide(Rectangle.TOP);
 		name2.disableBorderSide(Rectangle.BOTTOM);
 		name2.setLeading(3, 1);
-		name2.setColspan(8);
+		name2.setColspan(15);
 		table.addCell(name2);
 		
 		PdfPCell name3 = new PdfPCell(new Paragraph(new Phrase("2. Gender: ", textFont)));
@@ -245,34 +245,43 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		name3.disableBorderSide(Rectangle.RIGHT);
 		name3.disableBorderSide(Rectangle.TOP);
 		name3.disableBorderSide(Rectangle.BOTTOM);
-		name3.setColspan(5);
+		name3.setColspan(15);
 		name3.setLeading(3, 1);
 		table.addCell(name3);
 		
 		
-		PdfPCell name4 = new PdfPCell(new Paragraph(new Phrase("Male", textFont)));
+		Paragraph p = new Paragraph(new Phrase("Male ", textFont));
+		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
+		p.add(new Chunk("\u0033", zapfdingbats));
+		PdfPCell name4 = new PdfPCell(new Paragraph(p));
+		
+		//Chunk chunk = new Chunk("o", zapfdingbats);
+		//p.add(chunk);
+		
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		name4.disableBorderSide(Rectangle.LEFT);
 		name4.disableBorderSide(Rectangle.RIGHT);
 		name4.disableBorderSide(Rectangle.TOP);
 		name4.disableBorderSide(Rectangle.BOTTOM);
-		name4.setColspan(4);
+		name4.setColspan(15);
 		name4.setLeading(3, 1);
 		table.addCell(name4);
 		
-		
-		PdfPCell name = new PdfPCell(new Paragraph(new Phrase("Female", textFont)));
+		Paragraph femalep = new Paragraph(new Phrase("Female ", textFont));
+		femalep.add(new Chunk("o", zapfdingbats));
+		PdfPCell name = new PdfPCell(new Paragraph(femalep));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		name.disableBorderSide(Rectangle.LEFT);
 		name.disableBorderSide(Rectangle.RIGHT);
 		name.disableBorderSide(Rectangle.TOP);
 		name.disableBorderSide(Rectangle.BOTTOM);
-		name.setColspan(5);
+		name.setColspan(15);
 		name.setLeading(3, 1);
 		table.addCell(name);
 		
-		
-		PdfPCell name5 = new PdfPCell(new Paragraph(new Phrase("Others", textFont)));
+		Paragraph othersp = new Paragraph(new Phrase("Others ", textFont));
+		othersp.add(new Chunk("o", zapfdingbats));
+		PdfPCell name5 = new PdfPCell(new Paragraph(othersp));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		name5.disableBorderSide(Rectangle.LEFT);
 		name5.disableBorderSide(Rectangle.TOP);
@@ -280,22 +289,23 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		name5.setLeading(3, 1);
 		name5.setColspan(13);
 		table.addCell(name5);
-
+		
+		
 		
 		PdfPCell blankRow1 = new PdfPCell(new Phrase("\n"));
 		blankRow1.setFixedHeight(5f);
 		blankRow1.disableBorderSide(Rectangle.TOP);
 		blankRow1.disableBorderSide(Rectangle.BOTTOM);
-		blankRow1.setColspan(40);
+		blankRow1.setColspan(88);
 		table.addCell(blankRow1);
 		
-		PdfPCell dateOfBirth = new PdfPCell(new Paragraph(new Phrase("3. DoB: ", textFont)));
+		PdfPCell dateOfBirth = new PdfPCell(new Paragraph(new Phrase("3.DoB: ", textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		dateOfBirth.disableBorderSide(Rectangle.TOP);
 		dateOfBirth.disableBorderSide(Rectangle.RIGHT);
 		dateOfBirth.disableBorderSide(Rectangle.BOTTOM);
 		dateOfBirth.setLeading(3, 1);
-		dateOfBirth.setColspan(4);
+		dateOfBirth.setColspan(8);
 		table.addCell(dateOfBirth);
 		
 		PdfPCell dateOfBirthAnswer = new PdfPCell(new Paragraph(new Phrase("15/03/1991", textFont)));
@@ -305,75 +315,82 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		dateOfBirthAnswer.disableBorderSide(Rectangle.LEFT);
 		dateOfBirthAnswer.disableBorderSide(Rectangle.BOTTOM);
 		dateOfBirthAnswer.setLeading(3, 1);
-		dateOfBirthAnswer.setColspan(5);
+		dateOfBirthAnswer.setColspan(11);
 		table.addCell(dateOfBirthAnswer);
 		
 		
-		PdfPCell age = new PdfPCell(new Paragraph(new Phrase("4. Age: ", textFont)));
+		PdfPCell age = new PdfPCell(new Paragraph(new Phrase("4.Age: ", textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		age.disableBorderSide(Rectangle.TOP);
 		age.disableBorderSide(Rectangle.RIGHT);
 		age.disableBorderSide(Rectangle.LEFT);
 		age.disableBorderSide(Rectangle.BOTTOM);
-		age.setColspan(4);
+		age.setColspan(7);
 		age.setLeading(3, 1);
 		table.addCell(age);
 		
-		PdfPCell ageAnswer = new PdfPCell(new Paragraph(new Phrase("29 Y 8 M 26 D", textFont)));
+		PdfPCell ageAnswer = new PdfPCell(new Paragraph(new Phrase("1 Y 8 M 1 D", textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		ageAnswer.disableBorderSide(Rectangle.TOP);
 		ageAnswer.disableBorderSide(Rectangle.RIGHT);
 		ageAnswer.disableBorderSide(Rectangle.LEFT);
 		ageAnswer.disableBorderSide(Rectangle.BOTTOM);
 		ageAnswer.setLeading(3, 1);
-		ageAnswer.setColspan(7);
+		ageAnswer.setColspan(14);
 		table.addCell(ageAnswer);
 		
 		
-		PdfPCell Classification = new PdfPCell(new Paragraph(new Phrase("5. Classification: ", textFont)));
+		PdfPCell Classification = new PdfPCell(new Paragraph(new Phrase("5.Classification: ", textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		Classification.disableBorderSide(Rectangle.TOP);
 		Classification.disableBorderSide(Rectangle.RIGHT);
 		Classification.disableBorderSide(Rectangle.LEFT);
 		Classification.disableBorderSide(Rectangle.BOTTOM);
 		Classification.setLeading(3, 1);
-		Classification.setColspan(8);
+		Classification.setColspan(15);
 		table.addCell(Classification);
 		
-		PdfPCell abletoPay = new PdfPCell(new Paragraph(new Phrase("1.Able to Pay", textFont)));
+		Paragraph abletopayparagraph = new Paragraph(new Phrase("1.Able to Pay ", textFont));
+		abletopayparagraph.add(new Chunk("\u0033", zapfdingbats));
+		PdfPCell abletoPay = new PdfPCell(new Paragraph(abletopayparagraph));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		abletoPay.disableBorderSide(Rectangle.TOP);
 		abletoPay.disableBorderSide(Rectangle.RIGHT);
 		abletoPay.disableBorderSide(Rectangle.LEFT);
 		abletoPay.disableBorderSide(Rectangle.BOTTOM);
 		abletoPay.setLeading(3, 1);
-		abletoPay.setColspan(6);
+		abletoPay.setColspan(15);
 		table.addCell(abletoPay);
 		
-		PdfPCell poor = new PdfPCell(new Paragraph(new Phrase("2.Poor", textFont)));
+		Paragraph poorparagraph = new Paragraph(new Phrase("2.Poor ", textFont));
+		poorparagraph.add(new Chunk("o", zapfdingbats));
+		PdfPCell poor = new PdfPCell(new Paragraph(poorparagraph));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		poor.disableBorderSide(Rectangle.TOP);
 		poor.disableBorderSide(Rectangle.RIGHT);
 		poor.disableBorderSide(Rectangle.LEFT);
 		poor.disableBorderSide(Rectangle.BOTTOM);
 		poor.setLeading(3, 1);
-		poor.setColspan(3);
+		poor.setColspan(9);
 		table.addCell(poor);
 		
-		PdfPCell pop = new PdfPCell(new Paragraph(new Phrase("3.PoP", textFont)));
+		Paragraph poparagraph = new Paragraph(new Phrase("3.PoP ", textFont));
+		poparagraph.add(new Chunk("o", zapfdingbats));
+		PdfPCell pop = new PdfPCell(new Paragraph(poparagraph));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		pop.disableBorderSide(Rectangle.TOP);
 		pop.disableBorderSide(Rectangle.LEFT);
 		pop.disableBorderSide(Rectangle.BOTTOM);
 		pop.setLeading(3, 1);
-		pop.setColspan(3);
+		pop.setColspan(9);
 		table.addCell(pop);
+		
 		
 		PdfPCell blankRow2 = new PdfPCell(new Phrase("\n"));
 		blankRow2.setFixedHeight(5f);
 		blankRow2.disableBorderSide(Rectangle.TOP);
 		blankRow2.disableBorderSide(Rectangle.BOTTOM);
-		blankRow2.setColspan(40);
+		blankRow2.setColspan(88);
 		table.addCell(blankRow2);
 		
 		PdfPCell address = new PdfPCell(new Paragraph(new Phrase("6. Address: ", textFont)));
@@ -382,7 +399,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		address.disableBorderSide(Rectangle.RIGHT);
 		address.disableBorderSide(Rectangle.BOTTOM);
 		address.setLeading(3, 1);
-		address.setColspan(5);
+		address.setColspan(15);
 		table.addCell(address);
 		
 		PdfPCell addressAnswer = new PdfPCell(new Paragraph(new Phrase("B-77/3,kamal Garments Road,Savar,Dhaka", textFont)));
@@ -392,7 +409,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		addressAnswer.disableBorderSide(Rectangle.BOTTOM);
 		addressAnswer.disableBorderSide(Rectangle.LEFT);
 		addressAnswer.setLeading(3, 1);
-		addressAnswer.setColspan(21);
+		addressAnswer.setColspan(45);
 		table.addCell(addressAnswer);
 		
 		PdfPCell mobileNo = new PdfPCell(new Paragraph(new Phrase("7. Mobile No: ", textFont)));
@@ -402,7 +419,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		mobileNo.disableBorderSide(Rectangle.BOTTOM);
 		mobileNo.disableBorderSide(Rectangle.LEFT);
 		mobileNo.setLeading(3, 1);
-		mobileNo.setColspan(7);
+		mobileNo.setColspan(15);
 		table.addCell(mobileNo);
 		
 		PdfPCell mobileNoAnswer = new PdfPCell(new Paragraph(new Phrase("01723208009 ", textFont)));
@@ -411,14 +428,14 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		mobileNoAnswer.disableBorderSide(Rectangle.BOTTOM);
 		mobileNoAnswer.disableBorderSide(Rectangle.LEFT);
 		mobileNoAnswer.setLeading(3, 1);
-		mobileNoAnswer.setColspan(7);
+		mobileNoAnswer.setColspan(13);
 		table.addCell(mobileNoAnswer);
 		
 		PdfPCell blankRow3 = new PdfPCell(new Phrase("\n"));
 		blankRow3.setFixedHeight(5f);
 		blankRow3.disableBorderSide(Rectangle.TOP);
 		blankRow3.disableBorderSide(Rectangle.BOTTOM);
-		blankRow3.setColspan(40);
+		blankRow3.setColspan(88);
 		table.addCell(blankRow3);
 		
 		PdfPCell session = new PdfPCell(new Paragraph(new Phrase("8. Session:  ", textFont)));
@@ -427,7 +444,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		session.disableBorderSide(Rectangle.BOTTOM);
 		session.disableBorderSide(Rectangle.RIGHT);
 		session.setLeading(3, 1);
-		session.setColspan(7);
+		session.setColspan(20);
 		table.addCell(session);
 		
 		PdfPCell sessionAnswer = new PdfPCell(new Paragraph(new Phrase("Test", textFont)));
@@ -436,14 +453,14 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		sessionAnswer.disableBorderSide(Rectangle.BOTTOM);
 		sessionAnswer.disableBorderSide(Rectangle.LEFT);
 		sessionAnswer.setLeading(3, 1);
-		sessionAnswer.setColspan(33);
+		sessionAnswer.setColspan(68);
 		table.addCell(sessionAnswer);
 		
 		PdfPCell blankRow4 = new PdfPCell(new Phrase("\n"));
 		blankRow4.setFixedHeight(5f);
 		blankRow4.disableBorderSide(Rectangle.TOP);
 		blankRow4.disableBorderSide(Rectangle.BOTTOM);
-		blankRow4.setColspan(40);
+		blankRow4.setColspan(88);
 		table.addCell(blankRow4);
 		
 		PdfPCell reference = new PdfPCell(new Paragraph(new Phrase("9. Reference:  ", textFont)));
@@ -452,7 +469,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		reference.disableBorderSide(Rectangle.BOTTOM);
 		reference.disableBorderSide(Rectangle.RIGHT);
 		reference.setLeading(3, 1);
-		reference.setColspan(7);
+		reference.setColspan(20);
 		table.addCell(reference);
 		
 		PdfPCell referenceAnswer = new PdfPCell(new Paragraph(new Phrase("Test", textFont)));
@@ -461,14 +478,14 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		referenceAnswer.disableBorderSide(Rectangle.BOTTOM);
 		referenceAnswer.disableBorderSide(Rectangle.LEFT);
 		referenceAnswer.setLeading(3, 1);
-		referenceAnswer.setColspan(33);
+		referenceAnswer.setColspan(68);
 		table.addCell(referenceAnswer);
 		
 		PdfPCell blankRow5 = new PdfPCell(new Phrase("\n"));
 		blankRow5.setFixedHeight(5f);
 		blankRow5.disableBorderSide(Rectangle.TOP);
 		blankRow5.disableBorderSide(Rectangle.BOTTOM);
-		blankRow5.setColspan(40);
+		blankRow5.setColspan(88);
 		table.addCell(blankRow5);
 		
 		PdfPCell birthDistrict = new PdfPCell(new Paragraph(new Phrase("10. Birth District  ", textFont)));
@@ -477,7 +494,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		birthDistrict.disableBorderSide(Rectangle.BOTTOM);
 		birthDistrict.disableBorderSide(Rectangle.RIGHT);
 		birthDistrict.setLeading(3, 1);
-		birthDistrict.setColspan(10);
+		birthDistrict.setColspan(20);
 		table.addCell(birthDistrict);
 		
 		PdfPCell birthDistrictAnswer = new PdfPCell(new Paragraph(new Phrase("SUNAMGANJ", textFont)));
@@ -487,7 +504,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		birthDistrictAnswer.disableBorderSide(Rectangle.RIGHT);
 		birthDistrictAnswer.disableBorderSide(Rectangle.LEFT);
 		birthDistrictAnswer.setLeading(3, 1);
-		birthDistrictAnswer.setColspan(10);
+		birthDistrictAnswer.setColspan(20);
 		table.addCell(birthDistrictAnswer);
 		
 		PdfPCell birthUpazila = new PdfPCell(new Paragraph(new Phrase("11. Birth Upazila: ", textFont)));
@@ -497,7 +514,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		birthUpazila.disableBorderSide(Rectangle.RIGHT);
 		birthUpazila.disableBorderSide(Rectangle.LEFT);
 		birthUpazila.setLeading(3, 1);
-		birthUpazila.setColspan(10);
+		birthUpazila.setColspan(20);
 		table.addCell(birthUpazila);
 		
 		PdfPCell birthUpazilaAnswer = new PdfPCell(new Paragraph(new Phrase("PAIKPARA", textFont)));
@@ -506,14 +523,14 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		birthUpazilaAnswer.disableBorderSide(Rectangle.BOTTOM);
 		birthUpazilaAnswer.disableBorderSide(Rectangle.LEFT);
 		birthUpazilaAnswer.setLeading(3, 1);
-		birthUpazilaAnswer.setColspan(10);
+		birthUpazilaAnswer.setColspan(28);
 		table.addCell(birthUpazilaAnswer);
 		
 		PdfPCell blankRow6 = new PdfPCell(new Phrase("\n"));
 		blankRow6.setFixedHeight(5f);
 		blankRow6.disableBorderSide(Rectangle.TOP);
 		blankRow6.disableBorderSide(Rectangle.BOTTOM);
-		blankRow6.setColspan(40);
+		blankRow6.setColspan(88);
 		table.addCell(blankRow6);
 		
 		PdfPCell birthrank = new PdfPCell(new Paragraph(new Phrase("12. Birth Rank:  ", textFont)));
@@ -522,7 +539,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		birthrank.disableBorderSide(Rectangle.RIGHT);
 		birthrank.disableBorderSide(Rectangle.BOTTOM);
 		birthrank.setLeading(3, 1);
-		birthrank.setColspan(8);
+		birthrank.setColspan(15);
 		table.addCell(birthrank);
 		
 		PdfPCell birthrankAnswer = new PdfPCell(new Paragraph(new Phrase("78", textFont)));
@@ -533,7 +550,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		birthrankAnswer.disableBorderSide(Rectangle.LEFT);
 		
 		birthrankAnswer.setLeading(3, 1);
-		birthrankAnswer.setColspan(5);
+		birthrankAnswer.setColspan(20);
 		table.addCell(birthrankAnswer);
 		
 		PdfPCell birthMontherName = new PdfPCell(new Paragraph(new Phrase("13. Birth Mother's First Name:", textFont)));
@@ -543,7 +560,7 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		birthMontherName.disableBorderSide(Rectangle.LEFT);
 		birthMontherName.disableBorderSide(Rectangle.BOTTOM);
 		birthMontherName.setLeading(3, 1);
-		birthMontherName.setColspan(15);
+		birthMontherName.setColspan(30);
 		table.addCell(birthMontherName);
 		
 		PdfPCell birthMontherNameAnswer = new PdfPCell(new Paragraph(new Phrase("unknown", textFont)));
@@ -552,13 +569,13 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		birthMontherNameAnswer.disableBorderSide(Rectangle.LEFT);
 		birthMontherNameAnswer.disableBorderSide(Rectangle.BOTTOM);
 		birthMontherNameAnswer.setLeading(3, 1);
-		birthMontherNameAnswer.setColspan(12);
+		birthMontherNameAnswer.setColspan(23);
 		table.addCell(birthMontherNameAnswer);
 		
 		PdfPCell blankRow7 = new PdfPCell(new Phrase("\n"));
 		blankRow7.setFixedHeight(5f);
 		blankRow7.disableBorderSide(Rectangle.TOP);
-		blankRow7.setColspan(40);
+		blankRow7.setColspan(88);
 		table.addCell(blankRow7);
 		
 		
@@ -842,10 +859,10 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 		due.disableBorderSide(Rectangle.TOP);
 		table.addCell(due);
 		
-		PdfPCell dueAnswer = new PdfPCell(new Paragraph(new Phrase("0", paraFont)));
+		PdfPCell dueAnswer = new PdfPCell(new Paragraph(new Phrase("110", paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		dueAnswer.setLeading(3, 1);
-		dueAnswer.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		dueAnswer.setHorizontalAlignment(Element.ALIGN_LEFT);
 		//dueAnswer.setColspan(4);
 		dueAnswer.disableBorderSide(Rectangle.BOTTOM);
 		dueAnswer.disableBorderSide(Rectangle.LEFT);

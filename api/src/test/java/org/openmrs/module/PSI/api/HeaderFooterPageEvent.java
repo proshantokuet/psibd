@@ -214,8 +214,14 @@ public class HeaderFooterPageEvent extends PdfPageEventHelper {
 		
 		Paragraph p = new Paragraph(new Phrase("Type:             Static ", textFont));
 		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
-		Chunk chunk = new Chunk("o", zapfdingbats);
-		p.add(chunk);
+		//Chunk chunk = new Chunk("o", zapfdingbats);
+		//p.add(chunk);
+		p.add(new Chunk("\u0033", zapfdingbats));
+//		Phrase phrase = new Phrase("A check mark: ");   
+//		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS);
+//		phrase.Add(new Chunk("\u0033", zapfdingbats));
+//		phrase.Add(" and more text");
+//		document.Add(phrase);
 		
 		PdfPCell staticCell = new PdfPCell(new Paragraph(p));
 		//staticCell.setExtraParagraphSpace(2);
