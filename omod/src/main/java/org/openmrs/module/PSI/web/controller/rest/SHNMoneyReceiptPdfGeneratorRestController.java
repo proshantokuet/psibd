@@ -2,12 +2,28 @@ package org.openmrs.module.PSI.web.controller.rest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
+import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
+import org.openmrs.module.PSI.dto.MoneyReceiptPdfDTO;
+import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.HeaderFooterPageEventMoneyReceipt;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +57,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 	
 	Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, BaseColor.BLACK);
 	
-	
+	protected final Log log = LogFactory.getLog(getClass());
 	
 //	@RequestMapping(value = "/moneyreceipt", method = RequestMethod.GET)
 //	public void downloadFile(HttpServletResponse response,
@@ -108,10 +124,10 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 //	}
 
 	
-    @RequestMapping(value = "/moneyreceiptdirectpdf", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> generatePdf(HttpServletRequest request) throws IOException {
+    @RequestMapping(value = "/moneyreceiptdirectpdf",consumes = "application/json", method = RequestMethod.POST)
+    public ResponseEntity<byte[]> generatePdf(@RequestBody MoneyReceiptPdfDTO dto) throws IOException {
     	
-        byte[] pdf = createPdf();
+        byte[] pdf = createPdf(dto);
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "pdf"));
@@ -121,9 +137,9 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
     }
 	
 	
-	private byte[] createPdf() {
+	private byte[] createPdf(MoneyReceiptPdfDTO dto) {
 		//Document document = new Document();
-		byte [] finalByte;
+		PSIMoneyReceipt psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(dto.getMid());
         Document document = new Document(PageSize.A4, 36, 36, 36, 72);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
@@ -131,33 +147,43 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 //			        + "money receipt" + ".pdf"));
 		                
 	        PdfWriter writer = PdfWriter.getInstance(document, out);
-	        HeaderFooterPageEventMoneyReceipt event = new HeaderFooterPageEventMoneyReceipt();
+	        HeaderFooterPageEventMoneyReceipt event = new HeaderFooterPageEventMoneyReceipt(dto);
 			writer.setPageEvent(event);
 			document.open();
 			PdfPTable patientInformtionTable = new PdfPTable(88);
 			patientInformtionTable.setWidthPercentage(100);
-			addPatientRows(patientInformtionTable);
+			addPatientRows(patientInformtionTable,dto,psiMoneyReceipt);
 			document.add(patientInformtionTable);
-			document.add(new Paragraph("\n"));
-			document.add(new Paragraph(new Phrase("14. Service and Payable Amount",textFont)));
-			document.add(new Paragraph("\n"));
+			//document.add(new Paragraph("\n"));
+			PdfPTable labelTable = new PdfPTable(1);
+			labelTable.setWidthPercentage(100);
+			PdfPCell labelCell = new PdfPCell(new Paragraph(new Phrase("14. Service and Payable Amount",textFont)));
+			labelCell.disableBorderSide(Rectangle.LEFT);
+			labelCell.disableBorderSide(Rectangle.RIGHT);
+			labelCell.disableBorderSide(Rectangle.BOTTOM);
+			labelCell.setExtraParagraphSpace(2);
+			labelTable.addCell(labelCell);
+			document.add(labelTable);
+			//document.add(new Paragraph(new Phrase("14. Service and Payable Amount",textFont)));
+			//document.add(new Paragraph("\n"));
 	        float[] columnWidths = {1,4,6,3,3,3,3,4};
 			PdfPTable serviceInformtionTable = new PdfPTable(columnWidths);
 			serviceInformtionTable.setWidthPercentage(100);
-			serviceInformtionTable.setHeaderRows(8);
-			addServiceRow(serviceInformtionTable);
+			serviceInformtionTable.setHeaderRows(1);
+			addServiceRow(serviceInformtionTable,psiMoneyReceipt,dto.getInWordsTaka());
 			document.add(serviceInformtionTable);
+			if(psiMoneyReceipt.getPayments().size() > 0) {
 			PdfPTable receiveAmountTable = new PdfPTable(8);
 			receiveAmountTable.setWidthPercentage(100);
-			receiveAmountDetails(receiveAmountTable);
+			receiveAmountDetails(receiveAmountTable,psiMoneyReceipt);
 			document.add(receiveAmountTable);
+			}
 			
-			
-			document.add(new Paragraph("\n"));
-			document.add(new Paragraph("\n"));
+			//document.add(new Paragraph("\n"));
+			//document.add(new Paragraph("\n"));
 			PdfPTable footerTable = new PdfPTable(5);
 			footerTable.setWidthPercentage(100);
-			footerRow(footerTable);
+			footerRow(footerTable,dto.getGetDataCollectorFullname(),psiMoneyReceipt.getDesignation());
 			document.add(footerTable);
 			
 		}
@@ -173,7 +199,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 	}
 	
 	
-	private void addPatientRows(PdfPTable table){
+	private void addPatientRows(PdfPTable table,MoneyReceiptPdfDTO dto,PSIMoneyReceipt psiMoneyReceipt){
 		
 		String clinicName = "Clinic Name: ";
 		
@@ -187,7 +213,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		
 		String clinicNameAnswer = "Jatrabari Clinic";
 		
-		PdfPCell patientCellAnswer = new PdfPCell(new Paragraph(new Phrase(clinicNameAnswer, textFont)));
+		PdfPCell patientCellAnswer = new PdfPCell(new Paragraph(new Phrase(psiMoneyReceipt.getClinicName(), textFont)));
 		//patientCellAnswer.setExtraParagraphSpace(2);
 		patientCellAnswer.disableBorderSide(Rectangle.LEFT);
 		patientCellAnswer.setColspan(15);
@@ -209,7 +235,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		
 		String clinicIdAnswer = "000";
 		
-		PdfPCell clinicIdCellAnswer = new PdfPCell(new Paragraph(new Phrase(clinicIdAnswer, textFont)));
+		PdfPCell clinicIdCellAnswer = new PdfPCell(new Paragraph(new Phrase(psiMoneyReceipt.getClinicCode(), textFont)));
 		//clinicIdCellAnswer.setExtraParagraphSpace(2);
 		clinicIdCellAnswer.disableBorderSide(Rectangle.LEFT);
 		clinicIdCellAnswer.disableBorderSide(Rectangle.RIGHT);
@@ -232,7 +258,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		
 		String sateliteClinicIdAnswer = "10";
 		
-		PdfPCell sateliteClinicIdAnswerCell = new PdfPCell(new Paragraph(new Phrase(sateliteClinicIdAnswer, textFont)));
+		PdfPCell sateliteClinicIdAnswerCell = new PdfPCell(new Paragraph(new Phrase(psiMoneyReceipt.getSateliteClinicId(), textFont)));
 		//sateliteClinicIdAnswerCell.setExtraParagraphSpace(2);
 		sateliteClinicIdAnswerCell.disableBorderSide(Rectangle.LEFT);
 		sateliteClinicIdAnswerCell.disableBorderSide(Rectangle.RIGHT);
@@ -254,7 +280,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		
 		String teamNoAnswer = "10";
 		
-		PdfPCell teamNoCellAnswer = new PdfPCell(new Paragraph(new Phrase(teamNoAnswer, textFont)));
+		PdfPCell teamNoCellAnswer = new PdfPCell(new Paragraph(new Phrase(psiMoneyReceipt.getTeamNo(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		teamNoCellAnswer.disableBorderSide(Rectangle.LEFT);
 		//teamNoCellAnswer.disableBorderSide(Rectangle.BOTTOM);
@@ -277,10 +303,10 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		name1.disableBorderSide(Rectangle.TOP);
 		name1.disableBorderSide(Rectangle.BOTTOM);
 		name1.setLeading(3, 1);
-		name1.setColspan(15);
+		name1.setColspan(10);
 		table.addCell(name1);
 		
-		PdfPCell name2 = new PdfPCell(new Paragraph(new Phrase("Nasibul shanto", textFont)));
+		PdfPCell name2 = new PdfPCell(new Paragraph(new Phrase(psiMoneyReceipt.getPatientName(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		name2.disableBorderSide(Rectangle.LEFT);
 		name2.disableBorderSide(Rectangle.RIGHT);
@@ -289,6 +315,26 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		name2.setLeading(3, 1);
 		name2.setColspan(15);
 		table.addCell(name2);
+		
+		String maleFont = "";
+		String femaleFont = "";
+		String othersFont = "";
+		if(psiMoneyReceipt.getGender().equalsIgnoreCase("M")) {
+			maleFont = "\u0033";
+			femaleFont = "o";
+			othersFont = "o";
+		}
+		else if(psiMoneyReceipt.getGender().equalsIgnoreCase("F")) {
+			
+			femaleFont = "\u0033";
+			maleFont = "o";
+			othersFont = "o";
+		}
+		else if(psiMoneyReceipt.getGender().equalsIgnoreCase("O")) {
+			maleFont = "o";
+			femaleFont = "o";
+			othersFont = "\u0033";
+		}
 		
 		PdfPCell name3 = new PdfPCell(new Paragraph(new Phrase("2. Gender: ", textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
@@ -303,7 +349,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		
 		Paragraph p = new Paragraph(new Phrase("Male ", textFont));
 		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
-		p.add(new Chunk("\u0033", zapfdingbats));
+		p.add(new Chunk(maleFont, zapfdingbats));
 		PdfPCell name4 = new PdfPCell(new Paragraph(p));
 		
 		//Chunk chunk = new Chunk("o", zapfdingbats);
@@ -319,7 +365,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		table.addCell(name4);
 		
 		Paragraph femalep = new Paragraph(new Phrase("Female ", textFont));
-		femalep.add(new Chunk("o", zapfdingbats));
+		femalep.add(new Chunk(femaleFont, zapfdingbats));
 		PdfPCell name = new PdfPCell(new Paragraph(femalep));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		name.disableBorderSide(Rectangle.LEFT);
@@ -331,14 +377,14 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		table.addCell(name);
 		
 		Paragraph othersp = new Paragraph(new Phrase("Others ", textFont));
-		othersp.add(new Chunk("o", zapfdingbats));
+		othersp.add(new Chunk(othersFont, zapfdingbats));
 		PdfPCell name5 = new PdfPCell(new Paragraph(othersp));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		name5.disableBorderSide(Rectangle.LEFT);
 		name5.disableBorderSide(Rectangle.TOP);
 		name5.disableBorderSide(Rectangle.BOTTOM);
 		name5.setLeading(3, 1);
-		name5.setColspan(13);
+		name5.setColspan(18);
 		table.addCell(name5);
 		
 		
@@ -359,7 +405,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		dateOfBirth.setColspan(8);
 		table.addCell(dateOfBirth);
 		
-		PdfPCell dateOfBirthAnswer = new PdfPCell(new Paragraph(new Phrase("15/03/1991", textFont)));
+		PdfPCell dateOfBirthAnswer = new PdfPCell(new Paragraph(new Phrase(dto.getBirthDate(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		dateOfBirthAnswer.disableBorderSide(Rectangle.TOP);
 		dateOfBirthAnswer.disableBorderSide(Rectangle.RIGHT);
@@ -380,7 +426,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		age.setLeading(3, 1);
 		table.addCell(age);
 		
-		PdfPCell ageAnswer = new PdfPCell(new Paragraph(new Phrase("65 Y 12 M 30 D", textFont)));
+		PdfPCell ageAnswer = new PdfPCell(new Paragraph(new Phrase(dto.getAge(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		ageAnswer.disableBorderSide(Rectangle.TOP);
 		ageAnswer.disableBorderSide(Rectangle.RIGHT);
@@ -401,8 +447,30 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		Classification.setColspan(15);
 		table.addCell(Classification);
 		
+		String ableToPayFont = "";
+		String poorFont = "";
+		String popFont = "";
+		
+		if(psiMoneyReceipt.getWealth().equalsIgnoreCase("Able to Pay")) {
+			ableToPayFont = "\u0033";
+			poorFont = "o";
+			popFont = "o";
+		}
+		else if(psiMoneyReceipt.getWealth().equalsIgnoreCase("Poor")) {
+			
+			poorFont = "\u0033";
+			ableToPayFont = "o";
+			popFont = "o";
+		}
+		else if(psiMoneyReceipt.getWealth().equalsIgnoreCase("PoP")) {
+			ableToPayFont = "o";
+			poorFont = "o";
+			popFont = "\u0033";
+		}
+		
+		
 		Paragraph abletopayparagraph = new Paragraph(new Phrase("1.Able to Pay ", textFont));
-		abletopayparagraph.add(new Chunk("\u0033", zapfdingbats));
+		abletopayparagraph.add(new Chunk(ableToPayFont, zapfdingbats));
 		PdfPCell abletoPay = new PdfPCell(new Paragraph(abletopayparagraph));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		abletoPay.disableBorderSide(Rectangle.TOP);
@@ -414,7 +482,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		table.addCell(abletoPay);
 		
 		Paragraph poorparagraph = new Paragraph(new Phrase("2.Poor ", textFont));
-		poorparagraph.add(new Chunk("o", zapfdingbats));
+		poorparagraph.add(new Chunk(poorFont, zapfdingbats));
 		PdfPCell poor = new PdfPCell(new Paragraph(poorparagraph));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		poor.disableBorderSide(Rectangle.TOP);
@@ -426,7 +494,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		table.addCell(poor);
 		
 		Paragraph poparagraph = new Paragraph(new Phrase("3.PoP ", textFont));
-		poparagraph.add(new Chunk("o", zapfdingbats));
+		poparagraph.add(new Chunk(popFont, zapfdingbats));
 		PdfPCell pop = new PdfPCell(new Paragraph(poparagraph));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		pop.disableBorderSide(Rectangle.TOP);
@@ -453,7 +521,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		address.setColspan(15);
 		table.addCell(address);
 		
-		PdfPCell addressAnswer = new PdfPCell(new Paragraph(new Phrase("B-77/3,kamal Garments Road,Savar,Dhaka", textFont)));
+		PdfPCell addressAnswer = new PdfPCell(new Paragraph(new Phrase(dto.getAddress(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		addressAnswer.disableBorderSide(Rectangle.TOP);
 		addressAnswer.disableBorderSide(Rectangle.RIGHT);
@@ -473,7 +541,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		mobileNo.setColspan(15);
 		table.addCell(mobileNo);
 		
-		PdfPCell mobileNoAnswer = new PdfPCell(new Paragraph(new Phrase("01723208009 ", textFont)));
+		PdfPCell mobileNoAnswer = new PdfPCell(new Paragraph(new Phrase(psiMoneyReceipt.getContact(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		mobileNoAnswer.disableBorderSide(Rectangle.TOP);
 		mobileNoAnswer.disableBorderSide(Rectangle.BOTTOM);
@@ -498,7 +566,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		session.setColspan(20);
 		table.addCell(session);
 		
-		PdfPCell sessionAnswer = new PdfPCell(new Paragraph(new Phrase("Test", textFont)));
+		PdfPCell sessionAnswer = new PdfPCell(new Paragraph(new Phrase(psiMoneyReceipt.getSession(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		sessionAnswer.disableBorderSide(Rectangle.TOP);
 		sessionAnswer.disableBorderSide(Rectangle.BOTTOM);
@@ -523,7 +591,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		reference.setColspan(20);
 		table.addCell(reference);
 		
-		PdfPCell referenceAnswer = new PdfPCell(new Paragraph(new Phrase("Test", textFont)));
+		PdfPCell referenceAnswer = new PdfPCell(new Paragraph(new Phrase(dto.getReference(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		referenceAnswer.disableBorderSide(Rectangle.TOP);
 		referenceAnswer.disableBorderSide(Rectangle.BOTTOM);
@@ -539,7 +607,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		blankRow5.setColspan(88);
 		table.addCell(blankRow5);
 		
-		PdfPCell birthDistrict = new PdfPCell(new Paragraph(new Phrase("10. Birth District  ", textFont)));
+		PdfPCell birthDistrict = new PdfPCell(new Paragraph(new Phrase("10. Birth District:  ", textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		birthDistrict.disableBorderSide(Rectangle.TOP);
 		birthDistrict.disableBorderSide(Rectangle.BOTTOM);
@@ -548,7 +616,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		birthDistrict.setColspan(20);
 		table.addCell(birthDistrict);
 		
-		PdfPCell birthDistrictAnswer = new PdfPCell(new Paragraph(new Phrase("SUNAMGANJ", textFont)));
+		PdfPCell birthDistrictAnswer = new PdfPCell(new Paragraph(new Phrase(dto.getBirthDistrict(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		birthDistrictAnswer.disableBorderSide(Rectangle.TOP);
 		birthDistrictAnswer.disableBorderSide(Rectangle.BOTTOM);
@@ -568,7 +636,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		birthUpazila.setColspan(20);
 		table.addCell(birthUpazila);
 		
-		PdfPCell birthUpazilaAnswer = new PdfPCell(new Paragraph(new Phrase("PAIKPARA", textFont)));
+		PdfPCell birthUpazilaAnswer = new PdfPCell(new Paragraph(new Phrase(dto.getBirthUpazilla(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		birthUpazilaAnswer.disableBorderSide(Rectangle.TOP);
 		birthUpazilaAnswer.disableBorderSide(Rectangle.BOTTOM);
@@ -593,7 +661,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		birthrank.setColspan(15);
 		table.addCell(birthrank);
 		
-		PdfPCell birthrankAnswer = new PdfPCell(new Paragraph(new Phrase("78", textFont)));
+		PdfPCell birthrankAnswer = new PdfPCell(new Paragraph(new Phrase(dto.getBirthRank(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		birthrankAnswer.disableBorderSide(Rectangle.TOP);
 		birthrankAnswer.disableBorderSide(Rectangle.RIGHT);
@@ -614,7 +682,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		birthMontherName.setColspan(30);
 		table.addCell(birthMontherName);
 		
-		PdfPCell birthMontherNameAnswer = new PdfPCell(new Paragraph(new Phrase("unknown", textFont)));
+		PdfPCell birthMontherNameAnswer = new PdfPCell(new Paragraph(new Phrase(dto.getBirthMothersFirstName(), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		birthMontherNameAnswer.disableBorderSide(Rectangle.TOP);
 		birthMontherNameAnswer.disableBorderSide(Rectangle.LEFT);
@@ -633,9 +701,9 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 	}
 	
 	
-	private void addServiceRow(PdfPTable table) {
+	private void addServiceRow(PdfPTable table,PSIMoneyReceipt psiMoneyReceipt,String inwordsTaka) {
 		
-		
+		log.error("Entering service row" + psiMoneyReceipt.getServices().size());
 		PdfPCell serialHeader = new PdfPCell(new Paragraph(new Phrase("SL", paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		serialHeader.setLeading(3, 1);
@@ -693,74 +761,172 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		//payableAmountHeader.setColspan(30);
 		table.addCell(payableAmountHeader);
 		
-		for(int i = 0; i< 20; i++) {
-			for(int j = 0;j< 8; j++) {
-				table.addCell(new PdfPCell(new Paragraph(new Phrase(String.valueOf(j),textFont))));
-			}
+		log.error("Completed header making" + psiMoneyReceipt.getServices().size());
+		
+		 int count = 0;
+		 float totalDiscount = 0;
+		 float totalAmount = 0;
+		 float totalNetPayable = 0;
+		for (PSIServiceProvision psiServiceProvision : psiMoneyReceipt.getServices()) {
+			log.error("loop entered" + psiServiceProvision.getSpid());
+			count = count + 1;
+			totalAmount = totalAmount + psiServiceProvision.getTotalAmount();
+			totalDiscount = totalDiscount + psiServiceProvision.getDiscount();
+			totalNetPayable = totalNetPayable + psiServiceProvision.getNetPayable();
+			log.error("totalAmount psiServiceProvision" + totalAmount);
+			log.error("totalDiscount psiServiceProvision" + totalDiscount);
+			log.error("totalNetPayable psiServiceProvision" + totalNetPayable);
 			
+			PdfPCell serialNo = new PdfPCell(new Paragraph(new Phrase(String.valueOf(count), textFont)));
+			serialNo.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			serialNo.setExtraParagraphSpace(2);
+			table.addCell(serialNo);
+			//table.addCell(new PdfPCell(new Paragraph(new Phrase(String.valueOf(count),textFont))));
+			
+			PdfPCell code = new PdfPCell(new Paragraph(new Phrase(psiServiceProvision.getCode(), textFont)));
+			code.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			code.setExtraParagraphSpace(2);
+			table.addCell(code);
+			//table.addCell(new PdfPCell(new Paragraph(new Phrase(psiServiceProvision.getCode(),textFont))));
+			
+			PdfPCell item = new PdfPCell(new Paragraph(new Phrase(psiServiceProvision.getItem(), textFont)));
+			item.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			item.setExtraParagraphSpace(2);
+			table.addCell(item);
+			//table.addCell(new PdfPCell(new Paragraph(new Phrase(psiServiceProvision.getItem(),textFont))));
+			
+			PdfPCell quantity = new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getQuantity()), textFont)));
+			quantity.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			quantity.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			quantity.setExtraParagraphSpace(2);
+			table.addCell(quantity);
+			//table.addCell(new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getQuantity()),textFont))));
+			
+			PdfPCell unitCost = new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getUnitCost()), textFont)));
+			unitCost.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			unitCost.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			unitCost.setExtraParagraphSpace(2);
+			table.addCell(unitCost);
+			//table.addCell(new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getUnitCost()),textFont))));
+			
+			PdfPCell totalAmountCell = new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getTotalAmount()), textFont)));
+			totalAmountCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			totalAmountCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			totalAmountCell.setExtraParagraphSpace(2);
+			table.addCell(totalAmountCell);
+			//table.addCell(new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getTotalAmount()),textFont))));
+			
+			PdfPCell discountCell = new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getDiscount()), textFont)));
+			discountCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			discountCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			discountCell.setExtraParagraphSpace(2);
+			table.addCell(discountCell);
+			//table.addCell(new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getDiscount()),textFont))));
+			
+			PdfPCell netpayableCell = new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getNetPayable()), textFont)));
+			netpayableCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			netpayableCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			netpayableCell.setExtraParagraphSpace(2);
+			table.addCell(netpayableCell);
+			//table.addCell(new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getNetPayable()),textFont))));
 		}
 		
+//		for(int i = 0; i< 5; i++) {
+//			for(int j = 0;j< 8; j++) {
+//				table.addCell(new PdfPCell(new Paragraph(new Phrase(String.valueOf(j),textFont))));
+//			}
+//			
+//		}
+		log.error("Completed Entering cell" + psiMoneyReceipt.getServices().size());
 		PdfPCell totalTk = new PdfPCell(new Paragraph(new Phrase("Total Taka  ", paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		totalTk.setLeading(3, 1);
+		totalTk.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		totalTk.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		totalTk.setExtraParagraphSpace(2);
 		totalTk.setColspan(5);
 		table.addCell(totalTk);
 		
-		PdfPCell totalAmountTk = new PdfPCell(new Paragraph(new Phrase("30", textFont)));
+		log.error("totalAmount" + totalAmount);
+		PdfPCell totalAmountTk = new PdfPCell(new Paragraph(new Phrase(String.valueOf(totalAmount), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
+		totalAmountTk.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		totalAmountTk.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		totalAmountTk.setLeading(3, 1);
+		totalAmountTk.setExtraParagraphSpace(2);
 		table.addCell(totalAmountTk);
 		
-		PdfPCell discount = new PdfPCell(new Paragraph(new Phrase("0", textFont)));
+		log.error("totalDiscount" + totalDiscount);
+		PdfPCell discount = new PdfPCell(new Paragraph(new Phrase(String.valueOf(totalDiscount), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
+		discount.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		discount.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		discount.setExtraParagraphSpace(2);
 		discount.setLeading(3, 1);
 		table.addCell(discount);
 		
-		PdfPCell netpayableTk = new PdfPCell(new Paragraph(new Phrase("26", textFont)));
+		log.error("totalNetPayable" + totalNetPayable);
+		PdfPCell netpayableTk = new PdfPCell(new Paragraph(new Phrase(String.valueOf(totalNetPayable), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
+		netpayableTk.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		netpayableTk.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		netpayableTk.setExtraParagraphSpace(2);
 		netpayableTk.setLeading(3, 1);
 		table.addCell(netpayableTk);
 		
+		
 		PdfPCell overallDiscount = new PdfPCell(new Paragraph(new Phrase("Overall Discount   ", paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
+		overallDiscount.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		overallDiscount.setLeading(3, 1);
 		overallDiscount.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		overallDiscount.setExtraParagraphSpace(2);
 		overallDiscount.setColspan(5);
 		table.addCell(overallDiscount);
 		
-		PdfPCell overallDiscountTaka = new PdfPCell(new Paragraph(new Phrase("0 ", textFont)));
+		log.error("overallDiscount" + psiMoneyReceipt.getOverallDiscount());
+		PdfPCell overallDiscountTaka = new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiMoneyReceipt.getOverallDiscount()), textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		overallDiscountTaka.setLeading(3, 1);
+		overallDiscountTaka.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		overallDiscountTaka.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		overallDiscountTaka.setExtraParagraphSpace(2);
 		overallDiscountTaka.setColspan(3);
 		table.addCell(overallDiscountTaka);
 		
 		PdfPCell netPayableDiscount = new PdfPCell(new Paragraph(new Phrase("Net Payable After Discount ", paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
+		netPayableDiscount.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		netPayableDiscount.setLeading(3, 1);
 		netPayableDiscount.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		netPayableDiscount.setExtraParagraphSpace(2);
 		netPayableDiscount.setColspan(5);
 		table.addCell(netPayableDiscount);
 		
-		PdfPCell netPayableDiscountTaka = new PdfPCell(new Paragraph(new Phrase("26 ", paraFont)));
+		log.error("total amount" + psiMoneyReceipt.getTotalAmount());
+		PdfPCell netPayableDiscountTaka = new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiMoneyReceipt.getTotalAmount()), paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
+		
 		netPayableDiscountTaka.setLeading(3, 1);
 		netPayableDiscountTaka.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		netPayableDiscountTaka.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		netPayableDiscountTaka.setExtraParagraphSpace(2);
 		netPayableDiscountTaka.setColspan(3);
 		table.addCell(netPayableDiscountTaka);
 		
-		PdfPCell takainWords = new PdfPCell(new Paragraph(new Phrase("In Words (Taka): Twenty Six only ", paraFont)));
-		//teamNoCellAnswer.setExtraParagraphSpace(2);
+		log.error("inwordsTaka" + inwordsTaka);
+		PdfPCell takainWords = new PdfPCell(new Paragraph(new Phrase("In Words (Taka): " + inwordsTaka, paraFont)));
+		takainWords.setExtraParagraphSpace(2);
 		takainWords.setLeading(3, 1);
 		takainWords.setHorizontalAlignment(Element.ALIGN_LEFT);
+		takainWords.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		takainWords.setColspan(8);
 		table.addCell(takainWords);
 	}
 	
-	private void footerRow(PdfPTable table) {
+	private void footerRow(PdfPTable table,String name,String designationDataCollector) {
 		
-		PdfPCell collectorName = new PdfPCell(new Paragraph(new Phrase("Riyad", paraFont)));
+		PdfPCell collectorName = new PdfPCell(new Paragraph(new Phrase(name, paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		collectorName.setLeading(3, 1);
 		collectorName.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -778,7 +944,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		blankcell.disableBorderSide(Rectangle.BOTTOM);
 		table.addCell(blankcell);
 		
-		PdfPCell designationName = new PdfPCell(new Paragraph(new Phrase("Paramedic", paraFont)));
+		PdfPCell designationName = new PdfPCell(new Paragraph(new Phrase(designationDataCollector, paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		designationName.setLeading(3, 1);
 		designationName.disableBorderSide(Rectangle.TOP);
@@ -854,50 +1020,61 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		table.addCell(signature);
 	}
 	
-	private void receiveAmountDetails(PdfPTable table) {
+	private void receiveAmountDetails(PdfPTable table,PSIMoneyReceipt psiMoneyReceipt) {
 		
-
+		Set<SHNMoneyReceiptPaymentLog> payments = psiMoneyReceipt.getPayments();
+		List<SHNMoneyReceiptPaymentLog> paymentList = new ArrayList<SHNMoneyReceiptPaymentLog>();
+		paymentList.addAll(payments);
+		paymentList.sort(Comparator.comparing(SHNMoneyReceiptPaymentLog::getReceiveDate).reversed());
 		
-		PdfPCell recieveDate = new PdfPCell(new Paragraph(new Phrase("Receive Date:", paraFont)));
-		//teamNoCellAnswer.setExtraParagraphSpace(2);
-		recieveDate.setLeading(3, 1);
-		recieveDate.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		recieveDate.setColspan(4);
-		recieveDate.disableBorderSide(Rectangle.BOTTOM);
-		recieveDate.disableBorderSide(Rectangle.LEFT);
-		recieveDate.disableBorderSide(Rectangle.RIGHT);
-		recieveDate.disableBorderSide(Rectangle.TOP);
-		table.addCell(recieveDate);
+		for (SHNMoneyReceiptPaymentLog shnMoneyReceiptPaymentLog : paymentList) {
+			
+			PdfPCell recieveDate = new PdfPCell(new Paragraph(new Phrase("Receive Date:", paraFont)));
+			//teamNoCellAnswer.setExtraParagraphSpace(2);
+			recieveDate.setLeading(3, 1);
+			recieveDate.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			recieveDate.setColspan(3);
+			recieveDate.disableBorderSide(Rectangle.BOTTOM);
+			recieveDate.disableBorderSide(Rectangle.LEFT);
+			recieveDate.disableBorderSide(Rectangle.RIGHT);
+			recieveDate.disableBorderSide(Rectangle.TOP);
+			table.addCell(recieveDate);
+			
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			String receivedDate = dateFormat.format(shnMoneyReceiptPaymentLog.getReceiveDate());
+			
+			PdfPCell recieveDateAnswer = new PdfPCell(new Paragraph(new Phrase(receivedDate, paraFont)));
+			//teamNoCellAnswer.setExtraParagraphSpace(2);
+			recieveDateAnswer.setLeading(3, 1);
+			recieveDateAnswer.setColspan(2);
+			recieveDateAnswer.disableBorderSide(Rectangle.BOTTOM);
+			recieveDateAnswer.disableBorderSide(Rectangle.LEFT);
+			recieveDateAnswer.disableBorderSide(Rectangle.RIGHT);
+			recieveDateAnswer.disableBorderSide(Rectangle.TOP);
+			table.addCell(recieveDateAnswer);
+			
+			PdfPCell receiveAmount = new PdfPCell(new Paragraph(new Phrase("Receive Amount :", paraFont)));
+			//teamNoCellAnswer.setExtraParagraphSpace(2);
+			receiveAmount.setLeading(3, 1);
+			receiveAmount.disableBorderSide(Rectangle.BOTTOM);
+			receiveAmount.disableBorderSide(Rectangle.LEFT);
+			receiveAmount.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			receiveAmount.disableBorderSide(Rectangle.RIGHT);
+			receiveAmount.disableBorderSide(Rectangle.TOP);
+			receiveAmount.setColspan(2);
+			table.addCell(receiveAmount);
+			
+			PdfPCell receiveAmountAnswer = new PdfPCell(new Paragraph(new Phrase(String.valueOf(shnMoneyReceiptPaymentLog.getReceiveAmount()), paraFont)));
+			//teamNoCellAnswer.setExtraParagraphSpace(2);
+			receiveAmountAnswer.setLeading(3, 1);
+			
+			receiveAmountAnswer.disableBorderSide(Rectangle.BOTTOM);
+			receiveAmountAnswer.disableBorderSide(Rectangle.LEFT);
+			receiveAmountAnswer.disableBorderSide(Rectangle.RIGHT);
+			receiveAmountAnswer.disableBorderSide(Rectangle.TOP);
+			table.addCell(receiveAmountAnswer);
 		
-		PdfPCell recieveDateAnswer = new PdfPCell(new Paragraph(new Phrase("2020-12-20", paraFont)));
-		//teamNoCellAnswer.setExtraParagraphSpace(2);
-		recieveDateAnswer.setLeading(3, 1);
-		recieveDateAnswer.disableBorderSide(Rectangle.BOTTOM);
-		recieveDateAnswer.disableBorderSide(Rectangle.LEFT);
-		recieveDateAnswer.disableBorderSide(Rectangle.RIGHT);
-		recieveDateAnswer.disableBorderSide(Rectangle.TOP);
-		table.addCell(recieveDateAnswer);
-		
-		PdfPCell receiveAmount = new PdfPCell(new Paragraph(new Phrase("Receive Amount :", paraFont)));
-		//teamNoCellAnswer.setExtraParagraphSpace(2);
-		receiveAmount.setLeading(3, 1);
-		receiveAmount.disableBorderSide(Rectangle.BOTTOM);
-		receiveAmount.disableBorderSide(Rectangle.LEFT);
-		receiveAmount.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		receiveAmount.disableBorderSide(Rectangle.RIGHT);
-		receiveAmount.disableBorderSide(Rectangle.TOP);
-		receiveAmount.setColspan(2);
-		table.addCell(receiveAmount);
-		
-		PdfPCell receiveAmountAnswer = new PdfPCell(new Paragraph(new Phrase(" 1768", paraFont)));
-		//teamNoCellAnswer.setExtraParagraphSpace(2);
-		receiveAmountAnswer.setLeading(3, 1);
-		
-		receiveAmountAnswer.disableBorderSide(Rectangle.BOTTOM);
-		receiveAmountAnswer.disableBorderSide(Rectangle.LEFT);
-		receiveAmountAnswer.disableBorderSide(Rectangle.RIGHT);
-		receiveAmountAnswer.disableBorderSide(Rectangle.TOP);
-		table.addCell(receiveAmountAnswer);
+		}
 		
 		PdfPCell due = new PdfPCell(new Paragraph(new Phrase("Due: ", paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
@@ -910,7 +1087,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		due.disableBorderSide(Rectangle.TOP);
 		table.addCell(due);
 		
-		PdfPCell dueAnswer = new PdfPCell(new Paragraph(new Phrase("110", paraFont)));
+		PdfPCell dueAnswer = new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiMoneyReceipt.getDueAmount()), paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		dueAnswer.setLeading(3, 1);
 		dueAnswer.setHorizontalAlignment(Element.ALIGN_LEFT);

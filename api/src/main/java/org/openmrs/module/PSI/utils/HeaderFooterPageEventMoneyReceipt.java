@@ -2,8 +2,12 @@ package org.openmrs.module.PSI.utils;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.hssf.record.formula.functions.Isblank;
+import org.openmrs.module.PSI.dto.MoneyReceiptPdfDTO;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -37,8 +41,11 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 	
 	PdfTemplate total;
 	String header;
-	public HeaderFooterPageEventMoneyReceipt() {
-
+	MoneyReceiptPdfDTO receiptPdfDTO;
+	
+	public HeaderFooterPageEventMoneyReceipt(MoneyReceiptPdfDTO dto) {
+		
+		this.receiptPdfDTO = dto;
 	}
     public void setHeader(String header) {
         this.header = header;
@@ -82,7 +89,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 			secondheader(secondHeaderTable);
 			document.add(secondHeaderTable);
 			
-			document.add(new Paragraph("\n"));
+			//document.add(new Paragraph("\n"));
 			PdfPTable thirdHeaderTable = new PdfPTable(3);
 			thirdHeaderTable.setWidthPercentage(100);
 			
@@ -167,7 +174,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		table.addCell(imageCell1);*/
 		 PdfContentByte pdfContentByte = writer.getDirectContent();
 		 Barcode128 barcode128 = new Barcode128();
-	     barcode128.setCode("201912300000001");
+	     barcode128.setCode(receiptPdfDTO.getPatientIdentifier());
 	     barcode128.setCodeType(Barcode128.CODE128);
 	     barcode128.setBarHeight(50f);
 	     barcode128.setX(1f);
@@ -185,7 +192,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 	private void thirdHeader(PdfPTable table) {
 		
 
-		Paragraph p = new Paragraph(new Phrase("UIC: " + "M9061NA02UN",textFont));
+		Paragraph p = new Paragraph(new Phrase("UIC: " + receiptPdfDTO.getUic(),textFont));
 		
 		PdfPCell uicCell = new PdfPCell(new Paragraph(p));
 		//staticCell.setExtraParagraphSpace(2);
@@ -194,7 +201,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		uicCell.setVerticalAlignment(Element.ALIGN_TOP);
 		table.addCell(uicCell);
 		
-		Paragraph p2 = new Paragraph(new Phrase("Health ID: " + "201912300000001",textFont) );
+		Paragraph p2 = new Paragraph(new Phrase("Health ID: " + receiptPdfDTO.getPatientIdentifier(),textFont) );
 
 		
 		PdfPCell healthId = new PdfPCell(new Paragraph(p2));
@@ -204,7 +211,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		table.addCell(healthId);
 		
 		
-		Paragraph p3 = new Paragraph(new Phrase("E-slip No: " + "2012100001000002",textFont));
+		Paragraph p3 = new Paragraph(new Phrase("E-slip No: " + receiptPdfDTO.getEslipNo(),textFont));
 		
 		PdfPCell eslip = new PdfPCell(new Paragraph(p3));
 		//csp.setExtraParagraphSpace(2);
@@ -218,12 +225,31 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 	
 	
 	private void secondheader(PdfPTable table) {
+		String staticCheckboxFont = "";
+		String satelliteCheckboxFont = "";
+		String cspCheckboxFont = "";
+		if(receiptPdfDTO.getServicePoint().equalsIgnoreCase("Static")) {
+			staticCheckboxFont = "\u0033";
+			satelliteCheckboxFont = "o";
+			cspCheckboxFont = "o";
+		}
+		else if(receiptPdfDTO.getServicePoint().equalsIgnoreCase("Satellite")) {
+			
+			satelliteCheckboxFont = "\u0033";
+			staticCheckboxFont = "o";
+			cspCheckboxFont = "o";
+		}
+		else if(receiptPdfDTO.getServicePoint().equalsIgnoreCase("CSP")) {
+			staticCheckboxFont = "o";
+			satelliteCheckboxFont = "o";
+			cspCheckboxFont = "\u0033";
+		}
 		
 		Paragraph p = new Paragraph(new Phrase("Type:             Static ", textFont));
 		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
 		//Chunk chunk = new Chunk("o", zapfdingbats);
 		//p.add(chunk);
-		p.add(new Chunk("\u0033", zapfdingbats));
+		p.add(new Chunk(staticCheckboxFont, zapfdingbats));
 //		Phrase phrase = new Phrase("A check mark: ");   
 //		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS);
 //		phrase.Add(new Chunk("\u0033", zapfdingbats));
@@ -240,7 +266,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		
 		Paragraph p2 = new Paragraph(new Phrase("Satellite ",textFont));
 		Font zapfdingbats2 = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
-		Chunk chunk2 = new Chunk("o", zapfdingbats2);
+		Chunk chunk2 = new Chunk(satelliteCheckboxFont, zapfdingbats2);
 		p2.add(chunk2);
 		
 		PdfPCell satellite = new PdfPCell(new Paragraph(p2));
@@ -254,7 +280,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		
 		Paragraph p3 = new Paragraph(new Phrase("CSP ",textFont));
 		Font zapfdingbats3 = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
-		Chunk chunk3 = new Chunk("o", zapfdingbats3);
+		Chunk chunk3 = new Chunk(cspCheckboxFont, zapfdingbats3);
 		p3.add(chunk3);
 		
 		PdfPCell csp = new PdfPCell(new Paragraph(p3));
@@ -265,7 +291,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		//csp.setPaddingLeft(10f);
 		table.addCell(csp);
 		
-		PdfPCell dateCell = new PdfPCell(new Paragraph(new Phrase("Date: 2020-12-23 24:12" , textFont)));
+		PdfPCell dateCell = new PdfPCell(new Paragraph(new Phrase("Date: "+receiptPdfDTO.getMoneyReceiptDate() , textFont)));
 		//dateCell.setExtraParagraphSpace(2);
 		dateCell.setBorder(Rectangle.NO_BORDER);
 		dateCell.setLeading(3, 1);
@@ -273,7 +299,12 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		dateCell.setColspan(2);
 		table.addCell(dateCell);
 		
-		PdfPCell slipNo = new PdfPCell(new Paragraph(new Phrase("Slip No: 2020123" , textFont)));
+		String slipNoReceipt = "";
+		if(!StringUtils.isBlank(receiptPdfDTO.getSlipNo())) {
+			slipNoReceipt = receiptPdfDTO.getSlipNo();
+		}
+		
+		PdfPCell slipNo = new PdfPCell(new Paragraph(new Phrase("Slip No: "+ slipNoReceipt  , textFont)));
 		//slipNo.setExtraParagraphSpace(2);
 		slipNo.setBorder(Rectangle.NO_BORDER);
 		slipNo.setLeading(3, 1);
