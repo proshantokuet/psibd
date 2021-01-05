@@ -100,7 +100,7 @@ public class SHNConceptSyncRestController {
 	public ResponseEntity<String> syncAndSaveConcept() throws Exception {
 		try {
 			int lastReadPatient = 4897;
-			boolean isNewAdd = false;
+			
 			PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Concept");
 			if (getlastReadEntry == null) {
 				PSIDHISMarker psidhisMarker = new PSIDHISMarker();
@@ -123,6 +123,7 @@ public class SHNConceptSyncRestController {
 				    new TypeToken<ArrayList<SHNConceptDTO>>() {}.getType());
 			log.error("Fetching Concept Data" + shnConceptDto.size());
 			for (SHNConceptDTO conceptDTO : shnConceptDto) {
+				boolean isNewAdd = false;
 				log.error("Entering  loop" + conceptDTO.getConceptId());
 				Concept individualCopncept = Context.getService(ConceptService.class).getConcept(conceptDTO.getConceptId());
 				if(individualCopncept == null) {
@@ -226,11 +227,11 @@ public class SHNConceptSyncRestController {
 				else {
 					individualCopncept.setAnswers(listConceptAnswer);
 				}
-				
+				log.error("listConceptAnswer added to the object" + listConceptAnswer.size());
 				Collection<ConceptSet> listConceptSet = new TreeSet<ConceptSet>();
 				
 				for (SHNConceptSetDTO conceptSetDto : conceptDTO.getConceptSets()) {
-					
+				
 					ConceptSet individualConceptSet = Context.getService(ConceptService.class).getConceptSetByUuid(conceptSetDto.getUuid());
 					if(individualConceptSet == null) {
 						individualConceptSet = new ConceptSet();
@@ -244,6 +245,7 @@ public class SHNConceptSyncRestController {
 					individualConceptSet.setConceptSet(individualCopncept);
 					individualConceptSet.setSortWeight(conceptSetDto.getSortWeight());
 					listConceptSet.add(individualConceptSet);
+					log.error("Adding concept set the object" + individualConceptSet.getConcept().getConceptId());
 				}
 				log.error("listConceptSet" + listConceptSet.size());
 				if(!isNewAdd) {
