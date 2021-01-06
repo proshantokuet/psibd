@@ -9,6 +9,8 @@ public interface SHNVoidedMoneyReceiptLogDAO {
 	public SHNVoidedMoneyReceiptLog saveOrUpdate(SHNVoidedMoneyReceiptLog shnVoidedLog);
 	
 	List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceiptByClinic(int clinicId);
+	
+	List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceipt();
 
 
 

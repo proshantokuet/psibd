@@ -1,6 +1,7 @@
 package org.openmrs.module.PSI.web.listener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,7 @@ import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 import org.openmrs.module.PSI.SHNStock;
 import org.openmrs.module.PSI.SHNStockAdjust;
+import org.openmrs.module.PSI.SHNVoidedMoneyReceiptLog;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
@@ -35,6 +37,7 @@ import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.SHNDhisEncounterExceptionService;
 import org.openmrs.module.PSI.api.SHNDhisObsElementService;
 import org.openmrs.module.PSI.api.SHNStockService;
+import org.openmrs.module.PSI.api.SHNVoidedMoneyReceiptLogService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.converter.DhisObsEventDataConverter;
 import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
@@ -109,26 +112,26 @@ public class DHISListener {
 		if (status) {
 			
 			try {
-				//sendFailedPatient();
+				sendFailedPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				//sendPatient();
+				sendPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				//sendMoneyReceipt();
+				sendMoneyReceipt();
 			}
 			catch (Exception e) {
 				
 			}
 			
 			try {
-				//sendFailedMoneyReceipt();
+				sendFailedMoneyReceipt();
 			}
 			catch (Exception e) {
 				
@@ -163,6 +166,13 @@ public class DHISListener {
 			catch (Exception e) {
 				
 			}
+			try {
+				deleteMoneyReceiptFromDhis2();
+			}
+			catch (Exception e) {
+				
+			}
+			
 		}
 
 	}
@@ -496,6 +506,7 @@ public class DHISListener {
 							moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,trackedEntityInstanceId);
 							log.error("dhisId" + psiServiceProvision.getDhisId());
 							if(!StringUtils.isBlank(psiServiceProvision.getDhisId())) {
+								log.error("Entering for update" + psiServiceProvision.getDhisId());
 								String referenceUrl = EVENTURL + "/" + psiServiceProvision.getDhisId();
 								JSONObject referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
 								String status = referenceExist.getString("status");
@@ -503,10 +514,12 @@ public class DHISListener {
 									eventResponse = psiapiServiceFactory.getAPIType("dhis2").update("", moneyReceiptJson, "", referenceUrl);
 								}
 								else {
+									log.error("didnot found" + psiServiceProvision.getDhisId());
 									eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
 								}
 							}
 							else{
+								log.error("dont have previous money receipt addidng new" + psiServiceProvision.getDhisId());
 								eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
 							}
 								
@@ -526,7 +539,7 @@ public class DHISListener {
 										Context.clearSession();
 										
 										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
-										    getResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
+												eventResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
 									}
 									else {
 										Context.openSession();
@@ -534,7 +547,7 @@ public class DHISListener {
 										Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 										Context.clearSession();
 										
-										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "",psiServiceProvision.getDhisId(), getResponse + "",
+										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "",psiServiceProvision.getDhisId(), eventResponse + "",
 										    statusCode, "Dhis2 returns importStatus failed while editing", PSIConstants.CONNECTIONTIMEOUTSTATUS);
 									}
 								}
@@ -558,7 +571,7 @@ public class DHISListener {
 										Context.clearSession();
 										
 										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
-										    getResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
+												eventResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
 									} else {
 										
 										Context.openSession();
@@ -574,7 +587,7 @@ public class DHISListener {
 										Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 										Context.clearSession();
 										
-										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", eventResponse + "",
 										    statusCode, "Dhis2 returns empty import summaries without reference id", PSIConstants.CONNECTIONTIMEOUTSTATUS);
 									}
 								}
@@ -590,7 +603,7 @@ public class DHISListener {
 								getlastTimeStamp.setVoidReason(httpStatus);
 								Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 								String errorDetails = errorMessageCreation(eventResponse);
-								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", eventResponse + "",
 								    statusCode, errorDetails, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 							}
 							
@@ -754,11 +767,11 @@ public class DHISListener {
 										log.error("response has SUCCESS" + importStatus);
 										String referenceId = successResponse.getString("reference");
 										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
-											    getResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
+												eventResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
 									}
 									else {
 										log.error("response has not SUCCESS" + importStatus);
-										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", psiServiceProvision.getDhisId(), getResponse + "",
+										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", psiServiceProvision.getDhisId(), eventResponse + "",
 											    statusCode, "Dhis2 returns empty import summaries without reference id", PSIConstants.FAILEDSTATUS);
 									}
 								}
@@ -780,7 +793,7 @@ public class DHISListener {
 										Context.clearSession();*/
 										
 										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
-										    getResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
+												eventResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
 									} else {
 										
 										/*Context.openSession();
@@ -794,7 +807,7 @@ public class DHISListener {
 										Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 										
 										Context.clearSession();*/
-										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", eventResponse + "",
 										    statusCode, "Dhis2 returns empty import summaries without reference id", PSIConstants.FAILEDSTATUS);
 									}
 								}
@@ -813,7 +826,7 @@ public class DHISListener {
 								*/
 								String errorDetails = errorMessageCreation(eventResponse);
 								
-								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", eventResponse + "",
 								    statusCode, errorDetails, PSIConstants.FAILEDSTATUS);
 							}
 							
@@ -1596,6 +1609,55 @@ public class DHISListener {
 
 		Context.getService(SHNDhisObsElementService.class).saveOrupdate(shnDhisIndicatorDetails);
 		Context.clearSession();
+	}
+	
+	
+	private void deleteMoneyReceiptFromDhis2() {
+		
+		List<SHNVoidedMoneyReceiptLog> shnVoidedMoneyReceiptLog = Context.getService(SHNVoidedMoneyReceiptLogService.class).getAllVoidedMoneyReceipt();
+		for (SHNVoidedMoneyReceiptLog shnVoidedMoneyReceiptLogObject : shnVoidedMoneyReceiptLog) {
+			if(shnVoidedMoneyReceiptLogObject != null && !StringUtils.isEmpty(shnVoidedMoneyReceiptLogObject.getDhisId())) {
+				
+				ArrayList<String> elephantList = new ArrayList<>(Arrays.asList(shnVoidedMoneyReceiptLogObject.getDhisId().split(",")));
+				try {
+					for (String dhisId : elephantList) {
+						if(!StringUtils.isEmpty(dhisId)) {
+						log.error("splitted single dhisid" + dhisId);
+						JSONObject eventResponse = new JSONObject();
+						String referenceUrl = EVENTURL + "/" + dhisId.trim();
+						JSONObject referenceExist;
+	
+							referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
+						
+							String status = referenceExist.getString("status");
+							if (!status.equalsIgnoreCase("ERROR")) {
+								eventResponse = psiapiServiceFactory.getAPIType("dhis2").delete("", "", referenceUrl);
+								int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
+								//log.info("statusCode:" + statusCode + "" + eventResponse);
+								if (statusCode == 200) {
+									JSONObject successResponse = eventResponse.getJSONObject("response");
+									log.error("successResponse" + successResponse.toString());
+									if(successResponse.has("reference")) {
+										log.error("successResponse has reference" + successResponse.toString());
+										String importStatus = successResponse.getString("status");
+										if (importStatus.equalsIgnoreCase("SUCCESS")) {
+											log.error("response has SUCCESS" + importStatus);
+											shnVoidedMoneyReceiptLogObject.setVoided(true);
+											Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedMoneyReceiptLogObject);
+	
+										}
+									}
+								}
+							}
+						}
+					  }
+
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

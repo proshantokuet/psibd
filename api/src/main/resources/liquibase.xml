@@ -879,7 +879,7 @@
 			<column name="clinic_name" type="varchar(255)" />
 			<column name="clinic_code" type="varchar(255)" />
 			<column name="patient_uuid" type="varchar(255)" />			
-			<column name="clinic_id" type="int(11)" />			
+			<column name="clinic_id" type="int(11)" />	
 			<column name="date_created" type="datetime">
 				<constraints nullable="false" />
 			</column>
@@ -896,7 +896,11 @@
 			<column name="void_reason" type="varchar(255)" />
 		</createTable>
 	</changeSet>
-	
+	<changeSet author="tanvir" id="shnvoidmoneyreceiptlog-1.0.1">
+	 	<addColumn tableName="shn_voidedmoneyreceipt_log">
+			<column name="dhis_id" type="mediumtext" />				
+		</addColumn>
+	 </changeSet>
 	<changeSet id="shnmoneyreceiptpaymentLog-1.0.0" author="tanvir">
 		<createTable tableName="shn_moneyreceipt_payment_log">
 			<column name="payment_id" type="int(11)" autoIncrement="true">

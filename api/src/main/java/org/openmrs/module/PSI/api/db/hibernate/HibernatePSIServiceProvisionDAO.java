@@ -403,7 +403,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		lists = sessionFactory
 		        .getCurrentSession()
 		        .createQuery(
-		            "from PSIServiceProvision where timestamp > :timestamp and  is_complete = :complete  order by timestamp asc ")
+		            "from PSIServiceProvision where timestamp >= :timestamp and  is_complete = :complete  order by timestamp asc ")
 		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(3000).list();
 		
 		log.error(sessionFactory

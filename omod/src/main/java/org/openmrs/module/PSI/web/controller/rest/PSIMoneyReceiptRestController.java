@@ -441,6 +441,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		JSONObject deleteMoneyReceiptObject = new JSONObject();
 
 		try {
+			String dhisId = "";
 			PSIMoneyReceipt psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(id);
 			if(psiMoneyReceipt !=null) {
 				PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findByClinicId(psiMoneyReceipt.getClinicCode());
@@ -456,6 +457,14 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				shnVoidedLog.setClinicId(psiClinicManagement.getCid());
 				shnVoidedLog.setDateCreated(new Date());
 				shnVoidedLog.setCreator(Context.getAuthenticatedUser());
+				for (PSIServiceProvision psiServiceProvision : psiMoneyReceipt.getServices()) {
+					
+					dhisId = dhisId + psiServiceProvision.getDhisId() + ",";
+				}
+				if (dhisId.endsWith(",")) {
+					dhisId = dhisId.substring(0, dhisId.length() - 1);
+					}
+				shnVoidedLog.setDhisId(dhisId);
 				Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedLog);
 				deleteMoneyReceiptObject.put("isSuccessfull", true);
 				deleteMoneyReceiptObject.put("e-slip", psiMoneyReceipt.getEslipNo());

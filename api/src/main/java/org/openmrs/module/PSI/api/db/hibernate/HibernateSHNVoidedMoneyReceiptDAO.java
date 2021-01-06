@@ -41,4 +41,13 @@ public class HibernateSHNVoidedMoneyReceiptDAO implements SHNVoidedMoneyReceiptL
 		return lists;
 	}
 
+
+	@Override
+	public List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceipt() {
+		// TODO Auto-generated method stub
+		List<SHNVoidedMoneyReceiptLog> lists = sessionFactory.getCurrentSession().createQuery("from SHNVoidedMoneyReceiptLog where voided = 0")
+		        .list();
+		return lists;
+	}
+
 }
