@@ -70,7 +70,7 @@ public class DHISListener {
 	
 	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149";
+	private final String DHIS2BASEURL = "http://182.160.99.131";
 	
 	//test server psi
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
@@ -85,6 +85,8 @@ public class DHISListener {
 	private final String trackInstanceUrl = DHIS2BASEURL + "/api/trackedEntityInstances.json?";
 	
 	private final String EVENTURL = DHIS2BASEURL + "/api/events";
+	
+	private final String DATASETURL = DHIS2BASEURL + "/api/dataValueSets";
 	
 	private final String GETEVENTURL = DHIS2BASEURL + "/api/events.json";
 	
@@ -112,26 +114,26 @@ public class DHISListener {
 		if (status) {
 			
 			try {
-				sendFailedPatient();
+				//sendFailedPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				sendPatient();
+				//sendPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				sendMoneyReceipt();
+				//sendMoneyReceipt();
 			}
 			catch (Exception e) {
 				
 			}
 			
 			try {
-				sendFailedMoneyReceipt();
+				//sendFailedMoneyReceipt();
 			}
 			catch (Exception e) {
 				
@@ -167,7 +169,7 @@ public class DHISListener {
 				
 			}
 			try {
-				deleteMoneyReceiptFromDhis2();
+				//deleteMoneyReceiptFromDhis2();
 			}
 			catch (Exception e) {
 				
@@ -1486,109 +1488,61 @@ public class DHISListener {
 		SHNDhisIndicatorDetails shnDhisIndicatorDetails = null;
 		
 		try {
-			int calculateCountOfFpConraceptiveMethod = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpConraceptiveMethod();
-			log.error("calculateCountOfFpConraceptiveMethod" + calculateCountOfFpConraceptiveMethod);
-	
-			int calculateCountOfFphypertensionAndDiabetic = Context.getService(SHNDhisObsElementService.class).calculateCountOfFphypertensionAndDiabetic();
-			log.error("calculateCountOfFphypertensionAndDiabetic" + calculateCountOfFphypertensionAndDiabetic);
-			
-			int calculateCountOfFpPermanentMethod = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpPermanentMethod();
-			log.error("calculateCountOfFpPermanentMethod" + calculateCountOfFpPermanentMethod);
-			
-			int calculateCountOfFpAncTakenAtleastOne = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpAncTakenAtleastOne();
-			log.error("calculateCountOfFpAncTakenAtleastOne" + calculateCountOfFpAncTakenAtleastOne);
-			
-			int calculatePercentageOfFp = Context.getService(SHNDhisObsElementService.class).calculatePercentageOfFp();
-			log.error("calculatePercentageOfFp" + calculatePercentageOfFp);
+//			int calculateCountOfFpConraceptiveMethod = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpConraceptiveMethod();
+//			log.error("calculateCountOfFpConraceptiveMethod" + calculateCountOfFpConraceptiveMethod);
+//	
+//			int calculateCountOfFphypertensionAndDiabetic = Context.getService(SHNDhisObsElementService.class).calculateCountOfFphypertensionAndDiabetic();
+//			log.error("calculateCountOfFphypertensionAndDiabetic" + calculateCountOfFphypertensionAndDiabetic);
+//			
+//			int calculateCountOfFpPermanentMethod = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpPermanentMethod();
+//			log.error("calculateCountOfFpPermanentMethod" + calculateCountOfFpPermanentMethod);
+//			
+//			int calculateCountOfFpAncTakenAtleastOne = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpAncTakenAtleastOne();
+//			log.error("calculateCountOfFpAncTakenAtleastOne" + calculateCountOfFpAncTakenAtleastOne);
+//			
+//			int calculatePercentageOfFp = Context.getService(SHNDhisObsElementService.class).calculatePercentageOfFp();
+//			log.error("calculatePercentageOfFp" + calculatePercentageOfFp);
 			
 			int getCompletedAncFullCountFromMoneyReceipt = Context.getService(SHNDhisObsElementService.class).getCompletedAncFullCountFromMoneyReceipt();
 			log.error("getCompletedAncFullCountFromMoneyReceipt" + getCompletedAncFullCountFromMoneyReceipt);
 			
 			ShnIndicatorDetailsDTO shnIndicatorDetailsDTO = new ShnIndicatorDetailsDTO();
 			
-			shnIndicatorDetailsDTO.setFpContraceptiveMethod(calculateCountOfFpConraceptiveMethod);
-			shnIndicatorDetailsDTO.setFpHypertensionAndDiabetic(calculateCountOfFphypertensionAndDiabetic);
-			shnIndicatorDetailsDTO.setFpPermanentMethod(calculateCountOfFpPermanentMethod);
-			shnIndicatorDetailsDTO.setFpAncTakenAtleastOne(calculateCountOfFpAncTakenAtleastOne);
-			shnIndicatorDetailsDTO.setCalculatePercentageOfFp(calculatePercentageOfFp);
+//			shnIndicatorDetailsDTO.setFpContraceptiveMethod(calculateCountOfFpConraceptiveMethod);
+//			shnIndicatorDetailsDTO.setFpHypertensionAndDiabetic(calculateCountOfFphypertensionAndDiabetic);
+//			shnIndicatorDetailsDTO.setFpPermanentMethod(calculateCountOfFpPermanentMethod);
+//			shnIndicatorDetailsDTO.setFpAncTakenAtleastOne(calculateCountOfFpAncTakenAtleastOne);
+//			shnIndicatorDetailsDTO.setCalculatePercentageOfFp(calculatePercentageOfFp);
 			shnIndicatorDetailsDTO.setCalculateAncAllTakenFullCount(getCompletedAncFullCountFromMoneyReceipt);
 			
 			JSONObject indicatorData = DHISDataConverter.toConvertDhisIndicatorData(shnIndicatorDetailsDTO);
+			log.error("indicatorData" + indicatorData.toString());
 			JSONObject eventResponse = new JSONObject();
 			shnDhisIndicatorDetails = Context.getService(SHNDhisObsElementService.class).getDhisIndicatorByType("INDICATOR");
-			if(shnDhisIndicatorDetails != null && !StringUtils.isBlank(shnDhisIndicatorDetails.getReferenceId())) {
-					String referenceUrl = EVENTURL + "/" + shnDhisIndicatorDetails.getReferenceId();
-					JSONObject referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
-					String status = referenceExist.getString("status");
-					if (!status.equalsIgnoreCase("ERROR")) {
-						eventResponse = psiapiServiceFactory.getAPIType("dhis2").update("", indicatorData, "", referenceUrl);
-					}
-					else {
-						eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", indicatorData, EVENTURL);
-					}
-			}
-			else{
-				eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", indicatorData, EVENTURL);
-			}
-	
-			int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
-			//log.info("statusCode:" + statusCode + "" + eventResponse);
-			if (statusCode == 200) {
-				JSONObject successResponse = eventResponse.getJSONObject("response");
-				log.error("successResponse" + successResponse.toString());
-				if(successResponse.has("reference")) {
-					log.error("successResponse has reference" + successResponse.toString());
-					String importStatus = successResponse.getString("status");
+				eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", indicatorData, DATASETURL);
+
+					String importStatus = eventResponse.getString("status");
 					if (importStatus.equalsIgnoreCase("SUCCESS")) {
 						log.error("response has SUCCESS" + importStatus);
-						String referenceId = successResponse.getString("reference");
 						if(shnDhisIndicatorDetails == null) {
 							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
 						}
-						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.SUCCESSSTATUS,eventResponse.toString(),"",referenceId);
+						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),DATASETURL,PSIConstants.SUCCESSSTATUS,eventResponse.toString(),"","zPaSPZ5vk4n");
 					}
 					else {
 						log.error("response has not SUCCESS" + importStatus);
 						if(shnDhisIndicatorDetails == null) {
 							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
 						}
-						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.FAILEDSTATUS,eventResponse.toString(),"Dhis2 returns empty import summaries without reference id","");
+						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),DATASETURL,PSIConstants.FAILEDSTATUS,eventResponse.toString(),"Check response for details error","zPaSPZ5vk4n");
 					}
-				}
-				else {
-					log.error("Coudnot find reference in response" + successResponse.toString());
-					JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
-					if (importSummaries.length() != 0) {
-						JSONObject importSummary = importSummaries.getJSONObject(0);
-						String referenceId = importSummary.getString("reference");
-						if(shnDhisIndicatorDetails == null) {
-							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
-						}
-						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.SUCCESSSTATUS,eventResponse.toString(),"",referenceId);
+			}
 	
-					} else {
-						String errorDetails = errorMessageCreation(eventResponse);
-						if(shnDhisIndicatorDetails == null) {
-							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
-						}
-						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.FAILEDSTATUS,eventResponse.toString(),errorDetails,"");
-					}
-				}
-			}
-			else {
-				String errorDetails = errorMessageCreation(eventResponse);
-				if(shnDhisIndicatorDetails == null) {
-					shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
-				}
-				updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),EVENTURL,PSIConstants.FAILEDSTATUS,eventResponse.toString(),errorDetails,"");
-			}
-			
-		}
 		catch (Exception ex) {
 			if(shnDhisIndicatorDetails == null) {
 				shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
 			}
-			updateIndicatorDetailsStatus(shnDhisIndicatorDetails,"Internal Error Occured",EVENTURL,PSIConstants.FAILEDSTATUS,"Check Error Message for Details",ex.getMessage(),"");
+			updateIndicatorDetailsStatus(shnDhisIndicatorDetails,"Internal Error Occured",DATASETURL,PSIConstants.FAILEDSTATUS,"Check Error Message for Details",ex.getMessage(),"zPaSPZ5vk4n");
 		}
 	}
 	

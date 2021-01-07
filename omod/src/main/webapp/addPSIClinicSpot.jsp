@@ -23,7 +23,7 @@
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
-        	<p>Add Community Clinic Spot</p>
+        	<p>Add SHN clinic spot list</p>
         	
        	</div>
 		

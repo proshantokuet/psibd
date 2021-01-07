@@ -150,7 +150,7 @@ public class DHISMapper {
 		indicatorDataMapper.put("fpHypertensionAndDiabetic", "uaiGi7k8NJw");
 		indicatorDataMapper.put("fpPermanentMethod", "QPUJWEfTQnz");
 		indicatorDataMapper.put("calculateAncAllTakenFullCount", "CAr4amKsXnY");
-		indicatorDataMapper.put("fpAncTakenAtleastOne", "BaNcrsDMgWC");
+		indicatorDataMapper.put("fpAncTakenAtleastOne", "CnSwzusr2an");
 		indicatorDataMapper.put("calculatePercentageOfFp", "rrAourIs2NT");
 
 	}

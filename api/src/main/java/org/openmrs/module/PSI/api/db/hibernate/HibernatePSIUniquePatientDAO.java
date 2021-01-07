@@ -73,9 +73,22 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SHnPrescriptionMetaData> getAllPrescriptionMetaData() {
-		List<SHnPrescriptionMetaData> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from SHnPrescriptionMetaData where voided = 0 ").list();
-		return lists;
+//		List<SHnPrescriptionMetaData> lists = sessionFactory.getCurrentSession()
+//		        .createQuery("from SHnPrescriptionMetaData where voided = 0 ").list();
+//		return lists;
+		String dischargeQuery = "select field_name as fieldName,service_name as serviceName from openmrs.shn_prescription_metadata";
+		
+		List<SHnPrescriptionMetaData> report = new ArrayList<SHnPrescriptionMetaData>();
+		try{
+			report = sessionFactory.getCurrentSession().createSQLQuery(dischargeQuery).
+					addScalar("fieldName",StandardBasicTypes.STRING).
+					addScalar("serviceName",StandardBasicTypes.STRING).
+					setResultTransformer(new AliasToBeanResultTransformer(SHnPrescriptionMetaData.class)).
+					list();
+			return report;
+		}catch(Exception e){
+			return report;
+		}
 	}
 
 	@SuppressWarnings("unchecked")

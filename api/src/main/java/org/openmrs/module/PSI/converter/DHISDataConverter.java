@@ -647,47 +647,50 @@ public class DHISDataConverter {
 	public static JSONObject toConvertDhisIndicatorData(ShnIndicatorDetailsDTO shnIndicatorDetailsDTO)
 		    throws JSONException {
 			JSONObject event = new JSONObject();
-			event.put("trackedEntityInstance", "NpKZqkyYZFk");
+			//event.put("trackedEntityInstance", "NpKZqkyYZFk");
 			event.put("orgUnit", "cyBOiz4GPdX");
-			event.put("program", DHISMapper.indicatorDataMapper.get("program"));
-			event.put("programStage", "kqTAymIelcm");
-			event.put("status", "COMPLETED");
+			event.put("dataSet", "zPaSPZ5vk4n");
+			//event.put("program", DHISMapper.indicatorDataMapper.get("program"));
+			//event.put("programStage", "kqTAymIelcm");
+			//event.put("status", "COMPLETED");
 			Date date = Calendar.getInstance().getTime();
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			String today = dateFormat.format(date);
-			event.put("eventDate", today);
-			
+			event.put("completeDate", today);
+			DateFormat dateFormatForPeriod = new SimpleDateFormat("yyyyMMdd");
+			String period = dateFormatForPeriod.format(date);
+			event.put("period", period);
 			JSONArray dataValues = new JSONArray();
 			
-			JSONObject fpContraceptiveMethod = new JSONObject();
-			fpContraceptiveMethod.put("dataElement", DHISMapper.indicatorDataMapper.get("fpContraceptiveMethod"));
-			fpContraceptiveMethod.put("value", shnIndicatorDetailsDTO.getFpContraceptiveMethod());
-			dataValues.put(fpContraceptiveMethod);
-			
-			JSONObject fpHypertensionAndDiabetic = new JSONObject();
-			fpHypertensionAndDiabetic.put("dataElement", DHISMapper.indicatorDataMapper.get("fpHypertensionAndDiabetic"));
-			fpHypertensionAndDiabetic.put("value", shnIndicatorDetailsDTO.getFpHypertensionAndDiabetic());
-			dataValues.put(fpHypertensionAndDiabetic);
-			
-			JSONObject fpPermanentMethod = new JSONObject();
-			fpPermanentMethod.put("dataElement", DHISMapper.indicatorDataMapper.get("fpPermanentMethod"));
-			fpPermanentMethod.put("value", shnIndicatorDetailsDTO.getFpPermanentMethod());
-			dataValues.put(fpPermanentMethod);
+//			JSONObject fpContraceptiveMethod = new JSONObject();
+//			fpContraceptiveMethod.put("dataElement", DHISMapper.indicatorDataMapper.get("fpContraceptiveMethod"));
+//			fpContraceptiveMethod.put("value", shnIndicatorDetailsDTO.getFpContraceptiveMethod());
+//			dataValues.put(fpContraceptiveMethod);
+//			
+//			JSONObject fpHypertensionAndDiabetic = new JSONObject();
+//			fpHypertensionAndDiabetic.put("dataElement", DHISMapper.indicatorDataMapper.get("fpHypertensionAndDiabetic"));
+//			fpHypertensionAndDiabetic.put("value", shnIndicatorDetailsDTO.getFpHypertensionAndDiabetic());
+//			dataValues.put(fpHypertensionAndDiabetic);
+//			
+//			JSONObject fpPermanentMethod = new JSONObject();
+//			fpPermanentMethod.put("dataElement", DHISMapper.indicatorDataMapper.get("fpPermanentMethod"));
+//			fpPermanentMethod.put("value", shnIndicatorDetailsDTO.getFpPermanentMethod());
+//			dataValues.put(fpPermanentMethod);
 			
 			JSONObject calculateAncAllTakenFullCount = new JSONObject();
-			calculateAncAllTakenFullCount.put("dataElement", DHISMapper.indicatorDataMapper.get("calculateAncAllTakenFullCount"));
+			calculateAncAllTakenFullCount.put("dataElement", "CnSwzusr2an");
 			calculateAncAllTakenFullCount.put("value", shnIndicatorDetailsDTO.getCalculateAncAllTakenFullCount());
 			dataValues.put(calculateAncAllTakenFullCount);
 			
-			JSONObject fpAncTakenAtleastOne = new JSONObject();
-			fpAncTakenAtleastOne.put("dataElement", DHISMapper.indicatorDataMapper.get("fpAncTakenAtleastOne"));
-			fpAncTakenAtleastOne.put("value", shnIndicatorDetailsDTO.getFpAncTakenAtleastOne());
-			dataValues.put(fpAncTakenAtleastOne);
-			
-			JSONObject calculatePercentageOfFp = new JSONObject();
-			calculatePercentageOfFp.put("dataElement", DHISMapper.indicatorDataMapper.get("calculatePercentageOfFp"));
-			calculatePercentageOfFp.put("value", shnIndicatorDetailsDTO.getCalculatePercentageOfFp());
-			dataValues.put(calculatePercentageOfFp);
+//			JSONObject fpAncTakenAtleastOne = new JSONObject();
+//			fpAncTakenAtleastOne.put("dataElement", DHISMapper.indicatorDataMapper.get("fpAncTakenAtleastOne"));
+//			fpAncTakenAtleastOne.put("value", shnIndicatorDetailsDTO.getFpAncTakenAtleastOne());
+//			dataValues.put(fpAncTakenAtleastOne);
+//			
+//			JSONObject calculatePercentageOfFp = new JSONObject();
+//			calculatePercentageOfFp.put("dataElement", DHISMapper.indicatorDataMapper.get("calculatePercentageOfFp"));
+//			calculatePercentageOfFp.put("value", shnIndicatorDetailsDTO.getCalculatePercentageOfFp());
+//			dataValues.put(calculatePercentageOfFp);
 			
 			event.put("dataValues", dataValues);
 			
