@@ -2,6 +2,7 @@ package org.openmrs.module.PSI.api.db;
 
 import java.util.List;
 
+import org.openmrs.Concept;
 import org.openmrs.module.PSI.SHNFormPdfDetails;
 import org.openmrs.module.PSI.SHnPrescriptionMetaData;
 
@@ -19,6 +20,6 @@ public interface PSIUniquePatientDAO {
 	
 	public Boolean findPatientByUicandMobileNoWhileEdit(String patientUic, String mobileNo,String patientUuid);
 
-
+	public List<Concept> getconceptListGreaterthanCurrentConcept(int conceptId);
 
 }

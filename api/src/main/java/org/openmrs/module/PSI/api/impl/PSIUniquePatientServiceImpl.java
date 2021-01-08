@@ -2,6 +2,7 @@ package org.openmrs.module.PSI.api.impl;
 
 import java.util.List;
 
+import org.openmrs.Concept;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.SHNFormPdfDetails;
 import org.openmrs.module.PSI.SHnPrescriptionMetaData;
@@ -52,11 +53,16 @@ public class PSIUniquePatientServiceImpl extends BaseOpenmrsService implements P
 		return dao.getLastProviderName(visitUuid);
 	}
 
-	@Override
 	public Boolean findPatientByUicandMobileNoWhileEdit(String patientUic,
 			String mobileNo, String patientUuid) {
 		// TODO Auto-generated method stub
 		return dao.findPatientByUicandMobileNoWhileEdit(patientUic, mobileNo, patientUuid);
+	}
+
+	public List<Concept> getconceptListGreaterthanCurrentConcept(int conceptId) {
+		// TODO Auto-generated method stub
+		return dao.getconceptListGreaterthanCurrentConcept(conceptId);
+
 	}
 
 }
