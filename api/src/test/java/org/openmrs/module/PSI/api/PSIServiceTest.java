@@ -16,19 +16,33 @@ package org.openmrs.module.PSI.api;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.derby.tools.sysinfo;
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.module.PSI.AUHCClinicType;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.utils.DateTimeTypeConverter;
+import org.openmrs.module.PSI.utils.HttpResponse;
+import org.openmrs.module.PSI.utils.HttpUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
 
 /**
  * Tests {@link $ PSIService} .
@@ -41,96 +55,169 @@ public class PSIServiceTest extends BaseModuleContextSensitiveTest {
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
 	private final String CLINIC_TYPE_ENDPOINT = "/rest/v1/clinic/type";
+	private final String DHIS2BASEURL = "http://182.160.100.202:8080";
+	private final String GETEVENTURL = DHIS2BASEURL + "/api/events.json";
+	private final String ANALYTICS = DHIS2BASEURL + "/api/analytics";
 	
+	// SHN DHIS2
+	private final String DHIS2BASEURLSHN = "http://192.168.19.149/";
+	private final String DATAVALUESETURLSHN = DHIS2BASEURLSHN + "/api/dataValueSets";
 	Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
 	        .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter()).create();
 	
+	
+	
+	
+	
+	
+	 
+	
+	@Ignore
 	@Test
 	public void shouldSetupContext() throws ParseException, JSONException {
-		/*assertNotNull(Context.getService(PSIService.class));
-		String s = "1985-04-18T00:00:00.000+0000";
 		
-		Date date = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String strDate = dateFormat.format(date);
-		System.out.println("Converted String: " + strDate);
-		
-		int f = 2;
-		String l = f + "";
-		String ss = "";
-		if (l.length() == 1) {
-			ss += "000" + l;
-		} else if (l.length() == 2) {
-			ss += "00" + l;
-		} else if (l.length() == 3) {
-			ss += "0" + l;
-		}
-		System.out.println(ss);
-		Date date1 = yyyyMMdd.parse(s.substring(0, 10));
-		System.out.println("Converted Sdate1tring: " + date1);
-		
-		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
-		LocalDateTime dateTime = LocalDateTime.parse("2018-05-05T11:50:55");
-		System.out.println(dateTime);*/
-		
-		/*Calendar cal = Calendar.getInstance();
-		int day = cal.get(Calendar.DATE);
-		int month = cal.get(Calendar.MONTH) + 1;
-		int year = cal.get(Calendar.YEAR);
-		int dow = cal.get(Calendar.DAY_OF_WEEK);
-		int dom = cal.get(Calendar.DAY_OF_MONTH);
-		int doy = cal.get(Calendar.DAY_OF_YEAR);
-		String dayS = day > 10 ? "" + day : "0" + day;
-		String monthS = month > 10 ? "" + month : "0" + month;
-		System.out.println("Current Date: " + cal.YEAR);
-		System.out.println("Day: " + dayS);
-		System.out.println("Month: " + monthS);
-		System.out.println("Year: " + year);
-		System.out.println("Day of Week: " + dow);
-		System.out.println("Day of Month: " + dom);
-		System.out.println("Day of Year: " + doy);
-		
-		System.out.println("1234".substring(0, 3));*/
-		//435
-		// 6632
-		
-		/*int y = 18;
-		
-		int yr = (int) Math.ceil(y / 4f);
-		System.out.println(yr);
-		int m = 2;
-		int d = 1;
-		int days = y * 365 + m * 30 + d;
-		int mm = (int) Math.ceil(m / 2f);
-		System.out.println(mm);
-		int modMonth = (int) Math.ceil(m / 2f);
-		System.out.println((days + modMonth + yr));*/
-		/*String stringTxt = "asd ,asdsdsdsd ,fgtt";
-		List<String> list = new ArrayList<>(Arrays.asList(stringTxt.split(",")));
-		System.out.println(list.contains("asd"));
-		for (String string : list) {
-			System.out.println(string);
-		}
-		String[] dd = stringTxt.split(",");
-		for (String string : dd) {
-			System.err.println(string);
-		}*/
-		
-		/*for (int i = 0; i < 7; i = i + 2) {
-			System.out.println(i);
-		}*/
-		
-		/*JSONArray clinicTypeJson = psiapiServiceFactory.getAPIType("openmrs").getFromRemoteOpenMRSAsArray("", "",
-		    CLINIC_TYPE_ENDPOINT);
-		List<AUHCClinicType> auhcClinicTypes = gson.fromJson(clinicTypeJson.toString(),
-		    new TypeToken<ArrayList<AUHCClinicType>>() {}.getType());
-		System.err.println(auhcClinicTypes);
-		*/
-		//List<AUHCClinicType> clients = gson.fromJson(dd.toString(), new TypeToken<ArrayList<AUHCClinicType>>() {}.getType());
-		//System.out.println(clients);
-		
-		String _clinicsStr = "{\"dateChanged\":\"2019-08-28 14:03:04.0\",\"clinicId\":\"177\",\"address\":\"Bashabo SH Clinic, 43,Maddyha Bashabo, Dhaka-1214\",\"dhisId\":\"yzZ2cGq8cj9\",\"districtUuid\":\"89ceb342-3578-40a0-afe8-220aa00cd986\",\"upazila\":\"DHAKA SOUTH CITY CORPORATION\",\"uuid\":\"6faffd63-6d0e-4bcb-b234-5fe0ce5a3e9f\",\"division\":\"Dhaka\",\"districtId\":85,\"dateCreated\":\"2019-08-28 14:03:04.0\",\"upazilaId\":86,\"district\":\"DHAKA\",\"name\":\"Bashabo\",\"upazilaUuid\":\"4405a4f9-92a5-44b6-86a1-109a1b49efef\",\"divisionId\":16,\"divisionUuid\":\"6bbee4e4-daeb-4f3f-bb35-0be72f982a33\",\"category\":\"Vital\",\"cid\":5,\"timestamp\":1566979384733}";
-		PSIClinicManagement clinicArray = gson.fromJson(_clinicsStr, new TypeToken<PSIClinicManagement>() {}.getType());
-		//System.out.println(clinicArray.toString());
 	}
+	
+	@Test
+	public void HNQSDataFetchTest() throws ParseException, JSONException {
+		JSONArray orgunitMaps = new JSONArray();
+		JSONObject orgunitMap = new JSONObject();
+		orgunitMap.put("hnqs", "krGB0Ja929i");
+		orgunitMap.put("shn", "XWDcwSGIuI5");
+		orgunitMaps.put(orgunitMap);
+		JSONObject orgunitMap1 = new JSONObject();
+		orgunitMap1.put("hnqs", "bluq08bE2cU");
+		orgunitMap1.put("shn", "cAWWacGBR8G");
+		orgunitMaps.put(orgunitMap1);
+		JSONArray datasets = getDataSets();
+		//String s = new Gson().toJson("");
+		JSONArray s = getIndicators();
+		Object document = parseDocument(s+"");
+		String prog = "1";
+		
+		
+		
+		for (int i = 0; i < orgunitMaps.length(); i++) {
+			for (int j = 0; j < datasets.length(); j++) {
+				JSONObject dataset = datasets.getJSONObject(j);
+				List<String > _indicators = JsonPath.read(document, "$.[?(@.program == '" + dataset.getString("id") + "')]");
+				JSONArray indicators = new JSONArray(_indicators);
+				sendData(orgunitMaps.getJSONObject(i), 202006, indicators,dataset);
+			}
+			
+		}
+		
+	}
+	private void sendData(JSONObject orgUnitJson,int period,JSONArray indicators,JSONObject dataset){
+		try{
+			
+			
+			String orgUnit = orgUnitJson.getString("hnqs");
+			String shnOrgUnit =orgUnitJson.getString("shn");
+			String dataSetId = "pVZqixN5A1K";
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String today = dateFormat.format(new Date());
+			
+			JSONObject data = new JSONObject();
+			
+			data.put("dataSet", dataset.opt("dataSet"));
+			data.put("completeDate", today);
+			data.put("period", period);
+			data.put("orgUnit", shnOrgUnit);
+			
+			JSONArray dataValues = new JSONArray();
+			for (int i = 0; i < indicators.length(); i++) {
+			
+	           JSONObject indicator = new JSONObject(indicators.getString(i));
+	            JSONObject response = psiapiServiceFactory.getAPIType("dhis2").get("", "", ANALYTICS+"?dimension=dx:"+indicator.getString("hnqs")+"&dimension=pe:"+period+"&dimension=ou:"+orgUnit+"");
+	    		
+	            JSONArray rows = response.getJSONArray("rows");
+	            
+	    		
+	    		if(rows.length()!=0) {
+	    			JSONArray values = rows.getJSONArray(0);
+	    			double value = values.getDouble(3);
+	    			JSONObject datalueaValue = new JSONObject();
+	    			datalueaValue.put("dataElement", indicator.getString("shn"));
+	    			datalueaValue.put("value", value);
+	                dataValues.put(datalueaValue);
+	    		}		
+	    	}
+			data.put("dataValues", dataValues);
+			HttpResponse op = HttpUtil.post(DATAVALUESETURLSHN, "", data.toString(), "admin", "district");
+			JSONObject res = new JSONObject(op.body());
+			
+			System.out.println("Data:"+data);
+			System.out.println("Res:"+res);
+			
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+	}
+	
+	
+	private JSONArray getIndicators() throws JSONException{
+		JSONArray indicators = new JSONArray();		
+		JSONObject indicator = new JSONObject();
+		indicator.put("hnqs", "JFIynmjXy64");
+		indicator.put("shn", "VrJOcPU0fWM");
+		indicator.put("program", "1");
+		indicators.put(indicator);
+		
+		JSONObject indicator1 = new JSONObject();
+		indicator1.put("hnqs", "RC3CuxE1x4e");
+		indicator1.put("shn", "ofRYiwUQpQp");
+		indicator1.put("program", "1");
+		indicators.put(indicator1);
+		
+		JSONObject indicator2 = new JSONObject();
+		indicator2.put("hnqs", "CSyKldUunvD");
+		indicator2.put("shn", "Sk6t1ja0W3X");
+		indicator2.put("program", "1");
+		indicators.put(indicator2);
+		
+		JSONObject indicator3 = new JSONObject();
+		indicator3.put("hnqs", "VAcX88W6Ctc");
+		indicator3.put("shn", "ccpfsR62kt5");
+		indicator3.put("program", "1");
+		indicators.put(indicator3);
+		
+		JSONObject indicator4 = new JSONObject();
+		indicator4.put("hnqs", "Mqbr0YQDhce");
+		indicator4.put("shn", "CuAb7KtQqHa");
+		indicator4.put("program", "1");
+		indicators.put(indicator4);
+		
+		JSONObject indicator5 = new JSONObject();
+		indicator5.put("hnqs", "iIrDNhckG2x");
+		indicator5.put("shn", "LRLpIM5wrq3");
+		indicator5.put("program", "1");
+		indicators.put(indicator5);
+		
+		JSONObject indicator6 = new JSONObject();
+		indicator6.put("hnqs", "a3SCh6VUMTh");
+		indicator6.put("shn", "xPP6UvbhoUj");
+		indicator6.put("program", "1");
+		indicators.put(indicator6);
+		return indicators;
+		
+		
+	}
+	
+	private JSONArray getDataSets() throws JSONException{
+		JSONArray programs = new JSONArray();	
+		JSONObject program = new JSONObject();
+		program.put("id", "1");
+		program.put("dataSet", "pVZqixN5A1K");
+		programs.put(program);
+		return programs;
+		
+		
+	}
+	
+	public static Object parseDocument(String IntialJsonDHISArray) {
+		return Configuration.defaultConfiguration().jsonProvider().parse(IntialJsonDHISArray);
+	}
+	
+	
 }
