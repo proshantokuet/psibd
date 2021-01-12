@@ -49,6 +49,7 @@
 		shndhisobselement.hbm.xml
 		shndhisencounterexception.hbm.xml
 		shndhismultiplechoiceobselement.hbm.xml
+		hnqistoshnconfigmapping.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

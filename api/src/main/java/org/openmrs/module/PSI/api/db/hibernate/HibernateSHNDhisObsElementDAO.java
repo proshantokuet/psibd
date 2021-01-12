@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.openmrs.module.PSI.HnqisToShnConfigMapping;
 import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 import org.openmrs.module.PSI.api.db.SHNDhisObsElementDAO;
@@ -47,6 +48,15 @@ class HibernateSHNDhisObsElementDAO implements SHNDhisObsElementDAO {
 				.createQuery("from SHNDhisMultipleChoiceObsElement where voided = 0 and formsName = :formname")
 				.setString("formname", formName).list();
 		return lists;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<HnqisToShnConfigMapping> getAllConfigMappingData() {
+		// TODO Auto-generated method stub
+		List<HnqisToShnConfigMapping> lists = sessionFactory.getCurrentSession()
+				.createQuery("from HnqisToShnConfigMapping where voided = 0").list();
+        return lists;
 	}
 	
 }

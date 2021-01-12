@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.openmrs.module.PSI.HnqisToShnConfigMapping" table="hnqis_to_shn_config">
+        <id column="config_id" name="configId" type="int">
+            <generator class="native"/>
+        </id> 
+        
+	    <property name="shnConfigId" column="shn_config_id" type="java.lang.String"/>	    
+		<property name="hnqisConfigId" column="hnqis_config_id" type="java.lang.String"/>
+	     <property name="configType" column="config_type" type="java.lang.String"/>
+	     <property name="datasetId" column="dataset_id" type="java.lang.String"/>
+		<property name="voided" column="voided" type="boolean" not-null="true"/>
+		
+		
+	    
+    </class>
+</hibernate-mapping>

@@ -3,6 +3,7 @@ package org.openmrs.module.PSI.api.impl;
 import java.util.List;
 
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.PSI.HnqisToShnConfigMapping;
 import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 import org.openmrs.module.PSI.api.SHNDhisObsElementService;
@@ -30,6 +31,12 @@ public class SHNDhisObsElementServiceImpl extends BaseOpenmrsService implements 
 	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement(String formName) {
 		// TODO Auto-generated method stub
 		return dao.getAllMultipleChoiceDhisElement(formName);
+	}
+
+	@Override
+	public List<HnqisToShnConfigMapping> getAllConfigMappingData() {
+		// TODO Auto-generated method stub
+		return dao.getAllConfigMappingData();
 	}
 
 }
