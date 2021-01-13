@@ -181,6 +181,12 @@ public class PSIClinicUserRestController extends MainResourceController {
 						log.error("person is saving" + person);
 						user.setPerson(person);
 						user.setUsername(userName);
+						log.error("person is retired or not " + clinicUserDTO.isRetired());
+						if (clinicUserDTO.isRetired()) {
+							user.setRetired(true);
+							user.setRetiredBy(Context.getAuthenticatedUser());
+							user.setRetireReason("reason in global");
+						}
 						Provider provider = new Provider();
 						provider.setPerson(person);
 						provider.setIdentifier(userName);

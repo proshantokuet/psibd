@@ -449,6 +449,7 @@ public class PSIClinicRestController extends MainResourceController {
 					clinicServicesObject.putOpt("uuid", psiServiceManagement.getUuid());
 					clinicServicesObject.putOpt("dateCreated", psiServiceManagement.getDateCreated());
 					clinicServicesObject.putOpt("dateChanged", psiServiceManagement.getDateChanged());
+					clinicServicesObject.putOpt("voided", psiServiceManagement.getVoided());
 					clinicServicesArray.put(clinicServicesObject);
 				}
 			}
@@ -723,6 +724,7 @@ public class PSIClinicRestController extends MainResourceController {
 		response.setDateChanged(get.getDateChanged());
 		response.setCreator(get.getCreator());
 		response.setUuid(get.getUuid());
+		response.setVoided(get.getVoided());
 		return response;
 	}
 	
@@ -794,6 +796,8 @@ public class PSIClinicRestController extends MainResourceController {
 					clinicServicesObject.putOpt("uuid", psiServiceManagement.getUuid());
 					clinicServicesObject.putOpt("dateCreated", psiServiceManagement.getDateCreated());
 					clinicServicesObject.putOpt("dateChanged", psiServiceManagement.getDateChanged());
+					clinicServicesObject.putOpt("dateChanged", psiServiceManagement.getDateChanged());
+					clinicServicesObject.putOpt("voided", psiServiceManagement.getVoided());
 					clinicServicesArray.put(clinicServicesObject);
 				}
 			}
