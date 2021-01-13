@@ -3,6 +3,7 @@ package org.openmrs.module.PSI.web.listener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
 import com.jayway.jsonpath.JsonPath;
 
 
@@ -37,28 +39,23 @@ public class HnqisToShnListener {
 
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
-	
-	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
-	
-	//private final String DHIS2BASEURL = "http://192.168.19.149";
-	
-	//test server psi
-	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
-	
-	//live dhis url
-	//private final String DHIS2BASEURL = "http://10.100.11.3:5271";
-	
 
 	private final String DHIS2BASEURL = "http://182.160.100.202:8080";
 
 	private final String ANALYTICS = DHIS2BASEURL + "/api/analytics";
 	
 	// SHN DHIS2
+	//test server psi
+	//private final String DATAVALUESETURLSHN = "http://10.100.11.2:5271";
+	
+	//live dhis url
+	//private final String DATAVALUESETURLSHN = "http://10.100.11.3:5271";
+	
 	private final String DHIS2BASEURLSHN = "http://192.168.19.149/";
 	
 	private final String DATAVALUESETURLSHN = DHIS2BASEURLSHN + "/api/dataValueSets";
 	
-	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
+	private final String VERSIONAPI = DHIS2BASEURLSHN + "/api/metadata/version";
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
@@ -92,49 +89,69 @@ public class HnqisToShnListener {
 	private void sendHnqisToDhis2() throws ParseException, JSONException {
 		
 		List<HnqisToShnConfigMapping> configMapping = Context.getService(SHNDhisObsElementService.class).getAllConfigMappingData();
-		JSONArray orgunitMaps = new JSONArray();
-		JSONObject orgunitMap = new JSONObject();
-		orgunitMap.put("hnqs", "krGB0Ja929i");
-		orgunitMap.put("shn", "XWDcwSGIuI5");
-		orgunitMaps.put(orgunitMap);
-		JSONObject orgunitMap1 = new JSONObject();
-		orgunitMap1.put("hnqs", "bluq08bE2cU");
-		orgunitMap1.put("shn", "cAWWacGBR8G");
-		orgunitMaps.put(orgunitMap1);
-		JSONArray datasets = getDataSets();
-		//String s = new Gson().toJson("");
-		JSONArray s = getIndicators();
+
 		JSONArray configHnqiosJsonArray = toConvert(configMapping);
-		Object document = parseDocument(configMapping.toString());
-		String prog = "1";
+		
+		//log.error("config array from database" + configHnqiosJsonArray.toString());
+		
+		Object document = parseDocument(configHnqiosJsonArray.toString());
+		
+		List<String> extractConfigJSON = JsonPath.read(document, "$.[?(@.configType == 'ORGUNIT')]");
+		String convertedJson = new Gson().toJson(extractConfigJSON);
+		JSONArray extractOrgUnitArray = new JSONArray(convertedJson);
+		
+		//log.error("org unit parse array" + extractOrgUnitArray.toString());
+		
+		List<String> DatasetJson = JsonPath.read(document, "$.[?(@.configType == 'DATASET')]");
+		String convertedDataSetJson = new Gson().toJson(DatasetJson);
+		JSONArray extractDatasetArray = new JSONArray(convertedDataSetJson);
+		
+		log.error("Data set array" + extractDatasetArray.toString());
 		
 		
-		
-		for (int i = 0; i < orgunitMaps.length(); i++) {
-			for (int j = 0; j < datasets.length(); j++) {
-				JSONObject dataset = datasets.getJSONObject(j);
-				List<String > _indicators = JsonPath.read(document, "$.[?(@.program == '" + dataset.getString("id") + "')]");
-				JSONArray indicators = new JSONArray(_indicators);
-				sendData(orgunitMaps.getJSONObject(i), 202006, indicators,dataset);
+		boolean stop = false;
+		for (int i = 0; i < extractOrgUnitArray.length() && !stop; i++) {
+			for (int j = 0; j < extractDatasetArray.length() && !stop; j++) {
+				JSONObject dataset = extractDatasetArray.getJSONObject(j);
+				//log.error("Data set ID" + dataset.getString("datasetId"));
+				List<String> indicatorJson = JsonPath.read(document, "$.[?(@.configType == 'INDICATOR' && @.datasetId == '"+dataset.getString("datasetId")+"')]");
+				//log.error("indicator json with datasetid" + indicatorJson.toString());
+				String convertedIndicatorJson = new Gson().toJson(indicatorJson);
+				JSONArray indicators = new JSONArray(convertedIndicatorJson);
+				//log.error("Indicator json array" + indicators.toString());
+				//log.error("org unit json extracted array" + extractOrgUnitArray.getJSONObject(i));
+				
+				boolean statusOfPost =  sendData(extractOrgUnitArray.getJSONObject(i), indicators,dataset);
+				if(!statusOfPost) {
+					stop = true;
+				}
 			}
 			
 		}
 	}
 
-	private void sendData(JSONObject orgUnitJson,int period,JSONArray indicators,JSONObject dataset){
+	private boolean sendData(JSONObject orgUnitJson,JSONArray indicators,JSONObject dataset){
+		boolean sentFlag = false;
 		try{
 			
-			
-			String orgUnit = orgUnitJson.getString("hnqs");
-			String shnOrgUnit =orgUnitJson.getString("shn");
-			String dataSetId = "pVZqixN5A1K";
+			//log.error("Entering in send data" + orgUnitJson.toString());
+			String orgUnit = orgUnitJson.getString("hnqisConfigId");
+			//log.error("orgUnit" + orgUnit);
+			String shnOrgUnit =orgUnitJson.getString("shnConfigId");
+			//log.error("orgUnit" + shnOrgUnit);
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			String today = dateFormat.format(new Date());
 			
+			Date date = Calendar.getInstance().getTime();
+			DateFormat dateFormatForPeriod = new SimpleDateFormat("yyyyMM");
+			String period = dateFormatForPeriod.format(date);
+
+			
 			JSONObject data = new JSONObject();
 			
-			data.put("dataSet", dataset.opt("dataSet"));
+			data.put("dataSet", dataset.opt("datasetId"));
 			data.put("completeDate", today);
+
 			data.put("period", period);
 			data.put("orgUnit", shnOrgUnit);
 			
@@ -142,91 +159,47 @@ public class HnqisToShnListener {
 			for (int i = 0; i < indicators.length(); i++) {
 			
 	           JSONObject indicator = new JSONObject(indicators.getString(i));
-	            JSONObject response = psiapiServiceFactory.getAPIType("dhis2").get("", "", ANALYTICS+"?dimension=dx:"+indicator.getString("hnqs")+"&dimension=pe:"+period+"&dimension=ou:"+orgUnit+"");
-	    		
+	            //JSONObject response = psiapiServiceFactory.getAPIType("dhis2").get("", "", ANALYTICS+"?dimension=dx:"+indicator.getString("hnqisConfigId")+"&dimension=pe:"+period+"&dimension=ou:"+orgUnit+"");
+				HttpResponse op = HttpUtil.get(ANALYTICS+"?dimension=dx:"+indicator.getString("hnqisConfigId")+"&dimension=pe:"+period+"&dimension=ou:"+orgUnit+"", "", "qisapiadmin", "Qisapiadmin@123");
+				JSONObject response = new JSONObject(op.body());
 	            JSONArray rows = response.getJSONArray("rows");
 	            
 	    		
 	    		if(rows.length()!=0) {
+	    			log.error("i have data" + rows.length());
 	    			JSONArray values = rows.getJSONArray(0);
 	    			double value = values.getDouble(3);
 	    			JSONObject datalueaValue = new JSONObject();
-	    			datalueaValue.put("dataElement", indicator.getString("shn"));
+	    			datalueaValue.put("dataElement", indicator.getString("shnConfigId"));
 	    			datalueaValue.put("value", value);
 	                dataValues.put(datalueaValue);
 	    		}		
 	    	}
 			data.put("dataValues", dataValues);
-			HttpResponse op = HttpUtil.post(DATAVALUESETURLSHN, "", data.toString(), "admin", "district");
-			JSONObject res = new JSONObject(op.body());
-			
-			System.out.println("Data:"+data);
-			System.out.println("Res:"+res);
+			if(dataValues.length() > 0) {
+				log.error("Datavalues in SHN" + dataValues.toString());
+				log.error("Data Post in shn" + data.toString());
+				JSONObject response = psiapiServiceFactory.getAPIType("dhis2").add("", data, DATAVALUESETURLSHN);
+				if(response.has("status")) {
+					String sentStatus = response.getString("status");
+					if(sentStatus == "SUCCESS") {
+						sentFlag = true;
+					}
+				}
+				log.error("response after posting shn dhis2" + response);
+			}
+			else {
+				sentFlag = true;
+			}
+
 			
 			}catch(Exception e){
+				sentFlag = false;
 				e.printStackTrace();
 			}
+		return sentFlag;
 	}
 	
-	
-	private JSONArray getIndicators() throws JSONException{
-		JSONArray indicators = new JSONArray();		
-		JSONObject indicator = new JSONObject();
-		indicator.put("hnqs", "JFIynmjXy64");
-		indicator.put("shn", "VrJOcPU0fWM");
-		indicator.put("program", "1");
-		indicators.put(indicator);
-		
-		JSONObject indicator1 = new JSONObject();
-		indicator1.put("hnqs", "RC3CuxE1x4e");
-		indicator1.put("shn", "ofRYiwUQpQp");
-		indicator1.put("program", "1");
-		indicators.put(indicator1);
-		
-		JSONObject indicator2 = new JSONObject();
-		indicator2.put("hnqs", "CSyKldUunvD");
-		indicator2.put("shn", "Sk6t1ja0W3X");
-		indicator2.put("program", "1");
-		indicators.put(indicator2);
-		
-		JSONObject indicator3 = new JSONObject();
-		indicator3.put("hnqs", "VAcX88W6Ctc");
-		indicator3.put("shn", "ccpfsR62kt5");
-		indicator3.put("program", "1");
-		indicators.put(indicator3);
-		
-		JSONObject indicator4 = new JSONObject();
-		indicator4.put("hnqs", "Mqbr0YQDhce");
-		indicator4.put("shn", "CuAb7KtQqHa");
-		indicator4.put("program", "1");
-		indicators.put(indicator4);
-		
-		JSONObject indicator5 = new JSONObject();
-		indicator5.put("hnqs", "iIrDNhckG2x");
-		indicator5.put("shn", "LRLpIM5wrq3");
-		indicator5.put("program", "1");
-		indicators.put(indicator5);
-		
-		JSONObject indicator6 = new JSONObject();
-		indicator6.put("hnqs", "a3SCh6VUMTh");
-		indicator6.put("shn", "xPP6UvbhoUj");
-		indicator6.put("program", "1");
-		indicators.put(indicator6);
-		return indicators;
-		
-		
-	}
-	
-	private JSONArray getDataSets() throws JSONException{
-		JSONArray programs = new JSONArray();	
-		JSONObject program = new JSONObject();
-		program.put("id", "1");
-		program.put("dataSet", "pVZqixN5A1K");
-		programs.put(program);
-		return programs;
-		
-		
-	}
 	
 	public static Object parseDocument(String IntialJsonDHISArray) {
 		Object document = DhisObsJsonDataConverter.parseDocument(IntialJsonDHISArray);

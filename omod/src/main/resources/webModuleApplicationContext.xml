@@ -32,12 +32,13 @@
 	
 	<context:annotation-config></context:annotation-config>
 	 <bean id="dhisListener" class="org.openmrs.module.PSI.web.listener.DHISListener"></bean>
-	 
+	 <bean id="hnqistoshnListener" class="org.openmrs.module.PSI.web.listener.HnqisToShnListener"></bean>
 	 <task:scheduled-tasks scheduler="dhis2Task">
+	 	<task:scheduled ref="hnqistoshnListener" method="sendData" cron="*/55 * * * * *" />
         <task:scheduled ref="dhisListener" method="sendData" cron="*/55 * * * * *" />
     </task:scheduled-tasks>
     
-   <task:scheduler pool-size="1" id="dhis2Task"/>
+   <task:scheduler pool-size="4" id="dhis2Task"/>
 	<task:annotation-driven /> 
  
 		
