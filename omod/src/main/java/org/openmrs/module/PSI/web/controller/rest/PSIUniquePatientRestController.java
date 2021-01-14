@@ -7,6 +7,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.SHNFormPdfDetails;
 import org.openmrs.module.PSI.SHnPrescriptionMetaData;
 import org.openmrs.module.PSI.api.PSIUniquePatientService;
+import org.openmrs.module.PSI.web.listener.HnqisToShnListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,5 +73,32 @@ public class PSIUniquePatientRestController {
 		providerJsonObject.put("isSuccess",true);
 		providerJsonObject.put("lastVisitedProvider",lastProviderName);
 		return new ResponseEntity<>(providerJsonObject.toString(), HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value = "/syncpreviousMonthDataToGovtDhis2", method = RequestMethod.GET)
+	public ResponseEntity<String> syncPreviousYearData() throws Exception {
+		String successMonths = "";
+		for (int i = 1; i < 13; i++) {
+			boolean status = new HnqisToShnListener().sendPreviousDataTOGovtDhis2(i, 2020);
+			if(status) {
+				successMonths = successMonths + i + ",";
+			}
+		}
+		
+		return new ResponseEntity<>(successMonths.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/syncpreviousHnqisToSHNDhis2", method = RequestMethod.GET)
+	public ResponseEntity<String> syncPreviousYearDatatoShn() throws Exception {
+		String successMonths = "";
+		for (int i = 1; i < 13; i++) {
+			boolean status = new HnqisToShnListener().sendPreviousHnqisToDhis2(i, 2020);
+			if(status) {
+				successMonths = successMonths + i + ",";
+			}
+		}
+		
+		return new ResponseEntity<>(successMonths.toString(), HttpStatus.OK);
 	}
 }

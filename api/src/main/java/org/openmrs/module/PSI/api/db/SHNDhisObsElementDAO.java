@@ -13,6 +13,8 @@ public interface SHNDhisObsElementDAO {
 	public List<SHNDhisMultipleChoiceObsElement> getAllMultipleChoiceDhisElement(String formName);
 	
 	public List<HnqisToShnConfigMapping> getAllConfigMappingData();
+	
+	public String getAncCountForGovtDHis2(int month, int year);
 
 
 }

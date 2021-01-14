@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.module.PSI.HnqisToShnConfigMapping;
+import org.openmrs.module.PSI.api.AUHCDhisErrorVisualizeService;
 import org.openmrs.module.PSI.api.SHNDhisObsElementService;
 import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
@@ -57,6 +58,8 @@ public class HnqisToShnListener {
 	
 	private final String VERSIONAPI = DHIS2BASEURLSHN + "/api/metadata/version";
 	
+	private final String GOVTDHIS2URL = "https://centraldhis.mohfw.gov.bd/dhismohfw/api/29/dataValueSets";
+	
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
@@ -75,7 +78,7 @@ public class HnqisToShnListener {
 		if (status) {
 			
 			try {
-				sendHnqisToDhis2();
+				//sendHnqisToDhis2();
 			}
 			catch (Exception e) {
 				
@@ -226,6 +229,278 @@ public class HnqisToShnListener {
 		}
 		return hnqisToShnConfigJsonArray;
 		
+	}
+	
+	
+	private void sendDataTOGovtDhis2() {
+		try{
+			
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String today = dateFormat.format(new Date());
+			
+			Date date = Calendar.getInstance().getTime();
+			DateFormat dateFormatForPeriod = new SimpleDateFormat("yyyyMM");
+			String period = dateFormatForPeriod.format(date);
+			
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			int month = cal.get(Calendar.MONTH);
+			int year = cal.get(Calendar.YEAR);
+			String ancCountGovtDhis2 = Context.getService(SHNDhisObsElementService.class).getAncCountForGovtDHis2(month+1, year);
+			
+			String[] splitAncValue = ancCountGovtDhis2.split("\\|");
+			
+			JSONObject data = new JSONObject();
+			
+			data.put("dataSet", "sNDsezChsuc");
+			data.put("completeDate", today);
+
+			data.put("period", period);
+			data.put("orgUnit", "Tngp3g3uPVK");
+			
+			JSONArray dataValues = new JSONArray();
+
+			JSONObject anc1st = new JSONObject();
+			anc1st.put("dataElement", "NZN1xfoAGbY");
+			anc1st.put("value", splitAncValue[0]);
+            dataValues.put(anc1st);
+            
+			JSONObject anc2nd = new JSONObject();
+			anc2nd.put("dataElement", "t1ikcSRn5Rt");
+			anc2nd.put("value", splitAncValue[1]);
+            dataValues.put(anc2nd);	
+            
+            
+			JSONObject anc3rd = new JSONObject();
+			anc3rd.put("dataElement", "FmdNFaMUW0n");
+			anc3rd.put("value", splitAncValue[2]);
+            dataValues.put(anc3rd);	
+            
+            
+			JSONObject anc4th = new JSONObject();
+			anc4th.put("dataElement", "HeiADFs3q5n");
+			anc4th.put("value", splitAncValue[3]);
+            dataValues.put(anc4th);	
+
+			data.put("dataValues", dataValues);
+			if(dataValues.length() > 0) {
+				HttpResponse op = HttpUtil.post(GOVTDHIS2URL, "", data.toString(), "SHNHQ", "UHMIS1234#");
+				JSONObject response = new JSONObject(op.body());
+				if(response.has("status")) {
+					String sentStatus = response.getString("status");
+					log.error("Sent Status " + sentStatus);
+				}
+			}
+
+			
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+	}
+	
+	
+	public boolean sendPreviousDataTOGovtDhis2(int month, int year) {
+		boolean flag = false;
+		try{
+			
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String today = dateFormat.format(new Date());
+			String period = "";
+			if(month < 10) {
+				 period = ""+year+"0"+month;
+			}
+			else {
+				 period = ""+year+""+month;
+			}
+			
+			log.error("period " + period);
+			
+			String ancCountGovtDhis2 = Context.getService(SHNDhisObsElementService.class).getAncCountForGovtDHis2(month, year);
+			
+			String[] splitAncValue = ancCountGovtDhis2.split("\\|");
+			
+			JSONObject data = new JSONObject();
+			
+			data.put("dataSet", "sNDsezChsuc");
+			data.put("completeDate", today);
+
+			data.put("period", period);
+			data.put("orgUnit", "Tngp3g3uPVK");
+			
+			JSONArray dataValues = new JSONArray();
+
+			JSONObject anc1st = new JSONObject();
+			anc1st.put("dataElement", "NZN1xfoAGbY");
+			anc1st.put("value", splitAncValue[0]);
+            dataValues.put(anc1st);
+            
+			JSONObject anc2nd = new JSONObject();
+			anc2nd.put("dataElement", "t1ikcSRn5Rt");
+			anc2nd.put("value", splitAncValue[1]);
+            dataValues.put(anc2nd);	
+            
+            
+			JSONObject anc3rd = new JSONObject();
+			anc3rd.put("dataElement", "FmdNFaMUW0n");
+			anc3rd.put("value", splitAncValue[2]);
+            dataValues.put(anc3rd);	
+            
+            
+			JSONObject anc4th = new JSONObject();
+			anc4th.put("dataElement", "HeiADFs3q5n");
+			anc4th.put("value", splitAncValue[3]);
+            dataValues.put(anc4th);	
+
+			data.put("dataValues", dataValues);
+			if(dataValues.length() > 0) {
+				log.error("post data " + data.toString());
+				HttpResponse op = HttpUtil.post(GOVTDHIS2URL, "", data.toString(), "SHNHQ", "UHMIS1234#");
+				JSONObject response = new JSONObject(op.body());
+				if(response.has("status")) {
+					String sentStatus = response.getString("status");
+					log.error("Sent Status " + sentStatus);
+					flag = true;
+				}
+				else {
+					flag = true;
+				}
+			}
+
+			
+			}catch(Exception e){
+				e.printStackTrace();
+				flag = false;
+			}
+		return flag;
+	}
+	
+	
+	public boolean sendPreviousHnqisToDhis2(int month,int year) throws ParseException, JSONException {
+		
+		boolean flag = false;
+		
+		List<HnqisToShnConfigMapping> configMapping = Context.getService(SHNDhisObsElementService.class).getAllConfigMappingData();
+
+		JSONArray configHnqiosJsonArray = toConvert(configMapping);
+				
+		Object document = parseDocument(configHnqiosJsonArray.toString());
+		
+		List<String> extractConfigJSON = JsonPath.read(document, "$.[?(@.configType == 'ORGUNIT')]");
+		String convertedJson = new Gson().toJson(extractConfigJSON);
+		JSONArray extractOrgUnitArray = new JSONArray(convertedJson);
+		
+		//log.error("org unit parse array" + extractOrgUnitArray.toString());
+		
+		List<String> DatasetJson = JsonPath.read(document, "$.[?(@.configType == 'DATASET')]");
+		String convertedDataSetJson = new Gson().toJson(DatasetJson);
+		JSONArray extractDatasetArray = new JSONArray(convertedDataSetJson);
+		
+		log.error("Data set array" + extractDatasetArray.toString());
+		
+		
+		boolean stop = false;
+		for (int i = 0; i < extractOrgUnitArray.length() && !stop; i++) {
+			for (int j = 0; j < extractDatasetArray.length() && !stop; j++) {
+				JSONObject dataset = extractDatasetArray.getJSONObject(j);
+				//log.error("Data set ID" + dataset.getString("datasetId"));
+				List<String> indicatorJson = JsonPath.read(document, "$.[?(@.configType == 'INDICATOR' && @.datasetId == '"+dataset.getString("datasetId")+"')]");
+				//log.error("indicator json with datasetid" + indicatorJson.toString());
+				String convertedIndicatorJson = new Gson().toJson(indicatorJson);
+				JSONArray indicators = new JSONArray(convertedIndicatorJson);
+				//log.error("Indicator json array" + indicators.toString());
+				//log.error("org unit json extracted array" + extractOrgUnitArray.getJSONObject(i));
+				
+				boolean statusOfPost =  sendPreviousData(extractOrgUnitArray.getJSONObject(i), indicators,dataset,month,year);
+				if(!statusOfPost) {
+					stop = true;
+				}
+			}
+			
+		}
+		if(stop) {
+			flag = true;
+		}
+		else {
+			flag = false;
+		}
+		return flag;
+	}
+	
+	
+	private boolean sendPreviousData(JSONObject orgUnitJson,JSONArray indicators,JSONObject dataset,int month,int year){
+		boolean sentFlag = false;
+		try{
+			
+			//log.error("Entering in send data" + orgUnitJson.toString());
+			String orgUnit = orgUnitJson.getString("hnqisConfigId");
+			//log.error("orgUnit" + orgUnit);
+			String shnOrgUnit =orgUnitJson.getString("shnConfigId");
+			//log.error("orgUnit" + shnOrgUnit);
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String today = dateFormat.format(new Date());
+			
+			Date date = Calendar.getInstance().getTime();
+			DateFormat dateFormatForPeriod = new SimpleDateFormat("yyyyMM");
+			String period = "";
+			if(month < 10) {
+				 period = ""+year+"0"+month;
+			}
+			else {
+				 period = ""+year+""+month;
+			}
+
+			log.error("period " + period);
+			JSONObject data = new JSONObject();
+			
+			data.put("dataSet", dataset.opt("datasetId"));
+			data.put("completeDate", today);
+
+			data.put("period", period);
+			data.put("orgUnit", shnOrgUnit);
+			
+			JSONArray dataValues = new JSONArray();
+			for (int i = 0; i < indicators.length(); i++) {
+			
+	           JSONObject indicator = new JSONObject(indicators.getString(i));
+	            //JSONObject response = psiapiServiceFactory.getAPIType("dhis2").get("", "", ANALYTICS+"?dimension=dx:"+indicator.getString("hnqisConfigId")+"&dimension=pe:"+period+"&dimension=ou:"+orgUnit+"");
+				HttpResponse op = HttpUtil.get(ANALYTICS+"?dimension=dx:"+indicator.getString("hnqisConfigId")+"&dimension=pe:"+period+"&dimension=ou:"+orgUnit+"", "", "qisapiadmin", "Qisapiadmin@123");
+				JSONObject response = new JSONObject(op.body());
+	            JSONArray rows = response.getJSONArray("rows");
+	            
+	    		
+	    		if(rows.length()!=0) {
+	    			log.error("i have data" + rows.length());
+	    			JSONArray values = rows.getJSONArray(0);
+	    			double value = values.getDouble(3);
+	    			JSONObject datalueaValue = new JSONObject();
+	    			datalueaValue.put("dataElement", indicator.getString("shnConfigId"));
+	    			datalueaValue.put("value", value);
+	                dataValues.put(datalueaValue);
+	    		}		
+	    	}
+			data.put("dataValues", dataValues);
+			if(dataValues.length() > 0) {
+				log.error("Datavalues in SHN" + dataValues.toString());
+				log.error("Data Post in shn" + data.toString());
+				JSONObject response = psiapiServiceFactory.getAPIType("dhis2").add("", data, DATAVALUESETURLSHN);
+				if(response.has("status")) {
+					String sentStatus = response.getString("status");
+					if(sentStatus == "SUCCESS") {
+						sentFlag = true;
+					}
+				}
+				log.error("response after posting shn dhis2" + response);
+			}
+			else {
+				sentFlag = true;
+			}
+
+			
+			}catch(Exception e){
+				sentFlag = false;
+				e.printStackTrace();
+			}
+		return sentFlag;
 	}
 	
 }

@@ -9,6 +9,7 @@ import org.openmrs.module.PSI.HnqisToShnConfigMapping;
 import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 import org.openmrs.module.PSI.api.db.SHNDhisObsElementDAO;
+import org.springframework.util.StringUtils;
 
 class HibernateSHNDhisObsElementDAO implements SHNDhisObsElementDAO {
 
@@ -57,6 +58,21 @@ class HibernateSHNDhisObsElementDAO implements SHNDhisObsElementDAO {
 		List<HnqisToShnConfigMapping> lists = sessionFactory.getCurrentSession()
 				.createQuery("from HnqisToShnConfigMapping where voided = 0").list();
         return lists;
+	}
+
+	@Override
+	public String getAncCountForGovtDHis2(int month, int year) {
+		// TODO Auto-generated method stub
+		String sqlString = "";
+		sqlString = "SELECT calculateAncForGovtDhis2("+ month +","+year+")";
+		try {
+			log.error(sqlString);
+			String ancCountForDhis2 = sessionFactory.getCurrentSession().createSQLQuery(sqlString).list().get(0).toString();
+			return ancCountForDhis2;
+			
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 }

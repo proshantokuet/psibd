@@ -39,4 +39,10 @@ public class SHNDhisObsElementServiceImpl extends BaseOpenmrsService implements 
 		return dao.getAllConfigMappingData();
 	}
 
+	@Override
+	public String getAncCountForGovtDHis2(int month, int year) {
+		// TODO Auto-generated method stub
+		return dao.getAncCountForGovtDHis2(month, year);
+	}
+
 }
