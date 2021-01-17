@@ -215,7 +215,7 @@ public class SHNStockRestController {
 				if (index != 0) {
 					log.error("Querying psiservice management " + index);
 					PSIServiceManagement psiServiceManagement = Context.getService(PSIServiceManagementService.class)
-					        .findByCodeAndClinicId(service[3], id);
+					        .findProductByCodeAndClinicId(service[3], id);
 					log.error("Querying psiservice management result " + psiServiceManagement);
 					List<SHNStockDTO> findStockByProductInvoiceAndExpiryDate = new ArrayList<SHNStockDTO> ();
 					if(psiServiceManagement != null) {

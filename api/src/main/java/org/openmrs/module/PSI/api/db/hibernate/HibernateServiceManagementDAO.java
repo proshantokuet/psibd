@@ -102,8 +102,8 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	@Override
 	public PSIServiceManagement findByCodeAndClinicId(String code, int clinicId) {
 		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceManagement where code = :code and  psiClinicManagement=:clinicId ")
-		        .setString("code", code).setInteger("clinicId", clinicId).list();
+		        .createQuery("from PSIServiceManagement where code = :code and  psiClinicManagement=:clinicId and type = :servicetype")
+		        .setString("code", code).setString("servicetype", "SERVICE").setInteger("clinicId", clinicId).list();
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {
