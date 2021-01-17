@@ -49,11 +49,11 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 
 	Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, BaseColor.BLACK);
 	
-	Font textFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 13, BaseColor.BLACK);
+	Font textFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 11, BaseColor.BLACK);
 	
 	Font conditionFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, BaseColor.BLACK);
 	
-	Font paraFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12, BaseColor.BLACK);
+	Font paraFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 10, BaseColor.BLACK);
 	
 	Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, BaseColor.BLACK);
 	
@@ -348,7 +348,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		
 		
 		Paragraph p = new Paragraph(new Phrase("Male ", textFont));
-		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
+		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS, 11);
 		p.add(new Chunk(maleFont, zapfdingbats));
 		PdfPCell name4 = new PdfPCell(new Paragraph(p));
 		
@@ -557,13 +557,13 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		blankRow3.setColspan(88);
 		table.addCell(blankRow3);
 		
-		PdfPCell session = new PdfPCell(new Paragraph(new Phrase("8. Session:  ", textFont)));
+		PdfPCell session = new PdfPCell(new Paragraph(new Phrase("8. Session:", textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		session.disableBorderSide(Rectangle.TOP);
 		session.disableBorderSide(Rectangle.BOTTOM);
 		session.disableBorderSide(Rectangle.RIGHT);
 		session.setLeading(3, 1);
-		session.setColspan(20);
+		session.setColspan(12);
 		table.addCell(session);
 		
 		PdfPCell sessionAnswer = new PdfPCell(new Paragraph(new Phrase(psiMoneyReceipt.getSession(), textFont)));
@@ -571,24 +571,26 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		sessionAnswer.disableBorderSide(Rectangle.TOP);
 		sessionAnswer.disableBorderSide(Rectangle.BOTTOM);
 		sessionAnswer.disableBorderSide(Rectangle.LEFT);
+		sessionAnswer.disableBorderSide(Rectangle.RIGHT);
 		sessionAnswer.setLeading(3, 1);
-		sessionAnswer.setColspan(68);
+		sessionAnswer.setColspan(30);
 		table.addCell(sessionAnswer);
 		
-		PdfPCell blankRow4 = new PdfPCell(new Phrase("\n"));
-		blankRow4.setFixedHeight(5f);
-		blankRow4.disableBorderSide(Rectangle.TOP);
-		blankRow4.disableBorderSide(Rectangle.BOTTOM);
-		blankRow4.setColspan(88);
-		table.addCell(blankRow4);
-		
+//		PdfPCell blankRow4 = new PdfPCell(new Phrase("\n"));
+//		blankRow4.setFixedHeight(5f);
+//		blankRow4.disableBorderSide(Rectangle.TOP);
+//		blankRow4.disableBorderSide(Rectangle.BOTTOM);
+//		blankRow4.setColspan(88);
+//		table.addCell(blankRow4);
+//		
 		PdfPCell reference = new PdfPCell(new Paragraph(new Phrase("9. Reference:  ", textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		reference.disableBorderSide(Rectangle.TOP);
 		reference.disableBorderSide(Rectangle.BOTTOM);
 		reference.disableBorderSide(Rectangle.RIGHT);
+		reference.disableBorderSide(Rectangle.LEFT);
 		reference.setLeading(3, 1);
-		reference.setColspan(20);
+		reference.setColspan(18);
 		table.addCell(reference);
 		
 		PdfPCell referenceAnswer = new PdfPCell(new Paragraph(new Phrase(dto.getReference(), textFont)));
@@ -597,7 +599,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		referenceAnswer.disableBorderSide(Rectangle.BOTTOM);
 		referenceAnswer.disableBorderSide(Rectangle.LEFT);
 		referenceAnswer.setLeading(3, 1);
-		referenceAnswer.setColspan(68);
+		referenceAnswer.setColspan(28);
 		table.addCell(referenceAnswer);
 		
 		PdfPCell blankRow5 = new PdfPCell(new Phrase("\n"));
@@ -718,7 +720,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		//serviceCodeHeader.setColspan(20);
 		table.addCell(serviceCodeHeader);
 		
-		PdfPCell serviceNameHeader = new PdfPCell(new Paragraph(new Phrase("Service/Medicine/ Others" + "\n" + "  (B)", paraFont)));
+		PdfPCell serviceNameHeader = new PdfPCell(new Paragraph(new Phrase("Service/Medicine/ Others"  + "  (B)", paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		serviceNameHeader.setLeading(3, 1);
 		serviceNameHeader.setBackgroundColor(BaseColor.LIGHT_GRAY);
@@ -739,7 +741,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		//UnitCostHeader.setColspan(10);
 		table.addCell(UnitCostHeader);
 		
-		PdfPCell amountHeader = new PdfPCell(new Paragraph(new Phrase("Total Amount" + "\n" + "   (E)", paraFont)));
+		PdfPCell amountHeader = new PdfPCell(new Paragraph(new Phrase("Total Amount" + " (E)", paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		amountHeader.setLeading(3, 1);
 		amountHeader.setBackgroundColor(BaseColor.LIGHT_GRAY);
@@ -754,7 +756,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 		//discountHeader.setColspan(15);
 		table.addCell(discountHeader);
 		
-		PdfPCell payableAmountHeader = new PdfPCell(new Paragraph(new Phrase("Net Payable Amount" + "\n" + "    (G)", paraFont)));
+		PdfPCell payableAmountHeader = new PdfPCell(new Paragraph(new Phrase("Net Payable Amount" + "    (G)", paraFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
 		payableAmountHeader.setLeading(3, 1);
 		payableAmountHeader.setBackgroundColor(BaseColor.LIGHT_GRAY);

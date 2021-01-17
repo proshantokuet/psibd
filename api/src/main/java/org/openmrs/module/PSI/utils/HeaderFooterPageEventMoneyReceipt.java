@@ -33,9 +33,9 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 	protected final Log log = LogFactory.getLog(getClass());
 	Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, BaseColor.BLACK);
 	
-	Font textFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, BaseColor.BLACK);
+	Font textFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 11, BaseColor.BLACK);
 	
-	Font textHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 15, BaseColor.BLACK);
+	Font textHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 14, BaseColor.BLACK);
 	
 	Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, BaseColor.BLACK);
 	
@@ -246,7 +246,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		}
 		
 		Paragraph p = new Paragraph(new Phrase("Type:             Static ", textFont));
-		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
+		Font zapfdingbats = new Font(Font.FontFamily.ZAPFDINGBATS, 11);
 		//Chunk chunk = new Chunk("o", zapfdingbats);
 		//p.add(chunk);
 		p.add(new Chunk(staticCheckboxFont, zapfdingbats));
@@ -265,7 +265,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		table.addCell(staticCell);
 		
 		Paragraph p2 = new Paragraph(new Phrase("Satellite ",textFont));
-		Font zapfdingbats2 = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
+		Font zapfdingbats2 = new Font(Font.FontFamily.ZAPFDINGBATS, 11);
 		Chunk chunk2 = new Chunk(satelliteCheckboxFont, zapfdingbats2);
 		p2.add(chunk2);
 		
@@ -279,7 +279,7 @@ public class HeaderFooterPageEventMoneyReceipt extends PdfPageEventHelper {
 		
 		
 		Paragraph p3 = new Paragraph(new Phrase("CSP ",textFont));
-		Font zapfdingbats3 = new Font(Font.FontFamily.ZAPFDINGBATS, 14);
+		Font zapfdingbats3 = new Font(Font.FontFamily.ZAPFDINGBATS, 11);
 		Chunk chunk3 = new Chunk(cspCheckboxFont, zapfdingbats3);
 		p3.add(chunk3);
 		
