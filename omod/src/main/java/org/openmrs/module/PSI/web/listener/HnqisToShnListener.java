@@ -69,19 +69,25 @@ public class HnqisToShnListener {
 		boolean status = true;
 		try {
 			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
-			
+			log.error("response String" + getResponse.toString());
 		}
 		catch (Exception e) {
 			
 			status = false;
+			log.error("Exception Status" + status);
 		}
 		if (status) {
-			
+			log.error("success Status" + status);
 			try {
-				//sendHnqisToDhis2();
+				sendHnqisToDhis2();
 			}
 			catch (Exception e) {
 				
+			}
+			try {
+				sendDataTOGovtDhis2();
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
 		}
 
@@ -113,8 +119,8 @@ public class HnqisToShnListener {
 		
 		
 		boolean stop = false;
-		for (int i = 0; i < extractOrgUnitArray.length() && !stop; i++) {
-			for (int j = 0; j < extractDatasetArray.length() && !stop; j++) {
+		for (int i = 0; i < extractOrgUnitArray.length(); i++) {
+			for (int j = 0; j < extractDatasetArray.length(); j++) {
 				JSONObject dataset = extractDatasetArray.getJSONObject(j);
 				//log.error("Data set ID" + dataset.getString("datasetId"));
 				List<String> indicatorJson = JsonPath.read(document, "$.[?(@.configType == 'INDICATOR' && @.datasetId == '"+dataset.getString("datasetId")+"')]");
@@ -127,9 +133,12 @@ public class HnqisToShnListener {
 				boolean statusOfPost =  sendData(extractOrgUnitArray.getJSONObject(i), indicators,dataset);
 				if(!statusOfPost) {
 					stop = true;
+					break;
 				}
 			}
-			
+			if(stop) {
+				break;
+			}
 		}
 	}
 
@@ -182,10 +191,12 @@ public class HnqisToShnListener {
 			if(dataValues.length() > 0) {
 				log.error("Datavalues in SHN" + dataValues.toString());
 				log.error("Data Post in shn" + data.toString());
-				JSONObject response = psiapiServiceFactory.getAPIType("dhis2").add("", data, DATAVALUESETURLSHN);
+				HttpResponse op = HttpUtil.post(DATAVALUESETURLSHN, "", data.toString(), "apiadmin", "Apiadmin@123");
+				JSONObject response = new JSONObject(op.body());
+				//JSONObject response = psiapiServiceFactory.getAPIType("dhis2").add("", data, DATAVALUESETURLSHN);
 				if(response.has("status")) {
 					String sentStatus = response.getString("status");
-					if(sentStatus == "SUCCESS") {
+					if(sentStatus.equalsIgnoreCase("SUCCESS")) {
 						sentFlag = true;
 					}
 				}
@@ -399,8 +410,8 @@ public class HnqisToShnListener {
 		
 		
 		boolean stop = false;
-		for (int i = 0; i < extractOrgUnitArray.length() && !stop; i++) {
-			for (int j = 0; j < extractDatasetArray.length() && !stop; j++) {
+		for (int i = 0; i < extractOrgUnitArray.length(); i++) {
+			for (int j = 0; j < extractDatasetArray.length(); j++) {
 				JSONObject dataset = extractDatasetArray.getJSONObject(j);
 				//log.error("Data set ID" + dataset.getString("datasetId"));
 				List<String> indicatorJson = JsonPath.read(document, "$.[?(@.configType == 'INDICATOR' && @.datasetId == '"+dataset.getString("datasetId")+"')]");
@@ -411,11 +422,15 @@ public class HnqisToShnListener {
 				//log.error("org unit json extracted array" + extractOrgUnitArray.getJSONObject(i));
 				
 				boolean statusOfPost =  sendPreviousData(extractOrgUnitArray.getJSONObject(i), indicators,dataset,month,year);
+				log.error("Status of send previous Data" + statusOfPost);
 				if(!statusOfPost) {
 					stop = true;
+					break;
 				}
 			}
-			
+			if(stop) {
+				break;
+			}
 		}
 		if(stop) {
 			flag = true;
@@ -482,14 +497,18 @@ public class HnqisToShnListener {
 			if(dataValues.length() > 0) {
 				log.error("Datavalues in SHN" + dataValues.toString());
 				log.error("Data Post in shn" + data.toString());
-				JSONObject response = psiapiServiceFactory.getAPIType("dhis2").add("", data, DATAVALUESETURLSHN);
+				HttpResponse op = HttpUtil.post(DATAVALUESETURLSHN, "", data.toString(), "apiadmin", "Apiadmin@123");
+				JSONObject response = new JSONObject(op.body());
+				//JSONObject response = psiapiServiceFactory.getAPIType("dhis2").add("", data, DATAVALUESETURLSHN);
+				log.error("response after posting shn dhis2" + response.toString());
 				if(response.has("status")) {
 					String sentStatus = response.getString("status");
-					if(sentStatus == "SUCCESS") {
+					log.error("response sentStatus " + sentStatus);
+					if(sentStatus.equalsIgnoreCase("SUCCESS")) {
 						sentFlag = true;
 					}
 				}
-				log.error("response after posting shn dhis2" + response);
+				
 			}
 			else {
 				sentFlag = true;
@@ -498,6 +517,7 @@ public class HnqisToShnListener {
 			
 			}catch(Exception e){
 				sentFlag = false;
+				log.error("error message" + e.getMessage());
 				e.printStackTrace();
 			}
 		return sentFlag;
