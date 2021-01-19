@@ -417,7 +417,7 @@ public class PSIClinicRestController extends MainResourceController {
 					JSONObject clinicServicesObject = new JSONObject();
 					clinicServicesObject.put("sid", psiServiceManagement.getSid());
 					clinicServicesObject.put("name", psiServiceManagement.getName());
-					
+					clinicServicesObject.put("brandName", psiServiceManagement.getBrandName());
 					clinicServicesObject.put("code", psiServiceManagement.getCode());
 					clinicServicesObject.put("category", psiServiceManagement.getCategory());
 					clinicServicesObject.put("provider", psiServiceManagement.getProvider());
@@ -693,6 +693,10 @@ public class PSIClinicRestController extends MainResourceController {
 		
 		response.setUnitCost(get.getUnitCost());
 		
+		response.setBrandName(get.getBrandName());
+		
+		response.setPurchasePrice(get.getPurchasePrice());
+		
 		response.setTimestamp(get.getTimestamp());
 		
 		response.setField1(get.getField1());
@@ -716,6 +720,12 @@ public class PSIClinicRestController extends MainResourceController {
 		response.setYearFrom(get.getYearFrom());
 		
 		response.setMonthFrom(get.getMonthFrom());
+		
+		response.setDiscountAblePay(get.getDiscountAblePay());
+		
+		response.setDiscountPoor(get.getDiscountPoor());
+		
+		response.setDiscountPop(get.getDiscountPop());
 		
 		response.setDaysFrom(get.getDaysFrom());
 		response.setPsiClinicManagement(Context.getService(PSIClinicManagementService.class).findById(clinicId));

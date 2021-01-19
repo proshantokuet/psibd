@@ -136,16 +136,22 @@ public class SHNPackageRestController {
 	@RequestMapping(value = "/getStockStatusFromPackage/{clinicId}/{quantity}/{packageId}", method = RequestMethod.GET)
 	public ResponseEntity<String> findUserForSync(@PathVariable int clinicId,@PathVariable int quantity,@PathVariable int packageId) throws Exception {
 		JSONObject packageJsonObject = new  JSONObject();
+		String stockOutProducts = "";
 		boolean flag = false;
 		try {
 			List<SHNPackageReportDTO> shnPackageDto = Context.getService(SHNPackageService.class).getstockStatusFromPackage(clinicId, quantity, packageId);
 			if(shnPackageDto.size() > 0) {
 				for (SHNPackageReportDTO shnPackageReportDTO : shnPackageDto) {
 					if(shnPackageReportDTO.getIsStockExceed() == 0) {
+						stockOutProducts = stockOutProducts + shnPackageReportDTO.getItemName() +"("+shnPackageReportDTO.getItemCode() + ")"+",";
 						flag = true;
 					}
 				}
+				if (stockOutProducts.endsWith(",")) {
+					stockOutProducts = stockOutProducts.substring(0, stockOutProducts.length() - 1);
+					} 
 				packageJsonObject.put("exceedStock", flag);
+				packageJsonObject.put("stockOutProducts", stockOutProducts);
 			}
 		}
 		catch (Exception e) {

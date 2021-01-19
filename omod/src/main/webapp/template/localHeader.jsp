@@ -51,14 +51,14 @@
                 code="PSI.clinicType" /></a>
     </li>
     	
-    <c:if test="${hasClinicPermission}">
+<%--     <c:if test="${hasClinicPermission}">
     <li
         <c:if test='<%= request.getRequestURI().contains("/dhisErrVisualize") %>'>class="active"</c:if>>
         <a
         href="${pageContext.request.contextPath}/module/PSI/dhisErrVisualize.form"><spring:message
                 code="PSI.errorVisualize" /></a>
     </li>
-    </c:if>
+    </c:if> --%>
     <c:if test="${hasDashboardPermission}">
     <li
         <c:if test='<%= request.getRequestURI().contains("/conceptSync") %>'>class="active"</c:if>>
@@ -67,14 +67,7 @@
                 code="PSI.conceptsync" /></a>
     </li>
     </c:if>
-    <%-- <c:if test="${hasClinicPermission}">
-    <li
-        <c:if test='<%= request.getRequestURI().contains("/dhis-data-upload") %>'>class="active"</c:if>>
-        <a
-        href="${pageContext.request.contextPath}/module/PSI/dhis-data-upload.form"><spring:message
-                code="PSI.dhisDataUpload" /></a>
-    </li>
-    </c:if> --%>
+
 	<%-- <li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicServiceList") %>'>class="active"</c:if>>
 		<a

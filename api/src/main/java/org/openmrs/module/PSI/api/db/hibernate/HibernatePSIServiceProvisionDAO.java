@@ -555,7 +555,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		String sql = "select p.spid as sl,m.eslip_no as eslipNo,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
-				"sum(p.total_amount) as total_amount,ROUND(sum((p.discount)),2) as discount,ROUND(sum(p.net_payable),2) as net_payable, "+
+				"sum(p.total_amount) as total_amount,ROUND(m.total_discount, 2) as discount,ROUND(m.total_amount, 2) as net_payable, "+
 				" p.patient_uuid as patient_uuid "+
 				"from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				"on p.psi_money_receipt_id = m.mid "+
@@ -1040,7 +1040,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
 		
-		String sql = " select ROUND(sum(p.discount),2) "+
+		String sql = " select ROUND(sum(m.total_discount),2) "+
 				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				" on p.psi_money_receipt_id = m.mid "+
 				" where m.is_complete=1";
@@ -1175,7 +1175,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
-		String sql = " select ROUND(sum(p.net_payable),2) "+
+		String sql = " select ROUND(sum(m.total_amount),2) "+
 				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
 				" on p.psi_money_receipt_id = m.mid"+
 				" where m.is_complete=1 ";
