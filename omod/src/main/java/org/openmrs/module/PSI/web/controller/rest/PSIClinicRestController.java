@@ -221,6 +221,7 @@ public class PSIClinicRestController extends MainResourceController {
 	    throws Exception {
 		String msg = "";
 		String failedMessage = "";
+		boolean isExist = false;
 		if (file.isEmpty()) {
 			msg = "failed to upload file because its empty";
 			return new ResponseEntity<>(new Gson().toJson(msg), HttpStatus.OK);
@@ -262,6 +263,13 @@ public class PSIClinicRestController extends MainResourceController {
 			while ((line = br.readLine()) != null) {
 				String[] spot = line.split(cvsSplitBy);
 				if (index != 0) {
+					PSIClinicSpot getClinicByClinicId = Context.getService(PSIClinicSpotService.class).findDuplicateSpot(0,
+							spot[1], id);
+					if(getClinicByClinicId != null) {
+						msg = "Code: "+spot[1]+" already exist with clinic: " + psiClinicManagement.getName()+". " + "Line no: "+ index;
+						isExist = true;
+						break;
+					}
 					PSIClinicSpot psiClinicSpot = new PSIClinicSpot();
 					String name = "";
 					if (!StringUtils.isBlank(spot[0])) {
@@ -293,7 +301,10 @@ public class PSIClinicRestController extends MainResourceController {
 				}
 				index++;
 			}
-			msg = "Total successfully Spot uploaded: " + (index - 1);
+			if(!isExist) {
+				msg = "Total successfully Spot uploaded: " + (index - 1);
+			}
+			
 			
 		}
 		catch (Exception e) {

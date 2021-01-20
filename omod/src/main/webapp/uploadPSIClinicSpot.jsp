@@ -1,6 +1,9 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
-
+<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery-1.10.2.js"></script>
+<meta name="_csrf" content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <%@ include file="template/localHeader.jsp"%>
 <openmrs:require privilege="Clinic Spot List" otherwise="/login.htm" />
 <c:url var="saveUrl" value="/module/PSI/uploadPSIClinicSpot.form" />
@@ -12,7 +15,7 @@
     	<div class="note">
     	    
         	<p>Upload Community Clinic Spot Via CSV</p>
-        	
+        	${msg}
        	</div>
 		<div id="loading" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>"></div>
@@ -32,7 +35,7 @@
              	<input type="hidden" name="id" value="${id}" />              	
           	</div>
           	<button type="submit" class="btnSubmit">Submit</button> <a href="${cancelUrl}">Back</a>
-          	${msg}
+          	
       	</div>
       	</form:form>
    	</div>
