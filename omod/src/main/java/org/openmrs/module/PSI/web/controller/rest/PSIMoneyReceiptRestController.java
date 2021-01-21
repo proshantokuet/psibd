@@ -664,7 +664,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 	}
 	@RequestMapping(value = "/save-in-global", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<String> globalServerMoneyReceipt(@RequestBody String jsonStr) throws Exception {
-		
+		JSONObject responseMessage = new JSONObject();
 		JSONObject requestBody = new JSONObject(jsonStr);
 		JSONObject moneyReceipt = requestBody.getJSONObject("moneyReceipt");
 		JSONArray services = requestBody.getJSONArray("services");
@@ -943,15 +943,19 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 //				}
 			}
 			else{
+				responseMessage.put("message", "Refund Table Data Could not Be saved");
+				responseMessage.put("isSuccess", false);
 				return new ResponseEntity<String>("Refund Table Data Could not Be saved".toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 		catch (Exception e) {
-
+			responseMessage.put("message", e.getMessage().toString());
+			responseMessage.put("isSuccess", false);
 			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		return new ResponseEntity<String>(psiMoneyReceipt.getMid() + "", HttpStatus.OK);
+		responseMessage.put("message", psiMoneyReceipt.getMid());
+		responseMessage.put("isSuccess", true);
+		return new ResponseEntity<String>(responseMessage.toString() + "", HttpStatus.OK);
 	}
 	
 	
