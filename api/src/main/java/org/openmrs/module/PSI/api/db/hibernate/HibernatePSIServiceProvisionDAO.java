@@ -1008,7 +1008,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		// TODO Auto-generated method stub
 		String wh = "";
 		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
-			wh += " and Date(p.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
+			wh += " and Date(m.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
 					+ filter.getEndDateSlip()+"' ";
 		}
 		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
@@ -1041,8 +1041,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}
 		
 		String sql = " select ROUND(sum(m.total_discount),2) "+
-				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
-				" on p.psi_money_receipt_id = m.mid "+
+				" from openmrs.psi_money_receipt m "+
 				" where m.is_complete=1";
 		
 		sql += wh;
@@ -1148,7 +1147,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		// TODO Auto-generated method stub
 		String wh = "";
 		if(filter.getStartDateSlip() != null && filter.getEndDateSlip() != null){
-			wh += " and Date(p.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
+			wh += " and Date(m.money_receipt_date) between '" + filter.getStartDateSlip() + "' and '"
 					+ filter.getEndDateSlip()+"' ";
 		}
 		Boolean wealthFlag = (filter.getWlthAbleToPay() != "") || (filter.getWlthPoor() != "") || 
@@ -1176,8 +1175,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
 		String sql = " select ROUND(sum(m.total_amount),2) "+
-				" from openmrs.psi_service_provision p join openmrs.psi_money_receipt m "+
-				" on p.psi_money_receipt_id = m.mid"+
+				" from openmrs.psi_money_receipt m "+
 				" where m.is_complete=1 ";
 		
 		sql += wh;
