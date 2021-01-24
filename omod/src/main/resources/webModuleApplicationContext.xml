@@ -35,7 +35,7 @@
 	 
 	 <task:scheduled-tasks scheduler="dhis2Task">
 	 	<!-- <task:scheduled ref="dhisListener" method="sendData" cron="*/55 * * * * *" /> -->
-         <task:scheduled ref="dhisListener" method="sendData" cron="* */55 * * * *" />
+        <task:scheduled ref="dhisListener" method="sendData" cron="0 0/50 * * * *" />
     </task:scheduled-tasks>
     
    <task:scheduler pool-size="1" id="dhis2Task"/>
