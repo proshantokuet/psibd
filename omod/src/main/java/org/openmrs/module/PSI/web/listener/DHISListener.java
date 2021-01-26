@@ -70,7 +70,9 @@ public class DHISListener {
 	
 	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://182.160.99.131";
+	private final String DHIS2BASEURL = "http://192.168.19.149";
+	
+	//private final String DHIS2BASEURL = "http://182.160.99.131";
 	
 	//test server psi
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
@@ -100,7 +102,7 @@ public class DHISListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
-		
+		log.error("i am called at" + new  Date());
 		JSONObject getResponse = null;
 		boolean status = true;
 		try {
@@ -114,44 +116,44 @@ public class DHISListener {
 		if (status) {
 			
 			try {
-				//sendFailedPatient();
+				sendFailedPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				//sendPatient();
+				sendPatient();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				//sendMoneyReceipt();
+				sendMoneyReceipt();
 			}
 			catch (Exception e) {
 				
 			}
 			
 			try {
-				//sendFailedMoneyReceipt();
+				sendFailedMoneyReceipt();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				//sendEncounter();
+				sendEncounter();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				//sendEncounterFailed();
+				sendEncounterFailed();
 			}
 			catch (Exception e) {
 				
 			}
 			try {
-				//sendIndicatorDataToDhis();
+				sendIndicatorDataToDhis();
 			}
 			catch (Exception e) {
 				
@@ -169,7 +171,7 @@ public class DHISListener {
 				
 			}
 			try {
-				//deleteMoneyReceiptFromDhis2();
+				deleteMoneyReceiptFromDhis2();
 			}
 			catch (Exception e) {
 				
@@ -1034,7 +1036,7 @@ public class DHISListener {
 								}
 							} catch (Exception e) {
 								e.printStackTrace(); //need to check the error
-								SHNDhisEncounterException getDhisEncounterExceptionforEachFormsinTryCatch = Context.getService(SHNDhisEncounterExceptionService.class).findAllBymarkerIdAndFormName(eventReceordDTO.getId(), uniqueSetOfService);
+								SHNDhisEncounterException getDhisEncounterExceptionforEachFormsinTryCatch = Context.getService(SHNDhisEncounterExceptionService.class).findAllBymarkerIdAndFormName(eventReceordDTO.getId(), uniqueSetOfService,encounterUUid);
 								if (getDhisEncounterExceptionforEachFormsinTryCatch == null) {
 									SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
 									getDhisEncounterExceptionforEachFormsinTryCatch = newDhisEncounterException;
@@ -1053,7 +1055,7 @@ public class DHISListener {
 						String formsName = keys.getString(i); // Here's your key
 						String value = servicesToPost.getString(formsName);
 						JSONObject postEncounter = new JSONObject(value);
-						SHNDhisEncounterException getDhisEncounterExceptionforEachForms = Context.getService(SHNDhisEncounterExceptionService.class).findAllBymarkerIdAndFormName(eventReceordDTO.getId(), formsName);
+						SHNDhisEncounterException getDhisEncounterExceptionforEachForms = Context.getService(SHNDhisEncounterExceptionService.class).findAllBymarkerIdAndFormName(eventReceordDTO.getId(), formsName,encounterUUid);
 						SHNDhisEncounterException checkEncounterExistsOrNot = Context.getService(SHNDhisEncounterExceptionService.class).findEncByFormAndEncId(encounterUUid, formsName);
 						JSONObject eventResponse = new JSONObject();
 						if(checkEncounterExistsOrNot != null && !StringUtils.isEmpty(checkEncounterExistsOrNot.getReferenceId())) {

@@ -13,7 +13,7 @@ public interface SHNDhisEncounterExceptionService {
 	
 	public SHNDhisEncounterException findAllById(int markerId);
 	
-	public SHNDhisEncounterException findAllBymarkerIdAndFormName(int markerId, String formsName);
+	public SHNDhisEncounterException findAllBymarkerIdAndFormName(int markerId, String formsName,String encounterUuid);
 	
 	public SHNDhisEncounterException findEncByFormAndEncId(String encounterId, String formsName);
 

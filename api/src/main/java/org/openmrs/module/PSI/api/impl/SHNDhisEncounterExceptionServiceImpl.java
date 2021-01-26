@@ -46,9 +46,9 @@ public class SHNDhisEncounterExceptionServiceImpl extends BaseOpenmrsService imp
 
 	@Override
 	public SHNDhisEncounterException findAllBymarkerIdAndFormName(int markerId,
-			String formsName) {
+			String formsName,String encounterUuid) {
 		// TODO Auto-generated method stub
-		return dao.findAllBymarkerIdAndFormName(markerId, formsName);
+		return dao.findAllBymarkerIdAndFormName(markerId, formsName,encounterUuid);
 	}
 
 	@Override

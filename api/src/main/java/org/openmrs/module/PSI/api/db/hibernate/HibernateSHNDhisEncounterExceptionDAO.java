@@ -42,7 +42,7 @@ public class HibernateSHNDhisEncounterExceptionDAO implements SHNDhisEncounterEx
 	public List<SHNDhisEncounterException> findAllFailedEncounterByStatus(
 			int status) {
 		List<SHNDhisEncounterException> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from SHNDhisEncounterException where (status = :id0 OR status = :id3)").setInteger("id0", status)
+		        .createQuery("from SHNDhisEncounterException where (status = :id0 OR status = :id3) order by expId asc").setInteger("id0", status)
 		        .setInteger("id3", PSIConstants.CONNECTIONTIMEOUTSTATUS).list();
 		
 		return lists;
@@ -57,9 +57,9 @@ public class HibernateSHNDhisEncounterExceptionDAO implements SHNDhisEncounterEx
 	@SuppressWarnings("unchecked")
 	@Override
 	public SHNDhisEncounterException findAllBymarkerIdAndFormName(int markerId,
-			String formsName) {
+			String formsName,String encounterUuid) {
 		List<SHNDhisEncounterException> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from SHNDhisEncounterException where markId = :id and formsName = :formname").setInteger("id", markerId).setString("formname", formsName).list();
+		        .createQuery("from SHNDhisEncounterException where encounterId = :id and formsName = :formname").setString("id", encounterUuid).setString("formname", formsName).list();
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {
