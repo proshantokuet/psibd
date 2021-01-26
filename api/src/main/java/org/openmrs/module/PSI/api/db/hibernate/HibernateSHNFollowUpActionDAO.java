@@ -76,10 +76,10 @@ public class HibernateSHNFollowUpActionDAO implements SHNFollowUpActionDAO {
 	@Override
 	public List<SHNFollowUPReportDTO> getfollowUpReprt(String visitStartDate,
 			String visitEnd, String followUpStartDate, String followUpEndDate,
-			String mobileNo, String patientHid, String clinicCode, String patientName) {
+			String mobileNo, String patientHid, String clinicCode, String patientName,String defaultLoad) {
 		// TODO Auto-generated method stub
 		List<SHNFollowUPReportDTO> reportFollowUp = new ArrayList<SHNFollowUPReportDTO>();
-		String packageHql = "CALL followUpReportWithFilter('"+visitStartDate+"','"+visitEnd+"','"+followUpStartDate+"','"+followUpEndDate+"','"+mobileNo+"','"+patientHid+"','"+clinicCode+"','"+patientName+"')";					
+		String packageHql = "CALL followUpReportWithFilter('"+visitStartDate+"','"+visitEnd+"','"+followUpStartDate+"','"+followUpEndDate+"','"+mobileNo+"','"+patientHid+"','"+clinicCode+"','"+patientName+"','"+defaultLoad+"')";					
 		log.error("Query" + packageHql);
 		try {
 			reportFollowUp = sessionFactory.getCurrentSession().createSQLQuery(packageHql)

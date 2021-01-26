@@ -208,6 +208,8 @@ table.dataTable tbody th, table.dataTable tbody td {
 											<option value="Will Visit">Will Visit</option>
 											<option value="Will Not Visit">Will Not Visit</option>
 											<option value="Went to another service center">Went to another service center</option>
+											<option value="Visited SHN Clinic">Visited SHN Clinic</option>
+											<option value="Visited SHN Clinic & referred to other facility">Visited SHN Clinic & referred to other facility</option>
 											<option value="Others">Others</option>
 								</select>
 								<span id="resultselectionvalidation" class="text-danger"></span>
@@ -273,6 +275,7 @@ $jq(document).ready( function () {
 	       "searching": true,
 		   dom: 'Bfrtip',
 		   destroy: true,
+		   "order": [],
 		   buttons: [
 		             {
 		                 extend: 'excelHtml5',
@@ -416,6 +419,7 @@ function searchInFollwUpUsingFilter() {
 				       "searching": true,
 					   dom: 'Bfrtip',
 					   destroy: true,
+					   "order": [],
 					   buttons: [
 					             {
 					                 extend: 'excelHtml5',

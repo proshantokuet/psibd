@@ -43,7 +43,7 @@ public class SHNFollowUpController {
 		} else {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 		}
-		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt("", "", "", "", "", "",clinicCode,"");
+		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt("", "", "", "", "", "",clinicCode,"","1");
 		model.addAttribute("followUpReport",followUpReport);
 		if (psiClinicUser != null && !isAdmin) {			
 			model.addAttribute("showClinic", 0);
@@ -81,7 +81,7 @@ public class SHNFollowUpController {
 			clinicCode = psiClinicUser.getPsiClinicManagementId().getClinicId();
 		}
 		
-		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt(visitStartDate,visitEndDate,followUpStartDate,followUpEndDate,mobileNo,patientHid,clinicCode,patientName);
+		List<SHNFollowUPReportDTO> followUpReport = Context.getService(SHNFollowUpActionService.class).getfollowUpReprt(visitStartDate,visitEndDate,followUpStartDate,followUpEndDate,mobileNo,patientHid,clinicCode,patientName,"0");
 		model.addAttribute("followUpReport",followUpReport);
 		
 

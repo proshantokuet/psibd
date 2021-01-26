@@ -84,10 +84,14 @@ public class DHISMapper {
 		ServiceProvision.put("others", "otXoI3cMuJU"); // newly added
 		ServiceProvision.put("serviceUuid", "DGayB2UWV42");
 		ServiceProvision.put("eslipNo", "IchA74zTEDE");
-		//ServiceProvision.put("age", "qbCQtRpciiR");
+		
+		//Need to update following dhis id while deployment in live server 
+		
 		ServiceProvision.put("ageInYear", "W2bfXwtmZLz");
 		ServiceProvision.put("ageInMonth", "IUW8Rdi4qpf");
 		ServiceProvision.put("ageInDay", "VWCcOnUsKNT");
+		ServiceProvision.put("netPayableAfterDiscount", "X9aDVjMC6Gm");
+		ServiceProvision.put("overallDiscount", "ePwObSG5q4M");
 	}
 	
 	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();

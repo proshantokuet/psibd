@@ -466,6 +466,16 @@ public class DHISDataConverter {
 		ageInYearMoneyReceipt.put("value", period.getDays());
 		dataValues.put(ageInYearMoneyReceipt);
 		
+		JSONObject netPayableAfterDiscount = new JSONObject();
+		netPayableAfterDiscount.put("dataElement", DHISMapper.ServiceProvision.get("netPayableAfterDiscount"));
+		netPayableAfterDiscount.put("value",psiServiceProvision.getPsiMoneyReceiptId().getTotalAmount());
+		dataValues.put(netPayableAfterDiscount);
+		
+		JSONObject overAllDiscount = new JSONObject();
+		overAllDiscount.put("dataElement", DHISMapper.ServiceProvision.get("overallDiscount"));
+		overAllDiscount.put("value", psiServiceProvision.getPsiMoneyReceiptId().getOverallDiscount());
+		dataValues.put(overAllDiscount);
+		
 		return event;
 		
 	}
