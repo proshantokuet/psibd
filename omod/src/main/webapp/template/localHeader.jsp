@@ -6,7 +6,10 @@
 	<link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/jquery.dataTables.css">
 	 <link rel="stylesheet" href="/openmrs/moduleResources/PSI/css/select2.css"> 
 	<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/bootstrap.min.js"></script>
-	
+ <%@ page import = "java.util.ResourceBundle" %>
+ <% ResourceBundle resource = ResourceBundle.getBundle("deploymentConfig");
+    String isDeployInGlobal=resource.getString("isDeployInGlobal");
+     %>	
 <ul id="menu">
 	<%-- <li class="first"><a
 		href="${pageContext.request.contextPath}/admin"><spring:message
@@ -50,15 +53,21 @@
         href="${pageContext.request.contextPath}/module/PSI/clinicTypeList.form"><spring:message
                 code="PSI.clinicType" /></a>
     </li>
-    	
-<%--     <c:if test="${hasClinicPermission}">
+    <%
+	if (isDeployInGlobal.equalsIgnoreCase("1")) {
+	%>	
+  <c:if test="${hasClinicPermission}">
     <li
         <c:if test='<%= request.getRequestURI().contains("/dhisErrVisualize") %>'>class="active"</c:if>>
         <a
         href="${pageContext.request.contextPath}/module/PSI/dhisErrVisualize.form"><spring:message
                 code="PSI.errorVisualize" /></a>
     </li>
-    </c:if> --%>
+    </c:if>
+    <% } %>
+    <%
+	if (isDeployInGlobal.equalsIgnoreCase("0")) {
+	%>	
     <c:if test="${hasDashboardPermission}">
     <li
         <c:if test='<%= request.getRequestURI().contains("/conceptSync") %>'>class="active"</c:if>>
@@ -67,7 +76,7 @@
                 code="PSI.conceptsync" /></a>
     </li>
     </c:if>
-
+	<% } %>
 	<%-- <li
 		<c:if test='<%= request.getRequestURI().contains("/PSIClinicServiceList") %>'>class="active"</c:if>>
 		<a

@@ -43,9 +43,18 @@
 <div id="loader"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 	</div>
-<p><a href="${pageContext.request.contextPath}/module/PSI/add-product.form?id=${id}">Add Product</a>
+<p>
+<%
+	if (isDeployInGlobal.equalsIgnoreCase("1")) {
+%>
+<a href="${pageContext.request.contextPath}/module/PSI/add-product.form?id=${id}">Add Product</a>
 <a class="" href="${pageContext.request.contextPath}/module/PSI/upload-product.form?id=${id}"  style="margin-left: 10px;">Upload Product</a>
-<a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Product</a>
+<% } %>
+<%
+	if (isDeployInGlobal.equalsIgnoreCase("0")) {
+%>
+ <a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Product</a>
+ <% } %>
  <a class="" href="${pageContext.request.contextPath}/module/PSI/adjust-history.form?id=${id}" style="margin-left: 10px;">Adjust History</a>
 
 
@@ -98,7 +107,11 @@
 	            <td >Active</td>
 	            </c:if>
 	            <td>
+	            <%
+					if (isDeployInGlobal.equalsIgnoreCase("1")) {
+				%>
 	            <div><a class="btn btn-primary" href="<c:url value="/module/PSI/edit-product.form?id=${ product.sid }"/>"> Edit</a></div>
+	            <% } %> 
 	            <div style="padding-top: 5px;"><a class="btn btn-primary" href="<c:url value="/module/PSI/adjust-stock.form?id=${ product.sid }&clinicid=${id}"/>"> Adjust</a></div>
 	            </td>
 	        </tr>

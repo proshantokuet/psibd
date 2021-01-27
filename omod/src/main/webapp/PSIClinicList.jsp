@@ -2,6 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
 <%@ include file="template/localHeader.jsp"%>
+
 <openmrs:require privilege="Clinic List" otherwise="/login.htm" />
 <style>
 .btn-primary {
@@ -10,12 +11,20 @@
     border-color: #387c7c;
 }
 </style>
-<%-- <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
-				code="PSI.psiClinicAddNew" /></a>  --%>
+<%
+	if (isDeployInGlobal.equalsIgnoreCase("1")) {
+%>
+<a
+	href="${pageContext.request.contextPath}/module/PSI/addPSIClinic.form"><spring:message
+		code="PSI.psiClinicAddNew" /></a>
+<%
+	}
+%>
 <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
 		<div class="note">
-		<p>Clinic List</p>        	
+		<p>Clinic List</p>        
+		<p><%=isDeployInGlobal%></p>  	
 		</div>	
 	</div>
 	  	<div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
@@ -42,8 +51,12 @@
 	            <td>${ clinic.clinicId }</td>
 	            <td>${ clinic.category }</td>
 	            <td>${ clinic.upazila }</td>
-	            <td> 
-	            <a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a>
+	            <td>
+	              <%
+	       			if(isDeployInGlobal.equalsIgnoreCase("1"))  {
+	   			  %>   
+					<a class="btn btn-primary" href="<c:url value="/module/PSI/uploadPSIClinicService.form?id=${clinic.cid}"/>"> Upload Services</a>
+				<% } %>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicServiceList.form?id=${clinic.cid}"/>"> Services</a> 
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/PSIClinicUserList.form?id=${clinic.cid}"/>"> User List</a>  
 	            <div style="padding-top: 5px;">
@@ -54,7 +67,12 @@
 	            
 	            </div>
 	            <div style="padding-top: 5px;">
-	            <a class="btn btn-primary" onclick="syncClinicFromGlobal('${ clinic.clinicId }')">Sync</a>
+					              <%
+	       			if(isDeployInGlobal.equalsIgnoreCase("0"))  {
+	   			  %>  
+				<a class="btn btn-primary" onclick="syncClinicFromGlobal('${ clinic.clinicId }')">Sync</a>
+
+	            <% } %>
 	            <%-- <a class="btn btn-primary" href="<c:url value="/module/PSI/dhis-data-upload.form?id=${clinic.cid}"/>">Data Upload Dhis2</a> --%>
 	            <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinic.form?id=${ clinic.cid }"/>"> Edit</a>
 	            </div>

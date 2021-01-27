@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 
@@ -70,7 +71,7 @@ public class DHISListener {
 	
 	//private final String DHIS2BASEURL = "http://dhis.mpower-social.com:1971";
 	
-	private final String DHIS2BASEURL = "http://192.168.19.149";
+	//private final String DHIS2BASEURL = "http://192.168.19.149";
 	
 	//private final String DHIS2BASEURL = "http://182.160.99.131";
 	
@@ -79,6 +80,12 @@ public class DHISListener {
 	
 	//live dhis url
 	//private final String DHIS2BASEURL = "http://10.100.11.3:5271";
+	
+	private static ResourceBundle resource = ResourceBundle.getBundle("deploymentConfig");
+	
+	private final static String DHIS2BASEURL = resource.getString("dhis2BaseUrl");
+	
+	private String isDeployInGlobal = resource.getString("isDeployInGlobal");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -102,81 +109,85 @@ public class DHISListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
-		log.error("i am called at" + new  Date());
 		JSONObject getResponse = null;
 		boolean status = true;
-		try {
-			getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
-			
-		}
-		catch (Exception e) {
-			
-			status = false;
+		if(isDeployInGlobal.equalsIgnoreCase("1")) {
+			try {
+				getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
+				
+			}
+			catch (Exception e) {
+				
+				status = false;
+			}
 		}
 		if (status) {
 			
-			try {
-				sendFailedPatient();
-			}
-			catch (Exception e) {
+			if(isDeployInGlobal.equalsIgnoreCase("1")) {
+				try {
+					sendFailedPatient();
+				}
+				catch (Exception e) {
+					
+				}
+				try {
+					sendPatient();
+				}
+				catch (Exception e) {
+					
+				}
+				try {
+					sendMoneyReceipt();
+				}
+				catch (Exception e) {
+					
+				}
 				
+				try {
+					sendFailedMoneyReceipt();
+				}
+				catch (Exception e) {
+					
+				}
+				try {
+					sendEncounter();
+				}
+				catch (Exception e) {
+					
+				}
+				try {
+					sendEncounterFailed();
+				}
+				catch (Exception e) {
+					
+				}
+				try {
+					sendIndicatorDataToDhis();
+				}
+				catch (Exception e) {
+					
+				}
+				try {
+					deleteMoneyReceiptFromDhis2();
+				}
+				catch (Exception e) {
+					
+				}
 			}
-			try {
-				sendPatient();
+			if(isDeployInGlobal.equalsIgnoreCase("0")) {
+				try {
+					sendStockDataInGLobalServer();
+				}
+				catch (Exception e) {
+					
+				}
+				try {
+					sendAdjustStockDataInGLobalServer();
+				}
+				catch (Exception e) {
+					
+				}
 			}
-			catch (Exception e) {
-				
-			}
-			try {
-				sendMoneyReceipt();
-			}
-			catch (Exception e) {
-				
-			}
-			
-			try {
-				sendFailedMoneyReceipt();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				sendEncounter();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				sendEncounterFailed();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				sendIndicatorDataToDhis();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				//sendStockDataInGLobalServer();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				//sendAdjustStockDataInGLobalServer();
-			}
-			catch (Exception e) {
-				
-			}
-			try {
-				deleteMoneyReceiptFromDhis2();
-			}
-			catch (Exception e) {
-				
-			}
-			
 		}
 
 	}

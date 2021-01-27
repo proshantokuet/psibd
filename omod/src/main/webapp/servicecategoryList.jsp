@@ -9,9 +9,17 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 </style>
-<%-- <a href="${pageContext.request.contextPath}/module/PSI/addServiceCategory.form"><spring:message
-				code="PSI.addNewserviceCategory" /></a> --%>
-<a class="" href="" onclick="syncServiceCategoryFromGlobal()" style="margin-left: 10px;">Sync Service Category</a>					
+<%
+	if (isDeployInGlobal.equalsIgnoreCase("1")) {
+%>
+<a href="${pageContext.request.contextPath}/module/PSI/addServiceCategory.form"><spring:message
+				code="PSI.addNewserviceCategory" /></a>
+<% } %>
+<%
+	if (isDeployInGlobal.equalsIgnoreCase("0")) {
+%>
+<a class="" href="" onclick="syncServiceCategoryFromGlobal()" style="margin-left: 10px;">Sync Service Category</a>
+<% } %>					
  <div class="container register-form" style="max-width: 100%;padding: 0px; margin: 0px;">
 	<div class="form">
     	<div class="note">
@@ -49,7 +57,13 @@ table.dataTable tbody th, table.dataTable tbody td {
 	        <tr>
 	        	<td>${cat.sctid }</td>
 	        	<td>${cat.categoryName }</td>
-	        	<td><%-- <a class="btn btn-primary" href="<c:url value="/module/PSI/editServiceCategory.form?sctid=${ cat.sctid }"/>"> Edit</a> --%></td>
+	        	<td>
+	        	<%
+					if (isDeployInGlobal.equalsIgnoreCase("1")) {
+				%>
+	        	<a class="btn btn-primary" href="<c:url value="/module/PSI/editServiceCategory.form?sctid=${ cat.sctid }"/>"> Edit</a>
+	        	<% } %>
+	        	</td>
 	        </tr>
 	       </c:forEach>
 	        

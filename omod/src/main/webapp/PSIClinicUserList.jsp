@@ -9,9 +9,17 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 </style>
-<%-- <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicUser.form?id=${id}"><spring:message
-				code="PSI.psiClinicUserAssing" /></a> --%>
- <a class="" href="" onclick="syncClinicUser(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync User</a>
+<%
+	if (isDeployInGlobal.equalsIgnoreCase("1")) {
+%>
+<a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicUser.form?id=${id}"><spring:message
+				code="PSI.psiClinicUserAssing" /></a>
+<% } %>
+<%
+	if (isDeployInGlobal.equalsIgnoreCase("0")) {
+%>
+<a class="" href="" onclick="syncClinicUser(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync User</a>
+<% } %>
  <div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 	<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
 </div>
@@ -48,7 +56,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 	            <c:if test="${!user.retired}">
 	            <td >Active</td>
 	            </c:if>
-	            <td ><%-- <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicUser.form?id=${ user.cuid }"/>"> Edit</a> --%></td>
+	            <td ><a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicUser.form?id=${ user.cuid }"/>"> Edit</a></td>
 	        </tr>
 	       </c:forEach>
 	        

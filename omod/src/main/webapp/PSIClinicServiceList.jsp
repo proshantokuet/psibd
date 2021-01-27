@@ -3,9 +3,19 @@
 <openmrs:require privilege="Clinic Service List" otherwise="/login.htm" />
 
 <%@ include file="template/localHeader.jsp"%>
-<p><%-- <a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicService.form?id=${id}"><spring:message
-				code="PSI.psiservice" /></a> --%>
-<a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Services</a></p>
+<p>
+<%
+	if (isDeployInGlobal.equalsIgnoreCase("1")) {
+%>
+<a href="${pageContext.request.contextPath}/module/PSI/addPSIClinicService.form?id=${id}"><spring:message
+				code="PSI.psiservice" /></a>
+<% } %>
+<%
+	if (isDeployInGlobal.equalsIgnoreCase("0")) {
+%>
+<a class="" href="" onclick="syncServiceFromGlobal(${id},'${psiClinicManagement.clinicId}')" style="margin-left: 10px;">Sync Services</a>
+<% } %>
+</p>
 <div id="message" style="font-weight: bold;position: absolute; z-index: 1000;margin-left:36%"></div>			
 <div id="loader_clinic_list" style="display: none;position: absolute; z-index: 1000;margin-left:45%"> 
 			<img width="50px" height="50px" src="<c:url value="/moduleResources/PSI/images/ajax-loading.gif"/>">
@@ -50,7 +60,11 @@
 	            <td >Active</td>
 	            </c:if>
 	            <td>
-	            <%-- <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicService.form?id=${ service.sid }"/>"> Edit</a> --%>
+	            <%
+					if (isDeployInGlobal.equalsIgnoreCase("1")) {
+				%>
+	             <a class="btn btn-primary" href="<c:url value="/module/PSI/editPSIClinicService.form?id=${ service.sid }"/>"> Edit</a>
+	             <% } %>
 	            <%-- <a href="<c:url value="/module/PSI/deletePSIClinicService.form?id=${ service.sid }"/>"> Delete</a> --%> 
 	            </td>
 	        </tr>
