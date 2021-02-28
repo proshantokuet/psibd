@@ -1,5 +1,8 @@
 package org.openmrs.module.PSI.web.listener;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -1029,6 +1032,13 @@ public class DHISListener {
 											if(isNumeric(value)) {
 												dataValue.put("value", Double.parseDouble(value));
 											}
+											else if(isDateValid(value)) {
+												DateFormat dateFormatFirst = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+												DateFormat dateFormatSecond = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+												Date stringToDate = dateFormatFirst.parse(value);
+												String DhisDateFormat = dateFormatSecond.format(stringToDate);
+												dataValue.put("value", DhisDateFormat);
+											}
 											else {
 												dataValue.put("value", value);
 											}
@@ -1230,6 +1240,13 @@ public class DHISListener {
 													dataValue.put("dataElement", elementId);
 													if(isNumeric(value)) {
 														dataValue.put("value", Double.parseDouble(value));
+													}
+													else if(isDateValid(value)) {
+														DateFormat dateFormatFirst = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+														DateFormat dateFormatSecond = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+														Date stringToDate = dateFormatFirst.parse(value);
+														String DhisDateFormat = dateFormatSecond.format(stringToDate);
+														dataValue.put("value", DhisDateFormat);
 													}
 													else {
 														dataValue.put("value", value);
@@ -1436,6 +1453,19 @@ public class DHISListener {
 	
 	public static boolean isNumeric(String str) {
 		return str.matches("[0-9.]*");
+	}
+	
+	public static boolean isDateValid(String date) 
+	{
+		String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
+        try {
+            DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+            df.setLenient(false);
+            df.parse(date);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
 	}
 	
 	public void sendStockDataInGLobalServer() {

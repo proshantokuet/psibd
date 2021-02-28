@@ -100,7 +100,8 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 				+ "SELECT "
 				+ "  obs_fscn.name as question, "
 				+ "  coalesce(o.value_numeric, o.value_text, o.value_datetime, coded_scn.name, coded_fscn.name) AS answer, "
-				+ "  v.uuid as visit_uuid "
+				+ "  v.uuid as visit_uuid, "
+				+ " o.obs_group_id as groupId"
 				+ "FROM obs o "
 				+ "  JOIN concept obs_concept ON obs_concept.concept_id=o.concept_id AND obs_concept.retired is false "
 				+ "  JOIN concept_name obs_fscn on o.concept_id=obs_fscn.concept_id AND obs_fscn.concept_name_type=\"FULLY_SPECIFIED\" AND obs_fscn.voided is false "
@@ -113,13 +114,14 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 				+ "  LEFT JOIN concept_name coded_fscn on coded_fscn.concept_id = o.value_coded AND coded_fscn.concept_name_type=\"FULLY_SPECIFIED\" AND coded_fscn.voided is false "
 				+ "  LEFT JOIN concept_name coded_scn on coded_scn.concept_id = o.value_coded AND coded_fscn.concept_name_type=\"SHORT\" AND coded_scn.voided is false "
 				+ "WHERE o.voided is false and o.form_namespace_and_path like '%Discharge Certificate%' and p.uuid = '"+patientUuid+"' and v.uuid= '"+visitUuid+"'";
-		
+		log.error(dischargeQuery);
 		List<SHNFormPdfDetails> report = new ArrayList<SHNFormPdfDetails>();
 		try{
 			report = sessionFactory.getCurrentSession().createSQLQuery(dischargeQuery).
 					addScalar("question",StandardBasicTypes.STRING).
 					addScalar("answer",StandardBasicTypes.STRING).
 					addScalar("visit_uuid",StandardBasicTypes.STRING).
+					addScalar("groupId",StandardBasicTypes.INTEGER).
 					setResultTransformer(new AliasToBeanResultTransformer(SHNFormPdfDetails.class)).
 					list();
 			return report;
@@ -149,7 +151,7 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 				+ "  LEFT JOIN concept_name coded_fscn on coded_fscn.concept_id = o.value_coded AND coded_fscn.concept_name_type=\"FULLY_SPECIFIED\" AND coded_fscn.voided is false "
 				+ "  LEFT JOIN concept_name coded_scn on coded_scn.concept_id = o.value_coded AND coded_fscn.concept_name_type=\"SHORT\" AND coded_scn.voided is false "
 				+ "WHERE o.voided is false and o.form_namespace_and_path like '%Delivery%' and p.uuid = '"+patientUuid+"' and v.uuid = '"+visitUuid+"' "
-				+ "and obs_fscn.name in('Delivery Note, Delivery date and time','Baby Weight (Kg)','Sex','Newborn Length (cm)') order by o.obs_group_id ASC limit 4;";
+				+ "and obs_fscn.name in('Baby Delivery Date','Baby Length (cm)','Baby Weight (Kg)','Sex','Newborn Length (cm)') order by o.obs_group_id ASC;";
 		
 		List<SHNFormPdfDetails> report = new ArrayList<SHNFormPdfDetails>();
 		try{

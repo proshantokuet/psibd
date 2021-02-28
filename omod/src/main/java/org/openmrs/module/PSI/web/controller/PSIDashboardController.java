@@ -702,6 +702,7 @@ public class PSIDashboardController {
 			for (AUHCDraftTrackingReport auhcDraftTrackingReport : draftListForSubmitting) {
 				PSIMoneyReceipt psiMoneyReceipt = null;
 				psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(auhcDraftTrackingReport.getMid());
+				if(psiMoneyReceipt.getDueAmount() == 0) {
 				psiMoneyReceipt.setIsComplete(1);
 				psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
 				for (PSIServiceProvision serviceProvisions : psiMoneyReceipt.getServices()) {
@@ -710,7 +711,8 @@ public class PSIDashboardController {
 					serviceProvisions.setTimestamp(System.currentTimeMillis());
 					
 				}
-				Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);								
+				Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);	
+				}
 			}
 			
 		} catch (Exception e) {

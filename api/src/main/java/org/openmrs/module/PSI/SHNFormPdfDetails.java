@@ -13,6 +13,8 @@ public class SHNFormPdfDetails extends BaseOpenmrsData implements Serializable {
 	private String answer;
 	
 	private String visit_uuid;
+	
+	private Integer groupId;
 
 	public String getQuestion() {
 		return question;
@@ -48,6 +50,14 @@ public class SHNFormPdfDetails extends BaseOpenmrsData implements Serializable {
 	public void setId(Integer id) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Integer getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Integer groupId) {
+		this.groupId = groupId;
 	}
 
 }

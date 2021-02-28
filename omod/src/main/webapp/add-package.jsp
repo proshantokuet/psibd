@@ -323,6 +323,12 @@ jQuery('#addproductmodal').delegate('#productQuantity', 'input propertychange', 
 	var unitPrice = jQuery("#unitPrice").val();
 	var totalAmount = parseFloat(unitPrice) * thisQuantity;
 	jQuery("#productAmount").val(totalAmount);
+	var unitPriceInPackage = jQuery("#unitpriceinPackage").val();
+	if(unitPriceInPackage != "") {
+		var quantity = thisQuantity;
+		var totalAmount = parseFloat(unitPriceInPackage) * quantity;
+		jQuery("#priceinPackage").val(totalAmount);
+	}
 });
 
 jQuery('#addproductmodal').delegate('#unitpriceinPackage', 'input propertychange', function (event) {
@@ -344,6 +350,12 @@ jQuery('#addservicemodal').delegate('#serviceQuantity', 'input propertychange', 
 	var unitPrice = jQuery("#serviceUnitPrice").val();
 	var totalAmount = parseFloat(unitPrice) * thisQuantity;
 	jQuery("#serviceAmount").val(totalAmount);
+	var serviceUnitPriceinPackage = jQuery("#serviceUnitPriceinPackage").val();
+	if (serviceUnitPriceinPackage != "") {
+		var quantity = thisQuantity;
+		var totalAmount = parseFloat(serviceUnitPriceinPackage) * quantity;
+		jQuery("#servicePriceinPackage").val(totalAmount);
+	}
 });
 
 function appendRowForProductInTable() {

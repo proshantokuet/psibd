@@ -46,12 +46,12 @@ public class PSIUniquePatientRestController {
 		        .getAllPrescriptionMetaData();
 		JSONArray metadataJsonArray = new JSONArray();
 		for (SHnPrescriptionMetaData sHnPrescriptionMetaData : sHnPrescriptionMetaDatas) {
-			log.error("string" + sHnPrescriptionMetaData.getFieldName());
+			//log.error("string" + sHnPrescriptionMetaData.getFieldName());
 			metadataJsonArray.put(sHnPrescriptionMetaData.getFieldName());
 		}
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.add(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
-		log.error("response" + metadataJsonArray.toString());
+		//log.error("response" + metadataJsonArray.toString());
 		
 		 return ResponseEntity.ok()
 		            .headers(headers)
@@ -75,11 +75,26 @@ public class PSIUniquePatientRestController {
 		
 		List<SHNFormPdfDetails> shnbirthDetails = Context.getService(PSIUniquePatientService.class)
 		        .getbirthInformationByVisit(patientUuid, visitUuid);
+		JSONArray birthArray = new JSONArray();
 		JSONObject birthJsonObject = new JSONObject();
-		for (SHNFormPdfDetails shnbirthDetail : shnbirthDetails) {
-			birthJsonObject.put(shnbirthDetail.getQuestion(), shnbirthDetail.getAnswer());
+		int cnt=0;
+		for(int i = 0; i<shnbirthDetails.size();i++) {
+			cnt++;
+			if(cnt%4 == 0) {
+				birthJsonObject.put(shnbirthDetails.get(i).getQuestion(), shnbirthDetails.get(i).getAnswer());
+				birthArray.put(birthJsonObject);
+				birthJsonObject = new JSONObject();
+				
+			}
+			else {
+				birthJsonObject.put(shnbirthDetails.get(i).getQuestion(), shnbirthDetails.get(i).getAnswer());
+			}
 		}
-		return new ResponseEntity<>(birthJsonObject.toString(), HttpStatus.OK);
+//		for (SHNFormPdfDetails shnbirthDetail : shnbirthDetails) {
+//			birthJsonObject.put(shnbirthDetail.getQuestion(), shnbirthDetail.getAnswer());
+//		}
+//		birthArray.put(birthJsonObject);
+		return new ResponseEntity<>(birthArray.toString(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/lastProviderData/{visitUuid}", method = RequestMethod.GET)

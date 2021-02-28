@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.velocity.runtime.directive.Foreach;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
@@ -20,7 +19,6 @@ import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIServiceProvision;
-import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.api.db.PSIServiceProvisionDAO;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDashboardCard;
@@ -28,7 +26,6 @@ import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.openmrs.module.PSI.dto.AUHCVisitReport;
 import org.openmrs.module.PSI.dto.DashboardDTO;
-import org.openmrs.module.PSI.dto.PSILocationTag;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
@@ -551,7 +548,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}else {
 			wh += " and m.clinic_code='"+filter.getClinicCode()+"' ";
 		}
-		String dateFormat = "%Y-%m-%d %h:%i";
+		String dateFormat = "%Y-%m-%d %H:%i";
 		String sql = "select p.spid as sl,m.eslip_no as eslipNo,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
@@ -640,7 +637,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		if (!"".equalsIgnoreCase(filter.getCollector())){
 			wh += " and m.data_collector = '" + filter.getCollector()+"' ";
 		}
-		String dateFormat = "%Y-%m-%d %h:%i";
+		String dateFormat = "%Y-%m-%d %H:%i";
 		String sql = "select p.psi_money_receipt_id as mid,m.eslip_no as eslipNo,COUNT(p.psi_money_receipt_id) as total_service_contact,p.spid as sl,m.slip_no as slip_no,date_format(p.money_receipt_date,'"+dateFormat+"') as slip_date, "+
 				"m.patient_name as patient_name, "+
 				"m.contact as phone,m.wealth as wealth_classification,m.service_point as service_point, "+
@@ -2217,7 +2214,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				+ "       pi.identifier         AS health_id, "
 				+ "        temp1.phoneno         AS mobile_no, "
 				+ "       p.gender              AS gender, "
-				+ "       temp5.registeredDate  AS register_date, "
+				+ "       DATE_FORMAT(temp5.registereddate, '%Y-%m-%d')  AS register_date, "
 				+ "        CONCAT(TIMESTAMPDIFF(YEAR, p.birthdate, CURDATE()) ,'Y ' ,TIMESTAMPDIFF(MONTH, p.birthdate, CURDATE()) %12 ," +
 				"					'M ',FLOOR(TIMESTAMPDIFF(DAY,p.birthdate,CURDATE())% 30.4375)  ,'D ') AS age, "
 				+ "        paddress.address3 as cc, "
