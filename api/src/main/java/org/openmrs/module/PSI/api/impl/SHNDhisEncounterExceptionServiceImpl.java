@@ -57,4 +57,11 @@ public class SHNDhisEncounterExceptionServiceImpl extends BaseOpenmrsService imp
 		return dao.findEncByFormAndEncId(encounterId, formsName);
 	}
 
+	@Override
+	public SHNDhisEncounterException findEncByFormAndEncIdForFailedEvent(
+			String encounterId, String formsName) {
+		// TODO Auto-generated method stub
+		return dao.findEncByFormAndEncIdForFailedEvent(encounterId, formsName);
+	}
+
 }

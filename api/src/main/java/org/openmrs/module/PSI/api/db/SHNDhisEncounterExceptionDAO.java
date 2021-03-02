@@ -15,5 +15,7 @@ public interface SHNDhisEncounterExceptionDAO {
 	public SHNDhisEncounterException findAllBymarkerIdAndFormName(int markerId, String formsName,String encounterUuid);
 	
 	public SHNDhisEncounterException findEncByFormAndEncId(String encounterId, String formsName);
+	
+	public SHNDhisEncounterException findEncByFormAndEncIdForFailedEvent(String encounterId, String formsName);
 
 }

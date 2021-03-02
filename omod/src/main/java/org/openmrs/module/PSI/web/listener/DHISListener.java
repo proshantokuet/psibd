@@ -1277,7 +1277,7 @@ public class DHISListener {
 								String formsName = keys.getString(i); // Here's your key
 								String value = servicesToPost.getString(formsName);
 								JSONObject postEncounter = new JSONObject(value);
-								SHNDhisEncounterException checkEncounterExistsOrNot = Context.getService(SHNDhisEncounterExceptionService.class).findEncByFormAndEncId(shnDhisEncounterException.getEncounterId(), formsName);
+								SHNDhisEncounterException checkEncounterExistsOrNot = Context.getService(SHNDhisEncounterExceptionService.class).findEncByFormAndEncIdForFailedEvent(shnDhisEncounterException.getEncounterId(), formsName);
 								JSONObject eventResponse = new JSONObject();
 								if(checkEncounterExistsOrNot != null && !StringUtils.isEmpty(checkEncounterExistsOrNot.getReferenceId())) {
 									String referenceUrl = EVENTURL + "/" + checkEncounterExistsOrNot.getReferenceId();

@@ -23,6 +23,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -85,9 +86,9 @@ public class HttpUtil {
 	                                String authString) {
 		try {
 			HttpPost request = (HttpPost) makeConnection(url, payload, RequestMethod.POST, authType, authString);
-			request.setHeader(HTTP.CONTENT_TYPE, contentType);
-			StringEntity entity = new StringEntity(data == null ? "" : data);
-			entity.setContentEncoding(contentType);
+			request.setHeader(HTTP.CONTENT_TYPE, "application/json; charset=UTF-8");
+			StringEntity entity = new StringEntity(data == null ? "" : data, "UTF-8");
+			entity.setContentEncoding("application/json; charset=UTF-8");
 			request.setEntity(entity);
 			
 			org.apache.http.HttpResponse response = httpClient.execute(request);
@@ -160,7 +161,8 @@ public class HttpUtil {
 		System.out.println("status code: " + statusCode);
 		String entity = "";
 		if (response.getEntity() != null) {
-			entity = IOUtils.toString(response.getEntity().getContent());
+			//entity = IOUtils.toString(response.getEntity().getContent());
+			entity = EntityUtils.toString(response.getEntity(),"UTF-8");
 			System.out.println("entity: " + entity);
 		}
 		

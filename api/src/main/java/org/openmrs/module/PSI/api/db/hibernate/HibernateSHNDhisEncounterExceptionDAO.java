@@ -78,6 +78,20 @@ public class HibernateSHNDhisEncounterExceptionDAO implements SHNDhisEncounterEx
 			return null;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNDhisEncounterException findEncByFormAndEncIdForFailedEvent(
+			String encounterId, String formsName) {
+		// TODO Auto-generated method stub
+		List<SHNDhisEncounterException> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from SHNDhisEncounterException where encounterId = :encid and formsName = :formname").setString("encid", encounterId).setString("formname", formsName).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
 	
 
 }

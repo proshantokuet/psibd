@@ -177,7 +177,7 @@ public class DhisObsEventDataConverter {
 				firstAid.put("eventDate", today);
 				serviceEvents.put("First Aid", firstAid);
 				break;
-			case "IMCI (age below 2 months)":
+			case "IMCI age below 2 months":
 				JSONObject imciChild = new JSONObject();
 				imciChild.put("trackedEntityInstance", trackeEntityInstance);
 				imciChild.put("orgUnit", orgUnit);
@@ -185,9 +185,9 @@ public class DhisObsEventDataConverter {
 				imciChild.put("programStage", "OZ61jJpZOEn");
 				imciChild.put("status", "COMPLETED");
 				imciChild.put("eventDate", today);
-				serviceEvents.put("IMCI (age below 2 months)", imciChild);
+				serviceEvents.put("IMCI age below 2 months", imciChild);
 				break;
-			case "IMCI (age 2 months to 5 years)":
+			case "IMCI age 2 months to 5 years":
 				JSONObject imciAdult = new JSONObject();
 				imciAdult.put("trackedEntityInstance", trackeEntityInstance);
 				imciAdult.put("orgUnit", orgUnit);
@@ -195,7 +195,7 @@ public class DhisObsEventDataConverter {
 				imciAdult.put("programStage", "wMSY39GW3sl");
 				imciAdult.put("status", "COMPLETED");
 				imciAdult.put("eventDate", today);
-				serviceEvents.put("IMCI (age 2 months to 5 years)", imciAdult);
+				serviceEvents.put("IMCI age 2 months to 5 years", imciAdult);
 				break;
 			case "Obstetric History":
 				JSONObject obstetric = new JSONObject();
