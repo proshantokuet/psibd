@@ -625,7 +625,6 @@
                         <br>
                         <input type="checkbox" id="wlth_pay_draft" name="wlthAbleToPayDraft" value=""> Able to pay
                         <br>
-                        <br>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -1034,7 +1033,7 @@
         	<div class="row">
             	<div class="col-md-3">
                 	<div class="form-group">                							
-						<label for="yearMonth">Date</label><span class="text-danger"> *</span><br />
+						<label for="yearMonth">Month</label><span class="text-danger"> *</span><br />
 						<input type="text"	readonly name="yearMonth" id="yearMonth" class="form-control date-picker-year" required />
 						<span class="text-danger" id="dateValidation"></span>
                   	</div>
@@ -1258,6 +1257,9 @@ $jq(function() {
         changeYear: true,
         dateFormat: 'MM yy',
         maxDate: new Date,
+        beforeShowDay:function(date){
+            return [false, ''];
+         },
         showButtonPanel: true
     }).focus(function() {
         var thisCalendar = $jq(this);
@@ -1266,14 +1268,14 @@ $jq(function() {
             var month = $jq("#ui-datepicker-div .ui-datepicker-month :selected").val();
             var year = $jq("#ui-datepicker-div .ui-datepicker-year :selected").val();
             thisCalendar.datepicker('setDate', new Date(year, month, 1));
-    		$jq(".ui-datepicker-calendar").hide();
-    		$jq(".ui-datepicker-current").hide();
+    		//$jq(".ui-datepicker-calendar").hide();
+    		//$jq(".ui-datepicker-current").hide();
             $jq("#monthHeader").html(thisCalendar.val());	
         });
     });
 	$jq(".date-picker-year").focus(function () {
-		$jq(".ui-datepicker-calendar").hide();
-		$jq(".ui-datepicker-current").hide();
+		//$jq(".ui-datepicker-calendar").hide();
+		//$jq(".ui-datepicker-current").hide();
     });
 
 });

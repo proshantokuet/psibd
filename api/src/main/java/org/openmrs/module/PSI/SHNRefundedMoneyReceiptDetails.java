@@ -59,6 +59,7 @@ public class SHNRefundedMoneyReceiptDetails extends BaseOpenmrsData implements S
 	
 	private String packageUuid;
 
+	private float financialDiscount;
 
 
 	public int getRefundedServicesId() {
@@ -260,6 +261,14 @@ public class SHNRefundedMoneyReceiptDetails extends BaseOpenmrsData implements S
 
 	public void setPackageUuid(String packageUuid) {
 		this.packageUuid = packageUuid;
+	}
+
+	public float getFinancialDiscount() {
+		return financialDiscount;
+	}
+
+	public void setFinancialDiscount(float financialDiscount) {
+		this.financialDiscount = financialDiscount;
 	}
 
 	@Override

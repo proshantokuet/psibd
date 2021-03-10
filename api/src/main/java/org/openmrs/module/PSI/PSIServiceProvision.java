@@ -60,6 +60,9 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	
 	private String packageUuid;
 	
+	private float financialDiscount;
+
+	
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
@@ -263,6 +266,14 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 
 	public void setPackageUuid(String packageUuid) {
 		this.packageUuid = packageUuid;
+	}
+
+	public float getFinancialDiscount() {
+		return financialDiscount;
+	}
+
+	public void setFinancialDiscount(float financialDiscount) {
+		this.financialDiscount = financialDiscount;
 	}
 
 	@Override

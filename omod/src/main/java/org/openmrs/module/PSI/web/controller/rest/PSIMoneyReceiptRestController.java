@@ -320,7 +320,9 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				}
 				if (moneyReceipt.has("isComplete")) {
 					psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
-					
+				}
+				if (service.has("financialDiscount")) {
+					psiServiceProvision.setFinancialDiscount(Float.parseFloat(service.getString("financialDiscount")));
 				}
 				psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
 				psiServiceProvision.setDateCreated(new Date());
@@ -882,6 +884,9 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				if (service.has("packageUuid")) {
 					psiServiceProvision.setPackageUuid(service.getString("packageUuid"));
 				}
+				if (service.has("financialDiscount")) {
+					psiServiceProvision.setFinancialDiscount(Float.parseFloat(service.getString("financialDiscount")));
+				}
 				
 				if (moneyReceipt.has("moneyReceiptDate")) {
 					psiServiceProvision.setMoneyReceiptDate(dateFormatTwentyFourHour.parse(moneyReceipt.getString("moneyReceiptDate")));
@@ -1132,6 +1137,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					details.setCreator(Context.getAuthenticatedUser());
 					details.setTimestamp(serviceProvision.getTimestamp());
 					details.setRefundedMoneyReceiptId(shnRefundedMoneyReceipt);
+					details.setFinancialDiscount(serviceProvision.getFinancialDiscount());
 					moneyReceiptDetails.add(details);
 			}
 			shnRefundedMoneyReceipt.setServices(moneyReceiptDetails);

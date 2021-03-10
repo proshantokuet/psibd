@@ -30,7 +30,7 @@
 	     <property name="error" column="error" type="java.lang.String"/>
 	     <property name="serviceType" column="service_type" type="java.lang.String"/>
 	     <property name="packageUuid" column="package_uuid" type="java.lang.String"/>
-	    
+	     <property name="financialDiscount" column="financial_discount" type="float"/>
 	    
 	    <property name="timestamp" column="timestamp" type="long"/>
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>

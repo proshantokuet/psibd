@@ -102,7 +102,7 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 				+ "  coalesce(o.value_numeric, o.value_text, o.value_datetime, coded_scn.name, coded_fscn.name) AS answer, "
 				+ "  v.uuid as visit_uuid, "
 				+ " o.obs_group_id as groupId"
-				+ "FROM obs o "
+				+ " FROM obs o "
 				+ "  JOIN concept obs_concept ON obs_concept.concept_id=o.concept_id AND obs_concept.retired is false "
 				+ "  JOIN concept_name obs_fscn on o.concept_id=obs_fscn.concept_id AND obs_fscn.concept_name_type=\"FULLY_SPECIFIED\" AND obs_fscn.voided is false "
 				+ "  LEFT JOIN concept_name obs_scn on o.concept_id=obs_scn.concept_id AND obs_scn.concept_name_type=\"SHORT\" AND obs_scn.voided is false "

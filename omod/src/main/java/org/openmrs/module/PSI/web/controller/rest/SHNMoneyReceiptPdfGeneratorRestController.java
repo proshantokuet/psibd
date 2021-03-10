@@ -773,7 +773,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 			log.error("loop entered" + psiServiceProvision.getSpid());
 			count = count + 1;
 			totalAmount = totalAmount + psiServiceProvision.getTotalAmount();
-			totalDiscount = totalDiscount + psiServiceProvision.getDiscount();
+			totalDiscount = totalDiscount + psiServiceProvision.getDiscount() + psiServiceProvision.getFinancialDiscount();
 			totalNetPayable = totalNetPayable + psiServiceProvision.getNetPayable();
 			log.error("totalAmount psiServiceProvision" + totalAmount);
 			log.error("totalDiscount psiServiceProvision" + totalDiscount);
@@ -818,7 +818,7 @@ public class SHNMoneyReceiptPdfGeneratorRestController {
 			table.addCell(totalAmountCell);
 			//table.addCell(new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getTotalAmount()),textFont))));
 			
-			PdfPCell discountCell = new PdfPCell(new Paragraph(new Phrase(String.valueOf(psiServiceProvision.getDiscount()), textFont)));
+			PdfPCell discountCell = new PdfPCell(new Paragraph(new Phrase(String.valueOf((psiServiceProvision.getDiscount() + psiServiceProvision.getFinancialDiscount())), textFont)));
 			discountCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			discountCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			discountCell.setExtraParagraphSpace(2);

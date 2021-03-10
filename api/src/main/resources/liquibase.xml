@@ -420,6 +420,14 @@
 			update openmrs.psi_service_provision set service_type = 'SERVICE';
 		</sql>
 	 </changeSet>
+	 <changeSet author="tanvir" id="psiserviceprovision-1.2.6">	
+	 	<addColumn tableName="psi_service_provision">
+			<column name="financial_discount" type="float" />			
+		</addColumn> 	
+		<sql>
+			update openmrs.psi_service_provision set financial_discount = 0;
+		</sql>
+	 </changeSet>
 	<changeSet id="psidhismarker-1.0.0" author="Proshanto">
 		<createTable tableName="psi_dhis_marker">
 			<column name="mid" type="int(11)" autoIncrement="true">
@@ -1105,7 +1113,15 @@
 			<column name="void_reason" type="varchar(255)" />
 			<column name="uuid" type="varchar(255)" />
 		</createTable>
-	</changeSet>	
+	</changeSet>
+	<changeSet author="tanvir" id="shn_refunded_money_receipt_details-1.0.0">	
+	 	<addColumn tableName="shn_refunded_money_receipt_details">
+			<column name="financial_discount" type="float" />			
+		</addColumn> 	
+		<sql>
+			update openmrs.shn_refunded_money_receipt_details set financial_discount = 0;
+		</sql>
+	 </changeSet>	
 	 
 	 <changeSet id="shn_refunded_moneyreceipt_payment_log-1.0.0" author="tanvir">
 		<createTable tableName="shn_refunded_moneyreceipt_payment_log">
@@ -1135,6 +1151,7 @@
 			<column name="uuid" type="varchar(255)" />
 		</createTable>
 	</changeSet>
+	
 	  
  <changeSet id="shn_followup_action-1.0.0" author="tanvir">
 		<createTable tableName="shn_followup_action">

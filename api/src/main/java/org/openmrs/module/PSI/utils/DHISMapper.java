@@ -45,14 +45,14 @@ public class DHISMapper {
 		registrationMapper.put("PreferredCallingTime", "AY39jOq51CP"); //newly added
 		
 		//forliver server
-		//registrationMapper.put("MaritalStatus", "EWAnQfRVHf2"); //newly added
-		//registrationMapper.put("occupation", "NQGLe2tymjJ"); // newly added
-		//registrationMapper.put("Email", "vTckcsYYYMZ"); //newly added
+		registrationMapper.put("MaritalStatus", "EWAnQfRVHf2"); //newly added
+		registrationMapper.put("occupation", "NQGLe2tymjJ"); // newly added
+		registrationMapper.put("Email", "vTckcsYYYMZ"); //newly added
 		
 		//for test server
-		registrationMapper.put("MaritalStatus", "BYXudrz9IES"); //newly added
-		registrationMapper.put("occupation", "dtBgIm6W3z2"); // newly added
-		registrationMapper.put("Email", "XU8WVJTcnZu"); //newly added
+		//registrationMapper.put("MaritalStatus", "BYXudrz9IES"); //newly added
+		//registrationMapper.put("occupation", "dtBgIm6W3z2"); // newly added
+		//registrationMapper.put("Email", "XU8WVJTcnZu"); //newly added
 
 		
 	}
@@ -86,12 +86,19 @@ public class DHISMapper {
 		ServiceProvision.put("eslipNo", "IchA74zTEDE");
 		
 		//Need to update following dhis id while deployment in live server 
+		// for test sever
+//		ServiceProvision.put("ageInYear", "W2bfXwtmZLz");
+//		ServiceProvision.put("ageInMonth", "IUW8Rdi4qpf");
+//		ServiceProvision.put("ageInDay", "VWCcOnUsKNT");
+//		ServiceProvision.put("netPayableAfterDiscount", "X9aDVjMC6Gm");
+//		ServiceProvision.put("overallDiscount", "ePwObSG5q4M");
 		
-		ServiceProvision.put("ageInYear", "W2bfXwtmZLz");
-		ServiceProvision.put("ageInMonth", "IUW8Rdi4qpf");
-		ServiceProvision.put("ageInDay", "VWCcOnUsKNT");
-		ServiceProvision.put("netPayableAfterDiscount", "X9aDVjMC6Gm");
-		ServiceProvision.put("overallDiscount", "ePwObSG5q4M");
+		//for live server
+		ServiceProvision.put("ageInYear", "FCRa6ebAgiM");
+		ServiceProvision.put("ageInMonth", "Y1A9FEzNI13");
+		ServiceProvision.put("ageInDay", "IFRAefs1MSO");
+		ServiceProvision.put("netPayableAfterDiscount", "E8V10xIM6rc");
+		ServiceProvision.put("overallDiscount", "AGdEpv8UnsR");
 	}
 	
 	public static final Map<String, String> selectOptionMapper = new HashMap<String, String>();

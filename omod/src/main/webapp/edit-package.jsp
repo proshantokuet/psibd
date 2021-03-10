@@ -298,6 +298,12 @@ $jq( function() {
   } );
 </script> -->
 <script>
+
+jQuery(document).ready(function($) {   
+	$('#service').select2({dropdownAutoWidth : true});
+	$('#product').select2({dropdownAutoWidth : true});
+}); 
+
 function closemodal() {
 	jQuery('#exampleModalCenter').modal('hide');
 

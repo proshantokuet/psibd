@@ -147,7 +147,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 		                    + " (gender = '' AND (" + age + "  between age_start and  age_end)) OR "
 		                    + " (gender = '' AND (age_start = 0 and age_end= 0)) OR  (gender = :gender and " + age
 		                    + " between age_start and  age_end) ) "
-		                    + " and  psi_clinic_management_id = :psi_clinic_management_id order by name asc ")
+		                    + " and  psi_clinic_management_id = :psi_clinic_management_id and voided = 0  order by name asc ")
 		        .setString("gender", gender).setInteger("psi_clinic_management_id", clinicId).list();
 		
 		return clinics;
