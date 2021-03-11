@@ -20,6 +20,8 @@ public class PSIReport {
 	
 	private String category;
 	
+	private double discount;
+	
 	public String getCode() {
 		return code;
 	}
@@ -90,6 +92,14 @@ public class PSIReport {
 
 	public void setTotal_(String total_) {
 		this.total_ = total_;
+	}
+
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
 	}
 
 	@Override

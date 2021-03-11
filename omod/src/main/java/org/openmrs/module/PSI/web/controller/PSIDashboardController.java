@@ -74,9 +74,9 @@ public class PSIDashboardController {
 //		    clinicCode, "");
 		DashboardDTO dashboardDTO = new DashboardDTO();
 //		dashboardDTO.setTotalDiscount(1);
-		String val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(today, today);
+		//String val = Context.getService(PSIServiceProvisionService.class).getTotalDiscount(today, today);
 		model.addAttribute("dashbaord_discount_value",0);
-		String totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalServiceContract(today, today);
+		//String totalServiceContact = Context.getService(PSIServiceProvisionService.class).getTotalServiceContract(today, today);
 		model.addAttribute("dashboard_service_cotact_value",0);
 		dashboardDTO.setEarned(0);
 		dashboardDTO.setNewPatient(0);

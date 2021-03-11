@@ -181,7 +181,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		if (!"".equalsIgnoreCase(dataCollector)) {
 			dataCollectorCondition = " and data_collector = :dataCollector";
 		}
-		String sql = "select code,item ,category, count(*) as serviceCount ,ROUND(sum(net_payable),2) as total from openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid where sp.is_complete = 1 and DATE(sp.money_receipt_date)  between '"
+		String sql = "select code,item ,category, count(*) as serviceCount ,ROUND(sum(net_payable),2) as total,ROUND(sum(discount + financial_discount),2) as discount from openmrs.psi_service_provision as sp left join openmrs.psi_money_receipt as mr on  sp.psi_money_receipt_id =mr.mid where sp.is_complete = 1 and DATE(sp.money_receipt_date)  between '"
 		        + startDate
 		        + "' and '"
 		        + endDate
@@ -211,6 +211,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			report.setCategory(objects[2] + "");
 			report.setServiceCount(Integer.parseInt(objects[3].toString()));
 			report.setTotal_(objects[4].toString()+"0");
+			report.setDiscount(Double.parseDouble(objects[5].toString()));
 			reportDTOs.add(report);
 		}
 		
@@ -869,7 +870,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" ELSE 0 " +
 				" END              Static, " +
 				" CASE" +
-				" WHEN service_point = 'Static' THEN Sum(discount)" +
+				" WHEN service_point = 'Static' THEN Sum(discount + financial_discount)" +
 				" ELSE 0" +
 				" END              DiscountStatic," +
 				" CASE" +
@@ -881,7 +882,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" ELSE 0" +
 				" END              Satellite," +
 				" CASE " +
-				" WHEN service_point = 'Satellite' THEN Sum(discount)" +
+				" WHEN service_point = 'Satellite' THEN Sum(discount + financial_discount)" +
 				" ELSE 0 " +
 				" END              DiscountSatellite," +
 				" CASE " +
@@ -893,7 +894,7 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 				" ELSE 0 " +
 				" END              CSP," +
 				" CASE" +
-				" WHEN service_point = 'CSP' THEN Sum(discount) " +
+				" WHEN service_point = 'CSP' THEN Sum(discount + financial_discount) " +
 				" ELSE 0 " +
 				" END              DiscountCSP, " +
 				" CASE " +
@@ -1768,8 +1769,8 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 			 service_contact += Double.parseDouble(report.get(i).getService_total());
 		 }
 		 
-		 dashboardCard.setRevenueEarned(String.valueOf((long)revenue_earned));
-		 dashboardCard.setTotalDiscount(String.valueOf((long)discount));
+		 dashboardCard.setRevenueEarned(String.valueOf(revenue_earned));
+		 dashboardCard.setTotalDiscount(String.valueOf(discount));
 		 dashboardCard.setTotalServiceContact(String.valueOf((long)service_contact));
 		// Total Revenue, Total Discount and Total Service Contact Calculation - End
 		 
@@ -1825,15 +1826,20 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		// Patients Served Calculation - End
 		//Total Revenue - Start
 		float revenue = 0;
-		for(int i = 0; i < report.size();i++)
+		double discount = 0;
+		for(int i = 0; i < report.size();i++){
 			revenue += Float.parseFloat(report.get(i).getTotal_());
+			discount += report.get(i).getDiscount();
+			
+		}
 		
-		dashboardCard.setRevenueEarned(String.valueOf((long)revenue));
+		dashboardCard.setRevenueEarned(String.valueOf(revenue));
+		dashboardCard.setTotalDiscount(String.valueOf(discount));
 		//Total Revenue - End
 		
 		//Total Discount - Start
-		 dashboardCard.setTotalDiscount(discountOnProvider(filter.getStart_date(),filter.getEnd_date(),filter.getClinic_code(),
-				 filter.getData_collector()));	
+//		 dashboardCard.setTotalDiscount(discountOnProvider(filter.getStart_date(),filter.getEnd_date(),filter.getClinic_code(),
+//				 filter.getData_collector()));	
 		//Total Discount - End
 		return dashboardCard;
 	}

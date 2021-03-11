@@ -375,7 +375,7 @@ public class DHISDataConverter {
 		
 		JSONObject discount = new JSONObject();
 		discount.put("dataElement", DHISMapper.ServiceProvision.get("discount"));
-		discount.put("value", psiServiceProvision.getDiscount());
+		discount.put("value", (psiServiceProvision.getDiscount() + psiServiceProvision.getFinancialDiscount()));
 		dataValues.put(discount);
 		
 		JSONObject code = new JSONObject();

@@ -392,8 +392,11 @@ function searchInFollwUpUsingFilter() {
 		clinicCode = "0";
 		clinicName = "${clinicInfo}";
 	}
-	
 	var title = "Patient Follow-Up Action Report of "+ clinicName;
+	if(followUpStartDate !="" && followUpEndDate !="") {
+		title = "Patient Follow-Up Action Report of "+ clinicName + " From " + followUpStartDate +" TO " + followUpEndDate;
+	}
+	
 	
 	url = "/openmrs/module/PSI/follow-Up-report.form?visitStartDate="+visitStartDate;
 	url += "&visitEndDate="+visitEndDate+"&followUpStartDate=" +followUpStartDate;
