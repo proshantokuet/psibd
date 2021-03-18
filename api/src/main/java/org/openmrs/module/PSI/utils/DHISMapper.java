@@ -45,14 +45,10 @@ public class DHISMapper {
 		registrationMapper.put("PreferredCallingTime", "AY39jOq51CP"); //newly added
 		
 		//forliver server
-		//registrationMapper.put("MaritalStatus", "EWAnQfRVHf2"); //newly added
-		//registrationMapper.put("occupation", "NQGLe2tymjJ"); // newly added
-		//registrationMapper.put("Email", "vTckcsYYYMZ"); //newly added
+		registrationMapper.put("MaritalStatus", "EWAnQfRVHf2"); //newly added
+		registrationMapper.put("occupation", "NQGLe2tymjJ"); // newly added
+		registrationMapper.put("Email", "vTckcsYYYMZ"); //newly added
 		
-		//for test server
-		registrationMapper.put("MaritalStatus", "BYXudrz9IES"); //newly added
-		registrationMapper.put("occupation", "dtBgIm6W3z2"); // newly added
-		registrationMapper.put("Email", "XU8WVJTcnZu"); //newly added
 
 		
 	}

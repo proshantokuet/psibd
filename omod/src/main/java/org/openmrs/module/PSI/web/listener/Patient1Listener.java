@@ -52,7 +52,7 @@ import com.jayway.jsonpath.JsonPath;
 @Configuration
 @EnableAsync
 @Controller
-public class DHISListener {
+public class Patient1Listener {
 	
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
@@ -245,11 +245,11 @@ public class DHISListener {
 
 		log.error("Entered in the function sendPatient " + System.currentTimeMillis());
 		int lastReadPatient = 0;
-		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient0");
+		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Patient1");
 		log.error("Getting last Entry for marker " + System.currentTimeMillis());
 		if (getlastReadEntry == null) {
 			PSIDHISMarker psidhisMarker = new PSIDHISMarker();
-			psidhisMarker.setType("Patient0");
+			psidhisMarker.setType("Patient1");
 			psidhisMarker.setTimestamp(0l);
 			psidhisMarker.setLastPatientId(544312);
 			psidhisMarker.setDateCreated(new Date());
@@ -269,7 +269,7 @@ public class DHISListener {
 		JSONObject patientJson = new JSONObject();
 		if (eventReceordDTOs.size() != 0 && eventReceordDTOs != null) {
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
-				if(eventReceordDTO.getId() % 4 == 1) {
+				if(eventReceordDTO.getId() % 4 == 2) {
 				log.error("Entered in the EventReceordDTO loop " + System.currentTimeMillis());
 				log.error("going to find if this exist in exception table " + System.currentTimeMillis());
 				PSIDHISException getPsidhisException = Context.getService(PSIDHISExceptionService.class).findAllById(
