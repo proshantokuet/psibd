@@ -360,7 +360,7 @@ public class MoneyReceiptListener {
 	private void sendMoneyReceipt() {
 		log.error("Entered in send money receipt listener " + new Date());
 
-		log.error("Entered in the function sendMoneyReceipt " + System.currentTimeMillis());
+		//log.error("Entered in the function sendMoneyReceipt " + System.currentTimeMillis());
 		long timestamp = 0;
 		
 		String serviceUunid = "";
@@ -380,10 +380,10 @@ public class MoneyReceiptListener {
 		} else {
 			timestamp = getlastTimeStamp.getTimestamp();
 		}
-		log.error("goint to fetch all money receipt for that timestamp " + System.currentTimeMillis());
+		//log.error("goint to fetch all money receipt for that timestamp " + System.currentTimeMillis());
 		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
 		        .findAllByTimestamp(timestamp);
-		log.error("fetch complete all money receipt for that timestamp " + System.currentTimeMillis());
+		//log.error("fetch complete all money receipt for that timestamp " + System.currentTimeMillis());
 //		Context.openSession();
 //		PSIDHISException psidhisException1 = new PSIDHISException();
 //		psidhisException1.setResponse("");
@@ -394,7 +394,7 @@ public class MoneyReceiptListener {
 //		Context.clearSession();
 		if (psiServiceProvisions.size() != 0) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
-				log.error("Entered in the loop for sendMoneyReceipt " + System.currentTimeMillis());
+				//log.error("Entered in the loop for sendMoneyReceipt " + System.currentTimeMillis());
 				JSONObject eventResponse = new JSONObject();
 				JSONObject getResponse = new JSONObject();
 				
@@ -411,58 +411,59 @@ public class MoneyReceiptListener {
 				serviceUunid = "";
 				serviceUunid = psiServiceProvision.getUuid();
 				
-				eventURL = GETEVENTURL + "?program=" + DHISMapper.registrationMapper.get("program") + "&filter="
-				        + DHISMapper.ServiceProvision.get("serviceUuid") + ":eq:" + serviceUunid;
-				
-				try {
-					log.error("Event Response time moneyreceipt before sending to dhis2 " + System.currentTimeMillis());
-					getEventResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", eventURL);
-					log.error("Event Response time moneyreceipt after sending to dhis2 " + System.currentTimeMillis());
-					if (getEventResponse.has("events")) {
-						getEevnts = getEventResponse.getJSONArray("events");
-					}
-//					Context.openSession();
-//					PSIDHISException psidhisException = new PSIDHISException();
-//					psidhisException.setResponse(getEventResponse + "");
-//					psidhisException.setError(getEevnts + "");
-//					psidhisException.setType(getEevnts.length() + "");
-//					psidhisException.setJson(eventURL);
-//					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+//				eventURL = GETEVENTURL + "?program=" + DHISMapper.registrationMapper.get("program") + "&filter="
+//				        + DHISMapper.ServiceProvision.get("serviceUuid") + ":eq:" + serviceUunid;
+//				
+//				try {
+//					log.error("Event Response time moneyreceipt before sending to dhis2 " + System.currentTimeMillis());
+//					getEventResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", eventURL);
+//					log.error("Event Response time moneyreceipt after sending to dhis2 " + System.currentTimeMillis());
+//					if (getEventResponse.has("events")) {
+//						getEevnts = getEventResponse.getJSONArray("events");
+//					}
+////					Context.openSession();
+////					PSIDHISException psidhisException = new PSIDHISException();
+////					psidhisException.setResponse(getEventResponse + "");
+////					psidhisException.setError(getEevnts + "");
+////					psidhisException.setType(getEevnts.length() + "");
+////					psidhisException.setJson(eventURL);
+////					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+////					
+////					Context.clearSession();
 //					
-//					Context.clearSession();
-					
-				}
-				catch (Exception e) {
-					
-				}
+//				}
+//				catch (Exception e) {
+//					
+//				}
 				
-				if (getEevnts.length() == 0) {
+				if (StringUtils.isBlank(psiServiceProvision.getDhisId())) {
 					
 					try {
 						UserDTO userDTO = Context.getService(PSIClinicUserService.class).findOrgUnitFromOpenMRS(patientUuid);
 						orgUnit = userDTO.getOrgUnit();
-						URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgUnit;
-						log.error("going to check patient exist for this money receipt in dhis2 " + System.currentTimeMillis());
-						getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-						log.error("check complete patient exist for this money receipt in dhis2 " + System.currentTimeMillis());
-						log.error("converting money receipt data for sending in  dhis2 " + System.currentTimeMillis());
-						JSONArray trackedEntityInstances = new JSONArray();
-						if (getResponse.has("trackedEntityInstances")) {
-							trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
-						}
-						
-						eventResponse = new JSONObject();
+//						URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgUnit;
+//						log.error("going to check patient exist for this money receipt in dhis2 " + System.currentTimeMillis());
+//						getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+//						log.error("check complete patient exist for this money receipt in dhis2 " + System.currentTimeMillis());
+//						log.error("converting money receipt data for sending in  dhis2 " + System.currentTimeMillis());
+//						JSONArray trackedEntityInstances = new JSONArray();
+//						if (getResponse.has("trackedEntityInstances")) {
+//							trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+//						}
+//						
+//						eventResponse = new JSONObject();
 						//log.info("ADD:URL:" + URL + "getResponse:" + getResponse);
-						if (trackedEntityInstances.length() != 0) {
-							JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
-							String trackedEntityInstanceId = trackedEntityInstance.getString("trackedEntityInstance");
+						PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(patientUuid, 1);
+						if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
+							//JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
+							String trackedEntityInstanceId = findRefereceIdPatient.getReferenceId();
 							moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,
 							    trackedEntityInstanceId);
-							log.error("converting done money receipt data for sending in  dhis2 " + System.currentTimeMillis());
-							log.error("completion time moneyreceipt before sending to dhis2 " + System.currentTimeMillis());
+							//log.error("converting done money receipt data for sending in  dhis2 " + System.currentTimeMillis());
+							//log.error("completion time moneyreceipt before sending to dhis2 " + System.currentTimeMillis());
 							eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
-							log.error("completion time moneyreceipt after sending to dhis2 " + System.currentTimeMillis());
-							log.error("saving response form dhis2 in table " + System.currentTimeMillis());
+							//log.error("completion time moneyreceipt after sending to dhis2 " + System.currentTimeMillis());
+							//log.error("saving response form dhis2 in table " + System.currentTimeMillis());
 							statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
 							String httpStatus = eventResponse.getString("httpStatus");
 							//log.info("ADD:statusCode:" + statusCode + "" + eventResponse);
@@ -488,7 +489,7 @@ public class MoneyReceiptListener {
 									
 									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
 									    getResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
-									log.error("saving complete response from dhis2 in table " + System.currentTimeMillis());
+									//log.error("saving complete response from dhis2 in table " + System.currentTimeMillis());
 								} else {
 									
 									Context.openSession();

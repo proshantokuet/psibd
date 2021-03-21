@@ -2,6 +2,8 @@ package org.openmrs.module.PSI.web.listener;
 
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -50,7 +52,7 @@ public class PatientFailedListener {
 	
 	@SuppressWarnings("rawtypes")
 	public void sendFailedPatientData() throws Exception {
-		
+		log.error("Called patient failed listener " + new Date());
 		boolean status = true;
 		try {
 			psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
@@ -89,16 +91,19 @@ public class PatientFailedListener {
 					String orgUit = patientJson.getString("orgUnit");
 					String uuid = DHISMapper.registrationMapper.get("uuid");
 					String personUuid = person.getString("uuid");
-					String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
-					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-					JSONArray trackedEntityInstances = new JSONArray();
-					if (getResponse.has("trackedEntityInstances")) {
-						trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
-					}
-					if (trackedEntityInstances.length() != 0) {
+					//String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
+					//JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+					//JSONArray trackedEntityInstances = new JSONArray();
+//					if (getResponse.has("trackedEntityInstances")) {
+//						trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+//					}
+					log.error("Entered in findRefereceIdPatient " + new Date());
+					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
+					log.error("Entered in findRefereceIdPatient " + findRefereceIdPatient.getReferenceId());
+					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
 						patientJson.remove("enrollments");
-						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
-						String UpdateUrl = trackerUrl + "/" + trackedEntityInstance.getString("trackedEntityInstance");
+						//JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
+						String UpdateUrl = trackerUrl + "/" + findRefereceIdPatient.getReferenceId();
 						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
 					} else {
 						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
@@ -116,8 +121,15 @@ public class PatientFailedListener {
 						psidhisException.setResponse(response.toString());
 						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
 						Context.clearSession();*/
+						String referenceId = "";
+						JSONObject successResponse = response.getJSONObject("response");
+						JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+						if (importSummaries.length() != 0) {
+							JSONObject importSummary = importSummaries.getJSONObject(0);
+							referenceId = importSummary.getString("reference");
+						}
 						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.SUCCESSSTATUS, response
-						        + "", "");
+						        + "", "",referenceId);
 					} else {
 						/*Context.openSession();
 						psidhisException.setJson(patientJson.toString());
@@ -129,7 +141,7 @@ public class PatientFailedListener {
 						Context.clearSession();*/
 						String errorDetails = errorMessageCreation(response);
 						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.FAILEDSTATUS, response
-						        + "", errorDetails);
+						        + "", errorDetails,"");
 					}
 					
 				}
@@ -150,7 +162,7 @@ public class PatientFailedListener {
 					/*Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
 					Context.clearSession();*/
 					
-					updateExceptionForFailed(psidhisException, patientJson + "", status, response + "", e.toString());
+					updateExceptionForFailed(psidhisException, patientJson + "", status, response + "", e.toString(),"");
 				}
 			}
 			
@@ -158,7 +170,7 @@ public class PatientFailedListener {
 	}
 	
 	private void updateExceptionForFailed(PSIDHISException getPsidhisException, String patientJson, int status,
-	                                      String response, String error) {
+	                                      String response, String error, String referenceId) {
 		Context.openSession();
 		
 		getPsidhisException.setError(error);
@@ -166,6 +178,7 @@ public class PatientFailedListener {
 		getPsidhisException.setStatus(status);
 		getPsidhisException.setResponse(response.toString());
 		getPsidhisException.setDateChanged(new Date());
+		getPsidhisException.setReferenceId(referenceId);
 		Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
 		
 		Context.clearSession();

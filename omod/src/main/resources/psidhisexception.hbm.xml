@@ -16,6 +16,7 @@
 	    <property name="type" column="type" type="java.lang.String"/>
 	    <property name="patientUuid" column="patient_uuid" type="java.lang.String"/>
 	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
+	    <property name="referenceId" column="reference_id" type="java.lang.String"/>
 		
 		
 		<property name="dateChanged" column="date_changed" type="java.util.Date" />		

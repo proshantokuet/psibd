@@ -11,6 +11,8 @@ public interface PSIDHISExceptionService extends OpenmrsService {
 	
 	public PSIDHISException saveOrUpdate(PSIDHISException psidhisException);
 	
+	public PSIDHISException findReferenceIdOfPatient(String patientUuid,int status);
+	
 	public List<PSIDHISException> findAllByStatus(int status);
 	
 	//public List<PSIDHISException> findAllFailedEncounterByStatus(int status);
