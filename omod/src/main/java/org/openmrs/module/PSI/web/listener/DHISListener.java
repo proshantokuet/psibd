@@ -319,10 +319,15 @@ public class DHISListener {
 						*/
 						String referenceId = "";
 						JSONObject successResponse = response.getJSONObject("response");
-						JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
-						if (importSummaries.length() != 0) {
-							JSONObject importSummary = importSummaries.getJSONObject(0);
-							referenceId = importSummary.getString("reference");
+						if(successResponse.has("importSummaries")) {
+							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+							if (importSummaries.length() != 0) {
+								JSONObject importSummary = importSummaries.getJSONObject(0);
+								referenceId = importSummary.getString("reference");
+							}
+						}
+						else {
+							referenceId = successResponse.getString("reference");
 						}
 						updateException(getPsidhisException, patientJson + "", eventReceordDTO, PSIConstants.SUCCESSSTATUS,
 						    response + "", "",referenceId);

@@ -90,7 +90,7 @@ public class MoneyReceiptListener {
 		}
 		if (status) {
 			try {
-				//sendMoneyReceipt();
+				sendMoneyReceipt();
 			}
 			catch (Exception e) {
 				
@@ -374,8 +374,9 @@ public class MoneyReceiptListener {
 			psidhisMarker.setDateCreated(new Date());
 			psidhisMarker.setUuid(UUID.randomUUID().toString());
 			psidhisMarker.setVoided(false);
-			
+			Context.openSession();
 			Context.getService(PSIDHISMarkerService.class).saveOrUpdate(psidhisMarker);
+			Context.clearSession();
 			
 		} else {
 			timestamp = getlastTimeStamp.getTimestamp();
@@ -394,6 +395,7 @@ public class MoneyReceiptListener {
 //		Context.clearSession();
 		if (psiServiceProvisions.size() != 0) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
+				if(psiServiceProvision.getSpid() % 3 == 0) {
 				//log.error("Entered in the loop for sendMoneyReceipt " + System.currentTimeMillis());
 				JSONObject eventResponse = new JSONObject();
 				JSONObject getResponse = new JSONObject();
@@ -488,7 +490,7 @@ public class MoneyReceiptListener {
 									Context.clearSession();
 									
 									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
-									    getResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
+											eventResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
 									//log.error("saving complete response from dhis2 in table " + System.currentTimeMillis());
 								} else {
 									
@@ -509,6 +511,7 @@ public class MoneyReceiptListener {
 									    statusCode, "Dhis2 returns empty import summaries without reference id", PSIConstants.CONNECTIONTIMEOUTSTATUS);
 								}
 							} else {
+								Context.openSession();
 								getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 								/*psiServiceProvision.setField1(getResponse + "");
 								psiServiceProvision.setField2(moneyReceiptJson + "");
@@ -519,6 +522,7 @@ public class MoneyReceiptListener {
 								Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);*/
 								getlastTimeStamp.setVoidReason(httpStatus);
 								Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+								Context.clearSession();
 								String errorDetails = errorMessageCreation(eventResponse);
 								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
 								    statusCode, errorDetails, PSIConstants.CONNECTIONTIMEOUTSTATUS);
@@ -578,6 +582,7 @@ public class MoneyReceiptListener {
 				}
 			}
 			
+		  }
 		}
 	}
 	
@@ -590,6 +595,7 @@ public class MoneyReceiptListener {
 		psiServiceProvision.setField3(statusCode);
 		psiServiceProvision.setError("" + URL);
 		psiServiceProvision.setIsSendToDHIS(status);
+		Context.openSession();
 		Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 		Context.clearSession();
 		

@@ -99,7 +99,7 @@ public class PatientFailedListener {
 //					}
 					log.error("Entered in findRefereceIdPatient " + new Date());
 					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
-					log.error("Entered in findRefereceIdPatient " + findRefereceIdPatient.getReferenceId());
+					//log.error("Entered in findRefereceIdPatient " + findRefereceIdPatient.getReferenceId());
 					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
 						patientJson.remove("enrollments");
 						//JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
@@ -123,10 +123,15 @@ public class PatientFailedListener {
 						Context.clearSession();*/
 						String referenceId = "";
 						JSONObject successResponse = response.getJSONObject("response");
-						JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
-						if (importSummaries.length() != 0) {
-							JSONObject importSummary = importSummaries.getJSONObject(0);
-							referenceId = importSummary.getString("reference");
+						if(successResponse.has("importSummaries")) {
+							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+							if (importSummaries.length() != 0) {
+								JSONObject importSummary = importSummaries.getJSONObject(0);
+								referenceId = importSummary.getString("reference");
+							}
+						}
+						else {
+							referenceId = successResponse.getString("reference");
 						}
 						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.SUCCESSSTATUS, response
 						        + "", "",referenceId);

@@ -451,7 +451,7 @@ public class MoneyReceiptFailedListener {
 									Context.clearSession();*/
 									
 									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
-									    getResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
+									    eventResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
 									long currentime = System.currentTimeMillis();
 									log.error("(MONEY RECEIPT) comeplete money receipt to send data from dhis2  " + (currentime - timestampLog));
 								} else {
@@ -503,7 +503,7 @@ public class MoneyReceiptFailedListener {
 						}
 					}
 					catch (Exception e) {
-						Context.openSession();
+						//Context.openSession();
 						//e.printStackTrace();
 						int status = 0;
 						if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
@@ -560,6 +560,8 @@ public class MoneyReceiptFailedListener {
 	
 	private void updateServiceProvision(PSIServiceProvision psiServiceProvision, String moneyReceiptJson,
 	                                    String referenceId, String getResponse, int statusCode, String URL, int status) {
+		
+		Context.openSession();
 		psiServiceProvision.setField2(moneyReceiptJson);
 		psiServiceProvision.setDhisId(referenceId);
 		psiServiceProvision.setField1(getResponse + "");
