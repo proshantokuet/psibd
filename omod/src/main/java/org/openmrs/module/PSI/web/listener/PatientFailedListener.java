@@ -97,7 +97,7 @@ public class PatientFailedListener {
 //					if (getResponse.has("trackedEntityInstances")) {
 //						trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
 //					}
-					log.error("Entered in findRefereceIdPatient " + new Date());
+					//log.error("Entered in findRefereceIdPatient " + new Date());
 					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
 					//log.error("Entered in findRefereceIdPatient " + findRefereceIdPatient.getReferenceId());
 					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
