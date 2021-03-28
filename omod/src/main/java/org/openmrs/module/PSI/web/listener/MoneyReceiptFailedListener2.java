@@ -496,7 +496,7 @@ public class MoneyReceiptFailedListener2 {
 							Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
 							Context.clearSession();*/
 							updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
-							    statusCode, "No Track Entity Instances found in DHIS2 Containing this URL " + URL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
+							    statusCode, "No Track Entity Instances found in DHIS2 Containing this URL " + URL, PSIConstants.FAILEDSTATUS);
 						}
 					}
 					catch (Exception e) {
