@@ -114,5 +114,17 @@ public class PSIClinicUserServiceImpl extends BaseOpenmrsService implements PSIC
 		// TODO Auto-generated method stub
 		return dao.getbyUsernameIcludedRetiure(username);
 	}
+
+	@Override
+	public PSIClinicUser findLatestClinicUser() {
+		// TODO Auto-generated method stub
+		return dao.findLatestClinicUser();
+	}
+
+	@Override
+	public int updateTableAutoIncrementValue(int autoIncrementNo) {
+		// TODO Auto-generated method stub
+		return dao.updateTableAutoIncrementValue(autoIncrementNo);
+	}
 	
 }

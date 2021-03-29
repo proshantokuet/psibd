@@ -194,6 +194,12 @@ public class PSIClinicUserRestController extends MainResourceController {
 						Context.getService(ProviderService.class).saveProvider(provider);
 						user = Context.getService(UserService.class).createUser(user, password);
 						log.error("user save complete" + user.getUsername());
+						synchronized(this) {
+							PSIClinicUser latestClinicUser = Context.getService(PSIClinicUserService.class).findLatestClinicUser();
+							if(latestClinicUser != null) {
+								Context.getService(PSIClinicUserService.class).updateTableAutoIncrementValue(latestClinicUser.getCuid() + 1);
+							}
+						}
 						PSIClinicUser pSIClinicUser = new PSIClinicUser();
 						pSIClinicUser.setUserName(user.getUsername());
 						pSIClinicUser.setEmail(email);
@@ -248,6 +254,12 @@ public class PSIClinicUserRestController extends MainResourceController {
 						
 						PSIClinicUser pSIClinicUser = Context.getService(PSIClinicUserService.class).findById(cuid);
 						if(pSIClinicUser == null) {
+							synchronized(this) {
+								PSIClinicUser latestClinicUser = Context.getService(PSIClinicUserService.class).findLatestClinicUser();
+								if(latestClinicUser != null) {
+									Context.getService(PSIClinicUserService.class).updateTableAutoIncrementValue(latestClinicUser.getCuid() + 1);
+								}
+							}
 							pSIClinicUser = new PSIClinicUser();
 							pSIClinicUser.setUserName(user.getUsername());
 							pSIClinicUser.setEmail(email);

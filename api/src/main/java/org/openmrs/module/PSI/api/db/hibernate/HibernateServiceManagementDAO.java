@@ -38,6 +38,7 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	public PSIServiceManagement saveOrUpdate(PSIServiceManagement psiServiceManagement) {
 		// TODO Auto-generated method stub
 		sessionFactory.getCurrentSession().saveOrUpdate(psiServiceManagement);
+		sessionFactory.getCurrentSession().clear();
 		return psiServiceManagement;
 	}
 	

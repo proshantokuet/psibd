@@ -29,21 +29,24 @@ public class PSIUniqueIdGeneratorRestController extends MainResourceController {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String today = dateFormat.format(date);
 		
-		PSIUniqueIdGenerator psiUGenerator = new PSIUniqueIdGenerator();
-		PSIUniqueIdGenerator pisPsiUniqueIdGenerator = Context.getService(PSIUniqueIdGeneratorService.class)
-		        .findByClinicCodeAndDate(today, code);
-		psiUGenerator.setClinicCode(code);
-		psiUGenerator.setGenerateId(0);
 		
-		psiUGenerator.setDateCreated(new Date());
-		if (pisPsiUniqueIdGenerator.getGenerateId() == 0) {
-			psiUGenerator.setGenerateId(0 + 1);
-		} else {
-			psiUGenerator.setGenerateId(pisPsiUniqueIdGenerator.getGenerateId() + 1);
+		PSIUniqueIdGenerator psiUGenerator = new PSIUniqueIdGenerator();
+		synchronized(this) {
+			PSIUniqueIdGenerator pisPsiUniqueIdGenerator = Context.getService(PSIUniqueIdGeneratorService.class)
+			        .findByClinicCodeAndDate(today, code);
+			psiUGenerator.setClinicCode(code);
+			psiUGenerator.setGenerateId(0);
+			
+			psiUGenerator.setDateCreated(new Date());
+			if (pisPsiUniqueIdGenerator.getGenerateId() == 0) {
+				psiUGenerator.setGenerateId(0 + 1);
+			} else {
+				psiUGenerator.setGenerateId(pisPsiUniqueIdGenerator.getGenerateId() + 1);
+			}
+			Context.openSession();
+			Context.getService(PSIUniqueIdGeneratorService.class).saveOrUpdate(psiUGenerator);
+			Context.clearSession();
 		}
-		Context.openSession();
-		Context.getService(PSIUniqueIdGeneratorService.class).saveOrUpdate(psiUGenerator);
-		Context.clearSession();
 		String serquenceNumber = "";
 		String serquenceNumberToString = psiUGenerator.getGenerateId() + "";
 		if (serquenceNumberToString.length() == 1) {
@@ -77,22 +80,24 @@ public class PSIUniqueIdGeneratorRestController extends MainResourceController {
 		String today = dateFormat.format(date);
 		
 		SHNEslipNoGenerate shnEslipNoGenerate = new SHNEslipNoGenerate();
-		
-		SHNEslipNoGenerate getLastSlipNoByclinic = Context.getService(PSIUniqueIdGeneratorService.class)
-		        .findEslipByClinicCodeAndDate(today, code);
-		
-		shnEslipNoGenerate.setClinicCode(code);
-		shnEslipNoGenerate.setGenerateId(0);
-		
-		shnEslipNoGenerate.setDateCreated(new Date());
-		if (getLastSlipNoByclinic.getGenerateId() == 0) {
-			shnEslipNoGenerate.setGenerateId(0 + 1);
-		} else {
-			shnEslipNoGenerate.setGenerateId(getLastSlipNoByclinic.getGenerateId() + 1);
+		SHNEslipNoGenerate afterSaveSlip = null;
+		synchronized(this) {
+			SHNEslipNoGenerate getLastSlipNoByclinic = Context.getService(PSIUniqueIdGeneratorService.class)
+			        .findEslipByClinicCodeAndDate(today, code);
+			
+			shnEslipNoGenerate.setClinicCode(code);
+			shnEslipNoGenerate.setGenerateId(0);
+			
+			shnEslipNoGenerate.setDateCreated(new Date());
+			if (getLastSlipNoByclinic.getGenerateId() == 0) {
+				shnEslipNoGenerate.setGenerateId(0 + 1);
+			} else {
+				shnEslipNoGenerate.setGenerateId(getLastSlipNoByclinic.getGenerateId() + 1);
+			}
+			Context.openSession();
+			afterSaveSlip = Context.getService(PSIUniqueIdGeneratorService.class).saveOrUpdate(shnEslipNoGenerate);
+			Context.clearSession();
 		}
-		Context.openSession();
-		SHNEslipNoGenerate afterSaveSlip = Context.getService(PSIUniqueIdGeneratorService.class).saveOrUpdate(shnEslipNoGenerate);
-		Context.clearSession();
 		String serquenceNumber = "";
 		String serquenceNumberToString = afterSaveSlip.getGenerateId() + "";
 		if (serquenceNumberToString.length() == 1) {

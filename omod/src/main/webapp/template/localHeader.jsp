@@ -39,20 +39,23 @@
 	</li>
 	</c:if>
 	
-	
+	<c:if test="${hasClinicPermission}">
 	<li
 		<c:if test='<%= request.getRequestURI().contains("/servicecategoryList") %>'>class="active"</c:if>>
 		<a
 		href="${pageContext.request.contextPath}/module/PSI/servicecategoryList.form"><spring:message
 				code="PSI.serviceCategory" /></a>
 	</li>
+	</c:if>
 	
+	<c:if test="${hasClinicPermission}">
 	<li
         <c:if test='<%= request.getRequestURI().contains("/clinicTypeList") %>'>class="active"</c:if>>
         <a
         href="${pageContext.request.contextPath}/module/PSI/clinicTypeList.form"><spring:message
                 code="PSI.clinicType" /></a>
     </li>
+    </c:if>
     <%
 	if (isDeployInGlobal.equalsIgnoreCase("1")) {
 	%>	

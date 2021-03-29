@@ -39,6 +39,10 @@ public interface PSIClinicUserDAO {
 	public int updatePrimaryKey (int globalPrimaryKey, int localPrimaryKey);
 	
 	public User getbyUsernameIcludedRetiure (String username);
+	
+	public PSIClinicUser findLatestClinicUser();
+	
+	public int updateTableAutoIncrementValue(int autoIncrementNo);
 
 
 }

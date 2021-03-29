@@ -16,6 +16,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,7 +75,7 @@ public class PSIClinicRestController extends MainResourceController {
 	private final String SERVICE_ENDPOINT = "/rest/v1/clinic/service/byClinicId";
 	
 	private final String SPOT_ENDPOINT = "/rest/v1/clinic//spot/byClinicId";
-	
+	protected final Log log = LogFactory.getLog(getClass());
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public ResponseEntity<String> saveClinic(@RequestBody ClinicDTO clinicDTO, ModelMap model) throws Exception {
 		PSILocation getDivison = Context.getService(PSIClinicManagementService.class).findLocationById(
@@ -623,13 +625,16 @@ public class PSIClinicRestController extends MainResourceController {
 						Context.getService(PSIServiceManagementService.class).saveOrUpdate(
 						    convertPSIServiceManagement(getPsiServiceManagement, psiServiceManagement, clinicId));
 					} else {
-						PSIServiceManagement lastServiceInfo = Context.getService(PSIServiceManagementService.class).findByClinicIdDescending();
-						if(lastServiceInfo != null) {
-							Context.getService(PSIServiceManagementService.class).updateTableAutoIncrementValue(lastServiceInfo.getSid() + 1);
+						synchronized(this) {
+							PSIServiceManagement lastServiceInfo = Context.getService(PSIServiceManagementService.class).findByClinicIdDescending();
+							if(lastServiceInfo != null) {
+								Context.getService(PSIServiceManagementService.class).updateTableAutoIncrementValue(lastServiceInfo.getSid() + 1);
+							}
 						}
 						psiServiceManagement.setSid(0);
 						PSIServiceManagement created = Context.getService(PSIServiceManagementService.class).saveOrUpdate(
 						    psiServiceManagement);
+						log.error("Service Management Id " + created.getSid());
 						Context.getService(PSIServiceManagementService.class).updatePrimaryKey(created.getSid(), currentId);
 					}
 				}				
@@ -667,6 +672,12 @@ public class PSIClinicRestController extends MainResourceController {
 						Context.getService(PSIClinicSpotService.class).saveOrUpdate(
 						    convertPSIClinicSpot(getPsiClinicSpot, psiClinicSpot, clinicId));
 					} else {
+						synchronized(this) {
+							PSIClinicSpot latestSpot = Context.getService(PSIClinicSpotService.class).findLatestSpotId();
+							if(latestSpot != null) {
+								Context.getService(PSIClinicSpotService.class).updateTableAutoIncrementValue(latestSpot.getCcsid() + 1);
+							}
+						}
 						psiClinicSpot.setCcsid(0);
 						PSIClinicSpot created = Context.getService(PSIClinicSpotService.class).saveOrUpdate(psiClinicSpot);
 						Context.getService(PSIClinicSpotService.class).updatePrimaryKey(created.getCcsid(), currentId);
@@ -858,9 +869,11 @@ public class PSIClinicRestController extends MainResourceController {
 						Context.getService(PSIServiceManagementService.class).saveOrUpdate(
 						    convertPSIServiceManagement(getPsiServiceManagement, psiServiceManagement, clinicId));
 					} else {
-						PSIServiceManagement lastServiceInfo = Context.getService(PSIServiceManagementService.class).findByClinicIdDescending();
-						if(lastServiceInfo != null) {
-							Context.getService(PSIServiceManagementService.class).updateTableAutoIncrementValue(lastServiceInfo.getSid() + 1);
+						synchronized(this) {
+							PSIServiceManagement lastServiceInfo = Context.getService(PSIServiceManagementService.class).findByClinicIdDescending();
+							if(lastServiceInfo != null) {
+								Context.getService(PSIServiceManagementService.class).updateTableAutoIncrementValue(lastServiceInfo.getSid() + 1);
+							}
 						}
 						psiServiceManagement.setSid(0);
 						PSIServiceManagement created = Context.getService(PSIServiceManagementService.class).saveOrUpdate(

@@ -43,4 +43,8 @@ public interface PSIClinicUserService extends OpenmrsService {
 	
 	public User getbyUsernameIcludedRetiure (String username);
 	
+	public PSIClinicUser findLatestClinicUser();
+	
+	public int updateTableAutoIncrementValue(int autoIncrementNo);
+	
 }

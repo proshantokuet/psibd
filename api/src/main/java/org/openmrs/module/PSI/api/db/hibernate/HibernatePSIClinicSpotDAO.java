@@ -38,6 +38,7 @@ public class HibernatePSIClinicSpotDAO implements PSIClinicSpotDAO {
 	@Override
 	public PSIClinicSpot saveOrUpdate(PSIClinicSpot psiClinicSpot) {
 		sessionFactory.getCurrentSession().saveOrUpdate(psiClinicSpot);
+		sessionFactory.getCurrentSession().clear();
 		return psiClinicSpot;
 	}
 	
@@ -104,6 +105,25 @@ public class HibernatePSIClinicSpotDAO implements PSIClinicSpotDAO {
 		query.setParameter("oldId", oldId);
 		
 		return query.executeUpdate();
+	}
+
+	@Override
+	public int updateTableAutoIncrementValue(int autoIncrementNo) {
+		String sql = "ALTER TABLE psi_clinic_spot AUTO_INCREMENT = :icrementalvalue";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("icrementalvalue", autoIncrementNo);	
+		return query.executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIClinicSpot findLatestSpotId() {
+		List<PSIClinicSpot> spots = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIClinicSpot  order by ccsid desc").setMaxResults(1).list();
+		if (spots.size() != 0) {
+			return spots.get(0);
+		}
+		return null;
 	}
 	
 }

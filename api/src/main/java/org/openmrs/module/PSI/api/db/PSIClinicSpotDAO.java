@@ -20,4 +20,9 @@ public interface PSIClinicSpotDAO {
 	
 	public int updatePrimaryKey(int oldId, int currentId);
 	
+	public int updateTableAutoIncrementValue(int autoIncrementNo);
+	
+	public PSIClinicSpot findLatestSpotId();
+
+	
 }

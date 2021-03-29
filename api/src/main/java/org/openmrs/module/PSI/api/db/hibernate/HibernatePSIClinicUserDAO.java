@@ -46,6 +46,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 	@Override
 	public PSIClinicUser saveOrUpdate(PSIClinicUser psiClinicUser) {
 		sessionFactory.getCurrentSession().saveOrUpdate(psiClinicUser);
+		sessionFactory.getCurrentSession().clear();
 		return psiClinicUser;
 	}
 	
@@ -317,5 +318,25 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 			}
 			
 			return users.get(0);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public PSIClinicUser findLatestClinicUser() {
+		List<PSIClinicUser> user = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIClinicUser  order by cuid desc").setMaxResults(1).list();
+		if (user.size() != 0) {
+			return user.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public int updateTableAutoIncrementValue(int autoIncrementNo) {
+		// TODO Auto-generated method stub
+		String sql = "ALTER TABLE psi_clinic_user AUTO_INCREMENT = :icrementalvalue";
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		query.setParameter("icrementalvalue", autoIncrementNo);	
+		return query.executeUpdate();
 	}
 }

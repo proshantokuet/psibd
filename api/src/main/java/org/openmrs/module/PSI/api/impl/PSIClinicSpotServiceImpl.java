@@ -59,5 +59,17 @@ public class PSIClinicSpotServiceImpl extends BaseOpenmrsService implements PSIC
 		// TODO Auto-generated method stub
 		return dao.updatePrimaryKey(oldId, currentId);
 	}
+
+	@Override
+	public int updateTableAutoIncrementValue(int autoIncrementNo) {
+		// TODO Auto-generated method stub
+		return dao.updateTableAutoIncrementValue(autoIncrementNo);
+	}
+
+	@Override
+	public PSIClinicSpot findLatestSpotId() {
+		// TODO Auto-generated method stub
+		return dao.findLatestSpotId();
+	}
 	
 }
