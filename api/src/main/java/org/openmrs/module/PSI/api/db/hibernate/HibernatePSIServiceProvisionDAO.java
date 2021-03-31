@@ -402,13 +402,12 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .getCurrentSession()
 		        .createQuery(
 		            "from PSIServiceProvision where timestamp >= :timestamp and  is_complete = :complete  order by timestamp asc ")
-		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(3000).list();
-		
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(300).list();
 		log.error(sessionFactory
 		        .getCurrentSession()
 		        .createQuery(
-		            "from PSIServiceProvision where timestamp > :timestamp and  is_complete = :complete  order by timestamp asc ")
-		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(3000)
+		            "from PSIServiceProvision where timestamp >= :timestamp and  is_complete = :complete  order by timestamp asc ")
+		        .setLong("timestamp", timestamp).setInteger("complete", 1).setMaxResults(300)
 		        	.getQueryString());
 		
 		return lists;
@@ -424,14 +423,14 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		        .createQuery(
 		            "from PSIServiceProvision where is_send_to_dhis= :isSendToDHIS3 and is_complete = :complete  order by spid asc")
 		        .setInteger("isSendToDHIS3", PSIConstants.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
-		        .setMaxResults(2000).list();
+		        .setMaxResults(500).list();
 		
 		log.error(sessionFactory
 		        .getCurrentSession()
 		        .createQuery(
 		            "from PSIServiceProvision where is_send_to_dhis= :isSendToDHIS3 and is_complete = :complete  order by spid asc")
 		        .setInteger("isSendToDHIS3", PSIConstants.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
-		        .setMaxResults(2000).getQueryString());
+		        .setMaxResults(500).getQueryString());
 		
 		return lists;
 	}

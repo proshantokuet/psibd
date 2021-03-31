@@ -28,8 +28,7 @@ public class PSIUniqueIdGeneratorRestController extends MainResourceController {
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String today = dateFormat.format(date);
-		
-		
+
 		PSIUniqueIdGenerator psiUGenerator = new PSIUniqueIdGenerator();
 		synchronized(this) {
 			PSIUniqueIdGenerator pisPsiUniqueIdGenerator = Context.getService(PSIUniqueIdGeneratorService.class)

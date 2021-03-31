@@ -32,13 +32,33 @@
 	
 	<context:annotation-config></context:annotation-config>
 	 <bean id="dhisListener" class="org.openmrs.module.PSI.web.listener.DHISListener"></bean>
+	 <bean id="moneyReceiptListener" class="org.openmrs.module.PSI.web.listener.MoneyReceiptListener"></bean>
+	 <bean id="moneyReceiptFailedListener" class="org.openmrs.module.PSI.web.listener.MoneyReceiptFailedListener"></bean>
+	 <bean id="patientFailedListener" class="org.openmrs.module.PSI.web.listener.PatientFailedListener"></bean>
+	 <bean id="patient1Listener" class="org.openmrs.module.PSI.web.listener.Patient1Listener"></bean>
+	 <bean id="patient2Listener" class="org.openmrs.module.PSI.web.listener.Patient2Listener"></bean>
+	 <bean id="patient3Listener" class="org.openmrs.module.PSI.web.listener.Patient3Listener"></bean>
+	 <bean id="moneyReceiptFailedListener1" class="org.openmrs.module.PSI.web.listener.MoneyReceiptFailedListener1"></bean>
+	 <bean id="moneyReceiptFailedListener2" class="org.openmrs.module.PSI.web.listener.MoneyReceiptFailedListener2"></bean>
+	 <bean id="moneyReceiptListener1" class="org.openmrs.module.PSI.web.listener.MoneyReceiptListener1"></bean>
+	 <bean id="moneyReceiptListener2" class="org.openmrs.module.PSI.web.listener.MoneyReceiptListener2"></bean>
+	 
 	 
 	 <task:scheduled-tasks scheduler="dhis2Task">
-	 	<!-- <task:scheduled ref="dhisListener" method="sendData" cron="*/55 * * * * *" /> -->
-        <task:scheduled ref="dhisListener" method="sendData" cron="0 0/50 * * * *" />
+        <task:scheduled ref="dhisListener" method="sendData" cron="0 */1 9-23 * * *" />  
+        <task:scheduled ref="moneyReceiptListener" method="sendMoneyReceiptData" cron="0 */1 0-8 * * *" />
+        <task:scheduled ref="patientFailedListener" method="sendFailedPatientData" cron="0 */1 * * * *" />
+        <task:scheduled ref="patient1Listener" method="sendData" cron="0 */1 9-23 * * *" />
+        <task:scheduled ref="patient2Listener" method="sendData" cron="0 */1 9-23 * * *" />
+        <task:scheduled ref="patient3Listener" method="sendData" cron="0 */1 9-23 * * *" />
+		<task:scheduled ref="moneyReceiptFailedListener1" method="sendFailedMoneyReceiptData" cron="0 */1 0-8 * * *" />
+        <task:scheduled ref="moneyReceiptFailedListener2" method="sendFailedMoneyReceiptData" cron="0 */1 0-8 * * *" />
+        <task:scheduled ref="moneyReceiptFailedListener" method="sendFailedMoneyReceiptData" cron="0 */1 0-8 * * *" /> 
+        <task:scheduled ref="moneyReceiptListener1" method="sendMoneyReceiptData" cron="0 */1 0-8 * * *" />
+        <task:scheduled ref="moneyReceiptListener2" method="sendMoneyReceiptData" cron="0 */1 0-8 * * *" />
     </task:scheduled-tasks>
     
-   <task:scheduler pool-size="1" id="dhis2Task"/>
+   <task:scheduler pool-size="11" id="dhis2Task"/>
 	<task:annotation-driven /> 
  
 		

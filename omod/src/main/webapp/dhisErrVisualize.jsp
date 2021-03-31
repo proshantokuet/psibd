@@ -207,7 +207,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 				<div class="col-md-3">
 					<div class="form-group">
                   		<label>${money_receipt_to_sync}</label> &nbsp;&nbsp; 
-                  		Sync In Progress
+                  		Service Contact Sync In Progress
               		</div>
 				</div>
 				<div class="col-md-3">

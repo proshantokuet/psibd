@@ -26,6 +26,13 @@ public class PSIDHISEcxeptionServiceImpl extends BaseOpenmrsService implements P
 	}
 	
 	@Override
+	public PSIDHISException findReferenceIdOfPatient(String patientUuid,
+			int status) {
+		// TODO Auto-generated method stub
+		return dao.findReferenceIdOfPatient(patientUuid, status);
+	}
+
+	@Override
 	public List<PSIDHISException> findAllByStatus(int status) {
 		// TODO Auto-generated method stub
 		return dao.findAllByStatus(status);

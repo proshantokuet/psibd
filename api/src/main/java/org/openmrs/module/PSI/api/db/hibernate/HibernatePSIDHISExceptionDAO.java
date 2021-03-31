@@ -38,6 +38,20 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	public PSIDHISException findReferenceIdOfPatient(String patientUuid,
+			int status) {
+		List<PSIDHISException> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIDHISException where patientUuid = :id and status = :flag order by rid desc").setString("id", patientUuid)
+		        .setInteger("flag", status).setMaxResults(1).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<PSIDHISException> findAllByStatus(int status) {
 		List<PSIDHISException> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIDHISException where (status = :id0 OR status = :id3)").setInteger("id0", status)

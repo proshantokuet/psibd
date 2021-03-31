@@ -34,7 +34,7 @@ public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	
 	@Override
 	public JSONObject get(String payload, String uuid, String URL) throws JSONException {
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + URL, payload, "admin", "test");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + URL, payload, "sohel", "Sohel@123");
 		return new JSONObject(op.body());
 	}
 	
