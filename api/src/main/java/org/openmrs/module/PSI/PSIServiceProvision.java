@@ -61,6 +61,8 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 	private String packageUuid;
 	
 	private float financialDiscount;
+	
+	private int sendToDhisFromGlobal;
 
 	
 	@Override
@@ -274,6 +276,14 @@ public class PSIServiceProvision extends BaseOpenmrsData implements Serializable
 
 	public void setFinancialDiscount(float financialDiscount) {
 		this.financialDiscount = financialDiscount;
+	}
+
+	public int getSendToDhisFromGlobal() {
+		return sendToDhisFromGlobal;
+	}
+
+	public void setSendToDhisFromGlobal(int sendToDhisFromGlobal) {
+		this.sendToDhisFromGlobal = sendToDhisFromGlobal;
 	}
 
 	@Override

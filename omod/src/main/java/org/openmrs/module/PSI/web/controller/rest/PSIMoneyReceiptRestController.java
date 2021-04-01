@@ -327,7 +327,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
 				psiServiceProvision.setDateCreated(new Date());
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
-				
+				psiServiceProvision.setSendToDhisFromGlobal(PSIConstants.DEFAULTERRORSTATUS);
 				psiServiceProvision.setTimestamp(System.currentTimeMillis());
 				//psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
 				
@@ -897,6 +897,9 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				if (moneyReceipt.has("isComplete")) {
 					psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
 					
+				}
+				if(service.has("sendToDhisFromGlobal")) {
+					psiServiceProvision.setSendToDhisFromGlobal(service.getInt("sendToDhisFromGlobal"));
 				}
 				psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
 				

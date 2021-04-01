@@ -428,6 +428,14 @@
 			update openmrs.psi_service_provision set financial_discount = 0;
 		</sql>
 	 </changeSet>
+	 <changeSet author="tanvir" id="psiserviceprovision-1.2.7">	
+	 	<addColumn tableName="psi_service_provision">
+			<column name="send_to_dhis_from_global" type="int(1)" />			
+		</addColumn> 	
+		<sql>
+			update openmrs.psi_service_provision set send_to_dhis_from_global = 0;
+		</sql>
+	 </changeSet>
 	<changeSet id="psidhismarker-1.0.0" author="Proshanto">
 		<createTable tableName="psi_dhis_marker">
 			<column name="mid" type="int(11)" autoIncrement="true">

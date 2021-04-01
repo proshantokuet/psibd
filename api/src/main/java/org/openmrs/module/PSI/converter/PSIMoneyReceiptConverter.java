@@ -74,6 +74,7 @@ public class PSIMoneyReceiptConverter {
 			service.putOpt("packageUuid", psiServiceProvision.getPackageUuid());
 			service.putOpt("uuid", psiServiceProvision.getUuid());
 			service.putOpt("financialDiscount", psiServiceProvision.getFinancialDiscount());
+			service.putOpt("sendToDhisFromGlobal", psiServiceProvision.getSendToDhisFromGlobal());
 			services.put(service);
 		}
 		psiMoneyReceiptAndServicesObject.putOpt("services", services);
