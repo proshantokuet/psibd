@@ -36,18 +36,34 @@ public class HibernateSHNVoidedMoneyReceiptDAO implements SHNVoidedMoneyReceiptL
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceiptByClinic(int clinicId) {
-		List<SHNVoidedMoneyReceiptLog> lists = sessionFactory.getCurrentSession().createQuery("from SHNVoidedMoneyReceiptLog where clinicId = :id")
+		List<SHNVoidedMoneyReceiptLog> lists = sessionFactory.getCurrentSession().createQuery("from SHNVoidedMoneyReceiptLog where clinicId = :id and isDeleteFromLocal = 0")
 		        .setInteger("id", clinicId).list();
 		return lists;
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceipt() {
 		// TODO Auto-generated method stub
 		List<SHNVoidedMoneyReceiptLog> lists = sessionFactory.getCurrentSession().createQuery("from SHNVoidedMoneyReceiptLog where voided = 0")
 		        .list();
 		return lists;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNVoidedMoneyReceiptLog getVoidedMoneyReceiptByEslipNo(String eslipNo) {
+		// TODO Auto-generated method stub
+		List<SHNVoidedMoneyReceiptLog> lists = sessionFactory.getCurrentSession().createQuery("from SHNVoidedMoneyReceiptLog where eSlipNo = :id")
+		        .setString("id", eslipNo).list();
+		if(lists.size() > 0) {
+			return lists.get(0);
+		}
+		else {
+			return null;
+		}
 	}
 
 }

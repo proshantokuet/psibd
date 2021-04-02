@@ -11,6 +11,9 @@ public interface SHNVoidedMoneyReceiptLogDAO {
 	List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceiptByClinic(int clinicId);
 	
 	List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceipt();
+	
+	public SHNVoidedMoneyReceiptLog getVoidedMoneyReceiptByEslipNo(String eslipNo);
+
 
 
 

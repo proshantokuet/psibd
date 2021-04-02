@@ -6,6 +6,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
 import org.openmrs.module.PSI.api.db.PSIDHISExceptionDAO;
+import org.openmrs.module.PSI.dto.SHNDataSyncStatusDTO;
 
 public class PSIDHISEcxeptionServiceImpl extends BaseOpenmrsService implements PSIDHISExceptionService {
 	
@@ -42,6 +43,12 @@ public class PSIDHISEcxeptionServiceImpl extends BaseOpenmrsService implements P
 	public PSIDHISException findAllById(int patientId) {
 		// TODO Auto-generated method stub
 		return dao.findAllById(patientId);
+	}
+
+	@Override
+	public SHNDataSyncStatusDTO findStatusToSendDataDhis(String type, String uuid) {
+		// TODO Auto-generated method stub
+		return dao.findStatusToSendDataDhis(type, uuid);
 	}
 
 	

@@ -6,7 +6,7 @@ public class SHNDataSyncStatusDTO {
 	
 	private String encounterUuid;
 	
-	private String sendToDhisFromGlobal;
+	private int sendToDhisFromGlobal;
 	
 	private String patientOrigin;
 
@@ -26,11 +26,11 @@ public class SHNDataSyncStatusDTO {
 		this.encounterUuid = encounterUuid;
 	}
 
-	public String getSendToDhisFromGlobal() {
+	public int getSendToDhisFromGlobal() {
 		return sendToDhisFromGlobal;
 	}
 
-	public void setSendToDhisFromGlobal(String sendToDhisFromGlobal) {
+	public void setSendToDhisFromGlobal(int sendToDhisFromGlobal) {
 		this.sendToDhisFromGlobal = sendToDhisFromGlobal;
 	}
 

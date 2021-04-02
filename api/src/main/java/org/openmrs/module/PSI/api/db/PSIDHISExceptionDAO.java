@@ -3,6 +3,7 @@ package org.openmrs.module.PSI.api.db;
 import java.util.List;
 
 import org.openmrs.module.PSI.PSIDHISException;
+import org.openmrs.module.PSI.dto.SHNDataSyncStatusDTO;
 
 public interface PSIDHISExceptionDAO {
 	
@@ -17,5 +18,8 @@ public interface PSIDHISExceptionDAO {
 	public PSIDHISException findAllById(int patientId);
 	
 	//public PSIDHISException findAllBymarkerIdAndFormName(int markerId, String formsName);
+	
+	public SHNDataSyncStatusDTO findStatusToSendDataDhis(String type, String uuid);
+
 	
 }

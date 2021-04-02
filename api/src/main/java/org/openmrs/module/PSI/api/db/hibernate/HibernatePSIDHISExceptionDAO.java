@@ -1,12 +1,16 @@
 package org.openmrs.module.PSI.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.api.db.PSIDHISExceptionDAO;
+import org.openmrs.module.PSI.dto.SHNDataSyncStatusDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 
 public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
@@ -69,6 +73,40 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHNDataSyncStatusDTO findStatusToSendDataDhis(String type, String uuid) {
+		// TODO Auto-generated method stub
+		
+		String patientOriginSql = ""
+				+ "SELECT patient_origin as patientOrigin,patient_uuid as patientUuid,encounter_uuid as encounterUuid,is_send_to_dhis as sendToDhisFromGlobal  from openmrs.shr_patient_origin "
+				+ "where "+type+" = '"+uuid+"'";
+		
+		List<SHNDataSyncStatusDTO> shrPatientOrigins = new ArrayList<SHNDataSyncStatusDTO>();
+		
+		try {
+			shrPatientOrigins = sessionFactory
+					.getCurrentSession()
+					.createSQLQuery(patientOriginSql)
+					.addScalar("patientUuid", StandardBasicTypes.STRING)
+					.addScalar("sendToDhisFromGlobal", StandardBasicTypes.INTEGER)
+					.addScalar("patientOrigin", StandardBasicTypes.STRING)
+					.addScalar("encounterUuid", StandardBasicTypes.STRING)
+					.setResultTransformer(
+							new AliasToBeanResultTransformer(
+									SHNDataSyncStatusDTO.class)).list();
+			if (shrPatientOrigins.size() > 0) {
+				return shrPatientOrigins.get(0);
+			} 
+			else {
+				return null;
+			}
+		} 
+		catch (Exception e) {
 			return null;
 		}
 	}

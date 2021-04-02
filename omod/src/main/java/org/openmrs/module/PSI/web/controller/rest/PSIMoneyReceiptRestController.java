@@ -111,7 +111,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			if(saveToRefundtable) {
 				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
 					isSaveTORefundSucess = saveRefundMoneyReceiptData(psiMoneyReceipt);
-					isSaveTORefundSucess = true;
+					//isSaveTORefundSucess = true;
 				}
 			}
 			if (moneyReceipt.has("patientName")) {
@@ -486,6 +486,41 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		return new ResponseEntity<String>(deleteMoneyReceiptObject.toString(), HttpStatus.OK);
 	}
 	
+	
+	@RequestMapping(value = "/change-delete-status-money-receipt/{eslipNo}/{statusId}", method = RequestMethod.GET)
+	public ResponseEntity<String> changeDeleteStatusOfMoneyReceipt(@PathVariable String eslipNo,@PathVariable int statusId) throws Exception {
+		JSONObject deleteMoneyReceiptObject = new JSONObject();
+
+		try {
+			SHNVoidedMoneyReceiptLog shnVoidedLog = Context.getService(SHNVoidedMoneyReceiptLogService.class).getVoidedMoneyReceiptByEslipNo(eslipNo);
+			if(shnVoidedLog !=null) {
+				shnVoidedLog.setDateChanged(new Date());
+				if(statusId == 1) {
+					shnVoidedLog.setIsDeleteFromLocal(true);
+				}
+				else {
+					shnVoidedLog.setIsDeleteFromLocal(false);
+				}
+				
+				Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedLog);
+				deleteMoneyReceiptObject.put("isSuccessfull", true);
+				deleteMoneyReceiptObject.put("e-slip", shnVoidedLog.geteSlipNo());
+				deleteMoneyReceiptObject.put("message", "OK");
+			}
+			else {
+				deleteMoneyReceiptObject.put("isSuccessfull", false);
+				deleteMoneyReceiptObject.put("message", "NOT_FOUND");
+			}
+		}
+		catch (Exception e) {
+			deleteMoneyReceiptObject.put("isSuccessfull", false);
+			deleteMoneyReceiptObject.put("message", e.getMessage());
+			return new ResponseEntity<String>(deleteMoneyReceiptObject.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<String>(deleteMoneyReceiptObject.toString(), HttpStatus.OK);
+	}
+	
+	
 	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
 	public ResponseEntity<String> findById(@PathVariable int id) throws Exception {
 		PSIMoneyReceipt psiMoneyReceipt = new PSIMoneyReceipt();
@@ -664,6 +699,8 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		}
 		return new ResponseEntity<String>(psiMoneyReceiptAndServicesObject.toString(), HttpStatus.OK);
 	}
+	
+	
 	@RequestMapping(value = "/save-in-global", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<String> globalServerMoneyReceipt(@RequestBody String jsonStr) throws Exception {
 		JSONObject responseMessage = new JSONObject();
@@ -900,9 +937,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				}
 				if(service.has("sendToDhisFromGlobal")) {
 					psiServiceProvision.setSendToDhisFromGlobal(service.getInt("sendToDhisFromGlobal"));
-				}
-				psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
-				
+				}				
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
 				
 				psiServiceProvision.setTimestamp(System.currentTimeMillis());

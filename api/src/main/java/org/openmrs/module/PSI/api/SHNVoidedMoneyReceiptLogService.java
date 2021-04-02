@@ -15,4 +15,6 @@ public interface SHNVoidedMoneyReceiptLogService extends OpenmrsService {
 	
 	List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceipt();
 	
+	public SHNVoidedMoneyReceiptLog getVoidedMoneyReceiptByEslipNo(String eslipNo);
+	
 }

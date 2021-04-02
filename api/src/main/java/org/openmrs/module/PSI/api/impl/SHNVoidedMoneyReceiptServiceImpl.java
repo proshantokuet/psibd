@@ -38,6 +38,12 @@ public class SHNVoidedMoneyReceiptServiceImpl extends BaseOpenmrsService impleme
 		return dao.getAllVoidedMoneyReceipt();
 	}
 
+	@Override
+	public SHNVoidedMoneyReceiptLog getVoidedMoneyReceiptByEslipNo(String eslipNo) {
+		// TODO Auto-generated method stub
+		return dao.getVoidedMoneyReceiptByEslipNo(eslipNo);
+	}
+
 	
 
 }
