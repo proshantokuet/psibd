@@ -2,6 +2,7 @@ package org.openmrs.module.PSI.web.listener;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -13,6 +14,7 @@ import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
+import org.openmrs.module.PSI.dto.SHNDataSyncStatusDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,13 @@ public class PatientFailedListener {
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
 	
 	//live dhis url
-	private final String DHIS2BASEURL = "http://10.100.11.3:5271";
+	private static ResourceBundle resource = ResourceBundle.getBundle("deploymentConfig");
+	
+	private final static String DHIS2BASEURL = resource.getString("dhis2BaseUrl");
+	
+	private final static String isDeployInLightEmr = resource.getString("isDeployInLightEmr");
+	
+	private final static String isDeployInGlobal = resource.getString("isDeployInLightEmr");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -83,6 +91,22 @@ public class PatientFailedListener {
 		JSONObject patientJson = new JSONObject();
 		if (psidhisExceptions.size() != 0 && psidhisExceptions != null) {
 			for (PSIDHISException psidhisException : psidhisExceptions) {
+				SHNDataSyncStatusDTO syncStatus = Context.getService(PSIDHISExceptionService.class).findStatusToSendDataDhis("patient_uuid", psidhisException.getPatientUuid());
+				boolean willSent = false;
+				
+				if(syncStatus == null && isDeployInLightEmr.equalsIgnoreCase("1")) {
+					willSent = true;
+				}
+				else if(syncStatus != null  && isDeployInLightEmr.equalsIgnoreCase("1")) {
+					willSent = false;
+				}
+				else if(syncStatus == null && isDeployInGlobal.equalsIgnoreCase("1")) {
+					willSent = false;
+				}
+				else if(syncStatus != null && isDeployInGlobal.equalsIgnoreCase("1") && syncStatus.getSendToDhisFromGlobal() == 1) {
+					willSent = true;
+				}
+				if(willSent) {
 				try {
 					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", psidhisException.getUrl());
 					patientJson = DHISDataConverter.toConvertPatient(patient);
@@ -168,6 +192,8 @@ public class PatientFailedListener {
 					Context.clearSession();*/
 					
 					updateExceptionForFailed(psidhisException, patientJson + "", status, response + "", e.toString(),"");
+				}
+				
 				}
 			}
 			

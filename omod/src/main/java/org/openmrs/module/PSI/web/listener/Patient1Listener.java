@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ import org.openmrs.module.PSI.converter.DhisObsEventDataConverter;
 import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
+import org.openmrs.module.PSI.dto.SHNDataSyncStatusDTO;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
 import org.openmrs.module.PSI.utils.PSIConstants;
@@ -65,7 +67,13 @@ public class Patient1Listener {
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
 	
 	//live dhis url
-	private final String DHIS2BASEURL = "http://10.100.11.3:5271";
+	private static ResourceBundle resource = ResourceBundle.getBundle("deploymentConfig");
+	
+	private final static String DHIS2BASEURL = resource.getString("dhis2BaseUrl");
+	
+	private final static String isDeployInLightEmr = resource.getString("isDeployInLightEmr");
+	
+	private final static String isDeployInGlobal = resource.getString("isDeployInLightEmr");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -268,6 +276,23 @@ public class Patient1Listener {
 				if(eventReceordDTO.getId() % 4 == 2) {
 				PSIDHISException getPsidhisException = Context.getService(PSIDHISExceptionService.class).findAllById(
 				    eventReceordDTO.getId());
+				String patientUUidToCheck = eventReceordDTO.getUrl().substring(28,64);
+				SHNDataSyncStatusDTO syncStatus = Context.getService(PSIDHISExceptionService.class).findStatusToSendDataDhis("patient_uuid", patientUUidToCheck);
+				boolean willSent = false;
+				
+				if(syncStatus == null && isDeployInLightEmr.equalsIgnoreCase("1")) {
+					willSent = true;
+				}
+				else if(syncStatus != null  && isDeployInLightEmr.equalsIgnoreCase("1")) {
+					willSent = false;
+				}
+				else if(syncStatus == null && isDeployInGlobal.equalsIgnoreCase("1")) {
+					willSent = false;
+				}
+				else if(syncStatus != null && isDeployInGlobal.equalsIgnoreCase("1") && syncStatus.getSendToDhisFromGlobal() == 1) {
+					willSent = true;
+				}
+				if(willSent) {
 				try {
 					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
 					patientJson = DHISDataConverter.toConvertPatient(patient);
@@ -373,6 +398,8 @@ public class Patient1Listener {
 					Context.clearSession();
 					updateException(getPsidhisException, patientJson + "", eventReceordDTO,
 					    PSIConstants.CONNECTIONTIMEOUTSTATUS, response + "", e.toString(),"");
+				}
+				
 				}
 			}
 			

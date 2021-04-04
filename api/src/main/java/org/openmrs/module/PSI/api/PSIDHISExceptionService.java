@@ -24,4 +24,6 @@ public interface PSIDHISExceptionService extends OpenmrsService {
 	
 	public SHNDataSyncStatusDTO findStatusToSendDataDhis(String type, String uuid);
 	
+	public List<PSIDHISException> getListOfDataToBeSynced(int status);
+	
 }

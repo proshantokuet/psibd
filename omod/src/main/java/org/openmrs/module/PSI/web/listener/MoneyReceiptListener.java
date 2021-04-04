@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,7 +56,9 @@ public class MoneyReceiptListener {
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
 	
 	//live dhis url
-	private final String DHIS2BASEURL = "http://10.100.11.3:5271";
+	private static ResourceBundle resource = ResourceBundle.getBundle("deploymentConfig");
+	
+	private final static String DHIS2BASEURL = resource.getString("dhis2BaseUrl");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -395,7 +398,7 @@ public class MoneyReceiptListener {
 //		Context.clearSession();
 		if (psiServiceProvisions.size() != 0) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
-				if(psiServiceProvision.getSpid() % 3 == 0) {
+				if(psiServiceProvision.getSpid() % 3 == 0 && psiServiceProvision.getSendToDhisFromGlobal() == 1) {
 				//log.error("Entered in the loop for sendMoneyReceipt " + System.currentTimeMillis());
 				JSONObject eventResponse = new JSONObject();
 				JSONObject getResponse = new JSONObject();
@@ -438,7 +441,6 @@ public class MoneyReceiptListener {
 //					
 //				}
 				
-				if (StringUtils.isBlank(psiServiceProvision.getDhisId())) {
 					
 					try {
 						UserDTO userDTO = Context.getService(PSIClinicUserService.class).findOrgUnitFromOpenMRS(patientUuid);
@@ -575,27 +577,11 @@ public class MoneyReceiptListener {
 						    e.toString(), PSIConstants.CONNECTIONTIMEOUTSTATUS);
 					}
 					
-				} else {
-					Context.openSession();
-					getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
-					/*psiServiceProvision.setField1(getResponse + "");
-					psiServiceProvision.setField2(moneyReceiptJson + "");
-					psiServiceProvision.setField3(statusCode);
-					psiServiceProvision.setError("found is_send_to_dhis 1");
-					psiServiceProvision.setIsSendToDHIS(PSIConstants.CONNECTIONTIMEOUTSTATUS);
-					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);*/
-					//getlastTimeStamp.setVoidReason(e.toString());
-					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
-					Context.clearSession();
-					
-					updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
-					    eventURL, PSIConstants.SUCCESSSTATUS);
 				}
 			}
 			
 		  }
 		}
-	}
 	
 	private void updateServiceProvision(PSIServiceProvision psiServiceProvision, String moneyReceiptJson,
 	                                    String referenceId, String getResponse, int statusCode, String URL, int status) {

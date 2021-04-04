@@ -31,6 +31,9 @@
 	<context:component-scan base-package="org.openmrs.module.PSI.web" />
 	
 	<context:annotation-config></context:annotation-config>
+	
+	 <!--  For GLobal and Light Emr -->
+	 
 	 <bean id="dhisListener" class="org.openmrs.module.PSI.web.listener.DHISListener"></bean>
 	 <bean id="moneyReceiptListener" class="org.openmrs.module.PSI.web.listener.MoneyReceiptListener"></bean>
 	 <bean id="moneyReceiptFailedListener" class="org.openmrs.module.PSI.web.listener.MoneyReceiptFailedListener"></bean>
@@ -42,9 +45,33 @@
 	 <bean id="moneyReceiptFailedListener2" class="org.openmrs.module.PSI.web.listener.MoneyReceiptFailedListener2"></bean>
 	 <bean id="moneyReceiptListener1" class="org.openmrs.module.PSI.web.listener.MoneyReceiptListener1"></bean>
 	 <bean id="moneyReceiptListener2" class="org.openmrs.module.PSI.web.listener.MoneyReceiptListener2"></bean>
+	 <bean id="encounterListener" class="org.openmrs.module.PSI.web.listener.EncounterListner"></bean>
+	 <bean id="exceptionDataListener" class="org.openmrs.module.PSI.web.listener.ExceptionDataSyncListner"></bean>
+	 
+	 <!--  For GLobal and Light Emr End -->
+	 
+	 
+	 <!--  FOr Global Server -->
+	 
+	 <bean id="deleteMoneyReceiptListener" class="org.openmrs.module.PSI.web.listener.DeleteMoneyReceiptAndOthersListener"></bean>
+	 
+	 <!-- FOr GLobal Server End -->
+	
+	
+	<!-- For light and Full Emr -->
+	
+	<bean id="stockAdjustListener" class="org.openmrs.module.PSI.web.listener.StockAndAdjustDataListener"></bean>
+	
+	<!-- For Light and Full Emr end -->
+	 
+	 
+	 
 	 
 	 
 	 <task:scheduled-tasks scheduler="dhis2Task">
+	 
+	 	<!--  For GLobal and Light Emr -->
+	 	
         <task:scheduled ref="dhisListener" method="sendData" cron="0 */1 9-23 * * *" />  
         <task:scheduled ref="moneyReceiptListener" method="sendMoneyReceiptData" cron="0 */1 0-8 * * *" />
         <task:scheduled ref="patientFailedListener" method="sendFailedPatientData" cron="0 */1 * * * *" />
@@ -56,9 +83,28 @@
         <task:scheduled ref="moneyReceiptFailedListener" method="sendFailedMoneyReceiptData" cron="0 */1 0-8 * * *" /> 
         <task:scheduled ref="moneyReceiptListener1" method="sendMoneyReceiptData" cron="0 */1 0-8 * * *" />
         <task:scheduled ref="moneyReceiptListener2" method="sendMoneyReceiptData" cron="0 */1 0-8 * * *" />
+        <task:scheduled ref="exceptionDataListener" method="sendExceptionSyncata" cron="0 */30 * * * *" />
+        <task:scheduled ref="encounterListener" method="sendData" cron="*/55 * * * * *" />
+        
+        <!--  For GLobal and Light Emr End -->
+        
+        
+        <!--  FOr Global Server -->
+        
+        <task:scheduled ref="deleteMoneyReceiptListener" method="sendData" cron="*/55 * * * * *" />
+        
+         <!-- FOr GLobal Server End -->
+         
+         
+         <!-- For light and Full Emr -->
+	
+		<task:scheduled ref="stockAdjustListener" method="sendData" cron="0 */55 * * * *" />
+	
+		<!-- For Light and Full Emr end -->
+         
     </task:scheduled-tasks>
     
-   <task:scheduler pool-size="11" id="dhis2Task"/>
+   <task:scheduler pool-size="15" id="dhis2Task"/>
 	<task:annotation-driven /> 
  
 		

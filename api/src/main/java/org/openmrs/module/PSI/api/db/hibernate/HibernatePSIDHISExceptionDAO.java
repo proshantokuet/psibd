@@ -111,6 +111,17 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PSIDHISException> getListOfDataToBeSynced(int status) {
+		// TODO Auto-generated method stub
+		List<PSIDHISException> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from PSIDHISException where isSync = :sync and status = 1")
+		        .setInteger("sync", status).list();
+		
+		return lists;
+	}
+
 //	@SuppressWarnings("unchecked")
 //	@Override
 //	public List<PSIDHISException> findAllFailedEncounterByStatus(int status) {

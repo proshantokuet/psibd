@@ -3,6 +3,7 @@ package org.openmrs.module.PSI;
 import java.io.Serializable;
 
 import org.openmrs.BaseOpenmrsData;
+import org.springframework.beans.factory.annotation.Value;
 
 public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 	
@@ -32,6 +33,9 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 	private String patientUuid;
 	
 	private String referenceId;
+	
+	@Value("0")
+	private int isSync;
 	
 	
 	@Override
@@ -124,6 +128,14 @@ public class PSIDHISException extends BaseOpenmrsData implements Serializable {
 
 	public void setReferenceId(String referenceId) {
 		this.referenceId = referenceId;
+	}
+
+	public int getIsSync() {
+		return isSync;
+	}
+
+	public void setIsSync(int isSync) {
+		this.isSync = isSync;
 	}
 
 	public String getType() {

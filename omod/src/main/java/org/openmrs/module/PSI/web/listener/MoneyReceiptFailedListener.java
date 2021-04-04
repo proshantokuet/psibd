@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,7 +56,9 @@ public class MoneyReceiptFailedListener {
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
 	
 	//live dhis url
-	private final String DHIS2BASEURL = "http://10.100.11.3:5271";
+	private static ResourceBundle resource = ResourceBundle.getBundle("deploymentConfig");
+	
+	private final static String DHIS2BASEURL = resource.getString("dhis2BaseUrl");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -64,14 +67,6 @@ public class MoneyReceiptFailedListener {
 	private final String trackInstanceUrl = DHIS2BASEURL + "/api/trackedEntityInstances.json?";
 	
 	private final String EVENTURL = DHIS2BASEURL + "/api/events";
-	
-	private final String GETEVENTURL = DHIS2BASEURL + "/api/events.json";
-	
-	private Map<String, String> ObserVationDHISMapping = new HashMap<String, String>();
-	
-	private Map<String, String> multipleObsDHISMapping = new HashMap<String, String>();
-
-
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
@@ -358,29 +353,26 @@ public class MoneyReceiptFailedListener {
 	
 	private void sendFailedMoneyReceipt() {
 		log.error("Entered in failed money receipt listener " + new Date());
-		String serviceUunid = "";
 		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
 		        .findAllResend();
 		log.error("Chunk Count" + psiServiceProvisions.size());
 		if (psiServiceProvisions.size() != 0) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
-				if(psiServiceProvision.getSpid() % 3 == 0) {
+				if(psiServiceProvision.getSpid() % 3 == 0 && psiServiceProvision.getSendToDhisFromGlobal() == 1) {
 				long timestampLog = System.currentTimeMillis();	
 				log.error("(MONEY RECEIPT) start money receipt to send data  " + timestampLog);
 				JSONObject eventResponse = new JSONObject();
 				JSONObject getResponse = new JSONObject();
 				JSONObject moneyReceiptJson = new JSONObject();
-				JSONObject getEventResponse = new JSONObject();
-				JSONArray getEevnts = new JSONArray();
+				new JSONObject();
+				new JSONArray();
 				String patientUuid = psiServiceProvision.getPatientUuid();
-				String uuid = DHISMapper.registrationMapper.get("uuid");
+				DHISMapper.registrationMapper.get("uuid");
 				String URL = "";
 				int statusCode = 0;
-				String orgUnit = "";
 				String eventURL = "";
 				
-				serviceUunid = "";
-				serviceUunid = psiServiceProvision.getUuid();
+				psiServiceProvision.getUuid();
 				
 //				eventURL = GETEVENTURL + "?program=" + DHISMapper.registrationMapper.get("program") + "&filter="
 //				        + DHISMapper.ServiceProvision.get("serviceUuid") + ":eq:" + serviceUunid;
@@ -407,19 +399,9 @@ public class MoneyReceiptFailedListener {
 //					
 //				}
 				
-				if (StringUtils.isBlank(psiServiceProvision.getDhisId())) {
 					try {
 						UserDTO userDTO = Context.getService(PSIClinicUserService.class).findOrgUnitFromOpenMRS(patientUuid);
-						orgUnit = userDTO.getOrgUnit();
-//						URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + patientUuid + "&ou=" + orgUnit;
-//						//log.error("check whether patient exist before sending to dhis2 " + new Date());
-//						getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-//						//log.error("check whether patient exist after sending to dhis2 " + new Date());
-//
-//						JSONArray trackedEntityInstances = new JSONArray();
-//						if (getResponse.has("trackedEntityInstances")) {
-//							trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
-//						}
+						userDTO.getOrgUnit();
 						
 						//log.info("URL:" + URL + "getResponse:" + getResponse);
 						PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(patientUuid, 1);
@@ -548,19 +530,6 @@ public class MoneyReceiptFailedListener {
 						updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
 						    e.toString(), status);
 					}
-				} else {
-					/*Context.openSession();
-					psiServiceProvision.setField1("not found");
-					psiServiceProvision.setField1(getResponse + "");
-					psiServiceProvision.setField2(moneyReceiptJson + "");
-					psiServiceProvision.setField3(psiServiceProvision.getIsSendToDHIS());
-					psiServiceProvision.setError(":" + URL);
-					psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
-					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-					Context.clearSession();*/
-					updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
-					    eventURL, PSIConstants.SUCCESSSTATUS);
-				}
 			}
 			
 			} 

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,7 +56,9 @@ public class MoneyReceiptFailedListener2 {
 	//private final String DHIS2BASEURL = "http://10.100.11.2:5271";
 	
 	//live dhis url
-	private final String DHIS2BASEURL = "http://10.100.11.3:5271";
+	private static ResourceBundle resource = ResourceBundle.getBundle("deploymentConfig");
+	
+	private final static String DHIS2BASEURL = resource.getString("dhis2BaseUrl");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -364,7 +367,7 @@ public class MoneyReceiptFailedListener2 {
 		//log.error("Chunk Count" + psiServiceProvisions.size());
 		if (psiServiceProvisions.size() != 0) {
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
-				if(psiServiceProvision.getSpid() % 3 == 2) {
+				if(psiServiceProvision.getSpid() % 3 == 2 && psiServiceProvision.getSendToDhisFromGlobal() == 1) {
 				//log.error("completion time moneyreceipt " + new Date());
 				JSONObject eventResponse = new JSONObject();
 				JSONObject getResponse = new JSONObject();
@@ -406,7 +409,6 @@ public class MoneyReceiptFailedListener2 {
 //					
 //				}
 				
-				if (StringUtils.isBlank(psiServiceProvision.getDhisId())) {
 					try {
 						UserDTO userDTO = Context.getService(PSIClinicUserService.class).findOrgUnitFromOpenMRS(patientUuid);
 						orgUnit = userDTO.getOrgUnit();
@@ -427,9 +429,22 @@ public class MoneyReceiptFailedListener2 {
 							String trackedEntityInstanceId = findRefereceIdPatient.getReferenceId();
 							moneyReceiptJson = DHISDataConverter.toConvertMoneyReceipt(psiServiceProvision,
 							    trackedEntityInstanceId);
-							//log.error("completion time moneyreceipt before sending to dhis2 " + new Date());
-							eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
-							//log.error("completion time moneyreceipt after getting response from dhis2 " + new Date());
+							if(!StringUtils.isBlank(psiServiceProvision.getDhisId())) {
+								String referenceUrl = EVENTURL + "/" + psiServiceProvision.getDhisId();
+								JSONObject referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
+								String status = referenceExist.getString("status");
+								if (!status.equalsIgnoreCase("ERROR")) {
+									log.error("Entering to edit" + status);
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").update("", moneyReceiptJson, "", referenceUrl);
+								}
+								else {
+									log.error("Entering to ADD" + status);
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+								}
+							}
+							else{
+								eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
+							}
 							statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
 							//log.info("statusCode:" + statusCode + "" + eventResponse);
 							if (statusCode == 200) {
@@ -532,19 +547,6 @@ public class MoneyReceiptFailedListener2 {
 						updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
 						    e.toString(), status);
 					}
-				} else {
-					/*Context.openSession();
-					psiServiceProvision.setField1("not found");
-					psiServiceProvision.setField1(getResponse + "");
-					psiServiceProvision.setField2(moneyReceiptJson + "");
-					psiServiceProvision.setField3(psiServiceProvision.getIsSendToDHIS());
-					psiServiceProvision.setError(":" + URL);
-					psiServiceProvision.setIsSendToDHIS(PSIConstants.FAILEDSTATUS);
-					Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-					Context.clearSession();*/
-					updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
-					    eventURL, PSIConstants.SUCCESSSTATUS);
-				}
 			}
 			
 			} 

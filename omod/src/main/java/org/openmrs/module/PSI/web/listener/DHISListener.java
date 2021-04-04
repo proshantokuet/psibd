@@ -48,6 +48,7 @@ import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
 import org.openmrs.module.PSI.converter.SHNStockAdjustDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
+import org.openmrs.module.PSI.dto.SHNDataSyncStatusDTO;
 import org.openmrs.module.PSI.dto.ShnIndicatorDetailsDTO;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
@@ -90,7 +91,9 @@ public class DHISListener {
 	
 	private final static String DHIS2BASEURL = resource.getString("dhis2BaseUrl");
 	
-	private String isDeployInGlobal = resource.getString("isDeployInGlobal");
+	private final static String isDeployInLightEmr = resource.getString("isDeployInLightEmr");
+	
+	private final static String isDeployInGlobal = resource.getString("isDeployInLightEmr");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -116,7 +119,6 @@ public class DHISListener {
 	public void sendData() throws Exception {
 		JSONObject getResponse = null;
 		boolean status = true;
-		if(isDeployInGlobal.equalsIgnoreCase("1")) {
 			try {
 				getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
 				
@@ -125,74 +127,14 @@ public class DHISListener {
 				
 				status = false;
 			}
-		}
 		if (status) {
 			
-			if(isDeployInGlobal.equalsIgnoreCase("1")) {
-				try {
-					sendFailedPatient();
-				}
-				catch (Exception e) {
-					
-				}
 				try {
 					sendPatient();
 				}
 				catch (Exception e) {
 					
 				}
-				try {
-					sendMoneyReceipt();
-				}
-				catch (Exception e) {
-					
-				}
-				
-				try {
-					sendFailedMoneyReceipt();
-				}
-				catch (Exception e) {
-					
-				}
-				try {
-					sendEncounter();
-				}
-				catch (Exception e) {
-					
-				}
-				try {
-					sendEncounterFailed();
-				}
-				catch (Exception e) {
-					
-				}
-				try {
-					sendIndicatorDataToDhis();
-				}
-				catch (Exception e) {
-					
-				}
-				try {
-					deleteMoneyReceiptFromDhis2();
-				}
-				catch (Exception e) {
-					
-				}
-			}
-			if(isDeployInGlobal.equalsIgnoreCase("0")) {
-				try {
-					sendStockDataInGLobalServer();
-				}
-				catch (Exception e) {
-					
-				}
-				try {
-					sendAdjustStockDataInGLobalServer();
-				}
-				catch (Exception e) {
-					
-				}
-			}
 		}
 
 	}
@@ -328,6 +270,23 @@ public class DHISListener {
 				if(eventReceordDTO.getId() % 4 == 1) {
 				PSIDHISException getPsidhisException = Context.getService(PSIDHISExceptionService.class).findAllById(
 				    eventReceordDTO.getId());
+				String patientUUidToCheck = eventReceordDTO.getUrl().substring(28,64);
+				SHNDataSyncStatusDTO syncStatus = Context.getService(PSIDHISExceptionService.class).findStatusToSendDataDhis("patient_uuid", patientUUidToCheck);
+				boolean willSent = false;
+				
+				if(syncStatus == null && isDeployInLightEmr.equalsIgnoreCase("1")) {
+					willSent = true;
+				}
+				else if(syncStatus != null  && isDeployInLightEmr.equalsIgnoreCase("1")) {
+					willSent = false;
+				}
+				else if(syncStatus == null && isDeployInGlobal.equalsIgnoreCase("1")) {
+					willSent = false;
+				}
+				else if(syncStatus != null && isDeployInGlobal.equalsIgnoreCase("1") && syncStatus.getSendToDhisFromGlobal() == 1) {
+					willSent = true;
+				}
+				if(willSent) {
 				try {
 					long timeBeforeOpenmrsCall = System.currentTimeMillis();
 					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
@@ -453,6 +412,8 @@ public class DHISListener {
 					Context.clearSession();
 					updateException(getPsidhisException, patientJson + "", eventReceordDTO,
 					    PSIConstants.CONNECTIONTIMEOUTSTATUS, response + "", e.toString(),"", logResult);
+				}
+				
 				}
 			}
 			

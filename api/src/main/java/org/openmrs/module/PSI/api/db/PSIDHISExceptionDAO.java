@@ -20,6 +20,9 @@ public interface PSIDHISExceptionDAO {
 	//public PSIDHISException findAllBymarkerIdAndFormName(int markerId, String formsName);
 	
 	public SHNDataSyncStatusDTO findStatusToSendDataDhis(String type, String uuid);
+	
+	public List<PSIDHISException> getListOfDataToBeSynced(int status);
+
 
 	
 }

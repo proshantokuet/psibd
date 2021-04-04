@@ -51,5 +51,11 @@ public class PSIDHISEcxeptionServiceImpl extends BaseOpenmrsService implements P
 		return dao.findStatusToSendDataDhis(type, uuid);
 	}
 
+	@Override
+	public List<PSIDHISException> getListOfDataToBeSynced(int status) {
+		// TODO Auto-generated method stub
+		return dao.getListOfDataToBeSynced(status);
+	}
+
 	
 }
