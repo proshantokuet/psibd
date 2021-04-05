@@ -82,6 +82,8 @@ public class DeleteMoneyReceiptAndOthersListener {
 	private final String EVENTURL = DHIS2BASEURL + "/api/events";
 	
 	private final String DATASETURL = DHIS2BASEURL + "/api/dataValueSets";
+	
+	private final String GETEVENTURL = DHIS2BASEURL + "/api/events.json";
 
 
 	
@@ -203,39 +205,54 @@ public class DeleteMoneyReceiptAndOthersListener {
 		
 		List<SHNVoidedMoneyReceiptLog> shnVoidedMoneyReceiptLog = Context.getService(SHNVoidedMoneyReceiptLogService.class).getAllVoidedMoneyReceipt();
 		for (SHNVoidedMoneyReceiptLog shnVoidedMoneyReceiptLogObject : shnVoidedMoneyReceiptLog) {
-			if(shnVoidedMoneyReceiptLogObject != null && !StringUtils.isEmpty(shnVoidedMoneyReceiptLogObject.getDhisId())) {
+			if(shnVoidedMoneyReceiptLogObject != null && !StringUtils.isBlank(shnVoidedMoneyReceiptLogObject.getServiceUuid())) {
 				
-				ArrayList<String> elephantList = new ArrayList<>(Arrays.asList(shnVoidedMoneyReceiptLogObject.getDhisId().split(",")));
+//				ArrayList<String> elephantList = new ArrayList<>(Arrays.asList(shnVoidedMoneyReceiptLogObject.getDhisId().split(",")));
+				ArrayList<String> serviceUuidList = new ArrayList<>(Arrays.asList(shnVoidedMoneyReceiptLogObject.getServiceUuid().split(",")));
 				try {
-					for (String dhisId : elephantList) {
-						if(!StringUtils.isEmpty(dhisId)) {
-						log.error("splitted single dhisid" + dhisId);
+					for (String serviceUuid : serviceUuidList) {
+						if(!StringUtils.isBlank(serviceUuid)) {
+						log.error("splitted single serviceUuid" + serviceUuid);
 						JSONObject eventResponse = new JSONObject();
-						String referenceUrl = EVENTURL + "/" + dhisId.trim();
-						JSONObject referenceExist;
-	
-							referenceExist = psiapiServiceFactory.getAPIType("dhis2").get("", "", referenceUrl);
+						JSONArray getEevnts = new JSONArray();
+						String eventURL = GETEVENTURL + "?program=" + DHISMapper.registrationMapper.get("program") + "&filter="
+						        + DHISMapper.ServiceProvision.get("serviceUuid") + ":eq:" + serviceUuid;
 						
-							String status = referenceExist.getString("status");
-							if (!status.equalsIgnoreCase("ERROR")) {
-								eventResponse = psiapiServiceFactory.getAPIType("dhis2").delete("", "", referenceUrl);
-								int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
-								//log.info("statusCode:" + statusCode + "" + eventResponse);
-								if (statusCode == 200) {
-									JSONObject successResponse = eventResponse.getJSONObject("response");
-									log.error("successResponse" + successResponse.toString());
-									if(successResponse.has("reference")) {
-										log.error("successResponse has reference" + successResponse.toString());
-										String importStatus = successResponse.getString("status");
-										if (importStatus.equalsIgnoreCase("SUCCESS")) {
-											log.error("response has SUCCESS" + importStatus);
-											shnVoidedMoneyReceiptLogObject.setVoided(true);
-											Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedMoneyReceiptLogObject);
+						JSONObject getEventResponse = new JSONObject();
 	
+						getEventResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", eventURL);
+						if (getEventResponse.has("events")) {
+							getEevnts = getEventResponse.getJSONArray("events");
+						}
+						if (getEevnts.length() != 0) {
+							JSONObject eventValue = getEevnts.getJSONObject(0);
+							if(eventValue.has("event")) {
+								String referenceId = eventValue.getString("event");
+								if (!StringUtils.isBlank(referenceId)) {
+									String referenceUrl = EVENTURL + "/" + referenceId.trim();
+									eventResponse = psiapiServiceFactory.getAPIType("dhis2").delete("", "", referenceUrl);
+									int statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
+									//log.info("statusCode:" + statusCode + "" + eventResponse);
+									if (statusCode == 200) {
+										JSONObject successResponse = eventResponse.getJSONObject("response");
+										log.error("successResponse" + successResponse.toString());
+										if(successResponse.has("reference")) {
+											log.error("successResponse has reference" + successResponse.toString());
+											String importStatus = successResponse.getString("status");
+											if (importStatus.equalsIgnoreCase("SUCCESS")) {
+												log.error("response has SUCCESS" + importStatus);
+												shnVoidedMoneyReceiptLogObject.setVoided(true);
+												Context.openSession();
+												Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedMoneyReceiptLogObject);
+												Context.clearSession();
+		
+											}
 										}
 									}
 								}
 							}
+
+						  }
 						}
 					  }
 

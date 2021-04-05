@@ -484,6 +484,31 @@ public class MoneyReceiptListener {
 							String httpStatus = eventResponse.getString("httpStatus");
 							if (statusCode == 200) {
 								JSONObject successResponse = eventResponse.getJSONObject("response");
+								if(successResponse.has("reference")) {
+									String importStatus = successResponse.getString("status");
+									if (importStatus.equalsIgnoreCase("SUCCESS")) {
+										String referenceId = successResponse.getString("reference");
+										Context.openSession();
+										getlastTimeStamp.setVoidReason(httpStatus);
+										getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
+										Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+										Context.clearSession();
+										
+										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", referenceId,
+												eventResponse + "", statusCode, eventURL, PSIConstants.SUCCESSSTATUS);
+									}
+									else {
+										Context.openSession();
+										getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
+										Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
+										Context.clearSession();
+										
+										updateServiceProvision(psiServiceProvision, moneyReceiptJson + "",psiServiceProvision.getDhisId(), eventResponse + "",
+										    statusCode, "Dhis2 returns importStatus failed while editing", PSIConstants.CONNECTIONTIMEOUTSTATUS);
+									}
+								}
+								else {
+									
 								JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
 								if (importSummaries.length() != 0) {
 									JSONObject importSummary = importSummaries.getJSONObject(0);
@@ -520,10 +545,13 @@ public class MoneyReceiptListener {
 									Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 									Context.clearSession();
 									
-									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+									updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", psiServiceProvision.getDhisId(), getResponse + "",
 									    statusCode, "Dhis2 returns empty import summaries without reference id", PSIConstants.CONNECTIONTIMEOUTSTATUS);
 								}
-							} else {
+								
+								}
+							 }
+							else {
 								Context.openSession();
 								getlastTimeStamp.setTimestamp(psiServiceProvision.getTimestamp());
 								/*psiServiceProvision.setField1(getResponse + "");
@@ -537,7 +565,7 @@ public class MoneyReceiptListener {
 								Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 								Context.clearSession();
 								String errorDetails = errorMessageCreation(eventResponse);
-								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+								updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", psiServiceProvision.getDhisId(), getResponse + "",
 								    statusCode, errorDetails, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 							}
 							
@@ -556,7 +584,7 @@ public class MoneyReceiptListener {
 							Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 							Context.clearSession();
 							
-							updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "",
+							updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", psiServiceProvision.getDhisId(), getResponse + "",
 							    statusCode, "No Track Entity Instances found in DHIS2 Containing this URL " + URL, PSIConstants.CONNECTIONTIMEOUTSTATUS);
 						}
 					}
@@ -573,7 +601,7 @@ public class MoneyReceiptListener {
 						getlastTimeStamp.setVoidReason(e.toString());
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastTimeStamp);
 						Context.clearSession();
-						updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", "", getResponse + "", statusCode,
+						updateServiceProvision(psiServiceProvision, moneyReceiptJson + "", psiServiceProvision.getDhisId(), getResponse + "", statusCode,
 						    e.toString(), PSIConstants.CONNECTIONTIMEOUTSTATUS);
 					}
 					

@@ -22,6 +22,7 @@
 		<many-to-one name="voidedBy" column="voided_by" class="org.openmrs.User" />
 		<property name="dateVoided" column="date_voided" type="java.util.Date" />
 		<property name="voidReason" column="void_reason" type="java.lang.String" />
+		<property name="serviceUuid" column="service_uuid" type="java.lang.String" />
 		<property name="isDeleteFromLocal" column="is_delete_from_local" type="boolean" not-null="true"/> 
 	    
     </class>

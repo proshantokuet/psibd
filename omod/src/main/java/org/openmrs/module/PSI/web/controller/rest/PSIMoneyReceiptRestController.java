@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -444,6 +445,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 
 		try {
 			String dhisId = "";
+			String serviceUuid = "";
 			PSIMoneyReceipt psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(id);
 			if(psiMoneyReceipt !=null) {
 				PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findByClinicId(psiMoneyReceipt.getClinicCode());
@@ -460,13 +462,19 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				shnVoidedLog.setDateCreated(new Date());
 				shnVoidedLog.setCreator(Context.getAuthenticatedUser());
 				for (PSIServiceProvision psiServiceProvision : psiMoneyReceipt.getServices()) {
-					
-					dhisId = dhisId + psiServiceProvision.getDhisId() + ",";
+					if(!StringUtils.isBlank(dhisId)) {
+						dhisId = dhisId + psiServiceProvision.getDhisId() + ",";
+					}
+					serviceUuid = serviceUuid + psiServiceProvision.getUuid() + ",";
 				}
 				if (dhisId.endsWith(",")) {
-					dhisId = dhisId.substring(0, dhisId.length() - 1);
-					}
+					 dhisId = dhisId.substring(0, dhisId.length() - 1);
+				}
+				if(serviceUuid.endsWith(",")) {
+					serviceUuid = serviceUuid.substring(0, serviceUuid.length() - 1);
+				}
 				shnVoidedLog.setDhisId(dhisId);
+				shnVoidedLog.setServiceUuid(serviceUuid);
 				Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedLog);
 				deleteMoneyReceiptObject.put("isSuccessfull", true);
 				deleteMoneyReceiptObject.put("e-slip", psiMoneyReceipt.getEslipNo());

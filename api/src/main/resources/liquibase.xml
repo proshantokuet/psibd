@@ -938,6 +938,12 @@
 			</column>			
 		</addColumn>
 	 </changeSet>
+	 <changeSet author="tanvir" id="shnvoidmoneyreceiptlog-1.0.3">
+	 	<addColumn tableName="shn_voidedmoneyreceipt_log">
+			<column name="service_uuid" type="mediumtext">
+			</column>			
+		</addColumn>
+	 </changeSet>
 	<changeSet id="shnmoneyreceiptpaymentLog-1.0.0" author="tanvir">
 		<createTable tableName="shn_moneyreceipt_payment_log">
 			<column name="payment_id" type="int(11)" autoIncrement="true">

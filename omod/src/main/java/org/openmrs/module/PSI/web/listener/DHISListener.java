@@ -93,7 +93,7 @@ public class DHISListener {
 	
 	private final static String isDeployInLightEmr = resource.getString("isDeployInLightEmr");
 	
-	private final static String isDeployInGlobal = resource.getString("isDeployInLightEmr");
+	private final static String isDeployInGlobal = resource.getString("isDeployInGlobal");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -262,7 +262,7 @@ public class DHISListener {
 		eventReceordDTOs = Context.getService(PSIDHISMarkerService.class).rawQuery(lastReadPatient);
 		JSONObject response = new JSONObject();
 		JSONObject patientJson = new JSONObject();
-		
+		log.error("object size" + eventReceordDTOs.size());
 		if (eventReceordDTOs.size() != 0 && eventReceordDTOs != null) {
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
 				String logResult = "";
@@ -272,6 +272,7 @@ public class DHISListener {
 				    eventReceordDTO.getId());
 				String patientUUidToCheck = eventReceordDTO.getUrl().substring(28,64);
 				SHNDataSyncStatusDTO syncStatus = Context.getService(PSIDHISExceptionService.class).findStatusToSendDataDhis("patient_uuid", patientUUidToCheck);
+				log.error("isDeployInGlobal" + isDeployInGlobal);
 				boolean willSent = false;
 				
 				if(syncStatus == null && isDeployInLightEmr.equalsIgnoreCase("1")) {
@@ -286,6 +287,7 @@ public class DHISListener {
 				else if(syncStatus != null && isDeployInGlobal.equalsIgnoreCase("1") && syncStatus.getSendToDhisFromGlobal() == 1) {
 					willSent = true;
 				}
+				log.error("willSent" + willSent);
 				if(willSent) {
 				try {
 					long timeBeforeOpenmrsCall = System.currentTimeMillis();
@@ -336,6 +338,21 @@ public class DHISListener {
 					/*JSONObject responseofResponse = new JSONObject();
 					responseofResponse = response.getJSONObject("response");*/
 					String status = response.getString("status");
+					JSONObject responseObject = response.getJSONObject("response");
+					if(responseObject.has("importSummaries")) {
+						JSONArray importSummaries = responseObject.getJSONArray("importSummaries");
+						if (importSummaries.length() != 0) {
+							JSONObject importSummary = importSummaries.getJSONObject(0);
+							JSONObject enrollmentObject = importSummary.getJSONObject("enrollments");
+							status = enrollmentObject.getString("status");
+						}
+					}
+					else {
+						if(responseObject.has("enrollments")) {
+							JSONObject enrollmentObject = responseObject.getJSONObject("enrollments");
+							status = enrollmentObject.getString("status");
+						}
+					}
 					if (!status.equalsIgnoreCase("ERROR")) {
 						if (getPsidhisException == null) {
 							PSIDHISException newPsidhisException = new PSIDHISException();
@@ -919,6 +936,21 @@ public class DHISListener {
 						JSONObject conflictsObject = conflictsArray.getJSONObject(0);
 						String httpStatusCode = responsefull.getString("httpStatusCode");
 						errorMessage = "Http Status Code : " + httpStatusCode + " Message: " + conflictsObject.getString("value");
+					}
+					else if(importsObject.has("enrollments")) {
+						JSONObject enrollmentObject = importsObject.getJSONObject("enrollments");
+						if(enrollmentObject.has("importSummaries")) {
+							JSONArray enrollmentImportSummary = enrollmentObject.getJSONArray("importSummaries");
+							if(enrollmentImportSummary.length() > 0) {
+								JSONObject enrollmentImportSummariesObject = enrollmentImportSummary.getJSONObject(0);
+								if (enrollmentImportSummariesObject.has("conflicts")) {
+									JSONArray conflictsArray = enrollmentImportSummariesObject.getJSONArray("conflicts");
+									JSONObject conflictsObject = conflictsArray.getJSONObject(0);
+									errorMessage = "Message: " + conflictsObject.getString("value");
+								}
+							}
+							
+						}
 					}
 					else {
 						if(importsObject.has("description")) {

@@ -61,7 +61,7 @@ public class ExceptionDataSyncListner {
 				for (PSIDHISException psidhisException : psidhisExceptions) {
 					JSONObject psiexceptionObject = new JSONObject();
 					psiexceptionObject.putOpt("json", psidhisException.getJson());
-					psiexceptionObject.putOpt("markId", psidhisException.getMarkId());
+					psiexceptionObject.putOpt("markId", 0);
 					psiexceptionObject.putOpt("url", psidhisException.getUrl());
 					psiexceptionObject.putOpt("status", psidhisException.getStatus());
 					psiexceptionObject.putOpt("error", psidhisException.getError());
@@ -72,9 +72,12 @@ public class ExceptionDataSyncListner {
 					JSONObject response = psiapiServiceFactory.getAPIType("openmrs").postInRemoteOpenMRS("", psiexceptionObject, url);
 					if(response.has("isSuccess")) {
 						Boolean successResult = response.getBoolean("isSuccess");
+						log.error("successResult" + successResult);
 						if(successResult) {
 							psidhisException.setIsSync(1);
+							Context.openSession();
 							Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
+							Context.clearSession();
 						}
 					}
 				}

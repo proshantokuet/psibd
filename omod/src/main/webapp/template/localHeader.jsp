@@ -9,7 +9,8 @@
  <%@ page import = "java.util.ResourceBundle" %>
  <% ResourceBundle resource = ResourceBundle.getBundle("deploymentConfig");
     String isDeployInGlobal=resource.getString("isDeployInGlobal");
-     %>	
+    String isDeployInLightEmr = resource.getString("isDeployInLightEmr");
+ %>	
 <ul id="menu">
 	<%-- <li class="first"><a
 		href="${pageContext.request.contextPath}/admin"><spring:message
@@ -57,7 +58,7 @@
     </li>
     </c:if>
     <%
-	if (isDeployInGlobal.equalsIgnoreCase("1")) {
+	if (isDeployInGlobal.equalsIgnoreCase("1") || isDeployInLightEmr.equalsIgnoreCase("1")) {
 	%>	
   <c:if test="${hasClinicPermission}">
     <li

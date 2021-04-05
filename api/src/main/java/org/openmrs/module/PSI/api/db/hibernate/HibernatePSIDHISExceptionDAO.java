@@ -85,7 +85,7 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 		String patientOriginSql = ""
 				+ "SELECT patient_origin as patientOrigin,patient_uuid as patientUuid,encounter_uuid as encounterUuid,is_send_to_dhis as sendToDhisFromGlobal  from openmrs.shr_patient_origin "
 				+ "where "+type+" = '"+uuid+"'";
-		
+		log.error("patientOriginSql" + patientOriginSql);
 		List<SHNDataSyncStatusDTO> shrPatientOrigins = new ArrayList<SHNDataSyncStatusDTO>();
 		
 		try {
@@ -99,6 +99,7 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 					.setResultTransformer(
 							new AliasToBeanResultTransformer(
 									SHNDataSyncStatusDTO.class)).list();
+			log.error("shrPatientOrigins size" + shrPatientOrigins.size());
 			if (shrPatientOrigins.size() > 0) {
 				return shrPatientOrigins.get(0);
 			} 

@@ -26,6 +26,8 @@ public class SHNVoidedMoneyReceiptLog extends BaseOpenmrsData implements Seriali
 	
 	private String dhisId;
 	
+	private String serviceUuid;
+	
 	private Boolean isDeleteFromLocal = Boolean.FALSE;
 	
 
@@ -101,6 +103,14 @@ public class SHNVoidedMoneyReceiptLog extends BaseOpenmrsData implements Seriali
 
 	public void setDhisId(String dhisId) {
 		this.dhisId = dhisId;
+	}
+
+	public String getServiceUuid() {
+		return serviceUuid;
+	}
+
+	public void setServiceUuid(String serviceUuid) {
+		this.serviceUuid = serviceUuid;
 	}
 
 	public Boolean getIsDeleteFromLocal() {

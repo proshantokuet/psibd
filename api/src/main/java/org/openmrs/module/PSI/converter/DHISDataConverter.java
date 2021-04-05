@@ -451,6 +451,7 @@ public class DHISDataConverter {
 		//String ageStringFormat = Integer.toString(period.getYears()) + " Y " + Integer.toString(period.getMonths()) + " M " +  Integer.toString(period.getDays()) + " D";
 		//ageMoneyReceipt.put("value", Integer.toString(period.getYears()));
 		
+		//comment out for test purpose
 		JSONObject ageInYearsMoneyReceipt = new JSONObject();
 		ageInYearsMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInYear"));
 		ageInYearsMoneyReceipt.put("value", period.getYears());

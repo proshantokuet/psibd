@@ -93,7 +93,7 @@ public class EncounterListner {
 	
 	private final static String isDeployInLightEmr = resource.getString("isDeployInLightEmr");
 	
-	private final static String isDeployInGlobal = resource.getString("isDeployInLightEmr");
+	private final static String isDeployInGlobal = resource.getString("isDeployInGlobal");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	

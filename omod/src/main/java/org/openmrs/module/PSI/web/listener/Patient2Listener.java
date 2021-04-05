@@ -73,7 +73,7 @@ public class Patient2Listener {
 	
 	private final static String isDeployInLightEmr = resource.getString("isDeployInLightEmr");
 	
-	private final static String isDeployInGlobal = resource.getString("isDeployInLightEmr");
+	private final static String isDeployInGlobal = resource.getString("isDeployInGlobal");
 	
 	private final String VERSIONAPI = DHIS2BASEURL + "/api/metadata/version";
 	
@@ -325,6 +325,21 @@ public class Patient2Listener {
 					/*JSONObject responseofResponse = new JSONObject();
 					responseofResponse = response.getJSONObject("response");*/
 					String status = response.getString("status");
+					JSONObject responseObject = response.getJSONObject("response");
+					if(responseObject.has("importSummaries")) {
+						JSONArray importSummaries = responseObject.getJSONArray("importSummaries");
+						if (importSummaries.length() != 0) {
+							JSONObject importSummary = importSummaries.getJSONObject(0);
+							JSONObject enrollmentObject = importSummary.getJSONObject("enrollments");
+							status = enrollmentObject.getString("status");
+						}
+					}
+					else {
+						if(responseObject.has("enrollments")) {
+							JSONObject enrollmentObject = responseObject.getJSONObject("enrollments");
+							status = enrollmentObject.getString("status");
+						}
+					}
 					if (!status.equalsIgnoreCase("ERROR")) {
 						if (getPsidhisException == null) {
 							PSIDHISException newPsidhisException = new PSIDHISException();
@@ -457,6 +472,21 @@ public class Patient2Listener {
 						JSONObject conflictsObject = conflictsArray.getJSONObject(0);
 						String httpStatusCode = responsefull.getString("httpStatusCode");
 						errorMessage = "Http Status Code : " + httpStatusCode + " Message: " + conflictsObject.getString("value");
+					}
+					else if(importsObject.has("enrollments")) {
+						JSONObject enrollmentObject = importsObject.getJSONObject("enrollments");
+						if(enrollmentObject.has("importSummaries")) {
+							JSONArray enrollmentImportSummary = enrollmentObject.getJSONArray("importSummaries");
+							if(enrollmentImportSummary.length() > 0) {
+								JSONObject enrollmentImportSummariesObject = enrollmentImportSummary.getJSONObject(0);
+								if (enrollmentImportSummariesObject.has("conflicts")) {
+									JSONArray conflictsArray = enrollmentImportSummariesObject.getJSONArray("conflicts");
+									JSONObject conflictsObject = conflictsArray.getJSONObject(0);
+									errorMessage = "Message: " + conflictsObject.getString("value");
+								}
+							}
+							
+						}
 					}
 					else {
 						if(importsObject.has("description")) {
