@@ -116,7 +116,7 @@ public class DHISMapper {
 	
 	public static final Map<String, String> historicalDataMapper = new HashMap<String, String>();
 	static {
-		historicalDataMapper.put("program", "xCSBjHIx2PH");
+		historicalDataMapper.put("program", "Z7GAKe92rVw");
 		historicalDataMapper.put("HD-Adolescent", "RSOg2EReloc");
 		historicalDataMapper.put("HD-Age_day", "mhL8AhExWBM");
 		historicalDataMapper.put("HD-Age_month", "x57unwS748X");

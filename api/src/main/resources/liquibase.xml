@@ -760,6 +760,21 @@
 			</column>
 		</createTable>
 	</changeSet>
+	<changeSet id="hnqis_to_shn_config-1.0.0" author="tanvir">
+		<createTable tableName="hnqis_to_shn_config">
+			<column name="config_id" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>			
+			<column name="shn_config_id" type="varchar(500)" />
+			<column name="hnqis_config_id" type="varchar(200)" />
+			<column name="config_type" type="varchar(200)" />
+			<column name="dataset_id" type="varchar(200)" />
+			
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
 	<changeSet author="tanvir" id="dhis_mp_obs_element-1.0.1">
 	 	<addColumn tableName="dhis_mpchoice_obs_element">
 			<column name="form_name" type="varchar(255)" />				

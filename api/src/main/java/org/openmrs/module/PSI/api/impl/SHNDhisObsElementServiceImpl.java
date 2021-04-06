@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.PSI.SHNDhisIndicatorDetails;
+import org.openmrs.module.PSI.HnqisToShnConfigMapping;
 import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 import org.openmrs.module.PSI.api.SHNDhisObsElementService;
@@ -80,6 +81,16 @@ public class SHNDhisObsElementServiceImpl extends BaseOpenmrsService implements 
 	public SHNDhisIndicatorDetails getDhisIndicatorByType(String indicatorType) {
 		// TODO Auto-generated method stub
 		return dao.getDhisIndicatorByType(indicatorType);
+	}
+	public List<HnqisToShnConfigMapping> getAllConfigMappingData() {
+		// TODO Auto-generated method stub
+		return dao.getAllConfigMappingData();
+	}
+
+	@Override
+	public String getAncCountForGovtDHis2(int month, int year) {
+		// TODO Auto-generated method stub
+		return dao.getAncCountForGovtDHis2(month, year);
 	}
 
 }

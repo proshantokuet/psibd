@@ -660,7 +660,7 @@ public class DHISDataConverter {
 			JSONObject event = new JSONObject();
 			//event.put("trackedEntityInstance", "NpKZqkyYZFk");
 			event.put("orgUnit", "cyBOiz4GPdX");
-			event.put("dataSet", "zPaSPZ5vk4n");
+			event.put("dataSet", "BUz5jIThfUA");
 			//event.put("program", DHISMapper.indicatorDataMapper.get("program"));
 			//event.put("programStage", "kqTAymIelcm");
 			//event.put("status", "COMPLETED");
@@ -689,7 +689,7 @@ public class DHISDataConverter {
 //			dataValues.put(fpPermanentMethod);
 			
 			JSONObject calculateAncAllTakenFullCount = new JSONObject();
-			calculateAncAllTakenFullCount.put("dataElement", "CnSwzusr2an");
+			calculateAncAllTakenFullCount.put("dataElement", "fEPrNvauRHU");
 			calculateAncAllTakenFullCount.put("value", shnIndicatorDetailsDTO.getCalculateAncAllTakenFullCount());
 			dataValues.put(calculateAncAllTakenFullCount);
 			

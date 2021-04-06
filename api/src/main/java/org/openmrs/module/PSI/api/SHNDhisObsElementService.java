@@ -5,7 +5,11 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.openmrs.api.OpenmrsService;
+
 import org.openmrs.module.PSI.SHNDhisIndicatorDetails;
+
+import org.openmrs.module.PSI.HnqisToShnConfigMapping;
+
 import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 
@@ -32,4 +36,8 @@ public interface SHNDhisObsElementService extends OpenmrsService {
 	
 	public int getCompletedAncFullCountFromMoneyReceipt();
 	
+	public List<HnqisToShnConfigMapping> getAllConfigMappingData();
+	
+	public String getAncCountForGovtDHis2(int month, int year);
+
 }

@@ -52,6 +52,7 @@
 	 
 	 
 	 <!--  FOr Global Server -->
+	 <!-- <bean id="hnqistoshnListener" class="org.openmrs.module.PSI.web.listener.HnqisToShnListener"></bean> -->
 	 
 	 <!-- <bean id="deleteMoneyReceiptListener" class="org.openmrs.module.PSI.web.listener.DeleteMoneyReceiptAndOthersListener"></bean> -->
 	 
@@ -105,8 +106,9 @@
         
         
         <!--  FOr Global Server -->
-        
+        <!-- <task:scheduled ref="hnqistoshnListener" method="sendData" cron="0 0 2 * * *" /> -->
         <!--  <task:scheduled ref="deleteMoneyReceiptListener" method="sendData" cron="*/55 * * * * *" /> --> 
+        
         
          <!-- FOr GLobal Server End -->
          

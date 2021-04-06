@@ -1,7 +1,12 @@
 package org.openmrs.module.PSI.converter;
 
+import java.util.List;
+
+import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.openmrs.module.PSI.HnqisToShnConfigMapping;
+import org.openmrs.module.PSI.PSIClinicChild;
 import org.apache.commons.lang.StringUtils;
 
 import com.jayway.jsonpath.Configuration;
@@ -107,6 +112,5 @@ public class DhisObsJsonDataConverter {
 	public static Object parseDocument(String IntialJsonDHISArray){
 		 return Configuration.defaultConfiguration().jsonProvider().parse(IntialJsonDHISArray);
 	}
-	
-	
+	 
 }

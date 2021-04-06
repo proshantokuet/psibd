@@ -3,46 +3,42 @@ package org.openmrs.module.PSI.web.listener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
 import org.openmrs.module.PSI.PSIServiceProvision;
-import org.openmrs.module.PSI.SHNDhisEncounterException;
-import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
-import org.openmrs.module.PSI.SHNDhisObsElement;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
-import org.openmrs.module.PSI.api.SHNDhisEncounterExceptionService;
-import org.openmrs.module.PSI.api.SHNDhisObsElementService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
-import org.openmrs.module.PSI.converter.DhisObsEventDataConverter;
-import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
-import com.jayway.jsonpath.JsonPath;
-
+@Service
+@EnableScheduling
+@Configuration
+@EnableAsync
+@Controller
 public class MoneyReceiptFailedListener2 {
 
 	@Autowired

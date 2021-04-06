@@ -3,6 +3,9 @@ package org.openmrs.module.PSI.api.db;
 import java.util.List;
 
 import org.openmrs.module.PSI.SHNDhisIndicatorDetails;
+
+import org.openmrs.module.PSI.HnqisToShnConfigMapping;
+
 import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
 
@@ -27,6 +30,10 @@ public interface SHNDhisObsElementDAO {
 	public int calculatePercentageOfFp();
 	
 	public int getCompletedAncFullCountFromMoneyReceipt();
+	
+	public List<HnqisToShnConfigMapping> getAllConfigMappingData();
+	
+	public String getAncCountForGovtDHis2(int month, int year);
 
 
 }
