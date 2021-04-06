@@ -359,7 +359,7 @@ public class EncounterListner {
 										getDhisEncounterExceptionforEachForms = newDhisEncounterException;
 									}
 									updateEncounterException(getDhisEncounterExceptionforEachForms, postEncounter + "", eventReceordDTO, PSIConstants.CONNECTIONTIMEOUTSTATUS,
-											eventResponse + "", "Dhis2 returns empty import summaries without reference id","",encounterUUid,patientUuid,formsName);
+											eventResponse + "", "Dhis2 returns empty import summaries without reference id",getDhisEncounterExceptionforEachForms.getReferenceId(),encounterUUid,patientUuid,formsName);
 								}
 							}
 						}
@@ -371,7 +371,7 @@ public class EncounterListner {
 							}
 							String errorDetails = errorMessageCreation(eventResponse);
 							updateEncounterException(getDhisEncounterExceptionforEachForms, postEncounter+ "", eventReceordDTO,
-							    PSIConstants.CONNECTIONTIMEOUTSTATUS, eventResponse + "", errorDetails,"",encounterUUid,patientUuid,formsName);
+							    PSIConstants.CONNECTIONTIMEOUTSTATUS, eventResponse + "", errorDetails,getDhisEncounterExceptionforEachForms.getReferenceId(),encounterUUid,patientUuid,formsName);
 						}
 					  }
 					} //loop end
@@ -392,7 +392,7 @@ public class EncounterListner {
 						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 						Context.clearSession();
 						updateEncounterException(geDhisEncounterException, trackEntityInstanceUrl, eventReceordDTO,
-						    PSIConstants.CONNECTIONTIMEOUTSTATUS,trackEntityResponse + "", "No Track Entity Instances found in DHIS2 Containing the patient id provided","",encounterUUid,patientUuid,"");
+						    PSIConstants.CONNECTIONTIMEOUTSTATUS,trackEntityResponse + "", "No Track Entity Instances found in DHIS2 Containing the patient id provided",geDhisEncounterException.getReferenceId(),encounterUUid,patientUuid,geDhisEncounterException.getFormsName());
 					}
 				} 
 				catch (Exception e) {
@@ -406,7 +406,7 @@ public class EncounterListner {
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					Context.clearSession();
 					updateEncounterException(geDhisEncounterException, "Internal Error Occured" + "", eventReceordDTO,
-					    PSIConstants.CONNECTIONTIMEOUTSTATUS, "Please check Error for details" + "", e.toString(),"",encounterUUid,"","");
+					    PSIConstants.CONNECTIONTIMEOUTSTATUS, "Please check Error for details" + "", e.toString(),geDhisEncounterException.getReferenceId(),encounterUUid,geDhisEncounterException.getPatientUuid(),geDhisEncounterException.getFormsName());
 					}
 				  }
 				}
@@ -543,6 +543,10 @@ public class EncounterListner {
 										String importStatus = successResponse.getString("status");
 										if (importStatus.equalsIgnoreCase("SUCCESS")) { 
 											String referenceId = successResponse.getString("reference");
+											if(checkEncounterExistsOrNot == null) {
+												SHNDhisEncounterException shnNewencounter = new SHNDhisEncounterException();
+												updateExceptionForEncounterFailed(shnNewencounter,postEncounter + "", PSIConstants.SUCCESSSTATUS,eventResponse + "","",referenceId,patientUuid,formsName);
+											}
 											updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.SUCCESSSTATUS,eventResponse + "","",referenceId,patientUuid,formsName);
 										}
 										else {
@@ -554,9 +558,13 @@ public class EncounterListner {
 										if (importSummaries.length() != 0) {
 											JSONObject importSummariesObject = importSummaries.getJSONObject(0);
 											String referenceId = importSummariesObject.getString("reference");
+											if(checkEncounterExistsOrNot == null) {
+												SHNDhisEncounterException shnNewencounter = new SHNDhisEncounterException();
+												updateExceptionForEncounterFailed(shnNewencounter,postEncounter + "", PSIConstants.SUCCESSSTATUS,eventResponse + "","",referenceId,patientUuid,formsName);
+											}
 											updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.SUCCESSSTATUS,eventResponse + "","",referenceId,patientUuid,formsName);
 										} else {								
-											updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.FAILEDSTATUS,eventResponse + "","Dhis2 returns empty import summaries without reference id","",patientUuid,formsName);
+											updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.FAILEDSTATUS,eventResponse + "","Dhis2 returns empty import summaries without reference id",shnDhisEncounterException.getReferenceId(),patientUuid,formsName);
 										}
 											
 									}
@@ -564,18 +572,18 @@ public class EncounterListner {
 								else 
 								{
 									String errorDetails = errorMessageCreation(eventResponse);
-									updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.FAILEDSTATUS,eventResponse + "",errorDetails,"",patientUuid,formsName);
+									updateExceptionForEncounterFailed(shnDhisEncounterException,postEncounter + "", PSIConstants.FAILEDSTATUS,eventResponse + "",errorDetails,shnDhisEncounterException.getReferenceId(),patientUuid,formsName);
 								}
 							 }
 							
 							}//loop end
 						}
 						else {
-							updateExceptionForEncounterFailed(shnDhisEncounterException,trackEntityInstanceUrl, PSIConstants.CONNECTIONTIMEOUTSTATUS, trackEntityResponse + "" ,"No Track Entity Instances found in DHIS2 Containing the patient id provided","",patientUuid,"");
+							updateExceptionForEncounterFailed(shnDhisEncounterException,trackEntityInstanceUrl, PSIConstants.CONNECTIONTIMEOUTSTATUS, trackEntityResponse + "" ,"No Track Entity Instances found in DHIS2 Containing the patient id provided",shnDhisEncounterException.getReferenceId(),patientUuid,"");
 						}
 					 } 
 					catch (Exception e) {
-						updateExceptionForEncounterFailed(shnDhisEncounterException,"Internal Error Occured", PSIConstants.FAILEDSTATUS, "Please check Error for details", e.toString(),"","","");
+						updateExceptionForEncounterFailed(shnDhisEncounterException,"Internal Error Occured", PSIConstants.FAILEDSTATUS, "Please check Error for details", e.toString(),shnDhisEncounterException.getReferenceId(),shnDhisEncounterException.getPatientUuid(),shnDhisEncounterException.getFormsName());
 					}
 					
 					}
