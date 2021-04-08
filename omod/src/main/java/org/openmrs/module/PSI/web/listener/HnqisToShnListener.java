@@ -15,12 +15,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmrs.module.PSI.HnqisToShnConfigMapping;
+import org.openmrs.module.PSI.SHNDhisIndicatorDetails;
 import org.openmrs.module.PSI.api.AUHCDhisErrorVisualizeService;
 import org.openmrs.module.PSI.api.SHNDhisObsElementService;
+import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
+import org.openmrs.module.PSI.dto.ShnIndicatorDetailsDTO;
 import org.openmrs.module.PSI.utils.HttpResponse;
 import org.openmrs.module.PSI.utils.HttpUtil;
+import org.openmrs.module.PSI.utils.PSIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -63,6 +67,8 @@ public class HnqisToShnListener {
 	
 	private final String GOVTDHIS2URL = "https://centraldhis.mohfw.gov.bd/dhismohfw/api/29/dataValueSets";
 	
+	private final String DATASETURL = DHIS2BASEURL + "/api/dataValueSets";
+	
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
@@ -91,6 +97,13 @@ public class HnqisToShnListener {
 				sendDataTOGovtDhis2();
 			} catch (Exception e) {
 				// TODO: handle exception
+			}
+			
+			try {
+				sendIndicatorDataToDhis();
+			}
+			catch (Exception e) {
+				
 			}
 		}
 
@@ -524,6 +537,88 @@ public class HnqisToShnListener {
 				e.printStackTrace();
 			}
 		return sentFlag;
+	}
+	
+	public void sendIndicatorDataToDhis() {
+		
+		SHNDhisIndicatorDetails shnDhisIndicatorDetails = null;
+		
+		try {
+//			int calculateCountOfFpConraceptiveMethod = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpConraceptiveMethod();
+//			log.error("calculateCountOfFpConraceptiveMethod" + calculateCountOfFpConraceptiveMethod);
+//	
+//			int calculateCountOfFphypertensionAndDiabetic = Context.getService(SHNDhisObsElementService.class).calculateCountOfFphypertensionAndDiabetic();
+//			log.error("calculateCountOfFphypertensionAndDiabetic" + calculateCountOfFphypertensionAndDiabetic);
+//			
+//			int calculateCountOfFpPermanentMethod = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpPermanentMethod();
+//			log.error("calculateCountOfFpPermanentMethod" + calculateCountOfFpPermanentMethod);
+//			
+//			int calculateCountOfFpAncTakenAtleastOne = Context.getService(SHNDhisObsElementService.class).calculateCountOfFpAncTakenAtleastOne();
+//			log.error("calculateCountOfFpAncTakenAtleastOne" + calculateCountOfFpAncTakenAtleastOne);
+//			
+//			int calculatePercentageOfFp = Context.getService(SHNDhisObsElementService.class).calculatePercentageOfFp();
+//			log.error("calculatePercentageOfFp" + calculatePercentageOfFp);
+			
+			int getCompletedAncFullCountFromMoneyReceipt = Context.getService(SHNDhisObsElementService.class).getCompletedAncFullCountFromMoneyReceipt();
+			log.error("getCompletedAncFullCountFromMoneyReceipt" + getCompletedAncFullCountFromMoneyReceipt);
+			
+			ShnIndicatorDetailsDTO shnIndicatorDetailsDTO = new ShnIndicatorDetailsDTO();
+			
+//			shnIndicatorDetailsDTO.setFpContraceptiveMethod(calculateCountOfFpConraceptiveMethod);
+//			shnIndicatorDetailsDTO.setFpHypertensionAndDiabetic(calculateCountOfFphypertensionAndDiabetic);
+//			shnIndicatorDetailsDTO.setFpPermanentMethod(calculateCountOfFpPermanentMethod);
+//			shnIndicatorDetailsDTO.setFpAncTakenAtleastOne(calculateCountOfFpAncTakenAtleastOne);
+//			shnIndicatorDetailsDTO.setCalculatePercentageOfFp(calculatePercentageOfFp);
+			shnIndicatorDetailsDTO.setCalculateAncAllTakenFullCount(getCompletedAncFullCountFromMoneyReceipt);
+			
+			JSONObject indicatorData = DHISDataConverter.toConvertDhisIndicatorData(shnIndicatorDetailsDTO);
+			log.error("indicatorData" + indicatorData.toString());
+			JSONObject eventResponse = new JSONObject();
+			shnDhisIndicatorDetails = Context.getService(SHNDhisObsElementService.class).getDhisIndicatorByType("INDICATOR");
+				eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", indicatorData, DATASETURL);
+
+					String importStatus = eventResponse.getString("status");
+					if (importStatus.equalsIgnoreCase("SUCCESS")) {
+						log.error("response has SUCCESS" + importStatus);
+						if(shnDhisIndicatorDetails == null) {
+							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
+						}
+						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),DATASETURL,PSIConstants.SUCCESSSTATUS,eventResponse.toString(),"","zPaSPZ5vk4n");
+					}
+					else {
+						log.error("response has not SUCCESS" + importStatus);
+						if(shnDhisIndicatorDetails == null) {
+							shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
+						}
+						updateIndicatorDetailsStatus(shnDhisIndicatorDetails,indicatorData.toString(),DATASETURL,PSIConstants.FAILEDSTATUS,eventResponse.toString(),"Check response for details error","zPaSPZ5vk4n");
+					}
+			}
+	
+		catch (Exception ex) {
+			if(shnDhisIndicatorDetails == null) {
+				shnDhisIndicatorDetails = new SHNDhisIndicatorDetails();
+			}
+			updateIndicatorDetailsStatus(shnDhisIndicatorDetails,"Internal Error Occured",DATASETURL,PSIConstants.FAILEDSTATUS,"Check Error Message for Details",ex.getMessage(),"zPaSPZ5vk4n");
+		}
+	}
+	
+	
+	private void updateIndicatorDetailsStatus(SHNDhisIndicatorDetails shnDhisIndicatorDetails,
+			String postJson,String url, int status,
+			String response, String error,String referenceId) {
+		Context.openSession();
+
+		shnDhisIndicatorDetails.setError(error);
+		shnDhisIndicatorDetails.setPostJson(postJson.toString());
+		shnDhisIndicatorDetails.setUrl(url);
+		shnDhisIndicatorDetails.setStatus(status);
+		shnDhisIndicatorDetails.setResponse(response.toString());
+		shnDhisIndicatorDetails.setDateCreated(new Date());
+		shnDhisIndicatorDetails.setIndicatorType("INDICATOR");
+		shnDhisIndicatorDetails.setReferenceId(referenceId);
+
+		Context.getService(SHNDhisObsElementService.class).saveOrupdate(shnDhisIndicatorDetails);
+		Context.clearSession();
 	}
 	
 }

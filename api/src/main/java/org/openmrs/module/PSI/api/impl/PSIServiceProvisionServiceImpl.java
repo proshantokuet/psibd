@@ -354,6 +354,13 @@ public class PSIServiceProvisionServiceImpl extends BaseOpenmrsService implement
 		// TODO Auto-generated method stub
 		return dao.findByUuid(uuid);
 	}
+
+	@Override
+	public PSIServiceProvision updateCoulumnInServiceProvision(
+			PSIServiceProvision psiServiceProvision) {
+		// TODO Auto-generated method stub
+		return dao.updateCoulumnInServiceProvision(psiServiceProvision);
+	}
 	
 	
 	

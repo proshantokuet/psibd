@@ -132,4 +132,6 @@ public interface PSIServiceProvisionService extends OpenmrsService {
 	
 	public String getDashboardNewClients(SearchFilterRegistrationReport filter);
 	
+	public PSIServiceProvision updateCoulumnInServiceProvision(PSIServiceProvision psiServiceProvision); 
+	
 }

@@ -206,10 +206,11 @@ public class DeleteMoneyReceiptAndOthersListener {
 		List<SHNVoidedMoneyReceiptLog> shnVoidedMoneyReceiptLog = Context.getService(SHNVoidedMoneyReceiptLogService.class).getAllVoidedMoneyReceipt();
 		for (SHNVoidedMoneyReceiptLog shnVoidedMoneyReceiptLogObject : shnVoidedMoneyReceiptLog) {
 			if(shnVoidedMoneyReceiptLogObject != null && !StringUtils.isBlank(shnVoidedMoneyReceiptLogObject.getServiceUuid())) {
-				
+				Boolean successFlag = false;
 //				ArrayList<String> elephantList = new ArrayList<>(Arrays.asList(shnVoidedMoneyReceiptLogObject.getDhisId().split(",")));
 				ArrayList<String> serviceUuidList = new ArrayList<>(Arrays.asList(shnVoidedMoneyReceiptLogObject.getServiceUuid().split(",")));
 				try {
+					
 					for (String serviceUuid : serviceUuidList) {
 						if(!StringUtils.isBlank(serviceUuid)) {
 						log.error("splitted single serviceUuid" + serviceUuid);
@@ -241,11 +242,7 @@ public class DeleteMoneyReceiptAndOthersListener {
 											String importStatus = successResponse.getString("status");
 											if (importStatus.equalsIgnoreCase("SUCCESS")) {
 												log.error("response has SUCCESS" + importStatus);
-												shnVoidedMoneyReceiptLogObject.setVoided(true);
-												Context.openSession();
-												Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedMoneyReceiptLogObject);
-												Context.clearSession();
-		
+												successFlag = true;
 											}
 										}
 									}
@@ -256,9 +253,17 @@ public class DeleteMoneyReceiptAndOthersListener {
 						}
 					  }
 
+
 				} catch (JSONException e) {
+					successFlag = false;
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+			if(successFlag) {
+					shnVoidedMoneyReceiptLogObject.setVoided(true);
+					Context.openSession();
+					Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedMoneyReceiptLogObject);
+					Context.clearSession();
 				}
 			}
 		}

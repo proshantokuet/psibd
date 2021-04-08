@@ -34,7 +34,7 @@ public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	
 	@Override
 	public JSONObject get(String payload, String uuid, String URL) throws JSONException {
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + URL, payload, "admin", "test");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + URL, payload, "superadmin", "Admin@123");
 		return new JSONObject(op.body());
 	}
 	
@@ -52,15 +52,15 @@ public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	
 	@Override
 	public JSONObject getFromRemoteOpenMRS(String payload, String uuid, String URL) throws JSONException {
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "admin",
-		    "test");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "superadmin",
+		    "Admin@123");
 		return new JSONObject(op.body());
 	}
 	
 	@Override
 	public JSONArray getFromRemoteOpenMRSAsArray(String payload, String uuid, String URL) throws JSONException {
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "admin",
-		    "test");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, "superadmin",
+		    "Admin@123");
 		return new JSONArray(op.body());
 	}
 
@@ -68,14 +68,14 @@ public class PSIOpenmrsServiceImpl implements PSIAPIService {
 	public JSONObject postInRemoteOpenMRS(String payload,
 			JSONObject jsonObject, String URL) throws JSONException {
 		// TODO Auto-generated method stub
-		HttpResponse op = HttpUtil.post(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, jsonObject.toString(), "admin", "test");
+		HttpResponse op = HttpUtil.post(HttpUtil.removeEndingSlash(CENTRAL_OPENMRS_BASE_URL) + URL, payload, jsonObject.toString(), "superadmin", "Admin@123");
 		return new JSONObject(op.body());
 	}
 
 	@Override
 	public JSONArray getJsonArray(String payload, String uuid, String URL)
 			throws JSONException {
-		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + URL, payload, "admin","test");
+		HttpResponse op = HttpUtil.get(HttpUtil.removeEndingSlash(OPENMRS_BASE_URL) + URL, payload, "superadmin","Admin@123");
 		return new JSONArray(op.body());
 	}
 	

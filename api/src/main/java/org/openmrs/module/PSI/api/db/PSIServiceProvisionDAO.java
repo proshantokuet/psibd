@@ -144,6 +144,9 @@ public interface PSIServiceProvisionDAO {
 	 
 //	 public String newRegistration(String startDate,String endDate,String code,String collector);
 	 
+	public PSIServiceProvision updateCoulumnInServiceProvision(PSIServiceProvision psiServiceProvision); 
+
+	 
 	
 	
 }

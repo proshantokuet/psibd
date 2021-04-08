@@ -606,6 +606,7 @@ public class MoneyReceiptListener1 {
 	
 	private void updateServiceProvision(PSIServiceProvision psiServiceProvision, String moneyReceiptJson,
 	                                    String referenceId, String getResponse, int statusCode, String URL, int status) {
+		Context.openSession();
 		psiServiceProvision.setField2(moneyReceiptJson);
 		psiServiceProvision.setDhisId(referenceId);
 		psiServiceProvision.setField1(getResponse + "");
@@ -613,8 +614,7 @@ public class MoneyReceiptListener1 {
 		psiServiceProvision.setField3(statusCode);
 		psiServiceProvision.setError("" + URL);
 		psiServiceProvision.setIsSendToDHIS(status);
-		Context.openSession();
-		Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+		Context.getService(PSIServiceProvisionService.class).updateCoulumnInServiceProvision(psiServiceProvision);
 		Context.clearSession();
 		
 	}

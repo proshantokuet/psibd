@@ -2717,4 +2717,22 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		}
 	}
 
+	@Override
+	public PSIServiceProvision updateCoulumnInServiceProvision(
+			PSIServiceProvision psiServiceProvision) {
+		// TODO Auto-generated method stub
+		String updateSql = ""
+				+ "UPDATE openmrs.psi_service_provision set dhis_id = '"+psiServiceProvision.getDhisId()+"',field1 = '"+psiServiceProvision.getField1()+"',field2 = '"+psiServiceProvision.getField2()+"',field3 = "+psiServiceProvision.getField3()+",error = '"+psiServiceProvision.getError()+"',is_send_to_dhis =  "+psiServiceProvision.getIsSendToDHIS()+" "
+				+ " where  spid = "+psiServiceProvision.getSpid()+"";
+		log.error("Print update SQL " + updateSql);
+		
+		try{
+			sessionFactory.getCurrentSession().createSQLQuery(updateSql).executeUpdate();
+		}catch(Exception e){
+
+		}
+		
+		return psiServiceProvision;
+	}
+
 }

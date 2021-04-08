@@ -562,7 +562,7 @@ public class MoneyReceiptFailedListener {
 		psiServiceProvision.setField3(statusCode);
 		psiServiceProvision.setError("" + URL);
 		psiServiceProvision.setIsSendToDHIS(status);
-		Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+		Context.getService(PSIServiceProvisionService.class).updateCoulumnInServiceProvision(psiServiceProvision);
 		Context.clearSession();
 		
 	}
