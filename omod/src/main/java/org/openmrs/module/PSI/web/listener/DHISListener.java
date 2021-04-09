@@ -432,6 +432,12 @@ public class DHISListener {
 				}
 				
 				}
+				else {
+					Context.openSession();
+					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
+					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+					Context.clearSession();
+				}
 			}
 			
 		 }

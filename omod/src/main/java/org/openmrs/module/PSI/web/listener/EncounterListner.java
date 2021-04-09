@@ -409,7 +409,12 @@ public class EncounterListner {
 					    PSIConstants.CONNECTIONTIMEOUTSTATUS, "Please check Error for details" + "", e.toString(),geDhisEncounterException.getReferenceId(),encounterUUid,geDhisEncounterException.getPatientUuid(),geDhisEncounterException.getFormsName());
 					}
 				  }
-				}
+				else {
+					Context.openSession();
+					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+					Context.clearSession();
+				 }
+			}
 		 }
 	
 	 }

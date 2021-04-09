@@ -251,7 +251,7 @@ public class PSIClinicUserRestController extends MainResourceController {
 						findUser.setRoles(roles);
 						log.error("saving updated user" + findUser.getPerson().getPersonId());
 						findUser = Context.getService(UserService.class).saveUser(findUser);
-						
+						log.error("going to find withe user cuid " + cuid);
 						PSIClinicUser pSIClinicUser = Context.getService(PSIClinicUserService.class).findById(cuid);
 						if(pSIClinicUser == null) {
 							synchronized(this) {
@@ -260,21 +260,21 @@ public class PSIClinicUserRestController extends MainResourceController {
 									Context.getService(PSIClinicUserService.class).updateTableAutoIncrementValue(latestClinicUser.getCuid() + 1);
 								}
 							}
+							log.error("intializing new clinic user " + cuid);
 							pSIClinicUser = new PSIClinicUser();
-							pSIClinicUser.setUserName(user.getUsername());
+							pSIClinicUser.setUserName(findUser.getUsername());
 							pSIClinicUser.setEmail(email);
 							pSIClinicUser.setMobile(mobile);
 							pSIClinicUser.setDateCreated(new Date());
 							pSIClinicUser.setCreator(Context.getAuthenticatedUser());
 							pSIClinicUser.setUuid(UUID.randomUUID().toString());
-							log.error("saving psi_clinic" + pSIClinicUser.getCuid());
 							pSIClinicUser.setPsiClinicManagementId(Context.getService(PSIClinicManagementService.class).findById(
 							    clinicId));
-							log.error("getting psi_clinic management id" + pSIClinicUser.getPsiClinicManagementId());
 							PSIClinicUser afterUpdate = Context.getService(PSIClinicUserService.class).saveOrUpdate(pSIClinicUser);
 							Context.getService(PSIClinicUserService.class).updatePrimaryKey(cuid, afterUpdate.getCuid());
 						}
 						else {
+							log.error("cuid found aready" + cuid);
 							pSIClinicUser.setUserName(findUser.getUsername());
 							pSIClinicUser.setEmail(email);
 							pSIClinicUser.setMobile(mobile);

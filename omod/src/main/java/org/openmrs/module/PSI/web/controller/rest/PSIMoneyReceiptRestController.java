@@ -594,7 +594,8 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		String today = dateFormat.format(date);
 		
 		SHNEslipNoGenerate shnEslipNoGenerate = new SHNEslipNoGenerate();
-		
+		//SHNEslipNoGenerate afterSaveSlip = null;
+		synchronized(this) {
 		SHNEslipNoGenerate getLastSlipNoByclinic = Context.getService(PSIUniqueIdGeneratorService.class)
 		        .findEslipByClinicCodeAndDate(today, code);
 		
@@ -608,10 +609,11 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			shnEslipNoGenerate.setGenerateId(getLastSlipNoByclinic.getGenerateId() + 1);
 		}
 		//Context.openSession();
-		SHNEslipNoGenerate afterSaveSlip = Context.getService(PSIUniqueIdGeneratorService.class).saveOrUpdate(shnEslipNoGenerate);
+		  Context.getService(PSIUniqueIdGeneratorService.class).saveOrUpdate(shnEslipNoGenerate);
 		//Context.clearSession();
+		}
 		String serquenceNumber = "";
-		String serquenceNumberToString = afterSaveSlip.getGenerateId() + "";
+		String serquenceNumberToString = shnEslipNoGenerate.getGenerateId() + "";
 		if (serquenceNumberToString.length() == 1) {
 			serquenceNumber += "000" + serquenceNumberToString;
 		} else if (serquenceNumberToString.length() == 2) {

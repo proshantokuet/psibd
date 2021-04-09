@@ -323,8 +323,11 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public PSIClinicUser findLatestClinicUser() {
-		List<PSIClinicUser> user = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIClinicUser  order by cuid desc").setMaxResults(1).list();
+		
+		String clinicUserSql = "select cuid from psi_clinic_user order by cuid desc limit 1";
+		List<PSIClinicUser> user = sessionFactory.getCurrentSession().createSQLQuery(clinicUserSql).addScalar("cuid", StandardBasicTypes.INTEGER)
+									.setResultTransformer(new AliasToBeanResultTransformer(PSIClinicUser.class)).list();
+		        
 		if (user.size() != 0) {
 			return user.get(0);
 		}

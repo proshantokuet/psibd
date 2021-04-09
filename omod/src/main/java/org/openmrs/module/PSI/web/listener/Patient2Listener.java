@@ -414,6 +414,12 @@ public class Patient2Listener {
 				}
 				
 				}
+				else {
+					Context.openSession();
+					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
+					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+					Context.clearSession();
+				}
 			}
 			
 		 }
