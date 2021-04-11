@@ -117,9 +117,9 @@ public class PSIServiceManagementRestController extends MainResourceController {
 			msg = "This code is already taken";
 		} else {
 			try {
-				Context.openSession();
+				//Context.openSession();
 				Context.getService(PSIServiceManagementService.class).saveOrUpdate(psiServiceManagement);
-				Context.clearSession();
+				//Context.clearSession();
 				msg = "";
 			}
 			catch (Exception e) {

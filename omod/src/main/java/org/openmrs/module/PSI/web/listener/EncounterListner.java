@@ -188,8 +188,10 @@ public class EncounterListner {
 		} else {
 			lastReadEncounter = getlastReadEntry.getLastPatientId();
 		}
+		log.error("last encounter id " + getlastReadEntry.getLastPatientId());
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		eventReceordDTOs = Context.getService(PSIDHISMarkerService.class).getEventRecordsOfEncounter(lastReadEncounter);
+		log.error("Encounter Size" + eventReceordDTOs.size());
 		if (eventReceordDTOs.size() != 0 && eventReceordDTOs != null) {
 			
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
@@ -212,6 +214,7 @@ public class EncounterListner {
 					willSent = true;
 				}
 				if(willSent) {
+					log.error("willSent " + willSent);
 				try {  
 					JSONObject EncounterObj = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
 					JSONObject  servicesToPost = new JSONObject();
@@ -410,7 +413,10 @@ public class EncounterListner {
 					}
 				  }
 				else {
+					log.error("will sent false " +  eventReceordDTO.getId());
 					Context.openSession();
+					//increasing dhis marker by the id we find
+					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					Context.clearSession();
 				 }

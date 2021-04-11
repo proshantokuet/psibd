@@ -46,6 +46,7 @@ public class HibernatePSIClinicUserDAO implements PSIClinicUserDAO {
 	@Override
 	public PSIClinicUser saveOrUpdate(PSIClinicUser psiClinicUser) {
 		sessionFactory.getCurrentSession().saveOrUpdate(psiClinicUser);
+		sessionFactory.getCurrentSession().flush();
 		sessionFactory.getCurrentSession().clear();
 		return psiClinicUser;
 	}

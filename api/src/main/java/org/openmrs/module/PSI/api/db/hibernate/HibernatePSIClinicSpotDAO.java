@@ -38,6 +38,7 @@ public class HibernatePSIClinicSpotDAO implements PSIClinicSpotDAO {
 	@Override
 	public PSIClinicSpot saveOrUpdate(PSIClinicSpot psiClinicSpot) {
 		sessionFactory.getCurrentSession().saveOrUpdate(psiClinicSpot);
+		sessionFactory.getCurrentSession().flush();
 		sessionFactory.getCurrentSession().clear();
 		return psiClinicSpot;
 	}

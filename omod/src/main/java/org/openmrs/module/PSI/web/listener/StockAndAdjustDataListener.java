@@ -66,13 +66,12 @@ public class StockAndAdjustDataListener {
 	public void sendStockDataInGLobalServer() {
 		List<PSIClinicManagement> clinic = Context.getService(PSIClinicManagementService.class).getAllClinic();
 		if(clinic.size() > 0) {
-			PSIClinicManagement singleClinic = clinic.get(0);
-			log.error("Stock Clinic primary key "+ singleClinic.getCid());
-			List<SHNStock> getStockList = Context.getService(SHNStockService.class).getAllStockByClinicIdForSync(singleClinic.getCid());
+			for (PSIClinicManagement psiClinicManagement : clinic) {
+			List<SHNStock> getStockList = Context.getService(SHNStockService.class).getAllStockByClinicIdForSync(psiClinicManagement.getCid());
 			log.error("getStockList Size "+ getStockList.size());
 			try {
 				log.error("ENtering in try catch "+ getStockList.size());
-				String stockUrl = "/openmrs/ws/rest/v1/stock/getstock/get-converted-data/" + singleClinic.getCid();
+				String stockUrl = "/openmrs/ws/rest/v1/stock/getstock/get-converted-data/" + psiClinicManagement.getCid();
 				JSONArray stockJsonArray = psiapiServiceFactory.getAPIType("openmrs").getJsonArray("", "", stockUrl);
 				log.error("stockJsonArray Size "+ stockJsonArray.length());
 				for (int i = 0; i < stockJsonArray.length(); i++) {
@@ -91,6 +90,8 @@ public class StockAndAdjustDataListener {
 			}
 
 			log.error("Leaving try catch "+ getStockList.size());
+			
+		   }
 		}
 		
 	}
@@ -98,9 +99,8 @@ public class StockAndAdjustDataListener {
 	public void sendAdjustStockDataInGLobalServer() {
 		List<PSIClinicManagement> clinic = Context.getService(PSIClinicManagementService.class).getAllClinic();
 		if(clinic.size() > 0) {
-			PSIClinicManagement singleClinic = clinic.get(0);
-			log.error("Clinic ID Adjust "+ singleClinic.getClinicId());
-			List<SHNStockAdjust> getStockList = Context.getService(SHNStockService.class).getAllAdjustHistoryForSync(singleClinic.getCid());
+			for (PSIClinicManagement psiClinicManagement : clinic) {
+			List<SHNStockAdjust> getStockList = Context.getService(SHNStockService.class).getAllAdjustHistoryForSync(psiClinicManagement.getCid());
 			log.error("getAdjustStockList Size "+ getStockList.size());
 			try {
 				JSONArray stockJsonArray = new SHNStockAdjustDataConverter().toConvert(getStockList);
@@ -116,6 +116,7 @@ public class StockAndAdjustDataListener {
 				e.printStackTrace();
 			}
 
+		}
 			
 		}
 		 

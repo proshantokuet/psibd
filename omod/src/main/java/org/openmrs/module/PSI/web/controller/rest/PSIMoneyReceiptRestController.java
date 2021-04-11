@@ -251,7 +251,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
 			
-			psiMoneyReceipt.setTimestamp(System.nanoTime());
+			psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
 			
 			/*List<PSIServiceProvision> getProvisions = Context.getService(PSIServiceProvisionService.class)
 			        .findAllByMoneyReceiptId(psiMoneyReceipt.getMid());
@@ -329,7 +329,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				psiServiceProvision.setDateCreated(new Date());
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
 				psiServiceProvision.setSendToDhisFromGlobal(PSIConstants.SUCCESSSTATUS);
-				psiServiceProvision.setTimestamp(System.nanoTime());
+				psiServiceProvision.setTimestamp(System.currentTimeMillis());
 				//psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
 				
 				//Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
@@ -871,7 +871,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			psiMoneyReceipt.setDateCreated(new Date());
 			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
 			
-			psiMoneyReceipt.setTimestamp(System.nanoTime());
+			psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
 
 			Set<PSIServiceProvision> serviceProvisions = new HashSet<PSIServiceProvision>();
 			for (int i = 0; i < services.length(); i++) {
@@ -950,7 +950,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				}				
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
 				
-				psiServiceProvision.setTimestamp(System.nanoTime());
+				psiServiceProvision.setTimestamp(System.currentTimeMillis());
 				//psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
 				
 				//Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
