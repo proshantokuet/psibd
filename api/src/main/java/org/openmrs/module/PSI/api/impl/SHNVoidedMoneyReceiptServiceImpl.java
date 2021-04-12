@@ -44,6 +44,13 @@ public class SHNVoidedMoneyReceiptServiceImpl extends BaseOpenmrsService impleme
 		return dao.getVoidedMoneyReceiptByEslipNo(eslipNo);
 	}
 
+	@Override
+	public SHNVoidedMoneyReceiptLog updateStatusColumnInVoidedMoneyReceipt(
+			String columnName, int status, int voidId) {
+		// TODO Auto-generated method stub
+		return dao.updateStatusColumnInVoidedMoneyReceipt(columnName, status, voidId);
+	}
+
 	
 
 }

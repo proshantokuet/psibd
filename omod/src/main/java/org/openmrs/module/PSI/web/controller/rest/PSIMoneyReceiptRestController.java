@@ -503,14 +503,17 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			SHNVoidedMoneyReceiptLog shnVoidedLog = Context.getService(SHNVoidedMoneyReceiptLogService.class).getVoidedMoneyReceiptByEslipNo(eslipNo);
 			if(shnVoidedLog !=null) {
 				shnVoidedLog.setDateChanged(new Date());
+				int status = 0;
 				if(statusId == 1) {
 					shnVoidedLog.setIsDeleteFromLocal(true);
+					status = 1;
 				}
 				else {
 					shnVoidedLog.setIsDeleteFromLocal(false);
+					status = 0;
 				}
 				
-				Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedLog);
+				Context.getService(SHNVoidedMoneyReceiptLogService.class).updateStatusColumnInVoidedMoneyReceipt("is_delete_from_local", status, shnVoidedLog.getVoidId());
 				deleteMoneyReceiptObject.put("isSuccessfull", true);
 				deleteMoneyReceiptObject.put("e-slip", shnVoidedLog.geteSlipNo());
 				deleteMoneyReceiptObject.put("message", "OK");

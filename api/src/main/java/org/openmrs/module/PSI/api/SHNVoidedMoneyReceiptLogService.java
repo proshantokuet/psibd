@@ -17,4 +17,6 @@ public interface SHNVoidedMoneyReceiptLogService extends OpenmrsService {
 	
 	public SHNVoidedMoneyReceiptLog getVoidedMoneyReceiptByEslipNo(String eslipNo);
 	
+	public SHNVoidedMoneyReceiptLog updateStatusColumnInVoidedMoneyReceipt(String columnName,int status, int voidId);
+	
 }

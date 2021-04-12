@@ -278,6 +278,10 @@ jQuery("#product").change(function (event) {
 	jQuery("#productCode").val(productCode);
 	jQuery("#unitPrice").val(unitPrice);
 	jQuery("#productId").val(productId);
+	jQuery("#productAmount").val("");
+	jQuery("#productQuantity").val("");
+	jQuery("#priceinPackage").val("");
+	jQuery("#unitpriceinPackage").val("");
 	//$(this).parents('td').next().text(selectedText);
 });
 
@@ -303,6 +307,11 @@ jQuery("#service").change(function (event) {
 	jQuery("#serviceCode").val(serviceCode);
 	jQuery("#serviceUnitPrice").val(serviceUnitPrice);
 	jQuery("#serviceId").val(serviceId);
+	jQuery("#serviceAmount").val("");
+	jQuery("#serviceQuantity").val("");
+	jQuery("#servicePriceinPackage").val("");
+	jQuery("#serviceUnitPriceinPackage").val("");
+	
 	//$(this).parents('td').next().text(selectedText);
 });
 

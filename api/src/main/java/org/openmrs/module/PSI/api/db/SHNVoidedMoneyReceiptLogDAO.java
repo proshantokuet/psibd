@@ -13,8 +13,7 @@ public interface SHNVoidedMoneyReceiptLogDAO {
 	List<SHNVoidedMoneyReceiptLog> getAllVoidedMoneyReceipt();
 	
 	public SHNVoidedMoneyReceiptLog getVoidedMoneyReceiptByEslipNo(String eslipNo);
-
-
-
+	
+	public SHNVoidedMoneyReceiptLog updateStatusColumnInVoidedMoneyReceipt(String columnName,int status, int voidId);
 
 }

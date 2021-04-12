@@ -72,4 +72,25 @@ public class HibernateSHNVoidedMoneyReceiptDAO implements SHNVoidedMoneyReceiptL
 		}
 	}
 
+
+	@Override
+	public SHNVoidedMoneyReceiptLog updateStatusColumnInVoidedMoneyReceipt(
+			String columnName, int status, int voidId) {
+		// TODO Auto-generated method stub
+		String updateSql = "update openmrs.shn_voidedmoneyreceipt_log set "+columnName+" = "+status+" where void_id = "+voidId+"";
+		log.error("Print update SQL " + updateSql);
+		
+		try{
+			sessionFactory.getCurrentSession().createSQLQuery(updateSql).executeUpdate();
+		}catch(Exception e){
+
+		}
+		
+		return null;
+		
+	}
+
+
+
+
 }

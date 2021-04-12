@@ -260,9 +260,8 @@ public class DeleteMoneyReceiptAndOthersListener {
 					e.printStackTrace();
 				}
 			if(successFlag) {
-					shnVoidedMoneyReceiptLogObject.setVoided(true);
 					Context.openSession();
-					Context.getService(SHNVoidedMoneyReceiptLogService.class).saveOrUpdate(shnVoidedMoneyReceiptLogObject);
+					Context.getService(SHNVoidedMoneyReceiptLogService.class).updateStatusColumnInVoidedMoneyReceipt("voided", 1, shnVoidedMoneyReceiptLogObject.getVoidId());
 					Context.clearSession();
 				}
 			}
