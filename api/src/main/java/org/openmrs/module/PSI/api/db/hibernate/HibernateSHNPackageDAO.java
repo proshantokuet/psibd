@@ -201,6 +201,8 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 						 .addScalar("voided",StandardBasicTypes.BOOLEAN)
 						 .addScalar("uuid",StandardBasicTypes.STRING)
 						 .addScalar("unitPriceInPackage", StandardBasicTypes.FLOAT)
+						 .addScalar("category",StandardBasicTypes.STRING)
+						 .addScalar("type", StandardBasicTypes.STRING)
 						 .setResultTransformer(new AliasToBeanResultTransformer(SHNPackageReportDTO.class)).list();
 			log.error("Query size" + packageList.size());
 

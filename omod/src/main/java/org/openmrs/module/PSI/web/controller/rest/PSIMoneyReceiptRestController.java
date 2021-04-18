@@ -7,8 +7,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -19,6 +21,7 @@ import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNEslipNoGenerate;
 import org.openmrs.module.PSI.SHNMoneyReceiptPaymentLog;
@@ -28,6 +31,7 @@ import org.openmrs.module.PSI.SHNRefundedMoneyReceiptPaymentLog;
 import org.openmrs.module.PSI.SHNVoidedMoneyReceiptLog;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
+import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.PSIUniqueIdGeneratorService;
 import org.openmrs.module.PSI.api.SHNPackageService;
@@ -35,6 +39,8 @@ import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.api.SHNVoidedMoneyReceiptLogService;
 import org.openmrs.module.PSI.converter.PSIMoneyReceiptConverter;
 import org.openmrs.module.PSI.converter.SHNVoidedMOneyReceiptDataConverter;
+import org.openmrs.module.PSI.dto.ApiResponseModelDTO;
+import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.openmrs.module.PSI.dto.SHNPackageReportDTO;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
@@ -1063,7 +1069,8 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 								JSONObject codeObject = new JSONObject();
 								serviceObject.putOpt("spid", "");
 								itemObject.putOpt("name", shnPackageDetails.getItemName());
-								itemObject.putOpt("category", "");
+								itemObject.putOpt("category", shnPackageDetails.getCategory());
+								itemObject.putOpt("sid", shnPackageDetails.getItemId());
 								serviceObject.putOpt("item", itemObject);
 								serviceObject.putOpt("description", "");
 								codeObject.putOpt("code", shnPackageDetails.getItemCode());
@@ -1076,7 +1083,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 								serviceObject.putOpt("totalAmount", totalAmount);
 								serviceObject.putOpt("netPayable", totalAmount);
 								serviceObject.putOpt("discount", 0);
-								serviceObject.putOpt("type", "PACKAGE");
+								serviceObject.putOpt("type", shnPackageDetails.getType());
 								serviceObject.putOpt("packageUuid", shnPackageDetails.getUuid());
 								extractedJsonArray.put(serviceObject);
 							}
@@ -1222,6 +1229,83 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		}
 		
 		return isSaved;
+	}
+	
+	
+	private ApiResponseModelDTO checkAllProductStockStatus(JSONArray services,int clinicId) {
+		
+		ApiResponseModelDTO apiResponseModelDTO = new ApiResponseModelDTO();
+		apiResponseModelDTO.setStatus(true);
+		try {
+			String stockOutProducts = ""; 
+			List<SHNPackageReportDTO> shnPackageReportDTOs = new ArrayList<SHNPackageReportDTO>();
+			JSONArray productJsonArray = new JSONArray();
+			for (int i = 0; i < services.length(); i++) {
+	
+				JSONObject service = services.getJSONObject(i);
+				String type = "";
+				String code = "";
+				if (service.has("code")) {
+					JSONObject codeObj = new JSONObject(service.getString("code"));
+					code = codeObj.getString("code");
+				}
+				if (service.has("type")) {
+					type = service.getString("type");
+				}
+				
+				if(type.equalsIgnoreCase("PRODUCT")) {
+					productJsonArray.put(service);
+				}
+	
+			}
+			
+			for (int i = 0; i < productJsonArray.length(); i++) {
+				JSONObject productObject = productJsonArray.getJSONObject(i);
+				int productId = 0;
+				int quantity = 0;
+				if (productObject.has("item")) {
+					JSONObject itemObj = new JSONObject(productObject.getString("item"));
+					productId = Integer.parseInt(itemObj.getString("sid"));
+				}
+				if (productObject.has("quantity")) {
+					quantity = Integer.parseInt(productObject.getString("quantity"));
+				}
+				SHNPackageReportDTO shnPackageReportDTO = new SHNPackageReportDTO();
+				shnPackageReportDTO.setItemId(productId);
+				shnPackageReportDTO.setQuantity(quantity);
+				shnPackageReportDTOs.add(shnPackageReportDTO);
+			}
+			
+	        Map<Integer, Integer> productQuantity = shnPackageReportDTOs.stream().collect(
+	        	    Collectors.groupingBy(SHNPackageReportDTO::getItemId,
+	        	      Collectors.summingInt(SHNPackageReportDTO::getQuantity)));
+	        for (Map.Entry<Integer, Integer> entry : productQuantity.entrySet()) {
+	            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+				List<ClinicServiceDTO> productStock = Context.getService(PSIServiceManagementService.class).getProductListAll(clinicId,entry.getKey());
+				if(productStock.size() > 0) {
+					Integer availableStock =   (int) productStock.get(0).getStock();
+					Integer providedStock = entry.getValue();
+					if(providedStock > availableStock) {
+						apiResponseModelDTO.setStatus(false);
+						stockOutProducts = stockOutProducts + productStock.get(0).getName() +"("+productStock.get(0).getCode()+ ")"+",";
+					}
+				}
+	        }
+	        
+			if (stockOutProducts.endsWith(",")) {
+					stockOutProducts = stockOutProducts.substring(0, stockOutProducts.length() - 1);
+				}
+			
+			apiResponseModelDTO.setErrorMessage(stockOutProducts);
+	        
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+			apiResponseModelDTO.setStatus(false);
+			apiResponseModelDTO.setErrorMessage(e.getMessage());
+		}
+		
+		return apiResponseModelDTO;
 	}
 	
 }

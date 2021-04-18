@@ -82,13 +82,13 @@
 
 	</div>
  </div>
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
+ <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jquery.dataTables.js"></script>
+<!-- <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/jszip.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.html5.min.js"></script>
 <script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/pdfmake.min.js"></script>
 <script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/buttons.print.min.js"></script>
-<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/vfs_fonts.js"></script>
+<script defer type="text/javascript" src="/openmrs/moduleResources/PSI/js/vfs_fonts.js"></script> -->
 
 <script type="text/javascript">
 var $jq = jQuery.noConflict();
