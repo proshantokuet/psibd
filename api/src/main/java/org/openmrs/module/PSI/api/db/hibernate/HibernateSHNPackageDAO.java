@@ -240,6 +240,20 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 		}
 	}
 
+	@Override
+	public SHNPackage findpackageByPackageCodeAndClinic(String packageCode,
+			String clinicCode) {
+		List<SHNPackage> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackage where packageCode = :packagecode and clinicCode = :code")
+		        .setString("packagecode", packageCode)
+		        .setString("code", clinicCode)
+		        .list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
 	
 	
 }

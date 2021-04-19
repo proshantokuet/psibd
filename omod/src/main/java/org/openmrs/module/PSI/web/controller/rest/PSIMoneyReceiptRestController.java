@@ -66,6 +66,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 		JSONObject requestBody = new JSONObject(jsonStr);
 		JSONObject moneyReceipt = requestBody.getJSONObject("moneyReceipt");
 		JSONArray services = null;
+		ApiResponseModelDTO apiResponseModelDTO = new ApiResponseModelDTO();
 		int submitted = 0;
 		if (moneyReceipt.has("isComplete")) {
 			submitted = moneyReceipt.getInt("isComplete");
@@ -83,331 +84,358 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 			if(shouldExtractPackage) {
 				log.error("Trying to Extract packages " + shouldExtractPackage);
 				services = extractPackageItems(requestBody.getJSONArray("services"));
+				if(moneyReceipt.has("clinicPrimaryId")) {
+					int clinicPrimaryId = Integer.parseInt(moneyReceipt.getString("clinicPrimaryId"));
+					log.error("primary clinic id " + clinicPrimaryId);
+					apiResponseModelDTO = checkAllProductStockStatus(services,clinicPrimaryId);
+				}
 			}
 			else {
 				services = requestBody.getJSONArray("services");
+				apiResponseModelDTO.setStatus(true);
 			}
 		}
 		else {
 			services = requestBody.getJSONArray("services");
+			apiResponseModelDTO.setStatus(true);
 		}
-		JSONArray payments = requestBody.getJSONArray("payments");
-		PSIMoneyReceipt psiMoneyReceipt = null;
-		int moneyReceiptId = 0;
-		try {
+		log.error("apiResponseModelDTO status " + apiResponseModelDTO.getStatus());
+		if(apiResponseModelDTO.getStatus()) {
 			
-			if (moneyReceipt.has("mid")) {
-				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
-					moneyReceiptId = Integer.parseInt(moneyReceipt.getString("mid"));
-					psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(moneyReceiptId);
-					//psiMoneyReceipt.setMid(moneyReceiptId);
-				}else{
-					psiMoneyReceipt = new PSIMoneyReceipt();
-					psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
-				}
-			}
-			boolean saveToRefundtable = false;
-			
-			if (moneyReceipt.has("paymentStatus")) {
-				String status = moneyReceipt.getString("paymentStatus");
-				if(status.equalsIgnoreCase("REFUND")) {
-					saveToRefundtable = true;
-				}
-			}
-			boolean isSaveTORefundSucess = false;
-			if(saveToRefundtable) {
-				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
-					isSaveTORefundSucess = saveRefundMoneyReceiptData(psiMoneyReceipt);
-					//isSaveTORefundSucess = true;
-				}
-			}
-			if (moneyReceipt.has("patientName")) {
-				psiMoneyReceipt.setPatientName(moneyReceipt.getString("patientName"));
-			}
-			if (moneyReceipt.has("session")) {
-				psiMoneyReceipt.setSession(moneyReceipt.getString("session"));
-			}
-			if (moneyReceipt.has("other")) {
-				psiMoneyReceipt.setOthers(moneyReceipt.getString("other"));
-			}
-			
-			if (moneyReceipt.has("patientUuid")) {
-				psiMoneyReceipt.setPatientUuid(moneyReceipt.getString("patientUuid"));
-			}
-			
-			if (moneyReceipt.has("uic")) {
-				psiMoneyReceipt.setUic(moneyReceipt.getString("uic"));
-			}
-			
-			if (moneyReceipt.has("contact")) {
-				psiMoneyReceipt.setContact(moneyReceipt.getString("contact"));
-			}
-			
-			if (moneyReceipt.has("dob")) {
-				psiMoneyReceipt.setDob(yyyyMMdd.parse(moneyReceipt.getString("dob")));
-			}
-			
-			if (moneyReceipt.has("address")) {
-				psiMoneyReceipt.setAddress(moneyReceipt.getString("address"));
-			}
-			if (moneyReceipt.has("clinicName")) {
-				psiMoneyReceipt.setClinicName(moneyReceipt.getString("clinicName"));
-			}
-			
-			if (moneyReceipt.has("clinicCode")) {
-				psiMoneyReceipt.setClinicCode(moneyReceipt.getString("clinicCode"));
-			}
-			if (moneyReceipt.has("sateliteClinicId")) {
-				psiMoneyReceipt.setSateliteClinicId(moneyReceipt.getString("sateliteClinicId"));
-			}
-			
-			if (moneyReceipt.has("teamNo")) {
-				psiMoneyReceipt.setTeamNo(moneyReceipt.getString("teamNo"));
-			}
-			
-			if (moneyReceipt.has("moneyReceiptDate")) {
-				psiMoneyReceipt.setMoneyReceiptDate(dateFormatTwentyFourHour.parse(moneyReceipt.getString("moneyReceiptDate")));
-			}
-			
-			if (moneyReceipt.has("reference")) {
-				psiMoneyReceipt.setReference(moneyReceipt.getString("reference"));
-			}
-			
-			if (moneyReceipt.has("referenceId")) {
-				psiMoneyReceipt.setReferenceId(moneyReceipt.getString("referenceId"));
-			}
-			if (moneyReceipt.has("shift")) {
-				psiMoneyReceipt.setShift(moneyReceipt.getString("shift"));
-			}
-			
-			if (moneyReceipt.has("servicePoint")) {
-				psiMoneyReceipt.setServicePoint(moneyReceipt.getString("servicePoint"));
-			}
-			
-			if (moneyReceipt.has("session")) {
-				psiMoneyReceipt.setSession(moneyReceipt.getString("session"));
-			}
-			
-			if (moneyReceipt.has("other")) {
-				psiMoneyReceipt.setOthers(moneyReceipt.getString("other"));
-			}
-			if (moneyReceipt.has("cspId")) {
-				psiMoneyReceipt.setCspId(moneyReceipt.getString("cspId"));
-			}
-			
-			if (moneyReceipt.has("wealth")) {
-				psiMoneyReceipt.setWealth(moneyReceipt.getString("wealth"));
-			}
-			
-			if (moneyReceipt.has("orgUnit")) {
-				psiMoneyReceipt.setOrgUnit(moneyReceipt.getString("orgUnit"));
-			}
-			
-			if (moneyReceipt.has("gender")) {
-				psiMoneyReceipt.setGender(moneyReceipt.getString("gender"));
-			}
-			
-			if (moneyReceipt.has("slipNo")) {
-				psiMoneyReceipt.setSlipNo(moneyReceipt.getString("slipNo"));
-			}
-			if (moneyReceipt.has("clinicType")) {
-				psiMoneyReceipt.setClinicType(moneyReceipt.getString("clinicType"));
-			}
-			
-			if (moneyReceipt.has("dataCollector")) {
-				JSONObject designationObj = new JSONObject(moneyReceipt.getString("dataCollector"));
-				psiMoneyReceipt.setDesignation(designationObj.getString("designation"));
-				psiMoneyReceipt.setDataCollector(designationObj.getString("username"));
-			}
-			if (moneyReceipt.has("totalAmount")) {
-				psiMoneyReceipt.setTotalAmount(Float.parseFloat(moneyReceipt.getString("totalAmount")));
-			}
-			
-			if (moneyReceipt.has("totalDiscount")) {
-				psiMoneyReceipt.setTotalDiscount(Float.parseFloat(moneyReceipt.getString("totalDiscount")));
-			}
-			
-			if (moneyReceipt.has("patientRegisteredDate")) {
-				psiMoneyReceipt.setPatientRegisteredDate(yyyyMMdd.parse(moneyReceipt.getString("patientRegisteredDate")));
-			}
-			
-			if (moneyReceipt.has("isComplete")) {
-				psiMoneyReceipt.setIsComplete(moneyReceipt.getInt("isComplete"));
-			}
-			
-			if (moneyReceipt.has("mid")) {
-				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
-					String generatedEslip = editGeneratedEslipNo(psiMoneyReceipt.getServicePoint(), psiMoneyReceipt.getSateliteClinicId(), psiMoneyReceipt.getCspId(), psiMoneyReceipt.getEslipNo());
-					psiMoneyReceipt.setEslipNo(generatedEslip);
-				}
-				else{
-					String generatedEslip = generateEslipNo(psiMoneyReceipt.getServicePoint(), psiMoneyReceipt.getSateliteClinicId(), psiMoneyReceipt.getCspId(), psiMoneyReceipt.getClinicCode());
-					psiMoneyReceipt.setEslipNo(generatedEslip);
-				}
-			}
-			
-			if (moneyReceipt.has("dueAmount")) {
-				psiMoneyReceipt.setDueAmount(Float.parseFloat(moneyReceipt.getString("dueAmount")));
-			}
-			
-			if (moneyReceipt.has("overallDiscount")) {
-				psiMoneyReceipt.setOverallDiscount(Float.parseFloat(moneyReceipt.getString("overallDiscount")));
-			}
-			
-			psiMoneyReceipt.setDateCreated(new Date());
-			psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
-			
-			psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
-			
-			/*List<PSIServiceProvision> getProvisions = Context.getService(PSIServiceProvisionService.class)
-			        .findAllByMoneyReceiptId(psiMoneyReceipt.getMid());
-			for (PSIServiceProvision psiServiceProvision : getProvisions) {
-				Context.getService(PSIServiceProvisionService.class).delete(psiServiceProvision.getSpid());
-			}*/
-			//psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
-			
-			Set<PSIServiceProvision> serviceProvisions = new HashSet<PSIServiceProvision>();
-			for (int i = 0; i < services.length(); i++) {
-				PSIServiceProvision psiServiceProvision = new PSIServiceProvision();
-				JSONObject service = services.getJSONObject(i);
-				if (service.has("spid")) {
-					if (!service.getString("spid").equalsIgnoreCase("")) {
-						psiServiceProvision = Context.getService(PSIServiceProvisionService.class).findById(Integer.parseInt(service.getString("spid")));
-						//psiServiceProvision.setSpid(Integer.parseInt(service.getString("spid")));
+			JSONArray payments = requestBody.getJSONArray("payments");
+			PSIMoneyReceipt psiMoneyReceipt = null;
+			int moneyReceiptId = 0;
+			try {
+				
+				if (moneyReceipt.has("mid")) {
+					if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
+						moneyReceiptId = Integer.parseInt(moneyReceipt.getString("mid"));
+						psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(moneyReceiptId);
+						//psiMoneyReceipt.setMid(moneyReceiptId);
 					}else{
-						psiServiceProvision.setUuid(UUID.randomUUID().toString());
+						psiMoneyReceipt = new PSIMoneyReceipt();
+						psiMoneyReceipt.setUuid(UUID.randomUUID().toString());
 					}
 				}
-				if (service.has("item")) {
-					JSONObject itemObj = new JSONObject(service.getString("item"));
-					psiServiceProvision.setItem(itemObj.getString("name"));
-					psiServiceProvision.setCategory(itemObj.getString("category"));
+				boolean saveToRefundtable = false;
+				
+				if (moneyReceipt.has("paymentStatus")) {
+					String status = moneyReceipt.getString("paymentStatus");
+					if(status.equalsIgnoreCase("REFUND")) {
+						saveToRefundtable = true;
+					}
 				}
-				if (service.has("description")) {
-					psiServiceProvision.setDescription(service.getString("description"));
+				boolean isSaveTORefundSucess = false;
+				if(saveToRefundtable) {
+					if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
+						isSaveTORefundSucess = saveRefundMoneyReceiptData(psiMoneyReceipt);
+						//isSaveTORefundSucess = true;
+					}
 				}
-				if (service.has("code")) {
-					JSONObject codeObj = new JSONObject(service.getString("code"));
-					psiServiceProvision.setCode(codeObj.getString("code"));
+				if (moneyReceipt.has("patientName")) {
+					psiMoneyReceipt.setPatientName(moneyReceipt.getString("patientName"));
 				}
-				if (service.has("category")) {
-					psiServiceProvision.setCategory(service.getString("category"));
+				if (moneyReceipt.has("session")) {
+					psiMoneyReceipt.setSession(moneyReceipt.getString("session"));
 				}
-				if (service.has("provider")) {
-					psiServiceProvision.setProvider(service.getString("provider"));
-				}
-				if (service.has("unitCost")) {
-					psiServiceProvision.setUnitCost(Float.parseFloat(service.getString("unitCost")));
-				}
-				if (service.has("quantity")) {
-					psiServiceProvision.setQuantity(Integer.parseInt(service.getString("quantity")));
-				}
-				if (service.has("totalAmount")) {
-					psiServiceProvision.setTotalAmount(Float.parseFloat(service.getString("totalAmount")));
+				if (moneyReceipt.has("other")) {
+					psiMoneyReceipt.setOthers(moneyReceipt.getString("other"));
 				}
 				
-				if (service.has("discount")) {
-					psiServiceProvision.setDiscount(Float.parseFloat(service.getString("discount")));
+				if (moneyReceipt.has("patientUuid")) {
+					psiMoneyReceipt.setPatientUuid(moneyReceipt.getString("patientUuid"));
 				}
-				if (service.has("netPayable")) {
-					psiServiceProvision.setNetPayable(Float.parseFloat(service.getString("netPayable")));
+				
+				if (moneyReceipt.has("uic")) {
+					psiMoneyReceipt.setUic(moneyReceipt.getString("uic"));
 				}
-				if (service.has("type")) {
-					psiServiceProvision.setServiceType(service.getString("type"));
+				
+				if (moneyReceipt.has("contact")) {
+					psiMoneyReceipt.setContact(moneyReceipt.getString("contact"));
 				}
-				if (service.has("packageUuid")) {
-					psiServiceProvision.setPackageUuid(service.getString("packageUuid"));
+				
+				if (moneyReceipt.has("dob")) {
+					psiMoneyReceipt.setDob(yyyyMMdd.parse(moneyReceipt.getString("dob")));
+				}
+				
+				if (moneyReceipt.has("address")) {
+					psiMoneyReceipt.setAddress(moneyReceipt.getString("address"));
+				}
+				if (moneyReceipt.has("clinicName")) {
+					psiMoneyReceipt.setClinicName(moneyReceipt.getString("clinicName"));
+				}
+				
+				if (moneyReceipt.has("clinicCode")) {
+					psiMoneyReceipt.setClinicCode(moneyReceipt.getString("clinicCode"));
+				}
+				if (moneyReceipt.has("sateliteClinicId")) {
+					psiMoneyReceipt.setSateliteClinicId(moneyReceipt.getString("sateliteClinicId"));
+				}
+				
+				if (moneyReceipt.has("teamNo")) {
+					psiMoneyReceipt.setTeamNo(moneyReceipt.getString("teamNo"));
 				}
 				
 				if (moneyReceipt.has("moneyReceiptDate")) {
-					psiServiceProvision.setMoneyReceiptDate(dateFormatTwentyFourHour.parse(moneyReceipt.getString("moneyReceiptDate")));
+					psiMoneyReceipt.setMoneyReceiptDate(dateFormatTwentyFourHour.parse(moneyReceipt.getString("moneyReceiptDate")));
 				}
-				if (moneyReceipt.has("patientUuid")) {
-					psiServiceProvision.setPatientUuid(moneyReceipt.getString("patientUuid"));
+				
+				if (moneyReceipt.has("reference")) {
+					psiMoneyReceipt.setReference(moneyReceipt.getString("reference"));
 				}
+				
+				if (moneyReceipt.has("referenceId")) {
+					psiMoneyReceipt.setReferenceId(moneyReceipt.getString("referenceId"));
+				}
+				if (moneyReceipt.has("shift")) {
+					psiMoneyReceipt.setShift(moneyReceipt.getString("shift"));
+				}
+				
+				if (moneyReceipt.has("servicePoint")) {
+					psiMoneyReceipt.setServicePoint(moneyReceipt.getString("servicePoint"));
+				}
+				
+				if (moneyReceipt.has("session")) {
+					psiMoneyReceipt.setSession(moneyReceipt.getString("session"));
+				}
+				
+				if (moneyReceipt.has("other")) {
+					psiMoneyReceipt.setOthers(moneyReceipt.getString("other"));
+				}
+				if (moneyReceipt.has("cspId")) {
+					psiMoneyReceipt.setCspId(moneyReceipt.getString("cspId"));
+				}
+				
+				if (moneyReceipt.has("wealth")) {
+					psiMoneyReceipt.setWealth(moneyReceipt.getString("wealth"));
+				}
+				
+				if (moneyReceipt.has("orgUnit")) {
+					psiMoneyReceipt.setOrgUnit(moneyReceipt.getString("orgUnit"));
+				}
+				
+				if (moneyReceipt.has("gender")) {
+					psiMoneyReceipt.setGender(moneyReceipt.getString("gender"));
+				}
+				
+				if (moneyReceipt.has("slipNo")) {
+					psiMoneyReceipt.setSlipNo(moneyReceipt.getString("slipNo"));
+				}
+				if (moneyReceipt.has("clinicType")) {
+					psiMoneyReceipt.setClinicType(moneyReceipt.getString("clinicType"));
+				}
+				
+				if (moneyReceipt.has("dataCollector")) {
+					JSONObject designationObj = new JSONObject(moneyReceipt.getString("dataCollector"));
+					psiMoneyReceipt.setDesignation(designationObj.getString("designation"));
+					psiMoneyReceipt.setDataCollector(designationObj.getString("username"));
+				}
+				if (moneyReceipt.has("totalAmount")) {
+					psiMoneyReceipt.setTotalAmount(Float.parseFloat(moneyReceipt.getString("totalAmount")));
+				}
+				
+				if (moneyReceipt.has("totalDiscount")) {
+					psiMoneyReceipt.setTotalDiscount(Float.parseFloat(moneyReceipt.getString("totalDiscount")));
+				}
+				
+				if (moneyReceipt.has("patientRegisteredDate")) {
+					psiMoneyReceipt.setPatientRegisteredDate(yyyyMMdd.parse(moneyReceipt.getString("patientRegisteredDate")));
+				}
+				
 				if (moneyReceipt.has("isComplete")) {
-					psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
-				}
-				if (service.has("financialDiscount")) {
-					psiServiceProvision.setFinancialDiscount(Float.parseFloat(service.getString("financialDiscount")));
-				}
-				psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
-				psiServiceProvision.setDateCreated(new Date());
-				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
-				psiServiceProvision.setSendToDhisFromGlobal(PSIConstants.SUCCESSSTATUS);
-				psiServiceProvision.setTimestamp(System.currentTimeMillis());
-				//psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
-				
-				//Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
-				serviceProvisions.add(psiServiceProvision);
-			}
-			
-			psiMoneyReceipt.setServices(serviceProvisions);
-			Set<SHNMoneyReceiptPaymentLog> paymentsList = null;
-			if (moneyReceipt.has("mid")) {
-				if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
-					paymentsList = psiMoneyReceipt.getPayments();
-				}
-				else{
-					paymentsList = new HashSet<SHNMoneyReceiptPaymentLog>();
-				}
-			}
-			
-			for (int i = 0; i < payments.length(); i++) {
-				SHNMoneyReceiptPaymentLog paymentObject = new SHNMoneyReceiptPaymentLog();
-				JSONObject paymentJsonObj = payments.getJSONObject(i);
-
-				if (paymentJsonObj.has("receiveDate")) {
-
-					paymentObject.setReceiveDate(dateFormatTwentyFourHour.parse(paymentJsonObj.getString("receiveDate")));
-				}
-				if (paymentJsonObj.has("receiveAmount")) {
-					paymentObject.setReceiveAmount(Float.parseFloat(paymentJsonObj.getString("receiveAmount")));
+					psiMoneyReceipt.setIsComplete(moneyReceipt.getInt("isComplete"));
 				}
 				
-				paymentObject.setDateCreated(new Date());
-				paymentObject.setEslipNo(psiMoneyReceipt.getEslipNo());
-				paymentObject.setCreator(Context.getAuthenticatedUser());
-				paymentObject.setUuid(UUID.randomUUID().toString());
-				paymentObject.setPsiMoneyReceiptId(psiMoneyReceipt);
-				paymentsList.add(paymentObject);
-			}
-			psiMoneyReceipt.setPayments(paymentsList);
-
-			if(saveToRefundtable && isSaveTORefundSucess || !saveToRefundtable && !isSaveTORefundSucess) {
-				psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
 				if (moneyReceipt.has("mid")) {
 					if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
-						Context.getService(PSIServiceProvisionService.class).deleteByPatientUuidAndMoneyReceiptIdNull(moneyReceipt.getString("patientUuid"));
+						String generatedEslip = editGeneratedEslipNo(psiMoneyReceipt.getServicePoint(), psiMoneyReceipt.getSateliteClinicId(), psiMoneyReceipt.getCspId(), psiMoneyReceipt.getEslipNo());
+						psiMoneyReceipt.setEslipNo(generatedEslip);
+					}
+					else{
+						String generatedEslip = generateEslipNo(psiMoneyReceipt.getServicePoint(), psiMoneyReceipt.getSateliteClinicId(), psiMoneyReceipt.getCspId(), psiMoneyReceipt.getClinicCode());
+						psiMoneyReceipt.setEslipNo(generatedEslip);
 					}
 				}
 				
-				if(saveToRefundtable && isSaveTORefundSucess) {
-					if(psiMoneyReceipt.getIsComplete() == 1) {
-						// change stock after refunded
-						PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findByClinicId(psiMoneyReceipt.getClinicCode());
-						Context.getService(SHNStockService.class).stockUpdateAfterRefund(psiMoneyReceipt.getEslipNo(), psiClinicManagement.getClinicId(), psiClinicManagement.getCid());
+				if (moneyReceipt.has("dueAmount")) {
+					psiMoneyReceipt.setDueAmount(Float.parseFloat(moneyReceipt.getString("dueAmount")));
+				}
+				
+				if (moneyReceipt.has("overallDiscount")) {
+					psiMoneyReceipt.setOverallDiscount(Float.parseFloat(moneyReceipt.getString("overallDiscount")));
+				}
+				
+				psiMoneyReceipt.setDateCreated(new Date());
+				psiMoneyReceipt.setCreator(Context.getAuthenticatedUser());
+				
+				psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
+				
+				/*List<PSIServiceProvision> getProvisions = Context.getService(PSIServiceProvisionService.class)
+				        .findAllByMoneyReceiptId(psiMoneyReceipt.getMid());
+				for (PSIServiceProvision psiServiceProvision : getProvisions) {
+					Context.getService(PSIServiceProvisionService.class).delete(psiServiceProvision.getSpid());
+				}*/
+				//psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+				
+				Set<PSIServiceProvision> serviceProvisions = new HashSet<PSIServiceProvision>();
+				for (int i = 0; i < services.length(); i++) {
+					PSIServiceProvision psiServiceProvision = new PSIServiceProvision();
+					JSONObject service = services.getJSONObject(i);
+					if (service.has("spid")) {
+						if (!service.getString("spid").equalsIgnoreCase("")) {
+							psiServiceProvision = Context.getService(PSIServiceProvisionService.class).findById(Integer.parseInt(service.getString("spid")));
+							//psiServiceProvision.setSpid(Integer.parseInt(service.getString("spid")));
+						}else{
+							psiServiceProvision.setUuid(UUID.randomUUID().toString());
+						}
+					}
+					if (service.has("item")) {
+						JSONObject itemObj = new JSONObject(service.getString("item"));
+						psiServiceProvision.setItem(itemObj.getString("name"));
+						psiServiceProvision.setCategory(itemObj.getString("category"));
+					}
+					if (service.has("description")) {
+						psiServiceProvision.setDescription(service.getString("description"));
+					}
+					if (service.has("code")) {
+						JSONObject codeObj = new JSONObject(service.getString("code"));
+						psiServiceProvision.setCode(codeObj.getString("code"));
+					}
+					if (service.has("category")) {
+						psiServiceProvision.setCategory(service.getString("category"));
+					}
+					if (service.has("provider")) {
+						psiServiceProvision.setProvider(service.getString("provider"));
+					}
+					if (service.has("unitCost")) {
+						psiServiceProvision.setUnitCost(Float.parseFloat(service.getString("unitCost")));
+					}
+					if (service.has("quantity")) {
+						psiServiceProvision.setQuantity(Integer.parseInt(service.getString("quantity")));
+					}
+					if (service.has("totalAmount")) {
+						psiServiceProvision.setTotalAmount(Float.parseFloat(service.getString("totalAmount")));
+					}
+					
+					if (service.has("discount")) {
+						psiServiceProvision.setDiscount(Float.parseFloat(service.getString("discount")));
+					}
+					if (service.has("netPayable")) {
+						psiServiceProvision.setNetPayable(Float.parseFloat(service.getString("netPayable")));
+					}
+					if (service.has("type")) {
+						psiServiceProvision.setServiceType(service.getString("type"));
+					}
+					if (service.has("packageUuid")) {
+						psiServiceProvision.setPackageUuid(service.getString("packageUuid"));
+					}
+					
+					if (moneyReceipt.has("moneyReceiptDate")) {
+						psiServiceProvision.setMoneyReceiptDate(dateFormatTwentyFourHour.parse(moneyReceipt.getString("moneyReceiptDate")));
+					}
+					if (moneyReceipt.has("patientUuid")) {
+						psiServiceProvision.setPatientUuid(moneyReceipt.getString("patientUuid"));
+					}
+					if (moneyReceipt.has("isComplete")) {
+						psiServiceProvision.setIsComplete(moneyReceipt.getInt("isComplete"));
+					}
+					if (service.has("financialDiscount")) {
+						psiServiceProvision.setFinancialDiscount(Float.parseFloat(service.getString("financialDiscount")));
+					}
+					psiServiceProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
+					psiServiceProvision.setDateCreated(new Date());
+					psiServiceProvision.setCreator(Context.getAuthenticatedUser());
+					psiServiceProvision.setSendToDhisFromGlobal(PSIConstants.SUCCESSSTATUS);
+					psiServiceProvision.setTimestamp(System.currentTimeMillis());
+					//psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
+					
+					//Context.getService(PSIServiceProvisionService.class).saveOrUpdate(psiServiceProvision);
+					serviceProvisions.add(psiServiceProvision);
+				}
+				
+				psiMoneyReceipt.setServices(serviceProvisions);
+				Set<SHNMoneyReceiptPaymentLog> paymentsList = null;
+				if (moneyReceipt.has("mid")) {
+					if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
+						paymentsList = psiMoneyReceipt.getPayments();
+					}
+					else{
+						paymentsList = new HashSet<SHNMoneyReceiptPaymentLog>();
 					}
 				}
-				if(!saveToRefundtable && !isSaveTORefundSucess) {
-					if(psiMoneyReceipt.getIsComplete() == 1) {
-						
-						// change stock after money receipt confirmed
-						Context.getService(SHNStockService.class).updateStockByEarliestExpiryDate(psiMoneyReceipt.getEslipNo(), psiMoneyReceipt.getClinicCode());
+				
+				for (int i = 0; i < payments.length(); i++) {
+					SHNMoneyReceiptPaymentLog paymentObject = new SHNMoneyReceiptPaymentLog();
+					JSONObject paymentJsonObj = payments.getJSONObject(i);
+	
+					if (paymentJsonObj.has("receiveDate")) {
+	
+						paymentObject.setReceiveDate(dateFormatTwentyFourHour.parse(paymentJsonObj.getString("receiveDate")));
+					}
+					if (paymentJsonObj.has("receiveAmount")) {
+						paymentObject.setReceiveAmount(Float.parseFloat(paymentJsonObj.getString("receiveAmount")));
+					}
+					
+					paymentObject.setDateCreated(new Date());
+					paymentObject.setEslipNo(psiMoneyReceipt.getEslipNo());
+					paymentObject.setCreator(Context.getAuthenticatedUser());
+					paymentObject.setUuid(UUID.randomUUID().toString());
+					paymentObject.setPsiMoneyReceiptId(psiMoneyReceipt);
+					paymentsList.add(paymentObject);
+				}
+				psiMoneyReceipt.setPayments(paymentsList);
+	
+				if(saveToRefundtable && isSaveTORefundSucess || !saveToRefundtable && !isSaveTORefundSucess) {
+					psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+					if (moneyReceipt.has("mid")) {
+						if (!moneyReceipt.getString("mid").equalsIgnoreCase("")) {
+							Context.getService(PSIServiceProvisionService.class).deleteByPatientUuidAndMoneyReceiptIdNull(moneyReceipt.getString("patientUuid"));
+						}
+					}
+					
+					if(saveToRefundtable && isSaveTORefundSucess) {
+						if(psiMoneyReceipt.getIsComplete() == 1) {
+							// change stock after refunded
+							PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findByClinicId(psiMoneyReceipt.getClinicCode());
+							Context.getService(SHNStockService.class).stockUpdateAfterRefund(psiMoneyReceipt.getEslipNo(), psiClinicManagement.getClinicId(), psiClinicManagement.getCid());
+						}
+					}
+					if(!saveToRefundtable && !isSaveTORefundSucess) {
+						if(psiMoneyReceipt.getIsComplete() == 1) {
+							
+							// change stock after money receipt confirmed
+							Context.getService(SHNStockService.class).updateStockByEarliestExpiryDate(psiMoneyReceipt.getEslipNo(), psiMoneyReceipt.getClinicCode());
+						}
 					}
 				}
+				else {
+					JSONObject responseObject = new JSONObject();
+					responseObject.put("status", false);
+					responseObject.put("message", "Refund Table Data Could not Be saved");	
+					return new ResponseEntity<String>(responseObject.toString(), HttpStatus.OK);
+				}
+				
 			}
-			else{
-				return new ResponseEntity<String>("Refund Table Data Could not Be saved", HttpStatus.INTERNAL_SERVER_ERROR);
+			catch (Exception e) {
+				JSONObject responseObject = new JSONObject();
+				responseObject.put("status", false);
+				responseObject.put("message", e.getMessage().toString());	
+				return new ResponseEntity<String>(responseObject.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+			JSONObject responseObject = new JSONObject();
+			responseObject.put("status", apiResponseModelDTO.getStatus());
+			apiResponseModelDTO.setSuccessMessage("Successfully Saved");
+			responseObject.put("message", apiResponseModelDTO.getSuccessMessage());	
+			return new ResponseEntity<String>(responseObject.toString(), HttpStatus.OK);
+		}
+		else {
 			
+			JSONObject responseObject = new JSONObject();
+			responseObject.put("status", apiResponseModelDTO.getStatus());
+			responseObject.put("message", apiResponseModelDTO.getErrorMessage());
+			log.error("building else condition json object " + responseObject.toString());
+			return new ResponseEntity<String>(responseObject.toString(), HttpStatus.OK);
 		}
-		catch (Exception e) {
-
-			return new ResponseEntity<String>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-		return new ResponseEntity<String>(psiMoneyReceipt.getMid() + "", HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
@@ -1233,11 +1261,11 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 	
 	
 	private ApiResponseModelDTO checkAllProductStockStatus(JSONArray services,int clinicId) {
-		
+		log.error("ENtered to check stock " + services.length());
 		ApiResponseModelDTO apiResponseModelDTO = new ApiResponseModelDTO();
 		apiResponseModelDTO.setStatus(true);
 		try {
-			String stockOutProducts = ""; 
+			String stockOutProducts = "Stock not available. "; 
 			List<SHNPackageReportDTO> shnPackageReportDTOs = new ArrayList<SHNPackageReportDTO>();
 			JSONArray productJsonArray = new JSONArray();
 			for (int i = 0; i < services.length(); i++) {
@@ -1258,7 +1286,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 				}
 	
 			}
-			
+			log.error("product array size " + productJsonArray.length());
 			for (int i = 0; i < productJsonArray.length(); i++) {
 				JSONObject productObject = productJsonArray.getJSONObject(i);
 				int productId = 0;
@@ -1279,12 +1307,17 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 	        Map<Integer, Integer> productQuantity = shnPackageReportDTOs.stream().collect(
 	        	    Collectors.groupingBy(SHNPackageReportDTO::getItemId,
 	        	      Collectors.summingInt(SHNPackageReportDTO::getQuantity)));
+			log.error("After grouping column " + productQuantity.toString());
+
 	        for (Map.Entry<Integer, Integer> entry : productQuantity.entrySet()) {
 	            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
 				List<ClinicServiceDTO> productStock = Context.getService(PSIServiceManagementService.class).getProductListAll(clinicId,entry.getKey());
+				log.error("productStock size " + productStock.size());
 				if(productStock.size() > 0) {
 					Integer availableStock =   (int) productStock.get(0).getStock();
+					log.error("availableStock " + availableStock);
 					Integer providedStock = entry.getValue();
+					log.error("providedStock " + providedStock);
 					if(providedStock > availableStock) {
 						apiResponseModelDTO.setStatus(false);
 						stockOutProducts = stockOutProducts + productStock.get(0).getName() +"("+productStock.get(0).getCode()+ ")"+",";

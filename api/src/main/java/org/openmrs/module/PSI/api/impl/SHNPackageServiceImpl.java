@@ -101,4 +101,11 @@ public class SHNPackageServiceImpl extends BaseOpenmrsService implements SHNPack
 		return dao.getstockStatusFromPackage(clinicId, quantity, packageId);
 	}
 
+	@Override
+	public SHNPackage findpackageByPackageCodeAndClinic(String packageCode,
+			String clinicCode) {
+		// TODO Auto-generated method stub
+		return dao.findpackageByPackageCodeAndClinic(packageCode, clinicCode);
+	}
+
 }

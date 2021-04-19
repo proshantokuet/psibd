@@ -37,4 +37,6 @@ public interface SHNPackageService extends OpenmrsService {
 	
 	public List<SHNPackageReportDTO> getstockStatusFromPackage(int clinicId, int quantity, int packageId);
 	
+	public SHNPackage findpackageByPackageCodeAndClinic(String packageCode,String clinicCode);
+	
 }
