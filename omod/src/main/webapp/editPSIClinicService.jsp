@@ -123,21 +123,21 @@
 					
 					<div class="form-inline form-group">
                   		<label for="email">Year's</label>
-						 <form:input path="yearFrom" value="0" class="input-size" min="0"  placeholder="Year's"/>
+						 <form:input path="yearFrom"  class="input-size" min="0"  placeholder="Year's"/>
 						 <label for="email">Month's</label>
-						 <form:input path="monthFrom" value="0" class="input-size" min="0"  placeholder="Month's"/>
+						 <form:input path="monthFrom"  class="input-size" min="0"  placeholder="Month's"/>
 						 <label for="email">Day's</label>
-						<form:input path="daysFrom" value="0" class="input-size" min="0"  placeholder="Day's"/>
+						<form:input path="daysFrom"  class="input-size" min="0"  placeholder="Day's"/>
                   	</div> 
               	</div>
               	<div class="col-md-6">
                   	<div class="form-inline form-group">
                   		<label for="email">Year's</label>
-						 <form:input path="yearTo" value="0" class="input-size"  min="0" placeholder="Year's"/>
+						 <form:input path="yearTo"  class="input-size"  min="0" placeholder="Year's"/>
 						 <label for="email">Month's</label>
-						 <form:input path="monthTo" value="0" class="input-size" min="0"  placeholder="Month's"/>
+						 <form:input path="monthTo"  class="input-size" min="0"  placeholder="Month's"/>
 						 <label for="email">Day's</label>
-						<form:input path="daysTo" value="0" class="input-size" min="0"  placeholder="Day's"/>
+						<form:input path="daysTo"  class="input-size" min="0"  placeholder="Day's"/>
                   	</div>             		
                   	
               	</div>

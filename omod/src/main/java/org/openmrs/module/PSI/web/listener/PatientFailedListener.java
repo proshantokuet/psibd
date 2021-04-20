@@ -141,8 +141,10 @@ public class PatientFailedListener {
 						JSONArray importSummaries = responseObject.getJSONArray("importSummaries");
 						if (importSummaries.length() != 0) {
 							JSONObject importSummary = importSummaries.getJSONObject(0);
-							JSONObject enrollmentObject = importSummary.getJSONObject("enrollments");
-							status = enrollmentObject.getString("status");
+							if(importSummary.has("enrollments")){
+								JSONObject enrollmentObject = importSummary.getJSONObject("enrollments");
+								status = enrollmentObject.getString("status");
+							}
 						}
 					}
 					else {

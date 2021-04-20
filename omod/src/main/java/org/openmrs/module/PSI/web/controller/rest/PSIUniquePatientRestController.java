@@ -110,28 +110,28 @@ public class PSIUniquePatientRestController {
 	}
 	
 	
-	@RequestMapping(value = "/syncpreviousMonthDataToGovtDhis2", method = RequestMethod.GET)
-	public ResponseEntity<String> syncPreviousYearData() throws Exception {
+	@RequestMapping(value = "/syncpreviousMonthDataToGovtDhis2/{month}/{year}", method = RequestMethod.GET)
+	public ResponseEntity<String> syncPreviousYearData(@PathVariable int month,@PathVariable int year) throws Exception {
 		String successMonths = "";
-		for (int i = 1; i < 13; i++) {
-			boolean status = new HnqisToShnListener().sendPreviousDataTOGovtDhis2(i, 2020);
+		//for (int i = 1; i < 13; i++) {
+			boolean status = new HnqisToShnListener().sendPreviousDataTOGovtDhis2(month, year);
 			if(status) {
-				successMonths = successMonths + i + ",";
+				successMonths = successMonths + month + year;
 			}
-		}
+		//}
 		
 		return new ResponseEntity<>(successMonths.toString(), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/syncpreviousHnqisToSHNDhis2", method = RequestMethod.GET)
-	public ResponseEntity<String> syncPreviousYearDatatoShn() throws Exception {
+	@RequestMapping(value = "/syncpreviousHnqisToSHNDhis2/{month}/{year}", method = RequestMethod.GET)
+	public ResponseEntity<String> syncPreviousYearDatatoShn(@PathVariable int month,@PathVariable int year) throws Exception {
 		String successMonths = "";
-		for (int i = 1; i < 13; i++) {
-			boolean status = new HnqisToShnListener().sendPreviousHnqisToDhis2(i, 2020);
+		//for (int i = 1; i < 13; i++) {
+			boolean status = new HnqisToShnListener().sendPreviousHnqisToDhis2(month, year);
 			if(status) {
-				successMonths = successMonths + i + ",";
+				successMonths = successMonths + month + year;
 			}
-		}
+		//}
 		
 		return new ResponseEntity<>(successMonths.toString(), HttpStatus.OK);
 	}
