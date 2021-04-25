@@ -43,23 +43,25 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 			String mobileNo) {
 		
 		Boolean isPatientAvailable = false;
-		String sql = "SELECT temp1.pat_id, \n" +
-				"       temp1.mobileno, \n" +
-				"       temp2.pa_id, \n" +
-				"       temp2.uic \n" +
-				"FROM   (SELECT pat.person_attribute_type_id as pat_id, \n" +
-				"               pat.value AS mobileNo, \n" +
-				"               pat.person_id as pat_person_id \n" +
-				"        FROM   person_attribute pat \n" +
-				"        WHERE  pat.person_attribute_type_id = 42) AS temp1 \n" +
-				"       JOIN (SELECT pa.person_attribute_type_id as pa_id, \n" +
-				"                    pa.value AS UIC, \n" +
-				"                    pa.person_id as pa_person_id \n" +
-				"             FROM   person_attribute pa \n" +
-				"             WHERE  pa.person_attribute_type_id = 34) AS temp2 \n" +
-				"         ON temp1.pat_person_id = temp2.pa_person_id \n" +
-				"WHERE  temp1.mobileno = '"+ mobileNo +"' \n" +
-				"       AND temp2.uic = '"+patientUic+"';";
+//		String sql = "SELECT temp1.pat_id, \n" +
+//				"       temp1.mobileno, \n" +
+//				"       temp2.pa_id, \n" +
+//				"       temp2.uic \n" +
+//				"FROM   (SELECT pat.person_attribute_type_id as pat_id, \n" +
+//				"               pat.value AS mobileNo, \n" +
+//				"               pat.person_id as pat_person_id \n" +
+//				"        FROM   person_attribute pat \n" +
+//				"        WHERE  pat.person_attribute_type_id = 42) AS temp1 \n" +
+//				"       JOIN (SELECT pa.person_attribute_type_id as pa_id, \n" +
+//				"                    pa.value AS UIC, \n" +
+//				"                    pa.person_id as pa_person_id \n" +
+//				"             FROM   person_attribute pa \n" +
+//				"             WHERE  pa.person_attribute_type_id = 34) AS temp2 \n" +
+//				"         ON temp1.pat_person_id = temp2.pa_person_id \n" +
+//				"WHERE  temp1.mobileno = '"+ mobileNo +"' \n" +
+//				"       AND temp2.uic = '"+patientUic+"';";
+		String sql = "select p.person_id from person p where p.contact_no = '"+mobileNo+"' AND p.uic = '"+patientUic+"'";
+		log.error("check patient sql " + sql);
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		
 		List<Object[]> data = query.list();
@@ -202,27 +204,29 @@ public class HibernatePSIUniquePatientDAO implements PSIUniquePatientDAO {
 	public Boolean findPatientByUicandMobileNoWhileEdit(String patientUic,
 			String mobileNo, String patientUuid) {
 		Boolean isPatientAvailable = false;
-		String sql = ""
-				+ "SELECT temp1.pat_id, "
-				+ "       temp1.mobileno, "
-				+ "       temp2.pa_id, "
-				+ "       temp2.uic , "
-				+ "       p.uuid "
-				+ "FROM   (SELECT pat.person_attribute_type_id as pat_id, "
-				+ "               pat.value AS mobileNo, "
-				+ "               pat.person_id as pat_person_id "
-				+ "        FROM   person_attribute pat "
-				+ "        WHERE  pat.person_attribute_type_id = 42) AS temp1 "
-				+ "       JOIN (SELECT pa.person_attribute_type_id as pa_id, "
-				+ "                    pa.value AS UIC, "
-				+ "                    pa.person_id as pa_person_id "
-				+ "             FROM   person_attribute pa "
-				+ "             WHERE  pa.person_attribute_type_id = 34) AS temp2 "
-				+ "         ON temp1.pat_person_id = temp2.pa_person_id "
-				+ "         JOIN person p on p.person_id = temp2.pa_person_id "
-				+ "WHERE  temp1.mobileno = '"+mobileNo+"' "
-				+ "       AND temp2.uic = '"+patientUic+"' "
-				+ "      AND p.uuid NOT IN('"+patientUuid+"');";
+//		String sql = ""
+//				+ "SELECT temp1.pat_id, "
+//				+ "       temp1.mobileno, "
+//				+ "       temp2.pa_id, "
+//				+ "       temp2.uic , "
+//				+ "       p.uuid "
+//				+ "FROM   (SELECT pat.person_attribute_type_id as pat_id, "
+//				+ "               pat.value AS mobileNo, "
+//				+ "               pat.person_id as pat_person_id "
+//				+ "        FROM   person_attribute pat "
+//				+ "        WHERE  pat.person_attribute_type_id = 42) AS temp1 "
+//				+ "       JOIN (SELECT pa.person_attribute_type_id as pa_id, "
+//				+ "                    pa.value AS UIC, "
+//				+ "                    pa.person_id as pa_person_id "
+//				+ "             FROM   person_attribute pa "
+//				+ "             WHERE  pa.person_attribute_type_id = 34) AS temp2 "
+//				+ "         ON temp1.pat_person_id = temp2.pa_person_id "
+//				+ "         JOIN person p on p.person_id = temp2.pa_person_id "
+//				+ "WHERE  temp1.mobileno = '"+mobileNo+"' "
+//				+ "       AND temp2.uic = '"+patientUic+"' "
+//				+ "      AND p.uuid NOT IN('"+patientUuid+"');";
+		String sql = "select p.person_id from person p where p.contact_no = '"+mobileNo+"' AND p.uic = '"+patientUic+"' AND p.uuid NOT IN('"+patientUuid+"')";
+		log.error("check patient sql " + sql);
 		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 		
 		List<Object[]> data = query.list();

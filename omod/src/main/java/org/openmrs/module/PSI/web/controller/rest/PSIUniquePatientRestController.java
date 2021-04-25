@@ -29,7 +29,7 @@ public class PSIUniquePatientRestController {
 	public ResponseEntity<String> saveClinic(@PathVariable String uic, @PathVariable String mobileNo) throws Exception {
 		
 		Boolean patientAvailabilityStatus = Context.getService(PSIUniquePatientService.class)
-		        .findPatientByUicandMobileNo(uic, mobileNo);
+		        .findPatientByUicandMobileNo(uic.trim(), mobileNo.trim());
 		return new ResponseEntity<>(patientAvailabilityStatus.toString(), HttpStatus.OK);
 	}
 	
@@ -37,7 +37,7 @@ public class PSIUniquePatientRestController {
 	public ResponseEntity<String> findPatientByUuidMobileandUic(@PathVariable String uic, @PathVariable String mobileNo,@PathVariable String patientUuid) throws Exception {
 		
 		Boolean patientAvailabilityStatus = Context.getService(PSIUniquePatientService.class)
-		        .findPatientByUicandMobileNoWhileEdit(uic, mobileNo,patientUuid);
+		        .findPatientByUicandMobileNoWhileEdit(uic.trim(), mobileNo.trim(),patientUuid.trim());
 		return new ResponseEntity<>(patientAvailabilityStatus.toString(), HttpStatus.OK);
 	}
 	
