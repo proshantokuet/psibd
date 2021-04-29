@@ -386,7 +386,7 @@ public class MoneyReceiptListener2 {
 		} else {
 			timestamp = getlastTimeStamp.getTimestamp();
 		}
-		//log.error("goint to fetch all money receipt for that timestamp " + System.currentTimeMillis());
+		log.error("goint to fetch all money receipt for that timestamp " + timestamp);
 		List<PSIServiceProvision> psiServiceProvisions = Context.getService(PSIServiceProvisionService.class)
 		        .findAllByTimestamp(timestamp);
 		//log.error("fetch complete all money receipt for that timestamp " + System.currentTimeMillis());
@@ -399,9 +399,10 @@ public class MoneyReceiptListener2 {
 //		
 //		Context.clearSession();
 		if (psiServiceProvisions.size() != 0) {
+			log.error("psiServiceProvisions size" + psiServiceProvisions.size());
 			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
 				if(psiServiceProvision.getSpid() % 3 == 2 && psiServiceProvision.getSendToDhisFromGlobal() == 1) {
-				//log.error("Entered in the loop for sendMoneyReceipt " + System.currentTimeMillis());
+				log.error("Entered in the loop for sendMoneyReceipt " + psiServiceProvision.getSpid());
 				JSONObject eventResponse = new JSONObject();
 				JSONObject getResponse = new JSONObject();
 				
@@ -478,6 +479,7 @@ public class MoneyReceiptListener2 {
 								}
 							}
 							else{
+								log.error("dont have previous money receipt addidng new" + psiServiceProvision.getDhisId());
 								eventResponse = psiapiServiceFactory.getAPIType("dhis2").add("", moneyReceiptJson, EVENTURL);
 							}
 							statusCode = Integer.parseInt(eventResponse.getString("httpStatusCode"));
@@ -613,14 +615,17 @@ public class MoneyReceiptListener2 {
 	private void updateServiceProvision(PSIServiceProvision psiServiceProvision, String moneyReceiptJson,
 	                                    String referenceId, String getResponse, int statusCode, String URL, int status) {
 		Context.openSession();
-		psiServiceProvision.setField2(moneyReceiptJson);
-		psiServiceProvision.setDhisId(referenceId);
-		psiServiceProvision.setField1(getResponse + "");
-		psiServiceProvision.setField2(moneyReceiptJson + "");
-		psiServiceProvision.setField3(statusCode);
-		psiServiceProvision.setError("" + URL);
-		psiServiceProvision.setIsSendToDHIS(status);
-		Context.getService(PSIServiceProvisionService.class).updateCoulumnInServiceProvision(psiServiceProvision);
+		PSIServiceProvision psiServiceProvisionUpdate = new PSIServiceProvision();
+		psiServiceProvisionUpdate.setField2(moneyReceiptJson);
+		psiServiceProvisionUpdate.setDhisId(referenceId);
+		psiServiceProvisionUpdate.setField1(getResponse + "");
+		psiServiceProvisionUpdate.setField2(moneyReceiptJson + "");
+		psiServiceProvisionUpdate.setField3(statusCode);
+		psiServiceProvisionUpdate.setError("" + URL);
+		psiServiceProvisionUpdate.setIsSendToDHIS(status);
+		psiServiceProvisionUpdate.setSpid(psiServiceProvision.getSpid());
+		log.error("updating moneyreceipt listener1" + psiServiceProvisionUpdate.getDhisId());
+		Context.getService(PSIServiceProvisionService.class).updateCoulumnInServiceProvision(psiServiceProvisionUpdate);
 		Context.clearSession();
 		
 	}

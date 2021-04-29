@@ -452,30 +452,30 @@ public class DHISDataConverter {
 		//ageMoneyReceipt.put("value", Integer.toString(period.getYears()));
 		
 		//comment out for test purpose
-		JSONObject ageInYearsMoneyReceipt = new JSONObject();
-		ageInYearsMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInYear"));
-		ageInYearsMoneyReceipt.put("value", period.getYears());
-		dataValues.put(ageInYearsMoneyReceipt);
-		
-		JSONObject ageInMonthMoneyReceipt = new JSONObject();
-		ageInMonthMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInMonth"));
-		ageInMonthMoneyReceipt.put("value", period.getMonths());
-		dataValues.put(ageInMonthMoneyReceipt);
-		
-		JSONObject ageInYearMoneyReceipt = new JSONObject();
-		ageInYearMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInDay"));
-		ageInYearMoneyReceipt.put("value", period.getDays());
-		dataValues.put(ageInYearMoneyReceipt);
-		
-		JSONObject netPayableAfterDiscount = new JSONObject();
-		netPayableAfterDiscount.put("dataElement", DHISMapper.ServiceProvision.get("netPayableAfterDiscount"));
-		netPayableAfterDiscount.put("value",psiServiceProvision.getPsiMoneyReceiptId().getTotalAmount());
-		dataValues.put(netPayableAfterDiscount);
-		
-		JSONObject overAllDiscount = new JSONObject();
-		overAllDiscount.put("dataElement", DHISMapper.ServiceProvision.get("overallDiscount"));
-		overAllDiscount.put("value", psiServiceProvision.getPsiMoneyReceiptId().getOverallDiscount());
-		dataValues.put(overAllDiscount);
+//		JSONObject ageInYearsMoneyReceipt = new JSONObject();
+//		ageInYearsMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInYear"));
+//		ageInYearsMoneyReceipt.put("value", period.getYears());
+//		dataValues.put(ageInYearsMoneyReceipt);
+//		
+//		JSONObject ageInMonthMoneyReceipt = new JSONObject();
+//		ageInMonthMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInMonth"));
+//		ageInMonthMoneyReceipt.put("value", period.getMonths());
+//		dataValues.put(ageInMonthMoneyReceipt);
+//		
+//		JSONObject ageInYearMoneyReceipt = new JSONObject();
+//		ageInYearMoneyReceipt.put("dataElement", DHISMapper.ServiceProvision.get("ageInDay"));
+//		ageInYearMoneyReceipt.put("value", period.getDays());
+//		dataValues.put(ageInYearMoneyReceipt);
+//		
+//		JSONObject netPayableAfterDiscount = new JSONObject();
+//		netPayableAfterDiscount.put("dataElement", DHISMapper.ServiceProvision.get("netPayableAfterDiscount"));
+//		netPayableAfterDiscount.put("value",psiServiceProvision.getPsiMoneyReceiptId().getTotalAmount());
+//		dataValues.put(netPayableAfterDiscount);
+//		
+//		JSONObject overAllDiscount = new JSONObject();
+//		overAllDiscount.put("dataElement", DHISMapper.ServiceProvision.get("overallDiscount"));
+//		overAllDiscount.put("value", psiServiceProvision.getPsiMoneyReceiptId().getOverallDiscount());
+//		dataValues.put(overAllDiscount);
 		
 		return event;
 		
