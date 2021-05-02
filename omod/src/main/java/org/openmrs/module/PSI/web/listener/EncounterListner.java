@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +12,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -22,36 +22,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIDHISException;
 import org.openmrs.module.PSI.PSIDHISMarker;
-import org.openmrs.module.PSI.PSIServiceProvision;
 import org.openmrs.module.PSI.SHNDhisEncounterException;
-import org.openmrs.module.PSI.SHNDhisIndicatorDetails;
 import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
 import org.openmrs.module.PSI.SHNDhisObsElement;
-import org.openmrs.module.PSI.SHNStock;
-import org.openmrs.module.PSI.SHNStockAdjust;
-import org.openmrs.module.PSI.SHNVoidedMoneyReceiptLog;
-import org.openmrs.module.PSI.api.PSIClinicManagementService;
-import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIDHISExceptionService;
 import org.openmrs.module.PSI.api.PSIDHISMarkerService;
-import org.openmrs.module.PSI.api.PSIServiceProvisionService;
 import org.openmrs.module.PSI.api.SHNDhisEncounterExceptionService;
 import org.openmrs.module.PSI.api.SHNDhisObsElementService;
-import org.openmrs.module.PSI.api.SHNStockService;
-import org.openmrs.module.PSI.api.SHNVoidedMoneyReceiptLogService;
-import org.openmrs.module.PSI.converter.DHISDataConverter;
 import org.openmrs.module.PSI.converter.DhisObsEventDataConverter;
 import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
-import org.openmrs.module.PSI.converter.SHNStockAdjustDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
 import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.module.PSI.dto.SHNDataSyncStatusDTO;
-import org.openmrs.module.PSI.dto.ShnIndicatorDetailsDTO;
-import org.openmrs.module.PSI.dto.UserDTO;
-import org.openmrs.module.PSI.utils.DHISMapper;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -105,12 +89,16 @@ public class EncounterListner {
 	
 	private Map<String, String> multipleObsDHISMapping = new HashMap<String, String>();
 
+	private static final ReentrantLock lock = new ReentrantLock();
 
-	
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
 		boolean status = true;
 			try {
 				psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
@@ -134,7 +122,11 @@ public class EncounterListner {
 				catch (Exception e) {
 					
 				}
-
+				finally {
+					lock.unlock();
+					log.error("complete listener encounter at:" +new Date());
+				}
+				
 			}
 	}
 	
@@ -171,7 +163,7 @@ public class EncounterListner {
 		return errorMessage;
 	}
 	
-	public void sendEncounter() {
+	public synchronized void sendEncounter() {
 		int lastReadEncounter = 0;
 		PSIDHISMarker getlastReadEntry = Context.getService(PSIDHISMarkerService.class).findByType("Encounter");
 		if (getlastReadEntry == null) {
@@ -378,38 +370,33 @@ public class EncounterListner {
 						}
 					  }
 					} //loop end
-					Context.openSession();
-					//increasing dhis marker by the id we find
-					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
-					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
-					Context.clearSession();
+
 					}
 					else {
-						getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
-						Context.openSession();
+
 						if (geDhisEncounterException == null) {
 							SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
 							geDhisEncounterException = newDhisEncounterException;
 						}
-						//increasing dhis marker by the id we find
-						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
-						Context.clearSession();
 						updateEncounterException(geDhisEncounterException, trackEntityInstanceUrl, eventReceordDTO,
 						    PSIConstants.CONNECTIONTIMEOUTSTATUS,trackEntityResponse + "", "No Track Entity Instances found in DHIS2 Containing the patient id provided",geDhisEncounterException.getReferenceId(),encounterUUid,patientUuid,geDhisEncounterException.getFormsName());
 					}
 				} 
 				catch (Exception e) {
-					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
-					Context.openSession();
+
 					if (geDhisEncounterException == null) {
 						SHNDhisEncounterException newDhisEncounterException = new SHNDhisEncounterException();
 						geDhisEncounterException = newDhisEncounterException;
 					}
-					//increasing dhis marker by the id we find
-					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
-					Context.clearSession();
+
 					updateEncounterException(geDhisEncounterException, "Internal Error Occured" + "", eventReceordDTO,
 					    PSIConstants.CONNECTIONTIMEOUTSTATUS, "Please check Error for details" + "", e.toString(),geDhisEncounterException.getReferenceId(),encounterUUid,geDhisEncounterException.getPatientUuid(),geDhisEncounterException.getFormsName());
+					}
+					finally {
+						Context.openSession();
+						getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
+						Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+						Context.clearSession();
 					}
 				  }
 				else {
@@ -425,7 +412,7 @@ public class EncounterListner {
 	
 	 }
 	
-	private void sendEncounterFailed() {
+	private synchronized void sendEncounterFailed() {
 		List<SHNDhisEncounterException> shnDhisEncounterExceptions = Context.getService(SHNDhisEncounterExceptionService.class).findAllFailedEncounterByStatus(
 			    PSIConstants.CONNECTIONTIMEOUTSTATUS);
 			if (shnDhisEncounterExceptions.size() != 0 && shnDhisEncounterExceptions != null) {

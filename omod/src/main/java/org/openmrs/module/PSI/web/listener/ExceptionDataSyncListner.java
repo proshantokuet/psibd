@@ -1,7 +1,9 @@
 package org.openmrs.module.PSI.web.listener;
 
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,11 +30,16 @@ public class ExceptionDataSyncListner {
 	@Autowired
 	private PSIAPIServiceFactory psiapiServiceFactory;
 	
-	
+	private static final ReentrantLock lock = new ReentrantLock();
+
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
 	public void sendExceptionSyncata() throws Exception {
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
 		boolean status = true;
 			try {
 				String globalServerUrl = "/rest/v1/visittype";
@@ -50,12 +57,16 @@ public class ExceptionDataSyncListner {
 				catch (Exception e) {
 					
 				}
+				finally {
+					lock.unlock();
+					log.error("complete listener exceptiondata sync at:" +new Date());
+				}
 		}
 
 	}
 	
 	
-	public void sendExceptionData() {
+	public synchronized void sendExceptionData() {
 		List<PSIDHISException> psidhisExceptions = Context.getService(PSIDHISExceptionService.class).getListOfDataToBeSynced(0);
 			try {
 				for (PSIDHISException psidhisException : psidhisExceptions) {

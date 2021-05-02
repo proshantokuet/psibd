@@ -54,8 +54,6 @@ public class PatientFailedListener {
 	
 	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
-	private final String trackInstanceUrl = DHIS2BASEURL + "/api/trackedEntityInstances.json?";
-	
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
@@ -82,7 +80,7 @@ public class PatientFailedListener {
 
 	}
 	
-	public void sendFailedPatient() {
+	public synchronized void sendFailedPatient() {
 		log.error("Entered in failed patient listener " + new Date());
 		List<PSIDHISException> psidhisExceptions = Context.getService(PSIDHISExceptionService.class).findAllByStatus(
 		    PSIConstants.CONNECTIONTIMEOUTSTATUS);
@@ -112,29 +110,19 @@ public class PatientFailedListener {
 					patientJson = DHISDataConverter.toConvertPatient(patient);
 					JSONObject person = patient.getJSONObject("person");
 					
-					String orgUit = patientJson.getString("orgUnit");
-					String uuid = DHISMapper.registrationMapper.get("uuid");
+					patientJson.getString("orgUnit");
+					DHISMapper.registrationMapper.get("uuid");
 					String personUuid = person.getString("uuid");
-					//String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
-					//JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-					//JSONArray trackedEntityInstances = new JSONArray();
-//					if (getResponse.has("trackedEntityInstances")) {
-//						trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
-//					}
-					//log.error("Entered in findRefereceIdPatient " + new Date());
+
 					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
-					//log.error("Entered in findRefereceIdPatient " + findRefereceIdPatient.getReferenceId());
 					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
 						patientJson.remove("enrollments");
-						//JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
 						String UpdateUrl = trackerUrl + "/" + findRefereceIdPatient.getReferenceId();
 						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
 					} else {
 						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
 					}
-					/*JSONObject responseofResponse = new JSONObject();
-					responseofResponse = response.getJSONObject("response");*/
-					
+
 					String status = response.getString("status");
 					JSONObject responseObject = response.getJSONObject("response");
 					if(responseObject.has("importSummaries")) {
@@ -154,14 +142,7 @@ public class PatientFailedListener {
 						}
 					}
 					if (!status.equalsIgnoreCase("ERROR")) {
-						/*Context.openSession();
-						psidhisException.setStatus(PSIConstants.SUCCESSSTATUS);
-						psidhisException.setTimestamp(1l);
-						psidhisException.setJson(patientJson.toString());
-						//psidhisException.setError(responseofResponse.toString());
-						psidhisException.setResponse(response.toString());
-						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
-						Context.clearSession();*/
+
 						String referenceId = "";
 						JSONObject successResponse = response.getJSONObject("response");
 						if(successResponse.has("importSummaries")) {
@@ -177,14 +158,7 @@ public class PatientFailedListener {
 						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.SUCCESSSTATUS, response
 						        + "", "",referenceId);
 					} else {
-						/*Context.openSession();
-						psidhisException.setJson(patientJson.toString());
-						psidhisException.setResponse(response.toString());
-						//psidhisException.setError(responseofResponse.toString());
-						psidhisException.setTimestamp(2l);
-						psidhisException.setStatus(PSIConstants.FAILEDSTATUS);
-						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
-						Context.clearSession();*/
+
 						String errorDetails = errorMessageCreation(response);
 						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.FAILEDSTATUS, response
 						        + "", errorDetails,"");
@@ -192,22 +166,15 @@ public class PatientFailedListener {
 					
 				}
 				catch (Exception e) {
-					//Context.openSession();
 					int status = 0;
 					if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
 					        .equalsIgnoreCase(e.toString())
 					        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
 					                .equalsIgnoreCase(e.toString())) {
-						psidhisException.setStatus(PSIConstants.CONNECTIONTIMEOUTSTATUS);
 						status = PSIConstants.CONNECTIONTIMEOUTSTATUS;
 					} else {
-						psidhisException.setStatus(PSIConstants.FAILEDSTATUS);
 						status = PSIConstants.FAILEDSTATUS;
-					}
-					
-					/*Context.getService(PSIDHISExceptionService.class).saveOrUpdate(psidhisException);
-					Context.clearSession();*/
-					
+					}					
 					updateExceptionForFailed(psidhisException, patientJson + "", status, response + "", e.toString(),"");
 				}
 				

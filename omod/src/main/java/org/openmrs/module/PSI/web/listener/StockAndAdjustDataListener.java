@@ -1,6 +1,9 @@
 package org.openmrs.module.PSI.web.listener;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -33,8 +36,15 @@ public class StockAndAdjustDataListener {
 			
 	protected final Log log = LogFactory.getLog(getClass());
 	
+	private static final ReentrantLock lock = new ReentrantLock();
+
+	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
 		boolean status = true;
 			try {
 				String globalServerUrl = "/rest/v1/visittype";
@@ -58,12 +68,16 @@ public class StockAndAdjustDataListener {
 				catch (Exception e) {
 					
 				}
+				finally {
+					lock.unlock();
+					log.error("complete listener stock data sync at:" +new Date());
+				}
 		}
 
 	}
 	
 	
-	public void sendStockDataInGLobalServer() {
+	public synchronized void sendStockDataInGLobalServer() {
 		List<PSIClinicManagement> clinic = Context.getService(PSIClinicManagementService.class).getAllClinic();
 		if(clinic.size() > 0) {
 			for (PSIClinicManagement psiClinicManagement : clinic) {
@@ -96,7 +110,7 @@ public class StockAndAdjustDataListener {
 		
 	}
 	
-	public void sendAdjustStockDataInGLobalServer() {
+	public synchronized void sendAdjustStockDataInGLobalServer() {
 		List<PSIClinicManagement> clinic = Context.getService(PSIClinicManagementService.class).getAllClinic();
 		if(clinic.size() > 0) {
 			for (PSIClinicManagement psiClinicManagement : clinic) {

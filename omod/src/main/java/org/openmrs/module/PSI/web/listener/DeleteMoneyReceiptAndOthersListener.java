@@ -1,18 +1,11 @@
 package org.openmrs.module.PSI.web.listener;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -20,36 +13,14 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.PSI.PSIClinicManagement;
-import org.openmrs.module.PSI.PSIDHISException;
-import org.openmrs.module.PSI.PSIDHISMarker;
-import org.openmrs.module.PSI.PSIServiceProvision;
-import org.openmrs.module.PSI.SHNDhisEncounterException;
 import org.openmrs.module.PSI.SHNDhisIndicatorDetails;
-import org.openmrs.module.PSI.SHNDhisMultipleChoiceObsElement;
-import org.openmrs.module.PSI.SHNDhisObsElement;
-import org.openmrs.module.PSI.SHNStock;
-import org.openmrs.module.PSI.SHNStockAdjust;
 import org.openmrs.module.PSI.SHNVoidedMoneyReceiptLog;
-import org.openmrs.module.PSI.api.PSIClinicManagementService;
-import org.openmrs.module.PSI.api.PSIClinicUserService;
-import org.openmrs.module.PSI.api.PSIDHISExceptionService;
-import org.openmrs.module.PSI.api.PSIDHISMarkerService;
-import org.openmrs.module.PSI.api.PSIServiceProvisionService;
-import org.openmrs.module.PSI.api.SHNDhisEncounterExceptionService;
 import org.openmrs.module.PSI.api.SHNDhisObsElementService;
-import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.api.SHNVoidedMoneyReceiptLogService;
 import org.openmrs.module.PSI.converter.DHISDataConverter;
-import org.openmrs.module.PSI.converter.DhisObsEventDataConverter;
-import org.openmrs.module.PSI.converter.DhisObsJsonDataConverter;
-import org.openmrs.module.PSI.converter.SHNStockAdjustDataConverter;
 import org.openmrs.module.PSI.dhis.service.PSIAPIServiceFactory;
-import org.openmrs.module.PSI.dto.EventReceordDTO;
 import org.openmrs.module.PSI.dto.ShnIndicatorDetailsDTO;
-import org.openmrs.module.PSI.dto.UserDTO;
 import org.openmrs.module.PSI.utils.DHISMapper;
 import org.openmrs.module.PSI.utils.PSIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +29,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
-
-import com.google.gson.Gson;
-import com.jayway.jsonpath.JsonPath;
 
 @Service
 @EnableScheduling
@@ -85,12 +53,16 @@ public class DeleteMoneyReceiptAndOthersListener {
 	
 	private final String GETEVENTURL = DHIS2BASEURL + "/api/events.json";
 
-
+	private static final ReentrantLock lock = new ReentrantLock();
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
 		boolean status = true;
 			try {
 				psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
@@ -101,17 +73,16 @@ public class DeleteMoneyReceiptAndOthersListener {
 				status = false;
 			}
 		if (status) {				
-				try {
-					//sendIndicatorDataToDhis();
-				}
-				catch (Exception e) {
-					
-				}
+
 				try {
 					deleteMoneyReceiptFromDhis2();
 				}
 				catch (Exception e) {
 					
+				}
+				finally {
+					lock.unlock();
+					log.error("complete listener delete money receipt  at:" +new Date());
 				}
 		}
 
@@ -201,7 +172,7 @@ public class DeleteMoneyReceiptAndOthersListener {
 	}
 	
 	
-	private void deleteMoneyReceiptFromDhis2() {
+	private synchronized void deleteMoneyReceiptFromDhis2() {
 		
 		List<SHNVoidedMoneyReceiptLog> shnVoidedMoneyReceiptLog = Context.getService(SHNVoidedMoneyReceiptLogService.class).getAllVoidedMoneyReceipt();
 		for (SHNVoidedMoneyReceiptLog shnVoidedMoneyReceiptLogObject : shnVoidedMoneyReceiptLog) {

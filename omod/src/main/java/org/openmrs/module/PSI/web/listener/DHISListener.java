@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -111,12 +112,17 @@ public class DHISListener {
 	
 	private Map<String, String> multipleObsDHISMapping = new HashMap<String, String>();
 
+	private static final ReentrantLock lock = new ReentrantLock();
 
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
 		JSONObject getResponse = null;
 		boolean status = true;
 			try {
@@ -134,6 +140,10 @@ public class DHISListener {
 				}
 				catch (Exception e) {
 					
+				}
+				finally {
+					lock.unlock();
+					log.error("complete listener patient at:" +new Date());
 				}
 		}
 
@@ -238,7 +248,7 @@ public class DHISListener {
 		Context.clearSession();
 	}
 	
-	public void sendPatient() {
+	public synchronized void sendPatient() {
 		
 		log.error("Entered in send Patient listener " + new Date());
 		//String logResult = "";
@@ -304,10 +314,6 @@ public class DHISListener {
 					//String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
 					//JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
 					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
-//					JSONArray trackedEntityInstances = new JSONArray();
-//					if (getResponse.has("trackedEntityInstances")) {
-//						trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
-//					}
 					long timeAfterProcessingData = (System.currentTimeMillis() - timeBeforeProcessingData);
 					logResult = logResult + " Time taken after finish processing data: " + timeAfterProcessingData;
 					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
@@ -331,12 +337,7 @@ public class DHISListener {
 						logResult = logResult + " (PATIENT) Time taken of patient add  after sending to dhis2: " + (finishGettingTime - trackPatientTime);
 					}
 					long timebeforeSaveToMarker =  System.currentTimeMillis();
-					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
-					Context.openSession();
-					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					logResult = logResult + " Time taken to save marker id in dhis marker table: " + (System.currentTimeMillis() - timebeforeSaveToMarker);
-					/*JSONObject responseofResponse = new JSONObject();
-					responseofResponse = response.getJSONObject("response");*/
 					String status = response.getString("status");
 					JSONObject responseObject = response.getJSONObject("response");
 					if(responseObject.has("importSummaries")) {
@@ -360,15 +361,6 @@ public class DHISListener {
 							PSIDHISException newPsidhisException = new PSIDHISException();
 							getPsidhisException = newPsidhisException;
 						}
-						/*getPsidhisException.setError("");
-						getPsidhisException.setJson(patientJson.toString());
-						getPsidhisException.setMarkId(eventReceordDTO.getId());
-						getPsidhisException.setUrl(eventReceordDTO.getUrl());
-						getPsidhisException.setStatus(PSIConstants.SUCCESSSTATUS);
-						getPsidhisException.setResponse(response.toString());
-						getPsidhisException.setDateCreated(new Date());
-						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
-						*/
 						String referenceId = "";
 						JSONObject successResponse = response.getJSONObject("response");
 						if(successResponse.has("importSummaries")) {
@@ -394,43 +386,23 @@ public class DHISListener {
 							getPsidhisException = newPsidhisException;
 						}
 						String errorDetails = errorMessageCreation(response);
-						/*getPsidhisException.setError("");
-						getPsidhisException.setJson(patientJson.toString());
-						getPsidhisException.setMarkId(eventReceordDTO.getId());
-						getPsidhisException.setUrl(eventReceordDTO.getUrl());
-						getPsidhisException.setStatus(PSIConstants.CONNECTIONTIMEOUTSTATUS);
-						getPsidhisException.setResponse(response.toString());
-						getPsidhisException.setDateCreated(new Date());
-						Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
-						*/
 						updateException(getPsidhisException, patientJson + "", eventReceordDTO,
 						    PSIConstants.CONNECTIONTIMEOUTSTATUS, response + "", errorDetails,"",logResult);
-					}
-					
-					Context.clearSession();
-					
+					}					
 				}
 				catch (Exception e) {
-					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
-					Context.openSession();
-					//Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					if (getPsidhisException == null) {
 						PSIDHISException newPsidhisException = new PSIDHISException();
 						getPsidhisException = newPsidhisException;
 					}
-					/*getPsidhisException.setError(e.toString());
-					getPsidhisException.setJson(patientJson.toString());
-					getPsidhisException.setMarkId(eventReceordDTO.getId());
-					getPsidhisException.setUrl(eventReceordDTO.getUrl());
-					getPsidhisException.setStatus(PSIConstants.CONNECTIONTIMEOUTSTATUS);
-					getPsidhisException.setResponse(response.toString());
-					getPsidhisException.setDateCreated(new Date());
-					Context.getService(PSIDHISExceptionService.class).saveOrUpdate(getPsidhisException);
-					*/
-					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
-					Context.clearSession();
 					updateException(getPsidhisException, patientJson + "", eventReceordDTO,
 					    PSIConstants.CONNECTIONTIMEOUTSTATUS, response + "", e.toString(),"", logResult);
+				}
+				finally {
+					Context.openSession();
+					getlastReadEntry.setLastPatientId(eventReceordDTO.getId());
+					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
+					Context.clearSession();
 				}
 				
 				}
