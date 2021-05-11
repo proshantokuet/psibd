@@ -123,6 +123,18 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 		return lists;
 	}
 
+	@Override
+	public int updateExecuteInDatabase(String sql) {
+		// TODO Auto-generated method stub
+		log.error("Print  SQL " + sql);
+		
+		try{
+			return sessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();
+		}catch(Exception e){
+			return 0;
+		}
+	}
+
 //	@SuppressWarnings("unchecked")
 //	@Override
 //	public List<PSIDHISException> findAllFailedEncounterByStatus(int status) {

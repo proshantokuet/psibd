@@ -26,4 +26,6 @@ public interface PSIDHISExceptionService extends OpenmrsService {
 	
 	public List<PSIDHISException> getListOfDataToBeSynced(int status);
 	
+	public int updateExecuteInDatabase(String sql);
+	
 }

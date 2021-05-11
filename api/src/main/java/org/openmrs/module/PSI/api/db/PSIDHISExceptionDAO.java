@@ -22,6 +22,9 @@ public interface PSIDHISExceptionDAO {
 	public SHNDataSyncStatusDTO findStatusToSendDataDhis(String type, String uuid);
 	
 	public List<PSIDHISException> getListOfDataToBeSynced(int status);
+	
+	public int updateExecuteInDatabase(String sql);
+
 
 
 	

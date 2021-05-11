@@ -57,5 +57,11 @@ public class PSIDHISEcxeptionServiceImpl extends BaseOpenmrsService implements P
 		return dao.getListOfDataToBeSynced(status);
 	}
 
+	@Override
+	public int updateExecuteInDatabase(String sql) {
+		// TODO Auto-generated method stub
+		return dao.updateExecuteInDatabase(sql);
+	}
+
 	
 }

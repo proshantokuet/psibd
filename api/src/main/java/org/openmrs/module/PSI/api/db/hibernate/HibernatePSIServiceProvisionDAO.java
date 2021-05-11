@@ -421,14 +421,14 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		lists = sessionFactory
 		        .getCurrentSession()
 		        .createQuery(
-		            "from PSIServiceProvision where is_send_to_dhis= :isSendToDHIS3 and is_complete = :complete  order by spid asc")
+		            "from PSIServiceProvision where is_send_to_dhis= :isSendToDHIS3 and is_complete = :complete and  sendToDhisFromGlobal = 1  order by spid asc")
 		        .setInteger("isSendToDHIS3", PSIConstants.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
 		        .setMaxResults(500).list();
 		
 		log.error(sessionFactory
 		        .getCurrentSession()
 		        .createQuery(
-		            "from PSIServiceProvision where is_send_to_dhis= :isSendToDHIS3 and is_complete = :complete  order by spid asc")
+		            "from PSIServiceProvision where is_send_to_dhis= :isSendToDHIS3 and is_complete = :complete and  sendToDhisFromGlobal = 1  order by spid asc")
 		        .setInteger("isSendToDHIS3", PSIConstants.CONNECTIONTIMEOUTSTATUS).setInteger("complete", 1)
 		        .setMaxResults(500).getQueryString());
 		
@@ -2727,7 +2727,14 @@ public class HibernatePSIServiceProvisionDAO implements PSIServiceProvisionDAO {
 		log.error("Print update SQL " + updateSql);
 		
 		try{
-			sessionFactory.getCurrentSession().createSQLQuery(updateSql).executeUpdate();
+			sessionFactory.getCurrentSession().createSQLQuery("UPDATE openmrs.psi_service_provision set dhis_id = :dhisid,field1 = :fieldone,field2 = :fieldtwo,field3 = :fieldthree,error = :errorval,is_send_to_dhis = :sendtodhis where spid = :id")
+											  .setString("dhisid", psiServiceProvision.getDhisId())
+											  .setString("fieldone", psiServiceProvision.getField1())
+											  .setString("fieldtwo", psiServiceProvision.getField2())
+											  .setInteger("fieldthree", psiServiceProvision.getField3())
+											  .setString("errorval", psiServiceProvision.getError())
+											  .setInteger("sendtodhis", psiServiceProvision.getIsSendToDHIS())
+											  .setInteger("id", psiServiceProvision.getSpid()).executeUpdate();
 		}catch(Exception e){
 
 		}
