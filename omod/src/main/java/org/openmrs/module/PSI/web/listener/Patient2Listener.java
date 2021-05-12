@@ -83,6 +83,7 @@ public class Patient2Listener {
 			
 			try {
 				sendPatient();
+				Thread.sleep(1000);
 			}
 			catch (Exception e) {
 				

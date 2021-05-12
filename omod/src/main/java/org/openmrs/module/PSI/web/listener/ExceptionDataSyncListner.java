@@ -53,6 +53,7 @@ public class ExceptionDataSyncListner {
 			
 				try {
 					sendExceptionData();
+					Thread.sleep(1000);
 				}
 				catch (Exception e) {
 					

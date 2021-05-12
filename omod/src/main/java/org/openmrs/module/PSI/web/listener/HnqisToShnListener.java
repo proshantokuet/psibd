@@ -95,12 +95,14 @@ public class HnqisToShnListener {
 			}
 			try {
 				sendDataTOGovtDhis2();
+				
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
 			
 			try {
 				sendIndicatorDataToDhis();
+				Thread.sleep(1000);
 			}
 			catch (Exception e) {
 				

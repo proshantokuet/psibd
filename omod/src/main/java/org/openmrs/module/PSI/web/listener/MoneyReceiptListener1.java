@@ -79,6 +79,7 @@ public class MoneyReceiptListener1 {
 		if (status) {
 			try {
 				sendMoneyReceipt();
+				Thread.sleep(1000);
 			}
 			catch (Exception e) {
 				

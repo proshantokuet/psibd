@@ -118,6 +118,7 @@ public class EncounterListner {
 				}
 				try {
 					sendEncounterFailed();
+					Thread.sleep(1000);
 				}
 				catch (Exception e) {
 					

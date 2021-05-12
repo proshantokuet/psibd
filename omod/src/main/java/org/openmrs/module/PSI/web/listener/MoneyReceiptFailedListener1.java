@@ -76,6 +76,7 @@ public class MoneyReceiptFailedListener1 {
 		if (status) {
 			try {
 				sendFailedMoneyReceipt();
+				Thread.sleep(1000);
 			}
 			catch (Exception e) {
 				

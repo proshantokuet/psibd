@@ -76,6 +76,7 @@ public class DeleteMoneyReceiptAndOthersListener {
 
 				try {
 					deleteMoneyReceiptFromDhis2();
+					Thread.sleep(1000);
 				}
 				catch (Exception e) {
 					

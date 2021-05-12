@@ -118,7 +118,7 @@ public class HibernatePSIDHISExceptionDAO implements PSIDHISExceptionDAO {
 		// TODO Auto-generated method stub
 		List<PSIDHISException> lists = sessionFactory.getCurrentSession()
 		        .createQuery("from PSIDHISException where isSync = :sync and status = 1")
-		        .setInteger("sync", status).list();
+		        .setInteger("sync", status).setMaxResults(100).list();
 		
 		return lists;
 	}
