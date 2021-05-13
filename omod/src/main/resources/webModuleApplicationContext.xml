@@ -107,48 +107,48 @@
     </task:scheduled-tasks> -->
     
      <task:scheduled-tasks scheduler="patientTask">
-        <task:scheduled ref="dhisListener" method="sendData" cron="0 */10 9-23 * * *" />
+        <task:scheduled ref="dhisListener" method="sendData" cron="0 */1 6-23 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="patient1Task">
-        <task:scheduled ref="patient1Listener" method="sendData" cron="0 */10 9-23 * * *" />
+        <task:scheduled ref="patient1Listener" method="sendData" cron="0 */1 6-23 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="patient2Task">
-        <task:scheduled ref="patient2Listener" method="sendData" cron="0 */10 9-23 * * *" />
+        <task:scheduled ref="patient2Listener" method="sendData" cron="0 */1 6-23 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="patient3Task">
-        <task:scheduled ref="patient3Listener" method="sendData" cron="0 */10 9-23 * * *" />
+        <task:scheduled ref="patient3Listener" method="sendData" cron="0 */1 6-23 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="patientFailedTask">
-        <task:scheduled ref="patientFailedListener" method="sendFailedPatientData" cron="0 */10 9-23 * * *" />
+        <task:scheduled ref="patientFailedListener" method="sendFailedPatientData" cron="0 */1 6-23 * * *" />
      </task:scheduled-tasks>
     
     
      <task:scheduled-tasks scheduler="moneyReceiptTask">
-     	<task:scheduled ref="moneyReceiptListener" method="sendMoneyReceiptData" cron="0 */3 0-8 * * *" />
+     	<task:scheduled ref="moneyReceiptListener" method="sendMoneyReceiptData" cron="0 */3 0-5 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="moneyReceipt1Task">
-        <task:scheduled ref="moneyReceiptListener1" method="sendMoneyReceiptData" cron="0 */3 0-8 * * *" />
+        <task:scheduled ref="moneyReceiptListener1" method="sendMoneyReceiptData" cron="0 */3 0-5 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="moneyReceipt2Task">
-        <task:scheduled ref="moneyReceiptListener2" method="sendMoneyReceiptData" cron="0 */3 0-8 * * *" />
+        <task:scheduled ref="moneyReceiptListener2" method="sendMoneyReceiptData" cron="0 */3 0-5 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="moneyReceiptFailedTask">
-        <task:scheduled ref="moneyReceiptFailedListener" method="sendFailedMoneyReceiptData" cron="0 */3 0-8 * * *" /> 
+        <task:scheduled ref="moneyReceiptFailedListener" method="sendFailedMoneyReceiptData" cron="0 */3 0-5 * * *" /> 
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="moneyReceiptFailed1Task">
-		<task:scheduled ref="moneyReceiptFailedListener1" method="sendFailedMoneyReceiptData" cron="0 */3 0-8 * * *" />
+		<task:scheduled ref="moneyReceiptFailedListener1" method="sendFailedMoneyReceiptData" cron="0 */3 0-5 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="moneyReceiptFailed2Task">
-        <task:scheduled ref="moneyReceiptFailedListener2" method="sendFailedMoneyReceiptData" cron="0 */3 0-8 * * *" />
+        <task:scheduled ref="moneyReceiptFailedListener2" method="sendFailedMoneyReceiptData" cron="0 */3 0-5 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="exceptionDataTask">
