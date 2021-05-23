@@ -118,4 +118,36 @@ public class DhisErrorVisualizeController {
 		model.addAttribute("hasClinicPermission",
 			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
 	}
+	
+	
+	@RequestMapping(value = "/module/PSI/globalServerSyncLog", method = RequestMethod.GET)
+	public void globalServerSyncInfo(HttpServletRequest request, HttpSession session, Model model) {
+		
+		model.addAttribute("hasDashboardPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+			model.addAttribute("hasClinicPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+			model.addAttribute("report", null);
+			model.addAttribute("totalTransferred", "0");
+			model.addAttribute("totalFailed", "0");
+			model.addAttribute("syncInProgress", "0");					
+	}
+	
+	@RequestMapping(value = "/module/PSI/globalServerSyncInfoByFilter", method = RequestMethod.GET)
+	public void globarServerSyncInfoWithFilter(HttpServletRequest request, HttpSession session, Model model, @RequestParam(required = false) String action_type) {
+	
+		List<AUHCDhisErrorVisualize> syncInfoReport = Context.getService(AUHCDhisErrorVisualizeService.class).getDataToGLobalSyncReport(action_type);
+		String dahsboardCard = Context.getService(AUHCDhisErrorVisualizeService.class).getDataToGlobalSyncInformationByType(action_type);
+		
+		String[] splitAggVal = dahsboardCard.split("\\|");
+	
+		model.addAttribute("hasDashboardPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.Dashboard));
+			model.addAttribute("hasClinicPermission",
+			    Utils.hasPrivilige(Context.getAuthenticatedUser().getPrivileges(), PSIConstants.ClinicList));
+		model.addAttribute("report", syncInfoReport);
+		model.addAttribute("totalTransferred", splitAggVal[0]);
+		model.addAttribute("syncInProgress", splitAggVal[2]);
+		model.addAttribute("totalFailed", splitAggVal[1]);	
+	}
 }

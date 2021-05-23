@@ -30,38 +30,7 @@ public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualiz
 
 	@Override
 	public String getPatientToDhisSyncInformation(String status, String clinicCode) {
-		String sqlString = "";
-		// TODO Auto-generated method stub
-		/*String sqlQuery = "select Count(pe.rid)  from psi_exception pe where pe.status = '"+ status +"'";*/
-//		String conditionStringForPatient = "";
-//		if (!StringUtils.isEmpty(clinicCode)) {
-//			conditionStringForPatient = " and temp1.cliniccode = '"+clinicCode+"'";
-//		}
-		
-//		String sqlQuery = ""
-//				+ "SELECT Count(pe.rid) "
-//				+ "FROM   psi_exception pe "
-//				+ "       LEFT JOIN person p "
-//				+ "              ON Substring(pe.url, 29, 36) = p.uuid "
-//				+ "       LEFT JOIN (SELECT pa.person_id, "
-//				+ "                         pa.value AS cliniccode "
-//				+ "                  FROM   person_attribute pa "
-//				+ "                  WHERE  pa.person_attribute_type_id = '32') temp1 "
-//				+ "              ON p.person_id = temp1.person_id "
-//				+ "WHERE  pe.status = '"+status+"'" + conditionStringForPatient + ";";
-//		
-//		String varname1 = ""
-//				+ "select Count(DISTINCT psi.patient_uuid) from psi_exception psi "
-//				+ " "
-//				+ "join person p on p.uuid = psi.patient_uuid "
-//				+ " JOIN (SELECT pa.person_id, "
-//				+ "                         pa.value AS cliniccode "
-//				+ "                  FROM   person_attribute pa "
-//				+ "                  WHERE  pa.person_attribute_type_id = '32') temp1 "
-//				+ "              ON p.person_id = temp1.person_id "
-//				+ " "
-//				+ "where psi.status = 1";
-		
+		String sqlString = "";	
 		if (StringUtils.isEmpty(clinicCode)) {
 			sqlString = "SELECT SyncAggValOfPatient()";
 		}
@@ -86,44 +55,6 @@ public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualiz
 		else {
 			sqlString = "SELECT SyncAggValWithClinicCode('"+ clinicCode +"')";
 		}
-//		String conditionString = "";
-//		if (!StringUtils.isEmpty(clinicCode)) {
-//			conditionString = "AND pmr.clinic_code = '"+clinicCode+"'";
-//		}
-//		if(moneyReceiptKey.equalsIgnoreCase("money_receipt_transferred")) {
-//			
-//			sqlString = "select COUNT(spid) from psi_service_provision where dhis_id is not NULL and is_complete = 1 and is_send_to_dhis = 1";
-//			sqlString = ""
-//					+ "SELECT Count(psp.spid) "
-//					+ "FROM   psi_service_provision psp "
-//					+ "       JOIN psi_money_receipt pmr "
-//					+ "         ON pmr.mid = psp.psi_money_receipt_id "
-//					+ "WHERE  psp.dhis_id IS not NULL "
-//					+ "       AND psp.is_complete = 1 "
-//					+ "       AND psp.is_send_to_dhis = 1 " + conditionString + ";";
-//		}
-//		else if(moneyReceiptKey.equalsIgnoreCase("money_receipt_to_sync")) {
-//			
-//			sqlString = ""
-//					+ "SELECT Count(psp.spid) "
-//					+ "FROM   psi_service_provision psp "
-//					+ "       JOIN psi_money_receipt pmr "
-//					+ "         ON pmr.mid = psp.psi_money_receipt_id "
-//					+ "WHERE  psp.dhis_id IS NULL "
-//					+ "       AND psp.is_complete = 1 "
-//					+ "       AND psp.is_send_to_dhis = 0 " + conditionString + ";";
-//		}
-//		else if(moneyReceiptKey.equalsIgnoreCase("sync_failed")) {
-//			
-//			sqlString = ""
-//					+ "SELECT Count(psp.spid) "
-//					+ "FROM   psi_service_provision psp "
-//					+ "       JOIN psi_money_receipt pmr "
-//					+ "         ON pmr.mid = psp.psi_money_receipt_id "
-//					+ "WHERE  (psp.dhis_id IS NULL OR psp.dhis_id = '') "
-//					+ "       AND psp.is_complete = 1 "
-//					+ "       AND psp.is_send_to_dhis = 2 " + conditionString + ";";
-//		}
 		try {
 			log.error(sqlString);
 			String moneyReceiptCount = sessionFactory.getCurrentSession().createSQLQuery(sqlString).list().get(0).toString();
@@ -242,6 +173,78 @@ public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualiz
 					addScalar("error",StandardBasicTypes.STRING).
 					addScalar("date_created",StandardBasicTypes.STRING).
 					addScalar("date_changed",StandardBasicTypes.STRING).
+					setResultTransformer(new AliasToBeanResultTransformer(AUHCDhisErrorVisualize.class)).
+					list();
+			return report;
+		}catch(Exception e){
+			return report;
+		}
+	}
+
+	@Override
+	public String getDataToGlobalSyncInformationByType(String type) {
+		// TODO Auto-generated method stub
+		String sqlString = "SELECT globalServerSyncInfoMoneyReceipt('"+ type +"')";
+		try {
+			String patientCount = sessionFactory.getCurrentSession().createSQLQuery(sqlString).list().get(0).toString();
+			return patientCount;
+			
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<AUHCDhisErrorVisualize> getDataToGLobalSyncReport(String type) {
+		String queryString = "";
+		if(type.equalsIgnoreCase("Patient")) {
+			
+			queryString = ""
+					+ "SELECT ael.action_type as actionType, "
+					+ "       p.identifier as identifier, "
+					+ "       error_message as error "
+					+ "FROM   shr_action_error_log ael "
+					+ "       JOIN person p "
+					+ "         ON p.uuid = ael.uuid "
+					+ "WHERE  ael.sent_status = 0 "
+					+ "       AND ael.action_type = 'Patient'";
+		}
+		else if(type.equalsIgnoreCase("Money Receipt")) {
+			queryString = ""
+					+ "SELECT ael.action_type as actionType, "
+					+ "       pmr.eslip_no as identifier, "
+					+ "       error_message as error"
+					+ "FROM   shr_action_error_log ael "
+					+ "       JOIN psi_money_receipt pmr "
+					+ "         ON ael.uuid = pmr.mid "
+					+ "WHERE  ael.sent_status = 0 "
+					+ "       AND ael.action_type = 'Money Receipt'";
+		}
+		else if(type.equalsIgnoreCase("Encounter")) {
+			
+			queryString = ""
+					+ "select "
+					+ "	ael.action_type as actionType, "
+					+ "	ael.uuid as identifier, "
+					+ "	error_message as error"
+					+ "from "
+					+ "	shr_action_error_log ael "
+					+ "where "
+					+ "	ael.sent_status = 0 "
+					+ "	and ael.action_type = 'Encounter'";
+		}
+		// TODO Auto-generated method stub
+
+		
+		log.error(queryString);
+		
+		List<AUHCDhisErrorVisualize> report = new ArrayList<AUHCDhisErrorVisualize>();
+		try{
+			 report = sessionFactory.getCurrentSession().createSQLQuery(queryString).
+					addScalar("actionType",StandardBasicTypes.STRING).
+					addScalar("identifier",StandardBasicTypes.STRING).
+					addScalar("error",StandardBasicTypes.STRING).
 					setResultTransformer(new AliasToBeanResultTransformer(AUHCDhisErrorVisualize.class)).
 					list();
 			return report;
