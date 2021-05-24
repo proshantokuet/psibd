@@ -155,18 +155,11 @@ $jq(document).ready( function () {
 $jq("#patienterrorvisualize").on("submit",function(event){
 	event.preventDefault();
 	$jq("#loading_prov").show();
-	var action_type = document.getElementById("syncType");
-	var clinicCode;
-	var url;
-	if(clinic !== null){		
-		clinicCode = clinic.options[clinic.selectedIndex].value;
+	var action_type = $jq("#syncType").val();
+	if(action_type.val == "") {
+		return;
 	}
-	if(clinicCode == "0") {
-		 url = "/openmrs/module/PSI/dhisPatientReportSyncData.form";
-	}
-	else {
-		url = "/openmrs/module/PSI/dhisPatientReportSyncData.form?clinicCode="+clinicCode;
-	}
+	var url = "/openmrs/module/PSI/globalServerSyncInfoByFilter.form?action_type="+action_type;
 	
 	$jq.ajax({
 		type:"GET",
@@ -189,12 +182,12 @@ $jq("#patienterrorvisualize").on("submit",function(event){
 					   buttons: [
 					             {
 					                 extend: 'excelHtml5',
-					                 title: "Money Receipt DHIS2 Sync Report",
+					                 title: action_type + " Data Sync Report",
 					                 text: 'Export as .xlxs'
 					             },
 					             {
 						         		extend: 'pdfHtml5',
-						         		title: "Money Receipt DHIS2 Sync Report",
+						         		title: action_type + " Data Sync Report",
 						         		text: 'Export as .pdf',
 						         		orientation: 'landscape',
 						         		pageSize: 'LEGAL'
