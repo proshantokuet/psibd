@@ -3,6 +3,8 @@ package org.openmrs.module.PSI.web.listener;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,9 +56,15 @@ public class MoneyReceiptFailedListener2 {
 
 	protected final Log log = LogFactory.getLog(getClass());
 	
+	private static final ReentrantLock lock = new ReentrantLock();
+
+	
 	@SuppressWarnings("rawtypes")
 	public void sendFailedMoneyReceiptData() throws Exception {
-		
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
 		boolean status = true;
 		try {
 			psiapiServiceFactory.getAPIType("dhis2").get("", "", VERSIONAPI);
@@ -73,6 +81,10 @@ public class MoneyReceiptFailedListener2 {
 			}
 			catch (Exception e) {
 				
+			}
+			finally {
+				lock.unlock();
+				log.error("complete listener failed MoneyReceipt2 at:" +new Date());
 			}
 		}
 

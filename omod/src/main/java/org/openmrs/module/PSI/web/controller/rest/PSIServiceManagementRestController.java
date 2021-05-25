@@ -112,7 +112,7 @@ public class PSIServiceManagementRestController extends MainResourceController {
 		    clinicServiceDTO.getPsiClinicManagement()));
 		String msg = "";
 		PSIServiceManagement getByCode = Context.getService(PSIServiceManagementService.class).findByIdNotByClinicId(
-		    clinicServiceDTO.getSid(), clinicServiceDTO.getCode(), clinicServiceDTO.getPsiClinicManagement());
+		    clinicServiceDTO.getSid(), clinicServiceDTO.getCode(), clinicServiceDTO.getPsiClinicManagement(),clinicServiceDTO.getType());
 		if (getByCode != null) {
 			msg = "This code is already taken";
 		} else {

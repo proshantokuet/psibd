@@ -3,6 +3,7 @@ package org.openmrs.module.PSI.web.listener;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -54,10 +55,18 @@ public class PatientFailedListener {
 	
 	private final String trackerUrl = DHIS2BASEURL + "/api/trackedEntityInstances";
 	
+	private final String trackInstanceUrl = DHIS2BASEURL + "/api/trackedEntityInstances.json?";
+
+	private static final ReentrantLock lock = new ReentrantLock();
+	
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@SuppressWarnings("rawtypes")
 	public void sendFailedPatientData() throws Exception {
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
 		log.error("Called patient failed listener " + new Date());
 		boolean status = true;
 		try {
@@ -71,14 +80,137 @@ public class PatientFailedListener {
 		if (status) {
 			
 			try {
-				sendFailedPatient();
+				//sendFailedPatient();
+				sendFailedPatientTemporary();
 				Thread.sleep(1000);
 			}
 			catch (Exception e) {
 				
 			}
+			finally {
+				lock.unlock();
+				log.error("complete listener patient failed listener at:" +new Date());
+			}
 		}
 
+	}
+	
+	public synchronized void sendFailedPatientTemporary() {
+		log.error("Entered in failed patient listener " + new Date());
+		List<PSIDHISException> psidhisExceptions = Context.getService(PSIDHISExceptionService.class).findAllByStatus(
+		    PSIConstants.CONNECTIONTIMEOUTSTATUS);
+		
+		JSONObject response = new JSONObject();
+		JSONObject patientJson = new JSONObject();
+		if (psidhisExceptions.size() != 0 && psidhisExceptions != null) {
+			for (PSIDHISException psidhisException : psidhisExceptions) {
+				SHNDataSyncStatusDTO syncStatus = Context.getService(PSIDHISExceptionService.class).findStatusToSendDataDhis("patient_uuid", psidhisException.getPatientUuid());
+				boolean willSent = false;
+				
+				if(syncStatus == null && isDeployInLightEmr.equalsIgnoreCase("1")) {
+					willSent = true;
+				}
+				else if(syncStatus != null  && isDeployInLightEmr.equalsIgnoreCase("1")) {
+					willSent = false;
+				}
+				else if(syncStatus == null && isDeployInGlobal.equalsIgnoreCase("1")) {
+					willSent = false;
+				}
+				else if(syncStatus != null && isDeployInGlobal.equalsIgnoreCase("1") && syncStatus.getSendToDhisFromGlobal() == 1) {
+					willSent = true;
+				}
+				if(willSent) {
+				try {
+					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", psidhisException.getUrl());
+					patientJson = DHISDataConverter.toConvertPatient(patient);
+					JSONObject person = patient.getJSONObject("person");
+					
+					String orgUit = patientJson.getString("orgUnit");
+					String uuid = DHISMapper.registrationMapper.get("uuid");
+					String personUuid = person.getString("uuid");
+
+/*					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
+					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
+						patientJson.remove("enrollments");
+						String UpdateUrl = trackerUrl + "/" + findRefereceIdPatient.getReferenceId();
+						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
+					} else {
+						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
+					}*/
+					String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
+					JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+					JSONArray trackedEntityInstances = new JSONArray();
+					if (getResponse.has("trackedEntityInstances")) {
+						trackedEntityInstances = getResponse.getJSONArray("trackedEntityInstances");
+					}
+					if (trackedEntityInstances.length() != 0) {
+						patientJson.remove("enrollments");
+						JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
+						String UpdateUrl = trackerUrl + "/" + trackedEntityInstance.getString("trackedEntityInstance");
+						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
+					} else {
+						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
+					}
+
+					String status = response.getString("status");
+					JSONObject responseObject = response.getJSONObject("response");
+					if(responseObject.has("importSummaries")) {
+						JSONArray importSummaries = responseObject.getJSONArray("importSummaries");
+						if (importSummaries.length() != 0) {
+							JSONObject importSummary = importSummaries.getJSONObject(0);
+							if(importSummary.has("enrollments")){
+								JSONObject enrollmentObject = importSummary.getJSONObject("enrollments");
+								status = enrollmentObject.getString("status");
+							}
+						}
+					}
+					else {
+						if(responseObject.has("enrollments")) {
+							JSONObject enrollmentObject = responseObject.getJSONObject("enrollments");
+							status = enrollmentObject.getString("status");
+						}
+					}
+					if (!status.equalsIgnoreCase("ERROR")) {
+
+						String referenceId = "";
+						JSONObject successResponse = response.getJSONObject("response");
+						if(successResponse.has("importSummaries")) {
+							JSONArray importSummaries = successResponse.getJSONArray("importSummaries");
+							if (importSummaries.length() != 0) {
+								JSONObject importSummary = importSummaries.getJSONObject(0);
+								referenceId = importSummary.getString("reference");
+							}
+						}
+						else {
+							referenceId = successResponse.getString("reference");
+						}
+						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.SUCCESSSTATUS, response
+						        + "", "",referenceId);
+					} else {
+
+						String errorDetails = errorMessageCreation(response);
+						updateExceptionForFailed(psidhisException, patientJson + "", PSIConstants.FAILEDSTATUS, response
+						        + "", errorDetails,"");
+					}
+					
+				}
+				catch (Exception e) {
+					int status = 0;
+					if ("java.lang.RuntimeException: java.net.ConnectException: Connection refused (Connection refused)"
+					        .equalsIgnoreCase(e.toString())
+					        || "org.hibernate.LazyInitializationException: could not initialize proxy - no Session"
+					                .equalsIgnoreCase(e.toString())) {
+						status = PSIConstants.CONNECTIONTIMEOUTSTATUS;
+					} else {
+						status = PSIConstants.FAILEDSTATUS;
+					}					
+					updateExceptionForFailed(psidhisException, patientJson + "", status, response + "", e.toString(),"");
+				}
+				
+				}
+			}
+			
+		}
 	}
 	
 	public synchronized void sendFailedPatient() {
@@ -252,5 +384,4 @@ public class PatientFailedListener {
 	public static boolean isNumeric(String str) {
 		return str.matches("[0-9.]*");
 	}
-	
 }

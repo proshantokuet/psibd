@@ -23,7 +23,7 @@ public interface PSIServiceManagementDAO {
 	
 	public PSIServiceManagement findByCodeAndClinicId(String code, int clinicId);
 	
-	public PSIServiceManagement findByIdNotByClinicId(int id, String code, int clinicId);
+	public PSIServiceManagement findByIdNotByClinicId(int id, String code, int clinicId, String type);
 	
 	public void delete(int id);
 	

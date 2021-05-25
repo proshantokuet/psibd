@@ -115,10 +115,10 @@ public class HibernateServiceManagementDAO implements PSIServiceManagementDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public PSIServiceManagement findByIdNotByClinicId(int id, String code, int clinicId) {
+	public PSIServiceManagement findByIdNotByClinicId(int id, String code, int clinicId, String type) {
 		List<PSIServiceManagement> lists = sessionFactory.getCurrentSession()
-		        .createQuery("from PSIServiceManagement where sid !=:id and  psiClinicManagement=:clinicId and code=:code")
-		        .setString("code", code).setInteger("id", id).setInteger("clinicId", clinicId).list();
+		        .createQuery("from PSIServiceManagement where sid !=:id and  psiClinicManagement=:clinicId and code=:code and type = :servicetype")
+		        .setString("code", code).setInteger("id", id).setInteger("clinicId", clinicId).setString("servicetype", type).list();
 		if (lists.size() != 0) {
 			return lists.get(0);
 		} else {

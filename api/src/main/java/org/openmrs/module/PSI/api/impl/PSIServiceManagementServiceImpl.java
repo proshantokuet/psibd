@@ -56,9 +56,9 @@ public class PSIServiceManagementServiceImpl extends BaseOpenmrsService implemen
 	}
 	
 	@Override
-	public PSIServiceManagement findByIdNotByClinicId(int id, String code, int clinicId) {
+	public PSIServiceManagement findByIdNotByClinicId(int id, String code, int clinicId, String type) {
 		// TODO Auto-generated method stub
-		return dao.findByIdNotByClinicId(id, code, clinicId);
+		return dao.findByIdNotByClinicId(id, code, clinicId, type);
 	}
 	
 	@Override
