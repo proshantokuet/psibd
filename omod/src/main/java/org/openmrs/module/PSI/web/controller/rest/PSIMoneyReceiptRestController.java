@@ -953,7 +953,7 @@ public class PSIMoneyReceiptRestController extends MainResourceController {
 					psiServiceProvision.setSendToDhisFromGlobal(service.getInt("sendToDhisFromGlobal"));
 				}				
 				psiServiceProvision.setCreator(Context.getAuthenticatedUser());
-				
+				Thread.sleep(1);
 				psiServiceProvision.setTimestamp(System.currentTimeMillis());
 				//psiServiceProvision.setPsiMoneyReceiptId(psiMoneyReceipt);
 				

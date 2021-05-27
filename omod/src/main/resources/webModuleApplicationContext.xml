@@ -53,17 +53,17 @@
 	 
 	 
 	 <!--  FOr Global Server -->
-<!--   	  <bean id="hnqistoshnListener" class="org.openmrs.module.PSI.web.listener.HnqisToShnListener"></bean>
+  	  <bean id="hnqistoshnListener" class="org.openmrs.module.PSI.web.listener.HnqisToShnListener"></bean>
 	 
  	  <bean id="deleteMoneyReceiptListener" class="org.openmrs.module.PSI.web.listener.DeleteMoneyReceiptAndOthersListener"></bean>
-	  -->
+
 	 <!-- FOr GLobal Server End -->
 	
 	
 	<!-- For light and Full Emr -->
 	
-	 <bean id="stockAdjustListener" class="org.openmrs.module.PSI.web.listener.StockAndAdjustDataListener"></bean> 
-	
+<!-- 	 <bean id="stockAdjustListener" class="org.openmrs.module.PSI.web.listener.StockAndAdjustDataListener"></bean> 
+ -->	
 	<!-- For Light and Full Emr end -->
 	 
 	 
@@ -123,7 +123,7 @@
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="patientFailedTask">
-        <task:scheduled ref="patientFailedListener" method="sendFailedPatientData" cron="0 */1 6-23 * * *" />
+        <task:scheduled ref="patientFailedListener" method="sendFailedPatientData" cron="0 */1 0-5 * * *" />
      </task:scheduled-tasks>
     
     
@@ -163,17 +163,17 @@
         <task:scheduled ref="updateDataListener" method="updateData" cron="0 0 11 * * *" />
      </task:scheduled-tasks>
      
-<!--      <task:scheduled-tasks scheduler="hnqisTask">
+      <task:scheduled-tasks scheduler="hnqisTask">
          <task:scheduled ref="hnqistoshnListener" method="sendData" cron="0 0 2 * * *" />
      </task:scheduled-tasks>
      
      <task:scheduled-tasks scheduler="deleteReceiptTask">
          <task:scheduled ref="deleteMoneyReceiptListener" method="sendData" cron="*/55 * * * * *" /> 
-     </task:scheduled-tasks> -->
+     </task:scheduled-tasks> 
      
-     <task:scheduled-tasks scheduler="stockAdjustTask">
+<!--       <task:scheduled-tasks scheduler="stockAdjustTask">
          <task:scheduled ref="stockAdjustListener" method="sendData" cron="0 */55 * * * *" />   
-     </task:scheduled-tasks>
+     </task:scheduled-tasks> -->
     
      
      
@@ -193,10 +193,10 @@
     <task:scheduler pool-size="1" id="encounterTask"/>
     <task:scheduler pool-size="1" id="updateDataTask"/>
     
-<!--     <task:scheduler pool-size="1" id="hnqisTask"/>
-    <task:scheduler pool-size="1" id="deleteReceiptTask"/> -->
+    <task:scheduler pool-size="1" id="hnqisTask"/>
+    <task:scheduler pool-size="1" id="deleteReceiptTask"/>
     
-    <task:scheduler pool-size="1" id="stockAdjustTask"/>
+    <!-- <task:scheduler pool-size="1" id="stockAdjustTask"/> -->
 
 	<task:annotation-driven /> 
  

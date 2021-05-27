@@ -183,8 +183,14 @@ public class HibernateAUHCDhisErrorVisualizeDAO implements AUHCDhisErrorVisualiz
 
 	@Override
 	public String getDataToGlobalSyncInformationByType(String type) {
+		String sqlString = "";
 		// TODO Auto-generated method stub
-		String sqlString = "SELECT globalServerSyncInfoMoneyReceipt('"+ type +"')";
+		if(type.equalsIgnoreCase("Money Receipt")) {
+			sqlString = "SELECT globalServerSyncInfoMoneyReceipt('"+ type +"')";
+		}
+		else {
+			 sqlString = "SELECT globalServerSyncInfoPatientAndENcounter('"+ type +"')";
+		}
 		try {
 			String patientCount = sessionFactory.getCurrentSession().createSQLQuery(sqlString).list().get(0).toString();
 			return patientCount;
