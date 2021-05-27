@@ -49,4 +49,16 @@ public class AUHCDhisErrorVisualizeServiceImpl extends BaseOpenmrsService  imple
 		return dao.getMoneyReceiptDhisSyncReport(auhcDhisErrorVisualize);
 	}
 
+	@Override
+	public String getDataToGlobalSyncInformationByType(String type) {
+		// TODO Auto-generated method stub
+		return dao.getDataToGlobalSyncInformationByType(type);
+	}
+
+	@Override
+	public List<AUHCDhisErrorVisualize> getDataToGLobalSyncReport(String type) {
+		// TODO Auto-generated method stub
+		return dao.getDataToGLobalSyncReport(type);
+	}
+
 }

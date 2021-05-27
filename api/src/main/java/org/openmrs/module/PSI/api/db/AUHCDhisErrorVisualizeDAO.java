@@ -13,5 +13,9 @@ public interface AUHCDhisErrorVisualizeDAO {
 	public List<AUHCDhisErrorVisualize> getPatientDhisSyncReport (AUHCDhisErrorVisualize auhcDhisErrorVisualize);
 	
 	public List<AUHCDhisErrorVisualize> getMoneyReceiptDhisSyncReport (AUHCDhisErrorVisualize auhcDhisErrorVisualize);
+	
+	public String getDataToGlobalSyncInformationByType(String type);
+	
+	public List<AUHCDhisErrorVisualize> getDataToGLobalSyncReport(String type);
 
 }

@@ -23,6 +23,8 @@ public class AUHCDhisErrorVisualize extends BaseOpenmrsData implements Serializa
 	private String date_changed;
 	
 	private String mid;
+	
+	private String actionType;
 
 
 	public String getPerson_id() {
@@ -99,6 +101,14 @@ public class AUHCDhisErrorVisualize extends BaseOpenmrsData implements Serializa
 	public void setId(Integer id) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
 	}
 	
 
