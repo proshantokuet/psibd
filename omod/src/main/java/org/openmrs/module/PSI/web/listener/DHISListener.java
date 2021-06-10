@@ -278,7 +278,10 @@ public class DHISListener {
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
 				String logResult = "";
 				long timestampLog = System.currentTimeMillis();	
-				if(eventReceordDTO.getId() % 4 == 1) {
+				log.error("Entered in loop" + eventReceordDTO.getId());
+				if(eventReceordDTO.getId() % 4 == 1 ) {
+				if(!StringUtils.isBlank(eventReceordDTO.getDhisResponse()))	{
+				log.error("printing dhis response" + eventReceordDTO.getDhisResponse());	
 				PSIDHISException getPsidhisException = Context.getService(PSIDHISExceptionService.class).findAllById(
 				    eventReceordDTO.getId());
 				String patientUUidToCheck = eventReceordDTO.getUrl().substring(28,64);
@@ -301,44 +304,45 @@ public class DHISListener {
 				log.error("willSent" + willSent);
 				if(willSent) {
 				try {
-					long timeBeforeOpenmrsCall = System.currentTimeMillis();
-					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
-					long timeAfteropenmrsCall = (System.currentTimeMillis() - timeBeforeOpenmrsCall);
-					logResult = logResult + " Time taken after openmrs patient call: " + timeAfteropenmrsCall;
-					
-					long timeBeforeProcessingData = System.currentTimeMillis();
-					patientJson = DHISDataConverter.toConvertPatient(patient);
-					JSONObject person = patient.getJSONObject("person");
-					String orgUit = patientJson.getString("orgUnit");
-					String uuid = DHISMapper.registrationMapper.get("uuid");
-					String personUuid = person.getString("uuid");
-					//String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
-					//JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
-					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
-					long timeAfterProcessingData = (System.currentTimeMillis() - timeBeforeProcessingData);
-					logResult = logResult + " Time taken after finish processing data: " + timeAfterProcessingData;
-					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
-						patientJson.remove("enrollments");
-						//JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
-						//String UpdateUrl = trackerUrl + "/" + trackedEntityInstance.getString("trackedEntityInstance");
-						String UpdateUrl = trackerUrl + "/" + findRefereceIdPatient.getReferenceId();
-						long trackPatientTime = System.currentTimeMillis();
-						log.error("(PATIENT) Time taken of patient update before sending to dhis2 " + trackPatientTime);
-						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
-						long finishGettingTime = System.currentTimeMillis();
-						log.error("(PATIENT) Time taken of patient update after sending to dhis2 " + (finishGettingTime - trackPatientTime));
-						logResult = logResult + " (PATIENT) Time taken of patient update after sending to dhis2: " + (finishGettingTime - trackPatientTime);
-					} else {
-						long trackPatientTime = System.currentTimeMillis();
-						log.error("(PATIENT) Time taken of patient add before sending to dhis2 " + trackPatientTime);
-						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
-						long finishGettingTime = System.currentTimeMillis();
-						log.error("(PATIENT) Time taken of patient add after sending to dhis2 " + (finishGettingTime - trackPatientTime));
-						
-						logResult = logResult + " (PATIENT) Time taken of patient add  after sending to dhis2: " + (finishGettingTime - trackPatientTime);
-					}
-					long timebeforeSaveToMarker =  System.currentTimeMillis();
-					logResult = logResult + " Time taken to save marker id in dhis marker table: " + (System.currentTimeMillis() - timebeforeSaveToMarker);
+//					long timeBeforeOpenmrsCall = System.currentTimeMillis();
+//					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
+//					long timeAfteropenmrsCall = (System.currentTimeMillis() - timeBeforeOpenmrsCall);
+//					logResult = logResult + " Time taken after openmrs patient call: " + timeAfteropenmrsCall;
+//					
+//					long timeBeforeProcessingData = System.currentTimeMillis();
+//					patientJson = DHISDataConverter.toConvertPatient(patient);
+//					JSONObject person = patient.getJSONObject("person");
+//					String orgUit = patientJson.getString("orgUnit");
+//					String uuid = DHISMapper.registrationMapper.get("uuid");
+//					String personUuid = person.getString("uuid");
+//					//String URL = trackInstanceUrl + "filter=" + uuid + ":EQ:" + personUuid + "&ou=" + orgUit;
+//					//JSONObject getResponse = psiapiServiceFactory.getAPIType("dhis2").get("", "", URL);
+//					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
+//					long timeAfterProcessingData = (System.currentTimeMillis() - timeBeforeProcessingData);
+//					logResult = logResult + " Time taken after finish processing data: " + timeAfterProcessingData;
+//					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
+//						patientJson.remove("enrollments");
+//						//JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
+//						//String UpdateUrl = trackerUrl + "/" + trackedEntityInstance.getString("trackedEntityInstance");
+//						String UpdateUrl = trackerUrl + "/" + findRefereceIdPatient.getReferenceId();
+//						long trackPatientTime = System.currentTimeMillis();
+//						log.error("(PATIENT) Time taken of patient update before sending to dhis2 " + trackPatientTime);
+//						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
+//						long finishGettingTime = System.currentTimeMillis();
+//						log.error("(PATIENT) Time taken of patient update after sending to dhis2 " + (finishGettingTime - trackPatientTime));
+//						logResult = logResult + " (PATIENT) Time taken of patient update after sending to dhis2: " + (finishGettingTime - trackPatientTime);
+//					} else {
+//						long trackPatientTime = System.currentTimeMillis();
+//						log.error("(PATIENT) Time taken of patient add before sending to dhis2 " + trackPatientTime);
+//						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
+//						long finishGettingTime = System.currentTimeMillis();
+//						log.error("(PATIENT) Time taken of patient add after sending to dhis2 " + (finishGettingTime - trackPatientTime));
+//						
+//						logResult = logResult + " (PATIENT) Time taken of patient add  after sending to dhis2: " + (finishGettingTime - trackPatientTime);
+//					}
+//					long timebeforeSaveToMarker =  System.currentTimeMillis();
+//					logResult = logResult + " Time taken to save marker id in dhis marker table: " + (System.currentTimeMillis() - timebeforeSaveToMarker);
+					response = new JSONObject(eventReceordDTO.getDhisResponse()); 
 					String status = response.getString("status");
 					JSONObject responseObject = response.getJSONObject("response");
 					if(responseObject.has("importSummaries")) {
@@ -414,8 +418,12 @@ public class DHISListener {
 					Context.clearSession();
 				}
 			}
+				else {
+					break;
+				}
 			
-		 }
+		    }
+		  }
 		}
 	}
 	

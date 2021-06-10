@@ -6,6 +6,8 @@ public class EventReceordDTO {
 	
 	private String url;
 	
+	private String dhisResponse;
+	
 	public int getId() {
 		return id;
 	}
@@ -20,6 +22,14 @@ public class EventReceordDTO {
 	
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getDhisResponse() {
+		return dhisResponse;
+	}
+
+	public void setDhisResponse(String dhisResponse) {
+		this.dhisResponse = dhisResponse;
 	}
 	
 }
