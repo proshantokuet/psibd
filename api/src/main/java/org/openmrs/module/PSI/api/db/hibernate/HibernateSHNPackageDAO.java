@@ -201,6 +201,8 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 						 .addScalar("voided",StandardBasicTypes.BOOLEAN)
 						 .addScalar("uuid",StandardBasicTypes.STRING)
 						 .addScalar("unitPriceInPackage", StandardBasicTypes.FLOAT)
+						 .addScalar("category",StandardBasicTypes.STRING)
+						 .addScalar("type", StandardBasicTypes.STRING)
 						 .setResultTransformer(new AliasToBeanResultTransformer(SHNPackageReportDTO.class)).list();
 			log.error("Query size" + packageList.size());
 
@@ -235,6 +237,20 @@ public class HibernateSHNPackageDAO implements SHNPackageDAO {
 		} catch (Exception e) {
 			log.error(e.toString());
 			return packageList;
+		}
+	}
+
+	@Override
+	public SHNPackage findpackageByPackageCodeAndClinic(String packageCode,
+			String clinicCode) {
+		List<SHNPackage> lists = sessionFactory.getCurrentSession().createQuery("from SHNPackage where packageCode = :packagecode and clinicCode = :code")
+		        .setString("packagecode", packageCode)
+		        .setString("code", clinicCode)
+		        .list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
 		}
 	}
 

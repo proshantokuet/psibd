@@ -6,33 +6,48 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.PSI.AUHCServiceCategory;
 import org.openmrs.module.PSI.PSIClinicManagement;
 import org.openmrs.module.PSI.PSIClinicUser;
 import org.openmrs.module.PSI.PSIMoneyReceipt;
+import org.openmrs.module.PSI.PSIServiceManagement;
 import org.openmrs.module.PSI.PSIServiceProvision;
+import org.openmrs.module.PSI.SHNPackage;
+import org.openmrs.module.PSI.SHNPackageDetails;
 import org.openmrs.module.PSI.api.AUHCServiceCategoryService;
 import org.openmrs.module.PSI.api.PSIClinicManagementService;
 import org.openmrs.module.PSI.api.PSIClinicUserService;
 import org.openmrs.module.PSI.api.PSIMoneyReceiptService;
 import org.openmrs.module.PSI.api.PSIServiceManagementService;
 import org.openmrs.module.PSI.api.PSIServiceProvisionService;
+import org.openmrs.module.PSI.api.SHNPackageService;
+import org.openmrs.module.PSI.api.SHNStockService;
 import org.openmrs.module.PSI.dto.AUHCComprehensiveReport;
 import org.openmrs.module.PSI.dto.AUHCDashboardCard;
 import org.openmrs.module.PSI.dto.AUHCDraftTrackingReport;
 import org.openmrs.module.PSI.dto.AUHCRegistrationReport;
 import org.openmrs.module.PSI.dto.AUHCVisitReport;
+import org.openmrs.module.PSI.dto.ApiResponseModelDTO;
+import org.openmrs.module.PSI.dto.ClinicServiceDTO;
 import org.openmrs.module.PSI.dto.DashboardDTO;
 import org.openmrs.module.PSI.dto.PSIReport;
 import org.openmrs.module.PSI.dto.PSIReportSlipTracking;
+import org.openmrs.module.PSI.dto.SHNPackageReportDTO;
 import org.openmrs.module.PSI.dto.SearchFilterDraftTracking;
 import org.openmrs.module.PSI.dto.SearchFilterRegistrationReport;
 import org.openmrs.module.PSI.dto.SearchFilterReport;
@@ -50,6 +65,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PSIDashboardController {
+	
+	protected final Log log = LogFactory.getLog(getClass());
+
 	
 	@RequestMapping(value = "/module/PSI/dashboard", method = RequestMethod.GET)
 	public void dashboard(HttpServletRequest request, HttpSession session, Model model) {
@@ -671,8 +689,9 @@ public class PSIDashboardController {
             @RequestParam String spSatelite,
             @RequestParam String spStatic,
             @RequestParam String spCsp,
-            @RequestParam(required = true) String code){
+            @RequestParam(required = true) String code) {
 		
+		ApiResponseModelDTO apiResponseModelDTO = new ApiResponseModelDTO();
 		PSIClinicUser psiClinicUser = Context.getService(PSIClinicUserService.class).findByUserName(
 			    Context.getAuthenticatedUser().getUsername());
 		Collection<Privilege> privileges = Context.getAuthenticatedUser().getPrivileges();
@@ -700,18 +719,38 @@ public class PSIDashboardController {
 		draftListForSubmitting = Context.getService(PSIServiceProvisionService.class).getDraft(filter);
 		try {
 			for (AUHCDraftTrackingReport auhcDraftTrackingReport : draftListForSubmitting) {
-				PSIMoneyReceipt psiMoneyReceipt = null;
-				psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(auhcDraftTrackingReport.getMid());
+				PSIMoneyReceipt psiMoneyReceipt = Context.getService(PSIMoneyReceiptService.class).findById(auhcDraftTrackingReport.getMid());
 				if(psiMoneyReceipt.getDueAmount() == 0) {
-				psiMoneyReceipt.setIsComplete(1);
-				psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
-				for (PSIServiceProvision serviceProvisions : psiMoneyReceipt.getServices()) {
-					
-					serviceProvisions.setIsComplete(1);
-					serviceProvisions.setTimestamp(System.currentTimeMillis());
-					
-				}
-				Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);	
+
+					log.error("going to extract package if available " + psiMoneyReceipt.getServices().size());
+					Set<PSIServiceProvision> draftServiceProvision = extractPackageItems(psiMoneyReceipt.getServices());
+					apiResponseModelDTO = checkAllProductStockStatus(draftServiceProvision,psiMoneyReceipt.getClinicCode());
+					log.error("apiResponseModelDTO status " + apiResponseModelDTO.getStatus());
+					log.error("going to save service " + draftServiceProvision.size());
+	                if(apiResponseModelDTO.getStatus()) {
+	                	log.error("in the block of saving data " + apiResponseModelDTO.getStatus());
+						psiMoneyReceipt.setIsComplete(1);
+						psiMoneyReceipt.setTimestamp(System.currentTimeMillis());
+						for (PSIServiceProvision serviceProvisions : draftServiceProvision) {
+							log.error("serviceProvisions code " + serviceProvisions.getCode());
+							serviceProvisions.setIsComplete(1);
+							serviceProvisions.setTimestamp(System.currentTimeMillis());
+							
+						}
+						psiMoneyReceipt.getServices().clear();
+						psiMoneyReceipt.setServices(draftServiceProvision);
+						PSIMoneyReceipt afterSave = Context.getService(PSIMoneyReceiptService.class).saveOrUpdate(psiMoneyReceipt);
+						log.error("save complete  code " + afterSave.getIsComplete());
+
+						Context.getService(PSIServiceProvisionService.class).deleteByPatientUuidAndMoneyReceiptIdNull(psiMoneyReceipt.getPatientUuid());
+						if(afterSave.getIsComplete() == 1) {
+							Context.getService(SHNStockService.class).updateStockByEarliestExpiryDate(psiMoneyReceipt.getEslipNo(), psiMoneyReceipt.getClinicCode());
+						}
+
+	                }
+	                else {
+	                	model.addAttribute("msg", apiResponseModelDTO.getErrorMessage());
+	                }
 				}
 			}
 			
@@ -749,5 +788,126 @@ public class PSIDashboardController {
 		}
 	}
 	
+	
+	private Set<PSIServiceProvision> extractPackageItems(Set<PSIServiceProvision> psiServiceProvisions) {
+		Set<PSIServiceProvision> afterExtractingPackage = new HashSet<PSIServiceProvision>();
+		for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
+			log.error("service type " + psiServiceProvision.getServiceType());
+			if(psiServiceProvision.getServiceType().equalsIgnoreCase("PACKAGE")) {
+				SHNPackage shnPackage = Context.getService(SHNPackageService.class).findpackageByPackageCodeAndClinic(psiServiceProvision.getCode(), psiServiceProvision.getPsiMoneyReceiptId().getClinicCode());
+				if(shnPackage != null) {
+					log.error("packageDetails size " + shnPackage.getShnPackageDetails().size());
+				}
+				
+				for (SHNPackageDetails shnPackageDetails : shnPackage.getShnPackageDetails()) {
+					PSIServiceManagement psiServiceManagement = Context.getService(PSIServiceManagementService.class).findById(shnPackageDetails.getServiceProductId());
+					if(psiServiceManagement != null) {
+						PSIServiceProvision psiProvision = new PSIServiceProvision();
+						psiProvision.setUuid(UUID.randomUUID().toString());
+						psiProvision.setDateCreated(new Date());
+						psiProvision.setIsSendToDHIS(PSIConstants.DEFAULTERRORSTATUS);
+						psiProvision.setDateCreated(new Date());
+						psiProvision.setCreator(Context.getAuthenticatedUser());
+						psiProvision.setSendToDhisFromGlobal(PSIConstants.SUCCESSSTATUS);
+						psiProvision.setItem(psiServiceManagement.getName());
+						psiProvision.setCode(psiServiceManagement.getCode());
+						psiProvision.setCategory(psiServiceManagement.getCategory());
+						psiProvision.setUnitCost(shnPackageDetails.getUnitPriceInPackage());
+						int totalQuantity = shnPackageDetails.getQuantity() * psiServiceProvision.getQuantity();
+						psiProvision.setQuantity(totalQuantity);
+						psiProvision.setTotalAmount(shnPackageDetails.getUnitPriceInPackage() * totalQuantity);
+						psiProvision.setNetPayable(shnPackageDetails.getUnitPriceInPackage() * totalQuantity);
+						psiProvision.setDiscount(0);
+						psiProvision.setServiceType(psiServiceManagement.getType());	
+						psiProvision.setPackageUuid(shnPackageDetails.getShnPackage().getUuid());
+						psiProvision.setMoneyReceiptDate(psiServiceProvision.getMoneyReceiptDate());
+						psiProvision.setPatientUuid(psiServiceProvision.getPatientUuid());
+						psiProvision.setFinancialDiscount(psiServiceProvision.getFinancialDiscount());
+						log.error("Successfully bind data to service provision " + psiServiceManagement.getSid());
+						afterExtractingPackage.add(psiProvision);
+					}
+				}
+				
+			}
+		}
+		log.error("afterExtractingPackage size "+ afterExtractingPackage.size());
+		if(afterExtractingPackage.size() > 0) {
+			log.error("adding extracted items to servie provision list "+ psiServiceProvisions.size());
+			//psiServiceProvisions.addAll(afterExtractingPackage);
+			afterExtractingPackage.addAll(psiServiceProvisions);
+			log.error("After added items to servie afterExtractingPackage list "+ afterExtractingPackage.size());
+			afterExtractingPackage.removeIf(obj -> obj.getServiceType().equalsIgnoreCase("PACKAGE"));
+			log.error("After removing package items to servie provision list "+ afterExtractingPackage.size());
+			log.error("Actual service provision size "+ psiServiceProvisions.size());
+
+			
+		}
+		
+		if(afterExtractingPackage.size() > 0) {
+			return afterExtractingPackage;
+		}
+		else {
+			afterExtractingPackage.addAll(psiServiceProvisions);
+			return afterExtractingPackage;
+		}
+	}
+	
+	
+	private ApiResponseModelDTO checkAllProductStockStatus (Set<PSIServiceProvision> psiServiceProvisions,String clinicCode) {
+		String stockOutProducts = "Stock not available. "; 
+		log.error("ENtered to check stock " + psiServiceProvisions.size());
+		ApiResponseModelDTO apiResponseModelDTO = new ApiResponseModelDTO();
+		apiResponseModelDTO.setStatus(true);
+		try {
+			Set<PSIServiceProvision> productSet = new HashSet<PSIServiceProvision>();
+	
+			for (PSIServiceProvision psiServiceProvision : psiServiceProvisions) {
+				
+				if(psiServiceProvision.getServiceType().equalsIgnoreCase("PRODUCT")) {
+					productSet.add(psiServiceProvision);
+				}
+			}
+	        Map<String, Integer> productQuantity = productSet.stream().collect(
+	        	    Collectors.groupingBy(PSIServiceProvision::getCode,
+	        	      Collectors.summingInt(PSIServiceProvision::getQuantity)));
+			log.error("After grouping column " + productQuantity.toString());
+			
+	        for (Map.Entry<String, Integer> entry : productQuantity.entrySet()) {
+	        	PSIClinicManagement psiClinicManagement = Context.getService(PSIClinicManagementService.class).findByClinicId(clinicCode);
+	        	if(psiClinicManagement !=null) {
+	        		log.error("clinic id " + psiClinicManagement.getCid());
+	        		log.error("product code " + entry.getKey());
+				PSIServiceManagement psiServiceManagement = Context.getService(PSIServiceManagementService.class).findProductByCodeAndClinicId(entry.getKey(), psiClinicManagement.getCid());
+	            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+				if(psiServiceManagement != null) {
+	        		log.error("product id " + psiServiceManagement.getSid());
+					List<ClinicServiceDTO> productStock = Context.getService(PSIServiceManagementService.class).getProductListAll(psiClinicManagement.getCid(),psiServiceManagement.getSid());
+					log.error("productStock size " + productStock.size());
+					if(productStock.size() > 0) {
+						Integer availableStock =   (int) productStock.get(0).getStock();
+						log.error("availableStock " + availableStock);
+						Integer providedStock = entry.getValue();
+						log.error("providedStock " + providedStock);
+						if(providedStock > availableStock) {
+							apiResponseModelDTO.setStatus(false);
+							stockOutProducts = stockOutProducts + productStock.get(0).getName() +"("+productStock.get(0).getCode()+ ")"+",";
+						}
+					}
+				  }
+	        	}
+	        }
+	        
+			if (stockOutProducts.endsWith(",")) {
+				stockOutProducts = stockOutProducts.substring(0, stockOutProducts.length() - 1);
+			}
+		
+			apiResponseModelDTO.setErrorMessage(stockOutProducts);
+		} 
+		catch (Exception e) {
+			apiResponseModelDTO.setStatus(false);
+			apiResponseModelDTO.setErrorMessage(e.getMessage());
+		}
+		return apiResponseModelDTO;
+	}
 	
 }
