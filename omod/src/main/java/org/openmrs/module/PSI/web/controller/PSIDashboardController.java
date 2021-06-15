@@ -842,7 +842,14 @@ public class PSIDashboardController {
 
 			
 		}
-		return afterExtractingPackage;
+		
+		if(afterExtractingPackage.size() > 0) {
+			return afterExtractingPackage;
+		}
+		else {
+			afterExtractingPackage.addAll(psiServiceProvisions);
+			return afterExtractingPackage;
+		}
 	}
 	
 	
