@@ -62,6 +62,7 @@ public class HibernatePSIDHISMarkerDAO implements PSIDHISMarkerDAO {
 		List<EventReceordDTO> eventReceordDTOs = new ArrayList<EventReceordDTO>();
 		
 		String sql = "SELECT id,object as url,dhis_response as dhisResponse FROM openmrs.event_records where title= :title and id > :id  order by id asc limit 100";
+		log.error("Raw Swl Print " + sql);
 //		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 //		
 //		eventReceordDTOs = query.setString("title", "Patient").setInteger("id", id).list();
@@ -72,7 +73,7 @@ public class HibernatePSIDHISMarkerDAO implements PSIDHISMarkerDAO {
 				.addScalar("id", StandardBasicTypes.INTEGER)
 				.addScalar("url", StandardBasicTypes.STRING)
 				.addScalar("dhisResponse", StandardBasicTypes.STRING)
-				.setResultTransformer(new AliasToBeanResultTransformer(EventReceordDTO.class))				.setString("title", "Patient")
+				.setResultTransformer(new AliasToBeanResultTransformer(EventReceordDTO.class))
 				.setString("title", "Patient").setInteger("id", id).list();
 		
 /*		for (Iterator iterator = data.iterator(); iterator.hasNext();) {
