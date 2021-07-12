@@ -122,7 +122,11 @@ public class Patient2Listener {
 		JSONObject patientJson = new JSONObject();
 		if (eventReceordDTOs.size() != 0 && eventReceordDTOs != null) {
 			for (EventReceordDTO eventReceordDTO : eventReceordDTOs) {
+				log.error("Entered in loop" + eventReceordDTO.getId());
+
 				if(eventReceordDTO.getId() % 4 == 3) {
+                if(!StringUtils.isBlank(eventReceordDTO.getDhisResponse())) {
+				log.error("printing dhis response" + eventReceordDTO.getDhisResponse());	
 				PSIDHISException getPsidhisException = Context.getService(PSIDHISExceptionService.class).findAllById(
 				    eventReceordDTO.getId());
 				String patientUUidToCheck = eventReceordDTO.getUrl().substring(28,64);
@@ -143,24 +147,24 @@ public class Patient2Listener {
 				}
 				if(willSent) {
 				try {
-					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
-					patientJson = DHISDataConverter.toConvertPatient(patient);
-					JSONObject person = patient.getJSONObject("person");
-					patientJson.getString("orgUnit");
-					DHISMapper.registrationMapper.get("uuid");
-					String personUuid = person.getString("uuid");
-					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
-					
-					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
-						patientJson.remove("enrollments");
-						//JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
-						String UpdateUrl = trackerUrl + "/" + findRefereceIdPatient.getReferenceId();
-						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
-					} else {
-						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
-					}
+//					JSONObject patient = psiapiServiceFactory.getAPIType("openmrs").get("", "", eventReceordDTO.getUrl());
+//					patientJson = DHISDataConverter.toConvertPatient(patient);
+//					JSONObject person = patient.getJSONObject("person");
+//					patientJson.getString("orgUnit");
+//					DHISMapper.registrationMapper.get("uuid");
+//					String personUuid = person.getString("uuid");
+//					PSIDHISException findRefereceIdPatient = Context.getService(PSIDHISExceptionService.class).findReferenceIdOfPatient(personUuid, 1);
+//					
+//					if (findRefereceIdPatient != null && !StringUtils.isBlank(findRefereceIdPatient.getReferenceId())) {
+//						patientJson.remove("enrollments");
+//						//JSONObject trackedEntityInstance = trackedEntityInstances.getJSONObject(0);
+//						String UpdateUrl = trackerUrl + "/" + findRefereceIdPatient.getReferenceId();
+//						response = psiapiServiceFactory.getAPIType("dhis2").update("", patientJson, "", UpdateUrl);
+//					} else {
+//						response = psiapiServiceFactory.getAPIType("dhis2").add("", patientJson, trackerUrl);
+//					}
 
-
+					response = new JSONObject(eventReceordDTO.getDhisResponse()); 
 					String status = response.getString("status");
 					JSONObject responseObject = response.getJSONObject("response");
 					if(responseObject.has("importSummaries")) {
@@ -231,9 +235,13 @@ public class Patient2Listener {
 					Context.getService(PSIDHISMarkerService.class).saveOrUpdate(getlastReadEntry);
 					Context.clearSession();
 				}
-			}
+    			}
+				else {
+					break;
+				}
 			
-		 }
+		    }
+		  }
 		}
 	}
 	

@@ -37,6 +37,10 @@ public class SHNPackageReportDTO  {
 	private float unitPriceInPackage;
 
 	private long isStockExceed;
+	
+	private String category;
+	
+	private String type;
 
 	
 	public int getPackageId() {
@@ -181,6 +185,22 @@ public class SHNPackageReportDTO  {
 
 	public void setIsStockExceed(long isStockExceed) {
 		this.isStockExceed = isStockExceed;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 

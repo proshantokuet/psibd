@@ -62,8 +62,8 @@
 	
 	<!-- For light and Full Emr -->
 	
-<!-- 	 <bean id="stockAdjustListener" class="org.openmrs.module.PSI.web.listener.StockAndAdjustDataListener"></bean> 
- -->	
+ 	 <bean id="stockAdjustListener" class="org.openmrs.module.PSI.web.listener.StockAndAdjustDataListener"></bean> 
+ 	
 	<!-- For Light and Full Emr end -->
 	 
 	 
@@ -110,7 +110,7 @@
         <task:scheduled ref="dhisListener" method="sendData" cron="0 */1 6-23 * * *" />
      </task:scheduled-tasks>
      
-     <task:scheduled-tasks scheduler="patient1Task">
+<!--      <task:scheduled-tasks scheduler="patient1Task">
         <task:scheduled ref="patient1Listener" method="sendData" cron="0 */1 6-23 * * *" />
      </task:scheduled-tasks>
      
@@ -120,9 +120,9 @@
      
      <task:scheduled-tasks scheduler="patient3Task">
         <task:scheduled ref="patient3Listener" method="sendData" cron="0 */1 6-23 * * *" />
-     </task:scheduled-tasks>
+     </task:scheduled-tasks> -->
      
-     <task:scheduled-tasks scheduler="patientFailedTask">
+<!--      <task:scheduled-tasks scheduler="patientFailedTask">
         <task:scheduled ref="patientFailedListener" method="sendFailedPatientData" cron="0 */1 0-5 * * *" />
      </task:scheduled-tasks>
     
@@ -169,7 +169,7 @@
      
      <task:scheduled-tasks scheduler="deleteReceiptTask">
          <task:scheduled ref="deleteMoneyReceiptListener" method="sendData" cron="*/55 * * * * *" /> 
-     </task:scheduled-tasks> 
+     </task:scheduled-tasks>  -->
      
 <!--       <task:scheduled-tasks scheduler="stockAdjustTask">
          <task:scheduled ref="stockAdjustListener" method="sendData" cron="0 */55 * * * *" />   
@@ -179,10 +179,10 @@
      
     
    	<task:scheduler pool-size="1" id="patientTask"/>
-    <task:scheduler pool-size="1" id="patient1Task"/>
+<!--     <task:scheduler pool-size="1" id="patient1Task"/>
     <task:scheduler pool-size="1" id="patient2Task"/>
-    <task:scheduler pool-size="1" id="patient3Task"/>
-    <task:scheduler pool-size="1" id="patientFailedTask"/>
+    <task:scheduler pool-size="1" id="patient3Task"/> -->
+<!--     <task:scheduler pool-size="1" id="patientFailedTask"/>
     <task:scheduler pool-size="1" id="moneyReceiptTask"/>
     <task:scheduler pool-size="1" id="moneyReceipt1Task"/>
     <task:scheduler pool-size="1" id="moneyReceipt2Task"/>
@@ -194,7 +194,7 @@
     <task:scheduler pool-size="1" id="updateDataTask"/>
     
     <task:scheduler pool-size="1" id="hnqisTask"/>
-    <task:scheduler pool-size="1" id="deleteReceiptTask"/>
+    <task:scheduler pool-size="1" id="deleteReceiptTask"/> -->
     
     <!-- <task:scheduler pool-size="1" id="stockAdjustTask"/> -->
 
